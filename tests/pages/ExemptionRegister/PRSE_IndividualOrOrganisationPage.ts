@@ -15,9 +15,9 @@ export class PRSE_IndividualOrOrganisationPage {
     }
 
     /**
-     * Verify user is on the PRSE_IndividualOrOrganisation page
+     * Wait for the PRSE_IndividualOrOrganisation page to load
      */
-    async verifyOnPage(): Promise<void> {
+    async waitForPageToLoad(): Promise<void> {
     await this.page.waitForLoadState('domcontentloaded');
     await this.individualButton.waitFor();
     await this.continueButton.waitFor();

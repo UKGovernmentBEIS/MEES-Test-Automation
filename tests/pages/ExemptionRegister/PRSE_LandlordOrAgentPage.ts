@@ -15,9 +15,9 @@ export class PRSE_LandlordOrAgentPage {
   }
 
   /**
-   * Verify user is on the PRSE_LandlordOrAgent page
+   * Wait for the PRSE_LandlordOrAgent page to load
    */
-  async verifyOnPage(): Promise<void> {
+  async waitForPageToLoad(): Promise<void> {
   await this.page.waitForLoadState('domcontentloaded');
   await this.landlordButton.waitFor();
   await this.continueButton.waitFor();

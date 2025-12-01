@@ -1,6 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../utils/ElementUtilities';
 import { SignInOrCreatePage } from './Login/SignInOrCreatePage';
+import { PRSE_HaveRegisteredExemptionPage } from './ExemptionRegister/PRSE_HaveRegisteredExemptionPage';
 
 export class HomePage {
   readonly page: Page;
@@ -16,22 +17,30 @@ export class HomePage {
    */
   async navigate(): Promise<void> {
     await this.page.goto('https://desnz-gm--prseqa.sandbox.my.site.com/PRSExemptionsRegister');
-    await this.verifyOnPage();
+    await this.waitForPageToLoad();
   }
 
   /**   
-   * Verify user is on the PRSE Home page
+   * Wait for the PRSE Home page to load
    */
-  async verifyOnPage(): Promise<void> {
+  async waitForPageToLoad(): Promise<void> {
     await this.page.waitForLoadState('domcontentloaded');
     await this.startNowButton?.waitFor();
   }
 
   /**
-   * Click the Start Now button
+   * Not Authenticated User - Click Start Now button to navigate to Sign In Or Create Account page
    */
-  async clickStartNow(): Promise<SignInOrCreatePage> {
+  async clickStartNow_NotAuthenticatedUser(): Promise<SignInOrCreatePage> {
     await ElementUtilities.clickElement(this.startNowButton!);
     return new SignInOrCreatePage(this.page);
+  }
+
+  /**
+   * Authenticated User - Click Start Now button to navigate to Have You Registered Exemptions page
+   */
+  async clickStartNow_AuthenticatedUser(): Promise<PRSE_HaveRegisteredExemptionPage> {
+    await ElementUtilities.clickElement(this.startNowButton!);
+    return new PRSE_HaveRegisteredExemptionPage(this.page);
   }
 }

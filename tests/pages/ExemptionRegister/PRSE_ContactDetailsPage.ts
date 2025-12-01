@@ -18,9 +18,9 @@ export class PRSE_ContactDetailsPage {
   }
 
   /**
-   * Verify user is on the PRSExemptionRegister page
+   * Wait for the PRSExemptionRegister page to load
    */
-  async verifyOnPage(): Promise<void> {
+  async waitForPageToLoad(): Promise<void> {
     await this.page.waitForLoadState('domcontentloaded');
     await this.firstNameInput.waitFor();
     await this.lastNameInput.waitFor();

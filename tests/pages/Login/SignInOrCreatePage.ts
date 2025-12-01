@@ -12,7 +12,7 @@ export class SignInOrCreatePage {
     this.signInButton = page.getByRole('button', { name: 'Sign in' });
   }
 
-  async verifyOnPage(): Promise<void> {
+  async waitForPageToLoad(): Promise<void> {
     await this.signInButton.waitFor();
   }
 

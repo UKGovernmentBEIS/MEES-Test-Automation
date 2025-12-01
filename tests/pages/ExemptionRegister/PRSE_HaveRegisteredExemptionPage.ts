@@ -9,15 +9,14 @@ export class PRSE_HaveRegisteredExemptionPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.page.waitForLoadState('domcontentloaded');
     this.registeredBeforeNoButton = page.getByRole('radio', { name: 'No' });
     this.continueButton = page.getByRole('button', { name: 'Save and continue' });
   }
 
   /**
-   * Verify user is on the PRSE_HaveRegisteredExemption page
+   * Wait for the PRSE_HaveRegisteredExemption page to load
    */
-  async verifyOnPage(): Promise<void> {
+  async waitForPageToLoad(): Promise<void> {
     await this.page.waitForLoadState('domcontentloaded');
     await this.registeredBeforeNoButton.waitFor();
     await this.continueButton.waitFor();
