@@ -6,12 +6,7 @@ test.describe('PRSE Exemptions Registration Test', () => {
     const homePage = new HomePage(page);
     await homePage.navigate();
 
-    const signInOrCreatePage = await homePage.clickStartNow();
-    const loginEmailPage = await signInOrCreatePage.clickSignIn();
-
-    const loginPasswordPage = await loginEmailPage.enterEmailAndContinue('michal.swierkosz@triad.co.uk');
-    const haveRegisteredExempPage = await loginPasswordPage.enterPasswordAndContinue('M33SPassword!');
-
+    const haveRegisteredExempPage = await homePage.clickStartNow_AuthenticatedUser();
     await haveRegisteredExempPage.selectNotRegisteredBefore();
     const landlordOrAgentPage = await haveRegisteredExempPage.clickContinue();
 
