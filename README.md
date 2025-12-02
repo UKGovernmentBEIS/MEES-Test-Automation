@@ -11,9 +11,9 @@ This is a Proof of Concept (POC) project to prepare a Test Automation Framework 
 | Feature | Status |
 |---------|--------|
 | **CI Pipeline** | ✅ Done |
-| **Parallel Execution using Configurable User Accounts** | 🔄 In Progress |
-| - Encrypted passwords | 🔄 In Progress |
-| **Parameterised Base URL** | ⏳ Not Done |
+| **Parallel Execution using Configurable User Accounts** | ✅ Done |
+| - Encrypted passwords | ✅ Done |
+| **Parameterised Base URL** | 🔄 In Progress |
 | **API Testing to Verify DMS Data** | ⏳ Not Done |
 | **Accessibility Testing** | ⏳ Not Done |
 | **Documentation** | ⏳ Not Done |
@@ -91,24 +91,79 @@ test.describe('Your Test Suite', () => {
 
 ## Test Accounts Configuration
 
-Edit `tests/config/test-accounts.json` to add test accounts (one per worker):
+### Setting Up User Accounts with Encrypted Passwords
+
+The framework uses environment variables to securely store passwords, keeping them out of version control while working both locally and in GitHub Actions.
+
+#### Local Setup
+
+1. **Edit `tests/config/test-accounts.json`** - Use environment variable names instead of actual passwords:
 
 ```json
 {
   "accounts": [
     {
       "email": "user1@example.com",
-      "password": "Password1!",
+      "password": "TEST_ACCOUNT_1_PASSWORD",
       "description": "Worker 0"
     },
     {
       "email": "user2@example.com",
-      "password": "Password2!",
+      "password": "TEST_ACCOUNT_2_PASSWORD",
       "description": "Worker 1"
     }
   ]
 }
 ```
+
+2. **Create `.env` file in project root** with actual passwords:
+
+```env
+TEST_ACCOUNT_1_PASSWORD=YourActualPassword1!
+TEST_ACCOUNT_2_PASSWORD=YourActualPassword2!
+```
+
+⚠️ **Important:** The `.env` file is gitignored and will never be committed to the repository.
+
+3. **Verify `.env` is in `.gitignore`** (already configured):
+
+```gitignore
+# Environment variables (contains sensitive passwords)
+.env
+```
+
+#### GitHub Actions Setup
+
+1. Go to your repository on GitHub
+2. Navigate to **Settings** → **Secrets and variables** → **Actions**
+3. Click **New repository secret**
+4. Add each password as a separate secret:
+   - Name: `TEST_ACCOUNT_1_PASSWORD`
+   - Value: `YourActualPassword1!`
+   - Repeat for `TEST_ACCOUNT_2_PASSWORD`, etc.
+
+5. **Update your GitHub Actions workflow** to pass secrets as environment variables:
+
+```yaml
+env:
+  TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+  TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+```
+
+#### How It Works
+
+- The framework reads the password field from `test-accounts.json` (e.g., `"TEST_ACCOUNT_1_PASSWORD"`)
+- It looks up that name in environment variables using `process.env`
+- Locally: Variables are loaded from `.env` file via dotenv
+- GitHub Actions: Variables are injected from repository secrets
+- The actual password is resolved at runtime and never stored in code
+
+#### Adding More Accounts
+
+1. Register a new GOV.UK One Login account
+2. Add entry to `test-accounts.json` with a new env variable name (e.g., `TEST_ACCOUNT_3_PASSWORD`)
+3. Add the actual password to `.env` locally
+4. Add the secret to GitHub Actions
 
 **Note:** Register separate GOV.UK One Login accounts for each worker. The framework assigns accounts based on worker index. ├── pages/                    # Page Object Models
 │   │   ├── HomePage.ts

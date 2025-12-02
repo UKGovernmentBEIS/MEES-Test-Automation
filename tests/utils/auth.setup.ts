@@ -12,6 +12,9 @@ setup('authentication setup', async ({ page }, testInfo) => {
     const workerIndex = testInfo.parallelIndex;
     const account = accounts[workerIndex % accounts.length];
     
+    // Resolve password from environment variable if it looks like one
+    const password = process.env[account.password] || account.password;
+    
     // Save to worker-specific auth file
     const authFile = path.join(__dirname, `../../playwright/.auth/user-${workerIndex}.json`);
 
@@ -22,7 +25,7 @@ setup('authentication setup', async ({ page }, testInfo) => {
     const loginEmailPage = await signInOrCreatePage.clickSignIn();
 
     const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(account.email);
-    const haveRegisteredExempPage = await loginPasswordPage.enterPasswordAndContinue(account.password);
+    const haveRegisteredExempPage = await loginPasswordPage.enterPasswordAndContinue(password);
     await haveRegisteredExempPage.waitForPageToLoad();
 
     // Save storage state (cookies, localStorage, IndexedDB)

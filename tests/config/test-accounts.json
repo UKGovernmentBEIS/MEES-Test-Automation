@@ -3,7 +3,7 @@
   "accounts": [
     {
       "email": "michal.swierkosz@triad.co.uk",
-      "password": "M33SPassword!",
+      "password": "TEST_ACCOUNT_1_PASSWORD",
       "description": "Primary test account - Worker 0"
     }
   ]
