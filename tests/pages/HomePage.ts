@@ -16,7 +16,7 @@ export class HomePage {
    * Navigate to the PRSE Exemptions Register page
    */
   async navigate(): Promise<void> {
-    await this.page.goto('https://desnz-gm--prseqa.sandbox.my.site.com/PRSExemptionsRegister');
+    await this.page.goto('/');
     await this.waitForPageToLoad();
   }
 
