@@ -7,5 +7,4 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 /playwright/.auth/user.json
-/CopilotHelper/
-tests/config/test-accounts.json
+/CopilotHelper

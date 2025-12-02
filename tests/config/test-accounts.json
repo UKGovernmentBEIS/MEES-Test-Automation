@@ -1,0 +1,10 @@
+{
+  "_comment": "Add more accounts here for parallel execution. Each worker needs a separate GOV.UK One Login account.",
+  "accounts": [
+    {
+      "email": "michal.swierkosz@triad.co.uk",
+      "password": "M33SPassword!",
+      "description": "Primary test account - Worker 0"
+    }
+  ]
+}
