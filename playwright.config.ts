@@ -13,14 +13,14 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
-  /* Run tests in files in parallel */
-  fullyParallel: true,
+  /* Run tests in files in parallel. Set it to true when multiple test-accounts are used */
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Use 2 workers to test parallel execution with shared auth */
+  workers: 2,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [['html'], ['github']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -34,14 +34,18 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: 'setup', testMatch: /.*\.setup\.ts/ },
+    { 
+      name: 'setup', 
+      testMatch: /.*\/utils\/.*\.setup\.ts/,
+      // Run setup with same number of workers to create auth files for each
+      fullyParallel: false
+    },
 
     {
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'],
-        // Use saved authentication state
-        storageState: 'playwright/.auth/user.json', 
+        // Note: storageState is loaded dynamically in authFixtures based on worker index
       },
       dependencies: ['setup']
     },

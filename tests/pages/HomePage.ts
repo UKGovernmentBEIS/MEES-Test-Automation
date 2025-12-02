@@ -25,7 +25,7 @@ export class HomePage {
    */
   async waitForPageToLoad(): Promise<void> {
     await this.page.waitForLoadState('domcontentloaded');
-    await this.startNowButton?.waitFor();
+    await this.startNowButton.waitFor();
   }
 
   /**
@@ -41,6 +41,13 @@ export class HomePage {
    */
   async clickStartNow_AuthenticatedUser(): Promise<PRSE_HaveRegisteredExemptionPage> {
     await ElementUtilities.clickElement(this.startNowButton!);
-    return new PRSE_HaveRegisteredExemptionPage(this.page);
+    
+    // Wait for navigation to complete
+    await this.page.waitForLoadState('domcontentloaded');
+    
+    const haveRegisteredPage = new PRSE_HaveRegisteredExemptionPage(this.page);
+    await haveRegisteredPage.waitForPageToLoad();
+    
+    return haveRegisteredPage;
   }
 }
