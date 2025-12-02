@@ -137,18 +137,26 @@ TEST_ACCOUNT_2_PASSWORD=YourActualPassword2!
 1. Go to your repository on GitHub
 2. Navigate to **Settings** → **Secrets and variables** → **Actions**
 3. Click **New repository secret**
-4. Add each password as a separate secret:
-   - Name: `TEST_ACCOUNT_1_PASSWORD`
+4. Add each password as a separate secret using the **exact naming convention**:
+   - Name: `TEST_ACCOUNT_1_PASSWORD` (for first account)
    - Value: `YourActualPassword1!`
-   - Repeat for `TEST_ACCOUNT_2_PASSWORD`, etc.
+   - Name: `TEST_ACCOUNT_2_PASSWORD` (for second account)
+   - Value: `YourActualPassword2!`
+   - Continue with `TEST_ACCOUNT_3_PASSWORD`, `TEST_ACCOUNT_4_PASSWORD`, etc.
 
-5. **Update your GitHub Actions workflow** to pass secrets as environment variables:
+5. **Update `.github/workflows/playwright.yml`** to explicitly pass secrets as environment variables:
 
 ```yaml
-env:
-  TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-  TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+- name: Run Playwright tests
+  run: npx playwright test
+  env:
+    TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+    TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+    TEST_ACCOUNT_3_PASSWORD: ${{ secrets.TEST_ACCOUNT_3_PASSWORD }}
+    TEST_ACCOUNT_4_PASSWORD: ${{ secrets.TEST_ACCOUNT_4_PASSWORD }}
 ```
+
+⚠️ **Important:** Each password environment variable must be explicitly listed in the workflow file. If you add more than 4 accounts, add additional lines following the same pattern.
 
 #### How It Works
 
@@ -161,9 +169,26 @@ env:
 #### Adding More Accounts
 
 1. Register a new GOV.UK One Login account
-2. Add entry to `test-accounts.json` with a new env variable name (e.g., `TEST_ACCOUNT_3_PASSWORD`)
-3. Add the actual password to `.env` locally
-4. Add the secret to GitHub Actions
+2. Add entry to `test-accounts.json` following the naming convention:
+   ```json
+   {
+     "email": "user3@example.com",
+     "password": "TEST_ACCOUNT_3_PASSWORD",
+     "description": "Worker 2"
+   }
+   ```
+3. Add the actual password to `.env` locally:
+   ```env
+   TEST_ACCOUNT_3_PASSWORD=YourActualPassword3!
+   ```
+4. Add the secret to GitHub Actions (Settings → Secrets and variables → Actions)
+5. **Add the environment variable to `.github/workflows/playwright.yml`**:
+   ```yaml
+   env:
+     TEST_ACCOUNT_3_PASSWORD: ${{ secrets.TEST_ACCOUNT_3_PASSWORD }}
+   ```
+
+**Naming Convention:** Always use `TEST_ACCOUNT_N_PASSWORD` where N is the account number (1, 2, 3, etc.). This ensures consistency across local development and CI/CD.
 
 **Note:** Register separate GOV.UK One Login accounts for each worker. The framework assigns accounts based on worker index. ├── pages/                    # Page Object Models
 │   │   ├── HomePage.ts
