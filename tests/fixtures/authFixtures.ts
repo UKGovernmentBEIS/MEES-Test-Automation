@@ -48,7 +48,7 @@ export const test = base.extend<
       storageState: storageStatePath
     });
     
-    console.log(`Worker ${workerIndex} using auth file: user-${workerIndex}.json`);
+    console.log(`[Auth Fixture] Successfully loaded stored authentication state for Worker ${workerIndex} from: ${storageStatePath}`);
     
     // Provide this context to all tests in this worker
     await use(context);
