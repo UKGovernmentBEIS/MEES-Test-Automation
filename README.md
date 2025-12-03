@@ -39,9 +39,9 @@ Playwright's **stored authentication state** saves browser cookies, localStorage
 
 ### How We Use It
 
-1. **Setup Project** (`tests/auth.setup.ts`) - Authenticates and saves state per worker
+1. **Setup Project** (`tests/test/auth.setup.ts`) - Authenticates and saves state per worker
 2. **Test Execution** - Each worker loads its auth state into a shared context
-3. **Test Accounts** (`test-accounts.json`) - Multiple accounts enable parallel execution
+3. **Test Accounts** (`tests/config/test-accounts.json`) - Multiple accounts enable parallel execution
 4. **Test Isolation** - Each test gets a new page but reuses authenticated context
 
 ## Creating New Test Files

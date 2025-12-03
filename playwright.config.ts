@@ -37,7 +37,7 @@ export default defineConfig({
   projects: [
     { 
       name: 'setup', 
-      testMatch: /.*\/utils\/.*\.setup\.ts/,
+      testMatch: /.*\/test\/setup\/.*\.setup\.ts/,
       // Run setup with same number of workers to create auth files for each
       fullyParallel: false
     },
