@@ -20,10 +20,8 @@ jobs:
     - name: Run Playwright tests
       run: npx playwright test
       env:
+        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-        TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-        TEST_ACCOUNT_3_PASSWORD: ${{ secrets.TEST_ACCOUNT_3_PASSWORD }}
-        TEST_ACCOUNT_4_PASSWORD: ${{ secrets.TEST_ACCOUNT_4_PASSWORD }}
         BASE_URL: ${{ secrets.BASE_URL }}
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}

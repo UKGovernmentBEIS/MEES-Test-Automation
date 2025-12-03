@@ -103,12 +103,12 @@ The framework uses environment variables to securely store passwords, keeping th
 {
   "accounts": [
     {
-      "email": "user1@example.com",
+      "email": "TEST_ACCOUNT_1_EMAIL",
       "password": "TEST_ACCOUNT_1_PASSWORD",
       "description": "Worker 0"
     },
     {
-      "email": "user2@example.com",
+      "email": "TEST_ACCOUNT_2_EMAIL",
       "password": "TEST_ACCOUNT_2_PASSWORD",
       "description": "Worker 1"
     }
@@ -119,7 +119,9 @@ The framework uses environment variables to securely store passwords, keeping th
 2. **Create `.env` file in project root** with actual passwords:
 
 ```env
+TEST_ACCOUNT_1_EMAIL=test1@example.com
 TEST_ACCOUNT_1_PASSWORD=YourActualPassword1!
+TEST_ACCOUNT_2_EMAIL=test2@example.com
 TEST_ACCOUNT_2_PASSWORD=YourActualPassword2!
 ```
 
@@ -138,11 +140,11 @@ TEST_ACCOUNT_2_PASSWORD=YourActualPassword2!
 2. Navigate to **Settings** → **Secrets and variables** → **Actions**
 3. Click **New repository secret**
 4. Add each password as a separate secret using the **exact naming convention**:
-   - Name: `TEST_ACCOUNT_1_PASSWORD` (for first account)
+   - Name: `TEST_ACCOUNT_1_EMAIL` (for first account)
+   - Value: `test1@example.com`
+   - Name: `TEST_ACCOUNT_1_PASSWORD`
    - Value: `YourActualPassword1!`
-   - Name: `TEST_ACCOUNT_2_PASSWORD` (for second account)
-   - Value: `YourActualPassword2!`
-   - Continue with `TEST_ACCOUNT_3_PASSWORD`, `TEST_ACCOUNT_4_PASSWORD`, etc.
+   - Continue with `TEST_ACCOUNT_2_EMAIL`, `TEST_ACCOUNT_2_PASSWORD`, etc.
 
 5. **Update `.github/workflows/playwright.yml`** to explicitly pass secrets as environment variables:
 

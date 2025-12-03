@@ -1,4 +1,4 @@
-import { test as setup, expect } from '@playwright/test';
+import { test as setup } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import path from 'path';
 import fs from 'fs';
@@ -8,37 +8,46 @@ const accountsPath = path.join(__dirname, '../config/test-accounts.json');
 const accounts = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).accounts;
 
 setup('authentication setup', async ({ page }, testInfo) => {
-    // Use worker index to select different account per worker
     const workerIndex = testInfo.parallelIndex;
-    const account = accounts[workerIndex % accounts.length];
+    const account = selectAccount(workerIndex);
+    const { email, password } = resolveCredentials(account);
     
-    // Resolve password from environment variable
+    await performLogin(page, email, password);
+    await saveAuthState(page, workerIndex);
+});
+
+function selectAccount(workerIndex: number) {
+    return accounts[workerIndex % accounts.length];
+}
+
+function resolveCredentials(account: any): { email: string; password: string } {
+    const email = process.env[account.email];
     const password = process.env[account.password];
     
-    // Validate password was resolved
-    if (!password) {
+    if (!email || !password) {
         throw new Error(
-            `Password not resolved for ${account.email}. ` +
-            `Environment variable "${account.password}" is not set. ` +
-            `Make sure it exists in .env file (locally) or GitHub Secrets (CI).`
+            `Email or password not resolved for ${account.email} and/or ${account.password}. ` +
+            `Environment variable for "${account.email}" resolves to "${email}". ` +
+            `Environment variable for "${account.password}" resolves to "${password}". `
         );
     }
     
-    // Save to worker-specific auth file
-    const authFile = path.join(__dirname, `../../playwright/.auth/user-${workerIndex}.json`);
+    return { email, password };
+}
 
+async function performLogin(page: any, email: string, password: string) {
     const homePage = new HomePage(page);
     await homePage.navigate();
 
     const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
     const loginEmailPage = await signInOrCreatePage.clickSignIn();
 
-    const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(account.email);
+    const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
     const haveRegisteredExempPage = await loginPasswordPage.enterPasswordAndContinue(password);
     await haveRegisteredExempPage.waitForPageToLoad();
+}
 
-    // Save storage state (cookies, localStorage, IndexedDB)
+async function saveAuthState(page: any, workerIndex: number) {
+    const authFile = path.join(__dirname, `../../playwright/.auth/user-${workerIndex}.json`);
     await page.context().storageState({ path: authFile });
-    
-    console.log(`Worker ${workerIndex} authenticated as: ${account.email}`);
-});
+}
