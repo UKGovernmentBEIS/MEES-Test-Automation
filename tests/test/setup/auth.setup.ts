@@ -90,4 +90,5 @@ async function performLogin(page: any, email: string, password: string) {
 async function saveAuthState(page: any, workerIndex: number) {
     const authFile = path.join(__dirname, `../../../playwright/.auth/user-${workerIndex}.json`);
     await page.context().storageState({ path: authFile });
+    console.log(`Saved auth state to: ${authFile}`);
 }

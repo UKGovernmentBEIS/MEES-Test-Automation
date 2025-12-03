@@ -33,10 +33,19 @@ export const test = base.extend<
     const workerIndex = testInfo.parallelIndex;
     const storageStatePath = path.join(__dirname, `../../playwright/.auth/user-${workerIndex}.json`);
     
+    // Verify auth file exists
+    if (!fs.existsSync(storageStatePath)) {
+      throw new Error(
+        `Authentication state file not found at: ${storageStatePath}\n` +
+        `Worker ${workerIndex} cannot proceed without authentication state.\n` +
+        `Make sure the 'setup' project runs before this test.`
+      );
+    }
+    
     // Create a new browser context with loaded authentication state
     // This loads the saved cookies and storage from the worker-specific file
     const context = await browser.newContext({
-      storageState: fs.existsSync(storageStatePath) ? storageStatePath : undefined
+      storageState: storageStatePath
     });
     
     console.log(`Worker ${workerIndex} using auth file: user-${workerIndex}.json`);
