@@ -3,6 +3,52 @@ import fs from 'fs';
 import path from 'path';
 
 /**
+ * Gets the authentication storage state file path for a specific worker.
+ * @param workerIndex - The parallel index of the worker
+ * @returns The absolute path to the worker's auth state file
+ */
+function getAuthStoragePath(workerIndex: number): string {
+  return path.join(__dirname, `../../playwright/.auth/user-${workerIndex}.json`);
+}
+
+/**
+ * Validates that the authentication state file exists for the worker.
+ * @param storageStatePath - The path to the auth state file
+ * @param workerIndex - The parallel index of the worker
+ * @throws Error if the auth state file is not found
+ */
+function validateAuthStateExists(storageStatePath: string, workerIndex: number): void {
+  if (!fs.existsSync(storageStatePath)) {
+    throw new Error(
+      `Authentication state file not found at: ${storageStatePath}\n` +
+      `Worker ${workerIndex} cannot proceed without authentication state.\n` +
+      `Make sure the 'setup' project runs before this test.`
+    );
+  }
+}
+
+/**
+ * Creates a browser context with loaded authentication state.
+ * @param browser - The browser instance
+ * @param storageStatePath - The path to the auth state file
+ * @param workerIndex - The parallel index of the worker
+ * @returns A browser context with authentication loaded
+ */
+async function createAuthenticatedContext(
+  browser: any,
+  storageStatePath: string,
+  workerIndex: number
+): Promise<BrowserContext> {
+  const context = await browser.newContext({
+    storageState: storageStatePath
+  });
+  
+  console.log(`[Auth Fixture] Successfully loaded stored authentication state for Worker ${workerIndex} from: ${storageStatePath}`);
+  
+  return context;
+}
+
+/**
  * Custom Playwright test fixture that enables shared browser context across tests.
  * This allows stored authentication state to persist between tests without re-authenticating.
  * How it works:
@@ -29,31 +75,17 @@ export const test = base.extend<
    * - Closes only when all tests complete
    */
   workerContext: [async ({ browser }, use, testInfo) => {
-    // Get worker-specific auth file based on parallel index
     const workerIndex = testInfo.parallelIndex;
-    const storageStatePath = path.join(__dirname, `../../playwright/.auth/user-${workerIndex}.json`);
+    const storageStatePath = getAuthStoragePath(workerIndex);
     
-    // Verify auth file exists
-    if (!fs.existsSync(storageStatePath)) {
-      throw new Error(
-        `Authentication state file not found at: ${storageStatePath}\n` +
-        `Worker ${workerIndex} cannot proceed without authentication state.\n` +
-        `Make sure the 'setup' project runs before this test.`
-      );
-    }
+    validateAuthStateExists(storageStatePath, workerIndex);
     
-    // Create a new browser context with loaded authentication state
-    // This loads the saved cookies and storage from the worker-specific file
-    const context = await browser.newContext({
-      storageState: storageStatePath
-    });
+    const context = await createAuthenticatedContext(browser, storageStatePath, workerIndex);
     
-    console.log(`[Auth Fixture] Successfully loaded stored authentication state for Worker ${workerIndex} from: ${storageStatePath}`);
-    
-    // Provide this context to all tests in this worker
+    // Provide the authenticated context to the tests
     await use(context);
     
-    // Clean up: close the context only after all tests finish
+    // Clean up: close the context after all tests are done
     await context.close();
   }, { scope: 'worker' }],  // 'worker' scope = shared across all tests
   
