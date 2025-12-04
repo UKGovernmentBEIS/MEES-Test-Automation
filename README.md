@@ -95,14 +95,12 @@ test.describe('Your Test Suite', () => {
 
 The framework uses environment variables to securely store passwords, keeping them out of version control while working both locally and in GitHub Actions. For parallel execution, each worker requires its own GOV.UK One Login account with completed MFA setup.
 
-#### Prerequisites for Test Accounts
+#### Prerequisites
 
-⚠️ **Critical:** Each test account must:
+⚠️ Each test account must:
 1. Be a fully registered GOV.UK One Login account
 2. Have completed MFA setup (text message or authenticator app)
-3. Have logged into the application at least once to complete onboarding
-
-If an account hasn't completed the "Finish creating your GOV.UK One Login" setup, the authentication will fail with a clear error message.
+3. Have logged into the application at least once
 
 #### Local Setup
 
@@ -134,48 +132,39 @@ TEST_ACCOUNT_2_EMAIL=test2@example.com
 TEST_ACCOUNT_2_PASSWORD=YourActualPassword2!
 ```
 
-⚠️ **Important:** The `.env` file is gitignored and will never be committed to the repository.
-
-3. **Verify `.env` is in `.gitignore`** (already configured):
-
-```gitignore
-# Environment variables (contains sensitive passwords)
-.env
-```
+⚠️ **Important:** The `.env` file is gitignored and never committed to the repository.
 
 #### GitHub Actions Setup
 
-1. Go to your repository on GitHub
-2. Navigate to **Settings** → **Secrets and variables** → **Actions**
-3. Click **New repository secret**
-4. Add each password as a separate secret using the **exact naming convention**:
-   - Name: `TEST_ACCOUNT_1_EMAIL` (for first account)
-   - Value: `test1@example.com`
-   - Name: `TEST_ACCOUNT_1_PASSWORD`
-   - Value: `YourActualPassword1!`
-   - Continue with `TEST_ACCOUNT_2_EMAIL`, `TEST_ACCOUNT_2_PASSWORD`, etc.
+1. Navigate to **Settings** → **Secrets and variables** → **Actions**
+2. Add each credential as a repository secret:
+   - `TEST_ACCOUNT_1_EMAIL` = `test1@example.com`
+   - `TEST_ACCOUNT_1_PASSWORD` = `YourActualPassword1!`
+   - `TEST_ACCOUNT_2_EMAIL` = `test2@example.com`
+   - `TEST_ACCOUNT_2_PASSWORD` = `YourActualPassword2!`
+   - Continue for additional accounts...
 
-5. **Update `.github/workflows/playwright.yml`** to explicitly pass secrets as environment variables:
+5. **Update `.github/workflows/playwright.yml`** to pass secrets as environment variables:
 
 ```yaml
 - name: Run Playwright tests
   run: npx playwright test
   env:
+    TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
     TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+    TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
     TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-    TEST_ACCOUNT_3_PASSWORD: ${{ secrets.TEST_ACCOUNT_3_PASSWORD }}
-    TEST_ACCOUNT_4_PASSWORD: ${{ secrets.TEST_ACCOUNT_4_PASSWORD }}
+    BASE_URL: ${{ secrets.BASE_URL }}
 ```
 
-⚠️ **Important:** Each password environment variable must be explicitly listed in the workflow file. If you add more than 4 accounts, add additional lines following the same pattern.
+⚠️ **Important:** Each environment variable (email and password) must be explicitly listed in the workflow file.
 
 #### How It Works
 
-- The framework reads the password field from `test-accounts.json` (e.g., `"TEST_ACCOUNT_1_PASSWORD"`)
-- It looks up that name in environment variables using `process.env`
+- The framework reads variable names from `test-accounts.json` (e.g., `TEST_ACCOUNT_1_EMAIL`)
 - Locally: Variables are loaded from `.env` file via dotenv
 - GitHub Actions: Variables are injected from repository secrets
-- The actual password is resolved at runtime and never stored in code
+- Actual credentials are resolved at runtime and never stored in code
 
 #### Adding More Accounts for Increased Parallelization
 
@@ -208,22 +197,20 @@ To increase parallelization, add more test accounts. Each worker needs its own a
      TEST_ACCOUNT_3_PASSWORD: ${{ secrets.TEST_ACCOUNT_3_PASSWORD }}
    ```
 
-6. **Update `playwright.config.ts`** to increase workers:
+6. **Update `playwright.config.ts`** to match the number of accounts:
    ```typescript
-   workers: 3,  // Match the number of test accounts
+   workers: 3,  // Match number of test accounts
    ```
-
-7. **Update setup project workers** in `playwright.config.ts` (optional - can match account count):
    ```typescript
    projects: [
      { 
        name: 'setup',
-       workers: 3  // Can match number of test accounts for faster setup
+       workers: 3  // Match for faster parallel setup
      }
    ]
    ```
 
-**Naming Convention:** Always use `TEST_ACCOUNT_N_EMAIL` and `TEST_ACCOUNT_N_PASSWORD` where N is the account number (1, 2, 3, etc.). This ensures consistency across local development and CI/CD.
+**Naming Convention:** Use `TEST_ACCOUNT_N_EMAIL` and `TEST_ACCOUNT_N_PASSWORD` where N is the account number (1, 2, 3...).
 
 #### How Authentication Files Are Created
 
@@ -243,13 +230,8 @@ When you run tests, the setup project creates separate authentication files for 
 [Auth Setup] Saved authentication state to: playwright/.auth/user-0.json
 [setup] › authentication setup - user 1
 [Auth Setup] Saved authentication state to: playwright/.auth/user-1.json
-``` ├── pages/                    # Page Object Models
-│   │   ├── HomePage.ts
-│   │   └── ExemptionRegister/
-│   ├── test/
-│   │   └── *.spec.ts            # Test files
-│   └── utils/
-│       └── ElementUtilities.ts
+```
+
 ## Configuration
 
 **Current Settings:**
