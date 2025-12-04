@@ -3,9 +3,9 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import { PRSE_ContactDetailsPage } from './PRSE_ContactDetailsPage';
 
 export class PRSE_IndividualOrOrganisationPage {
-    readonly page: Page;
-    readonly individualButton: Locator;
-    readonly continueButton: Locator;
+    private readonly page: Page;
+    private readonly individualButton: Locator;
+    private readonly continueButton: Locator;
 
     constructor(page: Page) {
     this.page = page;
@@ -17,10 +17,15 @@ export class PRSE_IndividualOrOrganisationPage {
     /**
      * Wait for the PRSE_IndividualOrOrganisation page to load
      */
-    async waitForPageToLoad(): Promise<void> {
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.individualButton.waitFor();
-    await this.continueButton.waitFor();
+    private async waitForPageToLoad(): Promise<void> {
+        await ElementUtilities.waitForPageToLoad(
+            this.page,
+            'Individual Or Organisation Page',
+            {
+                individualButton: this.individualButton,
+                continueButton: this.continueButton
+            }
+        );
     }
 
     /**

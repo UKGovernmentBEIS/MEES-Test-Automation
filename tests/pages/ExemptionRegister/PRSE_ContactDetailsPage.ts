@@ -2,11 +2,11 @@ import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 
 export class PRSE_ContactDetailsPage {
-  readonly page: Page;
-  readonly firstNameInput: Locator;
-  readonly lastNameInput: Locator;
-  readonly continueButton: Locator;
-  readonly validationError: Locator;
+  private readonly page: Page;
+  private readonly firstNameInput: Locator;
+  private readonly lastNameInput: Locator;
+  private readonly continueButton: Locator;
+  private readonly validationError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -20,11 +20,16 @@ export class PRSE_ContactDetailsPage {
   /**
    * Wait for the PRSExemptionRegister page to load
    */
-  async waitForPageToLoad(): Promise<void> {
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.firstNameInput.waitFor();
-    await this.lastNameInput.waitFor();
-    await this.continueButton.waitFor();  
+  private async waitForPageToLoad(): Promise<void> {
+    await ElementUtilities.waitForPageToLoad(
+      this.page,
+      'Contact Details Page',
+      {
+        firstNameInput: this.firstNameInput,
+        lastNameInput: this.lastNameInput,
+        continueButton: this.continueButton
+      }
+    );
   }
 
   /**

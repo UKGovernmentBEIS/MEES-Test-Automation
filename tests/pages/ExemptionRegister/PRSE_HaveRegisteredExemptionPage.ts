@@ -3,9 +3,9 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import { PRSE_LandlordOrAgentPage } from './PRSE_LandlordOrAgentPage.ts';
 
 export class PRSE_HaveRegisteredExemptionPage {
-  readonly page: Page;
-  readonly registeredBeforeNoButton: Locator;
-  readonly continueButton: Locator;
+  private readonly page: Page;
+  private readonly registeredBeforeNoButton: Locator;
+  private readonly continueButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -16,10 +16,15 @@ export class PRSE_HaveRegisteredExemptionPage {
   /**
    * Wait for the PRSE_HaveRegisteredExemption page to load
    */
-  async waitForPageToLoad(): Promise<void> {
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.registeredBeforeNoButton.waitFor();
-    await this.continueButton.waitFor();
+  private async waitForPageToLoad(): Promise<void> {
+    await ElementUtilities.waitForPageToLoad(
+      this.page,
+      'Have Registered Exemption Page',
+      {
+        registeredBeforeNoButton: this.registeredBeforeNoButton,
+        continueButton: this.continueButton
+      }
+    );
   }
 
   /**

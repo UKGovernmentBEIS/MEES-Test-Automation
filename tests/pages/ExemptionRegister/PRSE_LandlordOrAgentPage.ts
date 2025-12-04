@@ -3,9 +3,9 @@ import { ElementUtilities } from '../../utils/ElementUtilities.ts';
 import { PRSE_IndividualOrOrganisationPage } from './PRSE_IndividualOrOrganisationPage.ts';
 
 export class PRSE_LandlordOrAgentPage {
-  readonly page: Page;
-  readonly landlordButton: Locator;
-  readonly continueButton: Locator;
+  private readonly page: Page;
+  private readonly landlordButton: Locator;
+  private readonly continueButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,10 +17,15 @@ export class PRSE_LandlordOrAgentPage {
   /**
    * Wait for the PRSE_LandlordOrAgent page to load
    */
-  async waitForPageToLoad(): Promise<void> {
-  await this.page.waitForLoadState('domcontentloaded');
-  await this.landlordButton.waitFor();
-  await this.continueButton.waitFor();
+  private async waitForPageToLoad(): Promise<void> {
+    await ElementUtilities.waitForPageToLoad(
+      this.page,
+      'Landlord Or Agent Page',
+      {
+        landlordButton: this.landlordButton,
+        continueButton: this.continueButton
+      }
+    );
   }
 
   /**

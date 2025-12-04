@@ -4,8 +4,8 @@ import { SignInOrCreatePage } from './Login/SignInOrCreatePage';
 import { PRSE_HaveRegisteredExemptionPage } from './ExemptionRegister/PRSE_HaveRegisteredExemptionPage';
 
 export class HomePage {
-  readonly page: Page;
-  readonly startNowButton: Locator;
+  private readonly page: Page;
+  private readonly startNowButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -23,9 +23,12 @@ export class HomePage {
   /**   
    * Wait for the PRSE Home page to load
    */
-  async waitForPageToLoad(): Promise<void> {
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.startNowButton.waitFor();
+  private async waitForPageToLoad(): Promise<void> {
+    await ElementUtilities.waitForPageToLoad(
+      this.page,
+      'Home Page',
+      { startNowButton: this.startNowButton }
+    );
   }
 
   /**
@@ -45,9 +48,6 @@ export class HomePage {
     // Wait for navigation to complete
     await this.page.waitForLoadState('domcontentloaded');
     
-    const haveRegisteredPage = new PRSE_HaveRegisteredExemptionPage(this.page);
-    await haveRegisteredPage.waitForPageToLoad();
-    
-    return haveRegisteredPage;
+    return new PRSE_HaveRegisteredExemptionPage(this.page);
   }
 }

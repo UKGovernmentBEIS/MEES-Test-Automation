@@ -3,8 +3,8 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import { PRSE_LoginEmailPage } from './LoginEmailPage';
 
 export class SignInOrCreatePage {
-  readonly page: Page;
-  readonly signInButton: Locator;
+  private readonly page: Page;
+  private readonly signInButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -12,8 +12,12 @@ export class SignInOrCreatePage {
     this.signInButton = page.getByRole('button', { name: 'Sign in' });
   }
 
-  async waitForPageToLoad(): Promise<void> {
-    await this.signInButton.waitFor();
+  private async waitForPageToLoad(): Promise<void> {
+    await ElementUtilities.waitForPageToLoad(
+      this.page,
+      'Sign In Or Create Page',
+      { signInButton: this.signInButton }
+    );
   }
 
   async clickSignIn(): Promise<PRSE_LoginEmailPage> {

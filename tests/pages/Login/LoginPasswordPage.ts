@@ -3,9 +3,9 @@ import { ElementUtilities } from '../../utils/ElementUtilities.ts';
 import { PRSE_HaveRegisteredExemptionPage } from '../ExemptionRegister/PRSE_HaveRegisteredExemptionPage.ts';
 
 export class PRSE_LoginPasswordPage {
-  readonly page: Page;
-  readonly passwordInput: Locator;
-  readonly continueButton: Locator;
+  private readonly page: Page;
+  private readonly passwordInput: Locator;
+  private readonly continueButton: Locator;
 
   constructor(page: Page) {
     this.page = page;

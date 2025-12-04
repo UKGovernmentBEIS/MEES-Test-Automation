@@ -45,4 +45,41 @@ export class ElementUtilities {
   static async waitForElement(locator: Locator, timeout?: number): Promise<void> {
     await locator.waitFor({ state: 'visible', timeout });
   }
+
+  /**
+   * Waits for a page to load by checking the page load state and waiting for key locators
+   * Provides informative error messages if the page fails to load
+   * @param page The Playwright page object
+   * @param pageName The name of the page (for error messages)
+   * @param locators An object containing locator names and their Locator objects to wait for
+   * @param timeout Optional timeout in milliseconds (defaults to Playwright's global config)
+   * @throws Error with detailed information about which locators failed to load
+   */
+  static async waitForPageToLoad(
+    page: Page,
+    pageName: string,
+    locators: Record<string, Locator>,
+    timeout?: number
+  ): Promise<void> {
+    // First wait for DOM to be ready
+    await page.waitForLoadState('domcontentloaded');
+
+    // Then wait for all key locators
+    const failedLocators: string[] = [];
+    
+    for (const [locatorName, locator] of Object.entries(locators)) {
+      try {
+        await locator.waitFor({ state: 'visible', timeout });
+      } catch (error) {
+        failedLocators.push(locatorName);
+      }
+    }
+
+    // If any locators failed, throw an informative error
+    if (failedLocators.length > 0) {
+      throw new Error(
+        `Page '${pageName}' did not load correctly. The following elements failed to appear: ${failedLocators.join(', ')}`
+      );
+    }
+  }
 }

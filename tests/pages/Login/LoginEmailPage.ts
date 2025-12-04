@@ -3,9 +3,9 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import { PRSE_LoginPasswordPage } from './LoginPasswordPage';
 
 export class PRSE_LoginEmailPage {
-  readonly page: Page;
-  readonly emailInput: Locator;
-  readonly continueButton: Locator;
+  private readonly page: Page;
+  private readonly emailInput: Locator;
+  private readonly continueButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
