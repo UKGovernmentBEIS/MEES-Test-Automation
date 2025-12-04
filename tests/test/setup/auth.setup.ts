@@ -18,25 +18,16 @@ const accounts = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).accounts;
  * @param page - Playwright page object for browser interaction
  * @param testInfo - Test metadata including parallelIndex for worker identification
  */
-setup('authentication setup', async ({ page }, testInfo) => {
-    const workerIndex = testInfo.parallelIndex;
-    const account = selectAccount(workerIndex);
-    const { email, password } = resolveCredentials(account);
-    
-    await performLogin(page, email, password);
-    await saveAuthState(page, workerIndex);
-});
 
-/**
- * Selects a test account from the accounts array based on the worker index.
- * This ensures each parallel worker gets a unique account to avoid session conflicts.
- * 
- * @param workerIndex - Zero-based index of the parallel test worker
- * @returns Account object containing email and password environment variable names
- */
-function selectAccount(workerIndex: number) {
-    return accounts[workerIndex % accounts.length];
-}
+// Create a separate test for each account to ensure parallel execution creates all auth files
+accounts.forEach((account, index) => {
+    setup(`authentication setup - user ${index}`, async ({ page }, testInfo) => {
+        const { email, password } = resolveCredentials(account);
+        
+        await performLogin(page, email, password);
+        await saveAuthState(page, index);
+    });
+});
 
 /**
  * Resolves actual credentials from environment variables using the account configuration.

@@ -5,6 +5,11 @@
       "email": "TEST_ACCOUNT_1_EMAIL",
       "password": "TEST_ACCOUNT_1_PASSWORD",
       "description": "Primary test account - Worker 0"
+    },
+    {
+      "email": "TEST_ACCOUNT_2_EMAIL",
+      "password": "TEST_ACCOUNT_2_PASSWORD",
+      "description": "Secondary test account - Worker 1"
     }
   ]
 }

@@ -15,12 +15,13 @@ dotenv.config();
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel. Set it to true when multiple test-accounts are used */
-  fullyParallel: false,
+  fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Use 2 workers to test parallel execution with shared auth */
+  /* Set workers to match the number of fully configured test accounts.
+     Each worker needs a separate GOV.UK One Login account with completed MFA setup.*/
   workers: 2,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [['html'], ['github']],
@@ -38,8 +39,8 @@ export default defineConfig({
     { 
       name: 'setup', 
       testMatch: /.*\/test\/setup\/.*\.setup\.ts/,
-      // Run setup with same number of workers to create auth files for each
-      fullyParallel: false
+      fullyParallel: true,
+      workers: 2
     },
 
     {
