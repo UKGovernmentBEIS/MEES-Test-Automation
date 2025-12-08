@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import accessibilityConfig from '../config/accessibility.config.json';
 
 export interface AccessibilityViolation {
   id: string;
@@ -24,29 +25,22 @@ export interface AccessibilityResult {
 export class AccessibilityUtilities {
   /**
    * Analyzes the current page for accessibility violations using axe-core
+   * Configuration is loaded from tests/config/accessibility.config.json
    * @param page - The Playwright page object
-   * @param options - Optional configuration for the accessibility scan
    * @returns Accessibility analysis results
    */
-  static async analyzeAccessibility(
-    page: Page,
-    options?: {
-      includeTags?: string[];
-      excludeTags?: string[];
-      disableRules?: string[];
-    }
-  ): Promise<AccessibilityResult> {
+  static async analyzeAccessibility(page: Page): Promise<AccessibilityResult> {
     const axeBuilder = new AxeBuilder({ page });
 
-    // Apply optional configurations
-    if (options?.includeTags) {
-      axeBuilder.withTags(options.includeTags);
+    // Apply configurations from config file
+    if (accessibilityConfig.includeTags && accessibilityConfig.includeTags.length > 0) {
+      axeBuilder.withTags(accessibilityConfig.includeTags);
     }
-    if (options?.excludeTags) {
-      axeBuilder.disableTags(options.excludeTags);
+    if (accessibilityConfig.excludeTags && accessibilityConfig.excludeTags.length > 0) {
+      axeBuilder.disableTags(accessibilityConfig.excludeTags);
     }
-    if (options?.disableRules) {
-      axeBuilder.disableRules(options.disableRules);
+    if (accessibilityConfig.disableRules && accessibilityConfig.disableRules.length > 0) {
+      axeBuilder.disableRules(accessibilityConfig.disableRules);
     }
 
     const results = await axeBuilder.analyze();

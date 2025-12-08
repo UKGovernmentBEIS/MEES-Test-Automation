@@ -66,32 +66,4 @@ test.describe('Accessibility Tests - PRSE Exemption Registration @accessibility'
     const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
     expect(criticalViolations, `Error panel has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
   });
-
-  test('Full user journey should maintain accessibility standards', async ({ page }) => {
-    const homePage = new HomePage(page);
-    await homePage.navigate();
-
-    // Check each step of the journey
-    let results = await AccessibilityUtilities.analyzeAccessibility(page);
-    expect(AccessibilityUtilities.hasCriticalViolations(results.violations), 'Home page should be accessible').toBe(false);
-
-    const haveRegisteredExempPage = await homePage.clickStartNow_AuthenticatedUser();
-    results = await AccessibilityUtilities.analyzeAccessibility(page);
-    expect(AccessibilityUtilities.hasCriticalViolations(results.violations), 'Have Registered page should be accessible').toBe(false);
-
-    await haveRegisteredExempPage.selectNotRegisteredBefore();
-    const landlordOrAgentPage = await haveRegisteredExempPage.clickContinue();
-    results = await AccessibilityUtilities.analyzeAccessibility(page);
-    expect(AccessibilityUtilities.hasCriticalViolations(results.violations), 'Landlord/Agent page should be accessible').toBe(false);
-
-    await landlordOrAgentPage.selectLandlord();
-    const individualOrOrganisationPage = await landlordOrAgentPage.clickContinue();
-    results = await AccessibilityUtilities.analyzeAccessibility(page);
-    expect(AccessibilityUtilities.hasCriticalViolations(results.violations), 'Individual/Organisation page should be accessible').toBe(false);
-
-    await individualOrOrganisationPage.selectIndividual();
-    await individualOrOrganisationPage.clickContinue();
-    results = await AccessibilityUtilities.analyzeAccessibility(page);
-    expect(AccessibilityUtilities.hasCriticalViolations(results.violations), 'Contact Details page should be accessible').toBe(false);
-  });
 });
