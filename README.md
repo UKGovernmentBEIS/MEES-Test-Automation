@@ -130,14 +130,14 @@ The framework includes accessibility testing capabilities to ensure WCAG 2.1 AA 
 
 For detailed information about which WCAG 2.1 AA success criteria can be automated, require hybrid testing, or need manual verification, see:
 
-📄 **[WCAG 2.1 AA Coverage Documentation](Documentation/wcag_2_1_aa_coverage.md)**
+📄 **[Accessibility Testing Documentation](Documentation/Accessibility.md)**
 
 This document categorizes all WCAG 2.1 Level A and AA success criteria by:
 - ✅ Fully automatable with axe-core
 - ⚠️ Hybrid (automation + manual/scripted testing)
 - 👀 Manual testing only
 
-### Running Tests
+## Running Tests
 
 ```bash
 # Run all tests (setup + actual tests)
