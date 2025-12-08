@@ -39,6 +39,17 @@ export class PRSE_HaveRegisteredExemptionPage {
    */
   async clickContinue(): Promise<PRSE_LandlordOrAgentPage> {
     await ElementUtilities.clickElement(this.continueButton);
-    return new PRSE_LandlordOrAgentPage(this.page);
+    
+    const nextPage = new PRSE_LandlordOrAgentPage(this.page);
+    await ElementUtilities.waitForPageToLoad(
+      this.page,
+      'Landlord Or Agent Page',
+      {
+        landlordButton: nextPage['landlordButton'],
+        continueButton: nextPage['continueButton']
+      }
+    );
+    
+    return nextPage;
   }
 }

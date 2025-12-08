@@ -43,8 +43,32 @@ export default defineConfig({
       workers: 2
     },
 
+    // Functional tests - user journeys, data validation, etc.
+    {
+      name: 'functional',
+      testDir: './tests/test/functional',
+      use: { 
+        ...devices['Desktop Chrome'],
+        // Note: storageState is loaded dynamically in authFixtures based on worker index
+      },
+      dependencies: ['setup']
+    },
+
+    // Non-functional tests - accessibility, performance, etc.
+    {
+      name: 'accessibility',
+      testDir: './tests/test/non-functional/accessibility',
+      use: { 
+        ...devices['Desktop Chrome'],
+        // Note: storageState is loaded dynamically in authFixtures based on worker index
+      },
+      dependencies: ['setup']
+    },
+
+    // Default chromium project for backward compatibility
     {
       name: 'chromium',
+      testDir: './tests/test',
       use: { 
         ...devices['Desktop Chrome'],
         // Note: storageState is loaded dynamically in authFixtures based on worker index

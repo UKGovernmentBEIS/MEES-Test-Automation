@@ -45,9 +45,16 @@ export class HomePage {
   async clickStartNow_AuthenticatedUser(): Promise<PRSE_HaveRegisteredExemptionPage> {
     await ElementUtilities.clickElement(this.startNowButton!);
     
-    // Wait for navigation to complete
-    await this.page.waitForLoadState('domcontentloaded');
+    const nextPage = new PRSE_HaveRegisteredExemptionPage(this.page);
+    await ElementUtilities.waitForPageToLoad(
+      this.page,
+      'Have Registered Exemption Page',
+      {
+        registeredBeforeNoButton: nextPage['registeredBeforeNoButton'],
+        continueButton: nextPage['continueButton']
+      }
+    );
     
-    return new PRSE_HaveRegisteredExemptionPage(this.page);
+    return nextPage;
   }
 }

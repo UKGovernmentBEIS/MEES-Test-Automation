@@ -9,7 +9,6 @@ export class PRSE_LandlordOrAgentPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.page.waitForLoadState('domcontentloaded');
     this.landlordButton = page.getByRole('radio', { name: 'Landlord' });
     this.continueButton = page.getByRole('button', { name: 'Save and continue' });
   }
@@ -41,6 +40,17 @@ export class PRSE_LandlordOrAgentPage {
    */
   async clickContinue(): Promise<PRSE_IndividualOrOrganisationPage> {
     await ElementUtilities.clickElement(this.continueButton);
-    return new PRSE_IndividualOrOrganisationPage(this.page);
+    
+    const nextPage = new PRSE_IndividualOrOrganisationPage(this.page);
+    await ElementUtilities.waitForPageToLoad(
+      this.page,
+      'Individual Or Organisation Page',
+      {
+        individualButton: nextPage['individualButton'],
+        continueButton: nextPage['continueButton']
+      }
+    );
+    
+    return nextPage;
   }
 }

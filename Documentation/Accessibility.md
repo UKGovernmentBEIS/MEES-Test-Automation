@@ -1,6 +1,14 @@
-# WCAG 2.1 AA Accessibility Coverage
+# Accessibility Testing Guide
 
-## ✅ Fully Automatable with axe-core
+This guide explains how to write automated accessibility tests using the `AccessibilityUtilities` class.
+
+## Overview
+
+The framework uses **axe-core** integrated with Playwright to automatically detect accessibility violations against WCAG 2.1 AA standards.
+
+## WCAG 2.1 AA Coverage
+
+### ✅ Fully Automatable with axe-core
 
 | **SC** | **Description** | **axe-core Coverage** |
 |--------|-----------------|------------------------|
@@ -18,7 +26,7 @@
 | 4.1.2 | Name, Role, Value (ARIA validity) | Yes |
 | 4.1.3 | Status Messages (aria-live regions) | Partial |
 
-## ⚠ Hybrid (Automation + Manual/Scripted)
+### ⚠️ Hybrid (Automation + Manual/Scripted)
 
 | **SC** | **Description** | **Why Hybrid?** |
 |--------|-----------------|-----------------|
@@ -31,7 +39,7 @@
 | 1.4.12 | Text Spacing | Requires manual CSS inspection |
 | 1.4.13 | Content on Hover/Focus | Axe flags some issues; manual check for dismissibility and persistence |
 
-## 👀 Manual Only
+### 👀 Manual Only
 
 | **SC** | **Description** |
 |--------|-----------------|
@@ -44,3 +52,201 @@
 | 3.2.x | Predictable (on focus/input behavior consistency) |
 | 3.3.4 | Error Prevention (Legal, Financial, Data) |
 | Screen Reader Compatibility | JAWS/NVDA tests for announcement order, verbosity, dynamic updates |
+
+## Quick Start
+
+### 1. Import Required Modules
+
+```typescript
+import { test, expect } from '../../../fixtures/authFixtures';
+import { AccessibilityUtilities } from '../../../utils/AccessibilityUtilities';
+import { HomePage } from '../../../pages/HomePage';
+```
+
+### 2. Basic Accessibility Test
+
+```typescript
+test('Page should have no critical accessibility violations', async ({ page }) => {
+  const homePage = new HomePage(page);
+  await homePage.navigate();
+
+  // Analyze accessibility
+  const results = await AccessibilityUtilities.analyzeAccessibility(page);
+
+  // Assert no critical violations
+  const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
+  expect(criticalViolations, `Page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+});
+```
+
+## Available Methods
+
+### `analyzeAccessibility(page, options?)`
+
+Analyzes the current page for accessibility violations using axe-core.
+
+**Parameters:**
+- `page: Page` - The Playwright page object
+- `options?` - Optional configuration:
+  - `includeTags?: string[]` - Only run rules with these tags (e.g., `['wcag2a', 'wcag2aa']`)
+  - `excludeTags?: string[]` - Exclude rules with these tags
+  - `disableRules?: string[]` - Disable specific rules by ID
+
+**Returns:** `Promise<AccessibilityResult>`
+- `violations: AccessibilityViolation[]` - Array of violations found
+- `passes: number` - Number of passed checks
+- `incomplete: number` - Number of incomplete checks
+- `violationCount: number` - Total violations
+
+**Example:**
+```typescript
+// Basic usage
+const results = await AccessibilityUtilities.analyzeAccessibility(page);
+
+// With options
+const results = await AccessibilityUtilities.analyzeAccessibility(page, {
+  includeTags: ['wcag2aa'],
+  disableRules: ['color-contrast'] // Disable specific rule if needed
+});
+```
+
+### `hasCriticalViolations(violations)`
+
+Checks if there are any critical or serious accessibility violations.
+
+**Parameters:**
+- `violations: AccessibilityViolation[]` - Array of violations
+
+**Returns:** `boolean` - True if critical or serious violations exist
+
+**Example:**
+```typescript
+const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
+if (criticalViolations) {
+  console.log('Critical issues found!');
+}
+```
+
+### `formatViolations(violations)`
+
+Formats accessibility violations into a readable string for test reports.
+
+**Parameters:**
+- `violations: AccessibilityViolation[]` - Array of violations
+
+**Returns:** `string` - Formatted violations with details
+
+**Example:**
+```typescript
+const formatted = AccessibilityUtilities.formatViolations(results.violations);
+console.log(formatted);
+// Output:
+// 1. color-contrast (serious)
+//    Description: Elements must have sufficient color contrast
+//    Help: Ensure text has sufficient contrast
+//    Help URL: https://...
+//    Affected elements (2):
+//     Target: #submit-button
+//     HTML: <button id="submit-button">Submit</button>
+```
+
+### `filterViolationsByImpact(violations, impacts)`
+
+Filters violations by impact level.
+
+**Parameters:**
+- `violations: AccessibilityViolation[]` - Array of violations
+- `impacts: string[]` - Impact levels to filter by: `'critical'`, `'serious'`, `'moderate'`, `'minor'`
+
+**Returns:** `AccessibilityViolation[]` - Filtered violations
+
+**Example:**
+```typescript
+// Get only critical violations
+const critical = AccessibilityUtilities.filterViolationsByImpact(results.violations, ['critical']);
+
+// Get critical and serious violations
+const highPriority = AccessibilityUtilities.filterViolationsByImpact(results.violations, ['critical', 'serious']);
+```
+
+## Common Test Patterns
+
+### Testing Multiple Pages in a Journey
+
+```typescript
+test('Full user journey should maintain accessibility standards', async ({ page }) => {
+  const homePage = new HomePage(page);
+  await homePage.navigate();
+
+  // Check home page
+  let results = await AccessibilityUtilities.analyzeAccessibility(page);
+  expect(AccessibilityUtilities.hasCriticalViolations(results.violations), 
+    'Home page should be accessible').toBe(false);
+
+  // Navigate and check next page
+  const nextPage = await homePage.clickStartNow();
+  results = await AccessibilityUtilities.analyzeAccessibility(page);
+  expect(AccessibilityUtilities.hasCriticalViolations(results.violations), 
+    'Next page should be accessible').toBe(false);
+});
+```
+
+### Testing Error States
+
+```typescript
+test('Validation error panel should be accessible', async ({ page }) => {
+  const contactPage = new ContactDetailsPage(page);
+  await contactPage.navigate();
+
+  // Trigger validation errors
+  await contactPage.clickContinue();
+  
+  // Analyze accessibility with error panel displayed
+  const results = await AccessibilityUtilities.analyzeAccessibility(page);
+  
+  const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
+  expect(criticalViolations, 
+    `Error panel has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`
+  ).toBe(false);
+});
+```
+
+### Testing Specific WCAG Tags
+
+```typescript
+test('Page should meet WCAG 2.1 AA color contrast standards', async ({ page }) => {
+  await page.goto('/');
+
+  const results = await AccessibilityUtilities.analyzeAccessibility(page, {
+    includeTags: ['wcag143'] // WCAG 1.4.3 Contrast (Minimum)
+  });
+
+  expect(results.violationCount, 
+    `Color contrast violations found:\n${AccessibilityUtilities.formatViolations(results.violations)}`
+  ).toBe(0);
+});
+```
+
+## Running Accessibility Tests
+
+```bash
+# Run all accessibility tests
+npx playwright test --project=accessibility
+
+# Run specific accessibility test
+npx playwright test --grep "should be accessible"
+
+# Run with tag
+npx playwright test --grep @accessibility
+```
+
+## Best Practices
+
+1. **Test at key points** - Check accessibility after navigation, interactions, and state changes
+2. **Include error states** - Verify error messages and validation are accessible
+3. **Test dynamic content** - Check modals, tooltips, and dynamically loaded content
+4. **Use descriptive assertions** - Include formatted violations in error messages for easy debugging
+5. **Focus on critical issues** - Use `hasCriticalViolations()` to fail on serious problems
+6. **Complement with manual testing** - Automated tests don't catch everything (see WCAG coverage in AccessibilityUtilities.ts)
+
+

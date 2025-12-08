@@ -1,5 +1,5 @@
-import { test, expect } from '../fixtures/authFixtures';
-import { HomePage } from '../pages/HomePage';
+import { test, expect } from '../../fixtures/authFixtures';
+import { HomePage } from '../../pages/HomePage';
 
 test.describe('PRSE Exemptions Registration Test', () => {
   test('Validation error on incomplete contact details 01', async ({ page }) => {

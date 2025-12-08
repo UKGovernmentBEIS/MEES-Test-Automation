@@ -9,7 +9,6 @@ export class PRSE_IndividualOrOrganisationPage {
 
     constructor(page: Page) {
     this.page = page;
-    this.page.waitForLoadState('domcontentloaded');
     this.individualButton = page.getByRole('radio', { name: 'Individual' });
     this.continueButton = page.getByRole('button', { name: 'Save and continue' });
     }
@@ -41,6 +40,18 @@ export class PRSE_IndividualOrOrganisationPage {
      */
     async clickContinue(): Promise<PRSE_ContactDetailsPage> {
         await ElementUtilities.clickElement(this.continueButton);
-        return new PRSE_ContactDetailsPage(this.page);
+        
+        const nextPage = new PRSE_ContactDetailsPage(this.page);
+        await ElementUtilities.waitForPageToLoad(
+            this.page,
+            'Contact Details Page',
+            {
+                firstNameInput: nextPage['firstNameInput'],
+                lastNameInput: nextPage['lastNameInput'],
+                continueButton: nextPage['continueButton']
+            }
+        );
+        
+        return nextPage;
   }
 }
