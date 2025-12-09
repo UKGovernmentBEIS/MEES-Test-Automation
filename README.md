@@ -13,7 +13,7 @@ This is a Proof of Concept (POC) project to prepare a Test Automation Framework 
 | **CI Pipeline** | ✅ Done |
 | **Parallel Execution using Configurable User Accounts** | ✅ Done |
 | - Encrypted passwords | ✅ Done |
-| **Parameterised Base URL** | 🔄 In Progress |
+| **Parameterised Base URL** | ✅ Done |
 | **API Testing to Verify DMS Data** | ⏸️ On Hold |
 | **Accessibility Testing** | ✅ Done |
 | **Documentation** | ✅ Done |
