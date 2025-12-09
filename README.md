@@ -4,7 +4,7 @@ Automated end-to-end testing framework for the MEES (Minimum Energy Efficiency S
 
 ## Overview
 
-This is a Proof of Concept (POC) project to prepare a Test Automation Framework for the MEES project. Currently, this POC uses PRSE (Private Rented Sector Exemptions) pages for testing, as they are similar to the MEES pages. The framework tests the registration flow, including authentication via GOV.UK One Login and Salesforce integration.
+This is a Proof of Concept (POC) project to prepare a Test Automation Framework for the MEES project. Currently, this POC uses PRSE (Private Rental Sector Exemptions) pages for testing, as they are similar to the MEES pages. The framework tests the registration flow, including authentication via GOV.UK One Login and Salesforce integration.
 
 ## Main Features
 
@@ -15,46 +15,181 @@ This is a Proof of Concept (POC) project to prepare a Test Automation Framework 
 | - Encrypted passwords | ✅ Done |
 | **Parameterised Base URL** | 🔄 In Progress |
 | **API Testing to Verify DMS Data** | ⏸️ On Hold |
-| **Accessibility Testing** | 🔄 In Progress |
-| **Documentation** | 🔄 In Progress |
+| **Accessibility Testing** | ✅ Done |
+| **Documentation** | ✅ Done |
 
 ## Table of Contents
 
 1. [Overview](#overview)
 2. [Main Features](#main-features)
-3. [Authentication](#authentication)
-4. [Creating New Test Files](#creating-new-test-files)
-5. [Project Structure](#project-structure)
-6. [Configuration](#configuration)
-7. [Accessibility Testing](#accessibility-testing)
-8. [Running Tests](#running-tests)
-9. [Troubleshooting](#troubleshooting)
+3. [Getting Started](#getting-started)
+   - [Local Setup](#local-setup)
+   - [CI/CD Setup](#cicd-setup)
+4. [Running Tests](#running-tests)
+5. [Authentication](#authentication)
+6. [Creating New Test Files](#creating-new-test-files)
+7. [Project Structure](#project-structure)
+8. [Configuration](#configuration)
+9. [Accessibility Testing](#accessibility-testing)
+10. [Troubleshooting](#troubleshooting)
+
+## Getting Started
+
+### Local Setup
+
+Follow these steps to set up the test framework on your local machine:
+
+#### Prerequisites
+
+- Node.js (v16 or higher)
+- At least 2 GOV.UK One Login accounts with completed MFA setup
+- Access to the MEES application environment
+
+#### Installation Steps
+
+1. **Clone the repository and install dependencies:**
+   ```bash
+   npm install
+   npx playwright install
+   ```
+
+2. **Create `.env` file in the project root:**
+   
+   Create a `.env` file with your test account credentials and configuration:
+   
+   ```env
+   # Test Account Credentials
+   TEST_ACCOUNT_1_EMAIL=your-email-1@example.com
+   TEST_ACCOUNT_1_PASSWORD=YourPassword1!
+   TEST_ACCOUNT_2_EMAIL=your-email-2@example.com
+   TEST_ACCOUNT_2_PASSWORD=YourPassword2!
+   
+   # Application URL
+   BASE_URL=https://desnz-gm--prseqa.sandbox.my.site.com/PRSExemptionsRegister
+   ```
+   
+   ⚠️ **Important:** The `.env` file is gitignored and should never be committed to the repository.
+
+3. **(Optional) For local development with UI mode:**
+   
+   Add this setting to your `.env` file to skip automatic setup execution:
+   
+   ```env
+   # Local Development Only - Skip setup in UI mode
+   SKIP_SETUP_DEPS=1
+   ```
+   
+   ⚠️ **Do not set this in CI/CD** - setup must run automatically in pipelines.
+
+4. **Verify test accounts configuration:**
+   
+   Ensure `tests/config/test-accounts.json` matches your `.env` variable names:
+   
+   ```json
+   {
+     "accounts": [
+       {
+         "email": "TEST_ACCOUNT_1_EMAIL",
+         "password": "TEST_ACCOUNT_1_PASSWORD",
+         "description": "Primary test account - Worker 0"
+       },
+       {
+         "email": "TEST_ACCOUNT_2_EMAIL",
+         "password": "TEST_ACCOUNT_2_PASSWORD",
+         "description": "Secondary test account - Worker 1"
+       }
+     ]
+   }
+   ```
+
+5. **Run authentication setup:**
+   
+   Create authentication session files (required before first test run):
+   
+   ```bash
+   npx playwright test --project=setup
+   ```
+   
+   This creates authentication files in `playwright/.auth/user-*.json`.
+
+6. **Verify setup:**
+   
+   Run a test to verify everything is configured correctly:
+   
+   ```bash
+   npx playwright test --grep "your test name"
+   ```
+
+#### Environment Variables Reference
+
+| Variable | Purpose | Example | Required |
+|----------|---------|---------|----------|
+| `TEST_ACCOUNT_N_EMAIL` | Test user email addresses | `test@example.com` | ✅ Yes |
+| `TEST_ACCOUNT_N_PASSWORD` | Test user passwords | `SecurePass123!` | ✅ Yes |
+| `BASE_URL` | Application base URL | `https://app.example.com` | ✅ Yes |
+| `SKIP_SETUP_DEPS` | Skip setup dependencies | `1` (skip) or `0` (run) | 🔧 Optional (local dev only) |
+
+**About `SKIP_SETUP_DEPS` (Optional - Local Development Only):**
+- When set to `1`, prevents authentication setup from running automatically
+- Useful for local development with UI mode (`--ui`) to avoid repeated authentication
+- Authentication files are reused until they expire (~30 minutes)
+- **Must be unset or `0` in CI/CD** - pipelines require automatic setup execution
+- If omitted, setup runs automatically before tests (recommended for CI/CD)
+
+### CI/CD Setup
+
+For configuring the framework in GitHub Actions and other CI/CD pipelines, see:
+
+📄 **[CI/CD Configuration Guide](Documentation/CI-CD.md)**
+
+This guide covers:
+- Setting up GitHub Actions secrets
+- Configuring encrypted passwords in CI
+- Pipeline configuration and workflows
+
+## Running Tests
+
+**First Time / When Authentication Expires:**
+
+Run authentication setup when session files don't exist or have expired:
+
+```bash
+# Create/refresh authentication files (stored in playwright/.auth/user-*.json)
+npx playwright test --project=setup
+```
+
+**Note:** If `SKIP_SETUP_DEPS=1` in your `.env` file (see [Local Setup](#local-setup)), setup won't run automatically - you must run it manually. If `SKIP_SETUP_DEPS=0` or unset, setup runs automatically before tests.
+
+**Regular Test Execution:**
+
+```bash
+# Run all tests
+npx playwright test
+
+# Run specific project
+npx playwright test --project=functional
+npx playwright test --project=accessibility
+
+# Run specific test by name
+npx playwright test --grep "test name"
+
+# Run test in UI mode (interactive debugging)
+npx playwright test --ui
+
+# View test report
+npx playwright show-report
+```
+
+**Notes:**
+- Authentication files are valid for ~30 minutes of inactivity
+- With `SKIP_SETUP_DEPS=1`, setup doesn't run automatically - auth files must exist
+- Setup runs automatically before tests when `SKIP_SETUP_DEPS=0` or unset
 
 ## Authentication
 
-The framework uses **Playwright's stored authentication state** to maintain user sessions across test runs, significantly improving performance and enabling parallel execution.
+The framework uses **Playwright's stored authentication state** to maintain user sessions across test runs, avoiding repeated logins and enabling parallel execution with multiple test accounts.
 
-### Key Benefits
-
-- **71% faster execution** when combined with parallel testing (4 workers)
-- **No repeated logins** - authenticate once per test run
-- **Parallel execution** - multiple workers with separate authenticated sessions
-- **Secure credentials** - encrypted passwords using environment variables
-
-### Quick Setup
-
-1. **Configure test accounts** in `tests/config/test-accounts.json` using environment variable names
-2. **Add credentials** to `.env` file locally or GitHub Actions secrets
-3. **Run setup** to create authentication files: `npx playwright test --project=setup`
-4. **Run tests** - each worker automatically loads its authenticated session
-
-### How It Works
-
-- **Setup Phase**: Each worker authenticates with GOV.UK One Login and saves session to `playwright/.auth/user-N.json`
-- **Test Execution**: Workers reuse saved authentication state without re-logging in
-- **Isolation**: Each test gets a fresh page while maintaining the authenticated session
-
-📄 **For detailed configuration, troubleshooting, and performance metrics, see [Authentication Guide](Documentation/Authentication.md)**
+📄 **For how authentication works, detailed configuration, performance metrics, and advanced setup, see [Authentication Guide](Documentation/Authentication.md)**
 
 ## Creating New Test Files
 
@@ -118,40 +253,14 @@ test.describe('Your Test Suite', () => {
 
 ## Accessibility Testing
 
-The framework includes accessibility testing capabilities to ensure WCAG 2.1 AA compliance. Accessibility tests validate that the application meets web accessibility standards for users with disabilities.
+The framework includes accessibility testing to ensure WCAG 2.1 AA compliance using axe-core integration with Playwright.
 
-### Approach
-
-- **Automated Testing**: Using axe-core integration with Playwright for automated accessibility checks
-- **Manual Testing**: Complementary manual testing for success criteria that cannot be fully automated
-- **WCAG 2.1 AA Standard**: Targeting Level AA compliance as the baseline
-
-### Coverage
-
-For detailed information about which WCAG 2.1 AA success criteria can be automated, require hybrid testing, or need manual verification, see:
-
-📄 **[Accessibility Testing Documentation](Documentation/Accessibility.md)**
-
-This document categorizes all WCAG 2.1 Level A and AA success criteria by:
-- ✅ Fully automatable with axe-core
-- ⚠️ Hybrid (automation + manual/scripted testing)
-- 👀 Manual testing only
-
-## Running Tests
-
+**Quick Start:**
 ```bash
-# Run all tests (setup + actual tests)
-npx playwright test
-
-# Run only setup to refresh authentication
-npx playwright test --project=setup
-
-# Run specific test
-npx playwright test --grep "test name"
-
-# View report
-npx playwright show-report
+npx playwright test --project=accessibility
 ```
+
+📄 **For comprehensive WCAG 2.1 AA criteria coverage and testing approach, see [Accessibility Testing Documentation](Documentation/Accessibility.md)**
 
 ## Troubleshooting
 
@@ -171,7 +280,13 @@ npx playwright show-report
 - Ensure enough test accounts match worker count in `playwright.config.ts`
 - Run setup to create auth files: `npx playwright test --project=setup`
 
-📄 **For comprehensive troubleshooting, see [Authentication Guide](Documentation/Authentication.md)**
+**UI Mode (`--ui`) issues:**
+- Recommended: Set `SKIP_SETUP_DEPS=1` in `.env` file to prevent setup from running in UI mode
+- Before using UI mode, ensure auth files exist: `npx playwright test --project=setup`
+- If authentication expires, temporarily set `SKIP_SETUP_DEPS=0`, run setup, then set back to `1`
+- See [Local Setup](#local-setup) for `.env` configuration details
+
+📄 **For comprehensive authentication troubleshooting, see [Authentication Guide](Documentation/Authentication.md)**
 
 ### General Issues
 

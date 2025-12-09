@@ -184,9 +184,6 @@ const highPriority = AccessibilityUtilities.filterViolationsByImpact(results.vio
 # Run all accessibility tests
 npx playwright test --project=accessibility
 
-# Run specific accessibility test
-npx playwright test --grep "should be accessible"
-
-# Run with tag
-npx playwright test --grep @accessibility
+# Run specific accessibility test in debug mode
+npx playwright test --project=accessibility -g "Validation error panel" --debug
 ```

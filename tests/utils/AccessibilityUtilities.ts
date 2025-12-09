@@ -27,9 +27,13 @@ export class AccessibilityUtilities {
    * Analyzes the current page for accessibility violations using axe-core
    * Configuration is loaded from tests/config/accessibility.config.json
    * @param page - The Playwright page object
+   * @param selector - Optional CSS selector string (e.g., '#my-element', '.my-class', '[role="dialog"]')
    * @returns Accessibility analysis results
    */
-  static async analyzeAccessibility(page: Page): Promise<AccessibilityResult> {
+  static async analyzeAccessibility(
+    page: Page,
+    selector?: string
+  ): Promise<AccessibilityResult> {
     const axeBuilder = new AxeBuilder({ page });
 
     // Apply configurations from config file
@@ -41,6 +45,11 @@ export class AccessibilityUtilities {
     }
     if (accessibilityConfig.disableRules && accessibilityConfig.disableRules.length > 0) {
       axeBuilder.disableRules(accessibilityConfig.disableRules);
+    }
+
+    // Include specific element if selector is provided
+    if (selector) {
+      axeBuilder.include(selector);
     }
 
     const results = await axeBuilder.analyze();

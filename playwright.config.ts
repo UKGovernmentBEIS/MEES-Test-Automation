@@ -51,7 +51,8 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Note: storageState is loaded dynamically in authFixtures based on worker index
       },
-      dependencies: ['setup']
+      // Skip setup dependency in UI mode (set SKIP_SETUP_DEPS=1 when using --ui)
+      dependencies: process.env.SKIP_SETUP_DEPS ? [] : ['setup']
     },
 
     // Non-functional tests - accessibility, performance, etc.
@@ -62,18 +63,8 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Note: storageState is loaded dynamically in authFixtures based on worker index
       },
-      dependencies: ['setup']
-    },
-
-    // Default chromium project for backward compatibility
-    {
-      name: 'chromium',
-      testDir: './tests/test',
-      use: { 
-        ...devices['Desktop Chrome'],
-        // Note: storageState is loaded dynamically in authFixtures based on worker index
-      },
-      dependencies: ['setup']
+      // Skip setup dependency in UI mode (set SKIP_SETUP_DEPS=1 when using --ui)
+      dependencies: process.env.SKIP_SETUP_DEPS ? [] : ['setup']
     },
   ],
 
