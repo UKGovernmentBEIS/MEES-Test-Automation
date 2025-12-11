@@ -166,18 +166,24 @@ npx playwright test --project=setup
 # Run all tests
 npx playwright test
 
+# Run tests in headed mode
+npx playwright test --headed
+
 # Run specific project
 npx playwright test --project=functional
 npx playwright test --project=accessibility
 
 # Run specific test by name
-npx playwright test --grep "test name"
+npx playwright test -g "test name"
 
 # Run test in UI mode (interactive debugging)
 npx playwright test --ui
 
 # View test report
 npx playwright show-report
+
+# Run functional test with provided text in the test name in UI mode
+npx playwright test -g "details 01" --project=functional --ui
 ```
 
 **Notes:**
