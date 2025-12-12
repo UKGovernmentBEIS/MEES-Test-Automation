@@ -1,0 +1,13 @@
+{
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "java.format.enabled": false,
+    "java.completion.enabled": false,
+    "java.completion.postfix.enabled": false,
+    "java.completion.lazyResolveTextEdit.enabled": false,
+    "java.signatureHelp.enabled": false,
+    "java.codeGeneration.toString.listArrayContents": false,
+    "java.codeAction.sortMembers.avoidVolatileChanges": false,
+    "java.format.comments.enabled": false,
+    "java.format.onType.enabled": false,
+    "java.configuration.updateBuildConfiguration": "interactive"
+}
