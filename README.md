@@ -169,6 +169,9 @@ npx playwright test
 # Run tests in headed mode
 npx playwright test --headed
 
+# Run tests with trace enabled (for debugging)
+npx playwright test --trace on
+
 # Run specific project
 npx playwright test --project=functional
 npx playwright test --project=accessibility
