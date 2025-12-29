@@ -18,16 +18,18 @@ export class PRSE_LoginPasswordPage {
    * Enter password
    * @param password The password to enter
    */
-  async enterPassword(password: string): Promise<void> {
+  private async enterPassword(password: string): Promise<void> {
     await ElementUtilities.fillText(this.passwordInput, password);
   }
 
   /**
    * Click the continue button
    */
-  async clickContinue(): Promise<PRSE_HaveRegisteredExemptionPage> {
+  private async clickContinue(): Promise<PRSE_HaveRegisteredExemptionPage> {
     await ElementUtilities.clickElement(this.continueButton);
-    return new PRSE_HaveRegisteredExemptionPage(this.page);
+    const haveRegisteredExemptionPage = new PRSE_HaveRegisteredExemptionPage(this.page);
+    await haveRegisteredExemptionPage.waitForPageToLoad();
+    return haveRegisteredExemptionPage;
   }
 
   /**

@@ -59,17 +59,15 @@ export class ElementUtilities {
     page: Page,
     pageName: string,
     locators: Record<string, Locator>,
-    timeout?: number
+    timeout?: number,
+    waitForLoadState: 'domcontentloaded' | 'networkidle' = 'domcontentloaded'
   ): Promise<void> {
     // First wait for key locators to be visible
     // This ensures all redirects have completed and we're on the correct final page
     await this.waitForLocatorsToBeVisible(pageName, locators, timeout);
 
     // Then wait for the DOM to be fully loaded on the final page
-    await page.waitForLoadState('domcontentloaded');
-
-    // Finally wait for network to be idle (all HTTP requests completed)
-    await page.waitForLoadState('networkidle', { timeout });
+    await page.waitForLoadState(waitForLoadState);
   }
 
   private static async waitForLocatorsToBeVisible(pageName: string, locators: Record<string, Locator>, timeout?: number) {

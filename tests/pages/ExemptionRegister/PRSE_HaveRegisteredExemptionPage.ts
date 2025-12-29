@@ -16,7 +16,7 @@ export class PRSE_HaveRegisteredExemptionPage {
   /**
    * Wait for the PRSE_HaveRegisteredExemption page to load
    */
-  private async waitForPageToLoad(): Promise<void> {
+  async waitForPageToLoad(): Promise<void> {
     await ElementUtilities.waitForPageToLoad(
       this.page,
       'Have Registered Exemption Page',
