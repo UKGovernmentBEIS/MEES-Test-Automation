@@ -33,9 +33,10 @@ jobs:
         pwd
     - name: Upload authentication state
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: playwright-auth
-        path: ${{ github.workspace }}/playwright/.auth/
+        path: playwright/.auth/*.json
         retention-days: 1
 
   # Job 2: Functional Tests - depends on setup, runs in parallel with accessibility
