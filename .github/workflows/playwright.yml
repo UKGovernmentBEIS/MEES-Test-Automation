@@ -27,11 +27,15 @@ jobs:
         TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
         TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
         BASE_URL: ${{ secrets.BASE_URL }}
+    - name: Verify authentication files exist
+      run: |
+        ls -la playwright/.auth/ || echo "Auth directory not found"
+        pwd
     - name: Upload authentication state
       uses: actions/upload-artifact@v4
       with:
         name: playwright-auth
-        path: playwright/.auth/
+        path: ${{ github.workspace }}/playwright/.auth/
         retention-days: 1
 
   # Job 2: Functional Tests - depends on setup, runs in parallel with accessibility
