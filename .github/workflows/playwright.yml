@@ -29,9 +29,14 @@ jobs:
         BASE_URL: ${{ secrets.BASE_URL }}
     - name: Verify authentication files exist
       run: |
+        echo "Current directory: $(pwd)"
+        echo "Workspace: ${{ github.workspace }}"
+        echo "Checking relative path:"
         ls -la playwright/.auth/
-        echo "Files in playwright/.auth/:"
-        find playwright/.auth/ -type f
+        echo "Checking absolute path:"
+        ls -la ${{ github.workspace }}/playwright/.auth/
+        echo "Files found:"
+        find ${{ github.workspace }}/playwright/.auth/ -type f
     - name: Upload authentication state
       uses: actions/upload-artifact@v4
       if: always()
