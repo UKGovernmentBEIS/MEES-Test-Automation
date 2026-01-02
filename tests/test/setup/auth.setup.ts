@@ -79,10 +79,10 @@ async function performLogin(page: any, email: string, password: string) {
  * @param workerIndex - Worker identifier used to create unique auth file names
  */
 async function saveAuthState(page: any, workerIndex: number) {
-    const authDir = path.join(__dirname, '../../../playwright/.auth');
+    const authDir = path.join(__dirname, '../../../playwright/auth-states');
     const authFile = path.join(authDir, `user-${workerIndex}.json`);
     
-    // Ensure the .auth directory exists (needed for CI environments)
+    // Ensure the auth-states directory exists (needed for CI environments)
     if (!fs.existsSync(authDir)) {
         fs.mkdirSync(authDir, { recursive: true });
     }

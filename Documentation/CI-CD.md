@@ -127,12 +127,12 @@ The setup job creates authentication state files that are shared across test job
 1. **Setup Job**: 
    - Runs `project=setup` to authenticate all test accounts
    - Creates auth files: `user-0.json`, `user-1.json`, etc.
-   - Saves auth state files to `playwright/.auth/` directory
+   - Saves auth state files to `playwright/auth-states/` directory
    - Uploads the directory as a GitHub Actions artifact (retention: 1 day)
 
 2. **Test Jobs**:
    - Download the `playwright-auth` artifact before running tests
-   - Extract auth files to `playwright/.auth/` directory
+   - Extract auth files to `playwright/auth-states/` directory
    - Each job uses a dedicated account via `AUTH_WORKER_OFFSET`:
      - **Functional tests**: `AUTH_WORKER_OFFSET=0` → uses `user-0.json`
      - **Accessibility tests**: `AUTH_WORKER_OFFSET=1` → uses `user-1.json`

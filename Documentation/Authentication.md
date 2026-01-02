@@ -132,17 +132,17 @@ When you run tests, the setup project creates separate authentication files for 
 1. **Setup runs in parallel** (with `workers` matching number of accounts) for faster authentication
 2. **Multiple test instances** are created - one for each account in `test-accounts.json`
 3. **Each test authenticates** with its assigned account and saves to:
-   - Worker 0 → `playwright/.auth/user-0.json`
-   - Worker 1 → `playwright/.auth/user-1.json`
-   - Worker N → `playwright/.auth/user-N.json`
+   - Worker 0 → `playwright/auth-states/user-0.json`
+   - Worker 1 → `playwright/auth-states/user-1.json`
+   - Worker N → `playwright/auth-states/user-N.json`
 4. **Test execution** then runs in parallel, with each worker loading its own auth file
 
 **Example console output:**
 ```
 [setup] › authentication setup - user 0
-[Auth Setup] Saved authentication state to: playwright/.auth/user-0.json
+[Auth Setup] Saved authentication state to: playwright/auth-states/user-0.json
 [setup] › authentication setup - user 1
-[Auth Setup] Saved authentication state to: playwright/.auth/user-1.json
+[Auth Setup] Saved authentication state to: playwright/auth-states/user-1.json
 ```
 
 ## Authentication Flow
@@ -155,7 +155,7 @@ When you run tests, the setup project creates separate authentication files for 
    - Clicks "Start now" → GOV.UK One Login
    - Enters credentials and authenticates
    - Checks for incomplete account setup (MFA not configured)
-   - Saves cookies/state to `playwright/.auth/user-{N}.json`
+   - Saves cookies/state to `playwright/auth-states/user-{N}.json`
 3. **Validation**: Verifies all accounts reach the application's main page
 
 ### Test Execution Phase (Parallel)
@@ -234,7 +234,7 @@ For CI/CD configuration details, see the **[CI/CD Configuration Guide](CI-CD.md)
 **Authentication fails in tests:**
 - Run `npx playwright test --project=setup` to refresh authentication state
 - Verify all accounts in `tests/config/test-accounts.json` are registered and valid
-- Check if `playwright/.auth/user-*.json` files exist for all workers
+- Check if `playwright/auth-states/user-*.json` files exist for all workers
 - Verify environment variables are set correctly in `.env` file
 
 **"Finish creating your GOV.UK One Login" error:**
@@ -252,7 +252,7 @@ For CI/CD configuration details, see the **[CI/CD Configuration Guide](CI-CD.md)
 - Each account must be a separate, fully registered GOV.UK One Login account
 - Match `workers` count to the number of available test accounts
 - Ensure all accounts have completed MFA setup before running tests
-- Verify all auth files were created: `ls playwright/.auth/`
+- Verify all auth files were created: `ls playwright/auth-states/`
 
 **Session expired:**
 - Re-run setup project to capture fresh authentication

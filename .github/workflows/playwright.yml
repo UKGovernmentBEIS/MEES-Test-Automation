@@ -27,25 +27,14 @@ jobs:
         TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
         TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
         BASE_URL: ${{ secrets.BASE_URL }}
-    - name: Verify authentication files exist
-      run: |
-        echo "Current directory: $(pwd)"
-        echo "Workspace: ${{ github.workspace }}"
-        echo "Checking relative path:"
-        ls -la playwright/.auth/
-        echo "Checking absolute path:"
-        ls -la ${{ github.workspace }}/playwright/.auth/
-        echo "Files found:"
-        find ${{ github.workspace }}/playwright/.auth/ -type f
     - name: Upload authentication state
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: playwright-auth
-        path: ${{ github.workspace }}/playwright/.auth
+        path: ${{ github.workspace }}/playwright/auth-states
         retention-days: 1
         if-no-files-found: error
-        include-hidden-files: true
 
   # Job 2: Functional Tests - depends on setup, runs in parallel with accessibility
   functional-tests:
@@ -66,7 +55,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: playwright-auth
-        path: playwright/.auth/
+        path: playwright/auth-states
     - name: Run functional tests
       run: npx playwright test --project=functional
       env:
@@ -98,7 +87,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: playwright-auth
-        path: playwright/.auth/
+        path: playwright/auth-states
     - name: Run accessibility tests
       run: npx playwright test --project=accessibility
       env:

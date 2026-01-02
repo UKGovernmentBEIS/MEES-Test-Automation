@@ -110,7 +110,7 @@ Follow these steps to set up the test framework on your local machine:
    npx playwright test --project=setup
    ```
    
-   This creates authentication files in `playwright/.auth/user-*.json`.
+   This creates authentication files in `playwright/auth-states/user-*.json`.
 
 6. **Verify setup:**
    
@@ -154,7 +154,7 @@ This guide covers:
 Run authentication setup when session files don't exist or have expired:
 
 ```bash
-# Create/refresh authentication files (stored in playwright/.auth/user-*.json)
+# Create/refresh authentication files (stored in playwright/auth-states/user-*.json)
 npx playwright test --project=setup
 ```
 
@@ -239,7 +239,7 @@ test.describe('Your Test Suite', () => {
 │   └── utils/
 │       ├── auth.setup.ts         # Authentication setup (per worker)
 │       └── ElementUtilities.ts
-└── playwright/.auth/
+└── playwright/auth-states/
     ├── user-0.json               # Worker 0 auth state
     ├── user-1.json               # Worker 1 auth state
     └── user-N.json               # Worker N auth state
@@ -278,7 +278,7 @@ npx playwright test --project=accessibility
 **Authentication fails or session expired:**
 - Run `npx playwright test --project=setup` to refresh authentication state
 - Verify environment variables are set correctly in `.env` file
-- Check if `playwright/.auth/user-*.json` files exist
+- Check if `playwright/auth-states/user-*.json` files exist
 
 **"Finish creating your GOV.UK One Login" error:**
 - Complete MFA setup for the test account
