@@ -168,6 +168,67 @@ When you run tests, the setup project creates separate authentication files for 
 3. **All tests** in that worker reuse the authenticated session
 4. **Each test** gets a new page but maintains authentication
 
+### Account Allocation in CI/CD (AUTH_WORKER_OFFSET)
+
+**Note:** This is only required for CI/CD pipelines when running multiple test jobs in parallel. Local test execution does not need `AUTH_WORKER_OFFSET` since you run one project at a time.
+
+When running multiple test jobs in parallel in CI/CD (e.g., functional and accessibility tests), you can allocate different accounts to each job using the `AUTH_WORKER_OFFSET` environment variable. This prevents account conflicts.
+
+**The Problem Without AUTH_WORKER_OFFSET:**
+
+In CI/CD, each GitHub Actions job is a separate Playwright process. The `workerIndex` **always starts at 0** for each job, even when jobs run simultaneously:
+
+```bash
+# Without AUTH_WORKER_OFFSET - BOTH JOBS RUN AT THE SAME TIME ❌
+
+Job: functional-tests (separate GitHub runner)
+├─ Worker 0 (workerIndex = 0) → loads user-0.json
+
+Job: accessibility-tests (separate GitHub runner, parallel)
+├─ Worker 0 (workerIndex = 0) → loads user-0.json  ⚠️ CONFLICT!
+
+# Both jobs try to use TEST_ACCOUNT_1 simultaneously in the application
+# This causes authentication conflicts and test failures
+```
+
+**The Solution - AUTH_WORKER_OFFSET (Set in CI/CD Pipeline):**
+
+The offset is configured in [.github/workflows/playwright.yml](../.github/workflows/playwright.yml) and shifts which accounts each job uses:
+
+```
+accountIndex = workerIndex + AUTH_WORKER_OFFSET
+```
+
+**Example with 2 accounts:**
+```bash
+# Functional tests job (in playwright.yml)
+AUTH_WORKER_OFFSET=0
+Worker 0: 0 + 0 = 0 → uses user-0.json (TEST_ACCOUNT_1)
+
+# Accessibility tests job (in playwright.yml, running in parallel)
+AUTH_WORKER_OFFSET=1
+Worker 0: 0 + 1 = 1 → uses user-1.json (TEST_ACCOUNT_2)
+
+# Result: Different accounts, no conflicts, both jobs run in parallel ✅
+```
+
+**Example with 4 accounts:**
+```bash
+# Functional tests job (2 workers)
+AUTH_WORKER_OFFSET=0
+Worker 0: 0 + 0 = 0 → uses user-0.json
+Worker 1: 1 + 0 = 1 → uses user-1.json
+
+# Accessibility tests job (2 workers)
+AUTH_WORKER_OFFSET=2
+Worker 0: 0 + 2 = 2 → uses user-2.json
+Worker 1: 1 + 2 = 3 → uses user-3.json
+
+# Result: 4 separate accounts, no conflicts ✅
+```
+
+For CI/CD configuration details, see the **[CI/CD Configuration Guide](CI-CD.md)**.
+
 ## Troubleshooting
 
 **Authentication fails in tests:**

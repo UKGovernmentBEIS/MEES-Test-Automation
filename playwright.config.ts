@@ -51,6 +51,8 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Note: storageState is loaded dynamically in authFixtures based on worker index
       },
+      // Set to 1 worker for CI to use dedicated account (account 0)
+      workers: process.env.CI ? 1 : undefined,
       // Skip setup dependency in UI mode (set SKIP_SETUP_DEPS=1 when using --ui)
       dependencies: process.env.SKIP_SETUP_DEPS ? [] : ['setup']
     },
@@ -63,6 +65,8 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Note: storageState is loaded dynamically in authFixtures based on worker index
       },
+      // Set to 1 worker for CI to use dedicated account (account 1)
+      workers: process.env.CI ? 1 : undefined,
       // Skip setup dependency in UI mode (set SKIP_SETUP_DEPS=1 when using --ui)
       dependencies: process.env.SKIP_SETUP_DEPS ? [] : ['setup']
     },

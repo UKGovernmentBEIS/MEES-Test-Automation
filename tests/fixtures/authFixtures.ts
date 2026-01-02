@@ -8,7 +8,11 @@ import path from 'path';
  * @returns The absolute path to the worker's auth state file
  */
 function getAuthStoragePath(workerIndex: number): string {
-  return path.join(__dirname, `../../playwright/.auth/user-${workerIndex}.json`);
+  // Support account offset via environment variable for parallel job execution
+  // This allows different test jobs to use different account ranges
+  const offset = parseInt(process.env.AUTH_WORKER_OFFSET || '0', 10);
+  const accountIndex = workerIndex + offset;
+  return path.join(__dirname, `../../playwright/.auth/user-${accountIndex}.json`);
 }
 
 /**
