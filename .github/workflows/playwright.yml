@@ -37,7 +37,7 @@ jobs:
       if: always()
       with:
         name: playwright-auth
-        path: playwright/.auth
+        path: ${{ github.workspace }}/playwright/.auth
         retention-days: 1
         if-no-files-found: error
 
