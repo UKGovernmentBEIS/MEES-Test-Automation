@@ -29,15 +29,17 @@ jobs:
         BASE_URL: ${{ secrets.BASE_URL }}
     - name: Verify authentication files exist
       run: |
-        ls -la playwright/.auth/ || echo "Auth directory not found"
-        pwd
+        ls -la playwright/.auth/
+        echo "Files in playwright/.auth/:"
+        find playwright/.auth/ -type f
     - name: Upload authentication state
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: playwright-auth
-        path: playwright/.auth/*.json
+        path: playwright/.auth
         retention-days: 1
+        if-no-files-found: error
 
   # Job 2: Functional Tests - depends on setup, runs in parallel with accessibility
   functional-tests:
