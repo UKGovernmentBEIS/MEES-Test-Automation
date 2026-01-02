@@ -45,6 +45,7 @@ jobs:
         path: ${{ github.workspace }}/playwright/.auth
         retention-days: 1
         if-no-files-found: error
+        include-hidden-files: true
 
   # Job 2: Functional Tests - depends on setup, runs in parallel with accessibility
   functional-tests:
