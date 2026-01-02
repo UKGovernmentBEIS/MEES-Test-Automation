@@ -1,6 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities.ts';
-import { PRSE_HaveRegisteredExemptionPage } from '../ExemptionRegister/PRSE_HaveRegisteredExemptionPage.ts';
+import { LandingPage } from '../Compliance/LandingPage.ts';
 
 export class PRSE_LoginPasswordPage {
   private readonly page: Page;
@@ -25,19 +25,19 @@ export class PRSE_LoginPasswordPage {
   /**
    * Click the continue button
    */
-  private async clickContinue(): Promise<PRSE_HaveRegisteredExemptionPage> {
+  private async clickContinue(): Promise<LandingPage> {
     await ElementUtilities.clickElement(this.continueButton);
-    const haveRegisteredExemptionPage = new PRSE_HaveRegisteredExemptionPage(this.page);
-    await haveRegisteredExemptionPage.waitForPageToLoad();
-    return haveRegisteredExemptionPage;
+    const landingPage = new LandingPage(this.page);
+    await landingPage.waitForPageToLoad();
+    return landingPage;
   }
 
   /**
    * Enter password and continue to exemption register page
    * @param password The password to enter
-   * @returns PRSE_HaveRegisteredExemptionPage instance after successful login
+   * @returns LandingPage instance after successful login
    */
-  async enterPasswordAndContinue(password: string): Promise<PRSE_HaveRegisteredExemptionPage> {
+  async enterPasswordAndContinue(password: string): Promise<LandingPage> {
     await this.enterPassword(password);
     return await this.clickContinue();
   }

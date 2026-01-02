@@ -66,8 +66,8 @@ async function performLogin(page: any, email: string, password: string) {
     const loginEmailPage = await signInOrCreatePage.clickSignIn();
 
     const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
-    const haveRegisteredExempPage = await loginPasswordPage.enterPasswordAndContinue(password);
-    await haveRegisteredExempPage.waitForPageToLoad();
+    const landingPage = await loginPasswordPage.enterPasswordAndContinue(password);
+    await landingPage.waitForPageToLoad();
 }
 
 /**
