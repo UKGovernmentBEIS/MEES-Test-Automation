@@ -127,14 +127,13 @@ Follow these steps to set up the test framework on your local machine:
 | `TEST_ACCOUNT_N_EMAIL` | Test user email addresses | `test@example.com` | ✅ Yes |
 | `TEST_ACCOUNT_N_PASSWORD` | Test user passwords | `SecurePass123!` | ✅ Yes |
 | `BASE_URL` | Application base URL | `https://app.example.com` | ✅ Yes |
-| `SKIP_SETUP_DEPS` | Skip setup dependencies | `1` (skip) or `0` (run) | 🔧 Optional (local dev only) |
+| `RUN_SETUP_AUTOMATICALLY` | Auto-run setup before tests | `1` (auto-run) or `0`/unset (manual) | 🔧 Optional |
 
-**About `SKIP_SETUP_DEPS` (Optional - Local Development Only):**
-- When set to `1`, prevents authentication setup from running automatically
-- Useful for local development with UI mode (`--ui`) to avoid repeated authentication
-- Authentication files are reused until they expire (~30 minutes)
-- **Must be unset or `0` in CI/CD** - pipelines require automatic setup execution
-- If omitted, setup runs automatically before tests (recommended for CI/CD)
+**About `RUN_SETUP_AUTOMATICALLY` (Optional - Local Development):**
+- **Default (unset or `0`)**: Setup must be run manually with `npx playwright test --project=setup`
+- **When set to `1`**: Setup runs automatically before tests (convenient for local development)
+- Default behavior matches CI/CD pattern where setup runs in a separate job
+- Local developers can choose automatic setup for convenience or manual for faster iterations
 
 ### CI/CD Setup
 
@@ -151,19 +150,17 @@ This guide covers:
 
 **First Time / When Authentication Expires:**
 
-Run authentication setup when session files don't exist or have expired:
+By default, setup must be run separately (matching CI/CD pattern):
 
 ```bash
 # Create/refresh authentication files (stored in playwright/auth-states/user-*.json)
 npx playwright test --project=setup
 ```
 
-**Note:** If `SKIP_SETUP_DEPS=1` in your `.env` file (see [Local Setup](#local-setup)), setup won't run automatically - you must run it manually. If `SKIP_SETUP_DEPS=0` or unset, setup runs automatically before tests.
-
 **Regular Test Execution:**
 
 ```bash
-# Run all tests
+# Run all tests (setup must be run first unless RUN_SETUP_AUTOMATICALLY=1)
 npx playwright test
 
 # Run tests in headed mode
@@ -189,10 +186,22 @@ npx playwright show-report
 npx playwright test -g "details 01" --project=functional --ui
 ```
 
+**Optional - Auto-run Setup:**
+
+For convenience during local development, you can enable automatic setup:
+
+```bash
+# Add to .env file:
+RUN_SETUP_AUTOMATICALLY=1
+
+# Now tests will run setup automatically if auth files are missing/expired
+npx playwright test
+```
+
 **Notes:**
 - Authentication files are valid for ~30 minutes of inactivity
-- With `SKIP_SETUP_DEPS=1`, setup doesn't run automatically - auth files must exist
-- Setup runs automatically before tests when `SKIP_SETUP_DEPS=0` or unset
+- By default, you must run setup manually: `npx playwright test --project=setup`
+- Set `RUN_SETUP_AUTOMATICALLY=1` in `.env` for automatic setup (optional convenience feature)
 
 ## Authentication
 

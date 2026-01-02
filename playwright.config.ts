@@ -53,8 +53,9 @@ export default defineConfig({
       },
       // Set to 1 worker for CI to use dedicated account (account 0)
       workers: process.env.CI ? 1 : undefined,
-      // Skip setup dependency in UI mode (set SKIP_SETUP_DEPS=1 when using --ui)
-      dependencies: process.env.SKIP_SETUP_DEPS ? [] : ['setup']
+      // By default, setup must be run separately (for CI/CD artifact pattern)
+      // Set RUN_SETUP_AUTOMATICALLY=1 to run setup before tests (convenient for local dev)
+      dependencies: process.env.RUN_SETUP_AUTOMATICALLY ? ['setup'] : []
     },
 
     // Non-functional tests - accessibility, performance, etc.
@@ -67,8 +68,9 @@ export default defineConfig({
       },
       // Set to 1 worker for CI to use dedicated account (account 1)
       workers: process.env.CI ? 1 : undefined,
-      // Skip setup dependency in UI mode (set SKIP_SETUP_DEPS=1 when using --ui)
-      dependencies: process.env.SKIP_SETUP_DEPS ? [] : ['setup']
+      // By default, setup must be run separately (for CI/CD artifact pattern)
+      // Set RUN_SETUP_AUTOMATICALLY=1 to run setup before tests (convenient for local dev)
+      dependencies: process.env.RUN_SETUP_AUTOMATICALLY ? ['setup'] : []
     },
   ],
 
