@@ -12,7 +12,7 @@ function getAuthStoragePath(workerIndex: number): string {
   // This allows different test jobs to use different account ranges
   const offset = parseInt(process.env.AUTH_WORKER_OFFSET || '0', 10);
   const accountIndex = workerIndex + offset;
-  return path.join(__dirname, `../../playwright/.auth/user-${accountIndex}.json`);
+  return path.join(__dirname, `../../playwright/auth-states/user-${accountIndex}.json`);
 }
 
 /**

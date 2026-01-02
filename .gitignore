@@ -5,7 +5,7 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-/playwright/.auth/
-/playwright/.auth/user.json
+/playwright/storage/
+/playwright/auth-states/
 /CopilotHelper
 /.env
