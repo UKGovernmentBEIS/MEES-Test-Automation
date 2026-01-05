@@ -35,7 +35,9 @@ export class HomePage {
    */
   async clickStartNow_NotAuthenticatedUser(): Promise<SignInOrCreatePage> {
     await ElementUtilities.clickElement(this.startNowButton!);
-    return new SignInOrCreatePage(this.page);
+    const signInOrCreatePage = new SignInOrCreatePage(this.page);
+    await signInOrCreatePage.waitForPageToLoad();
+    return signInOrCreatePage;
   }
 
   /**

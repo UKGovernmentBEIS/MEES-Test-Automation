@@ -8,11 +8,10 @@ export class SignInOrCreatePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.page.waitForLoadState('domcontentloaded');
     this.signInButton = page.getByRole('button', { name: 'Sign in' });
   }
 
-  private async waitForPageToLoad(): Promise<void> {
+  async waitForPageToLoad(): Promise<void> {
     await ElementUtilities.waitForPageToLoad(
       this.page,
       'Sign In Or Create Page',
