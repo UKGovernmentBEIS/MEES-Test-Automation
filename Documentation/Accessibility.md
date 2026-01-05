@@ -4,9 +4,9 @@ This guide explains how to write automated accessibility tests using the `Access
 
 ## Overview
 
-The framework uses **axe-core** integrated with Playwright to automatically detect accessibility violations against WCAG 2.1 AA standards.
+The framework uses **axe-core** integrated with Playwright to automatically detect accessibility violations against WCAG 2.2 AA standards.
 
-## WCAG 2.1 AA Coverage
+## WCAG 2.2 AA Coverage
 
 ### ✅ Fully Automatable with axe-core
 
@@ -22,7 +22,6 @@ The framework uses **axe-core** integrated with Playwright to automatically dete
 | 2.4.6 | Headings and Labels | Yes |
 | 3.1.1 | Language of Page | Yes |
 | 3.1.2 | Language of Parts | Yes |
-| 4.1.1 | Parsing (valid HTML, no duplicate IDs) | Yes |
 | 4.1.2 | Name, Role, Value (ARIA validity) | Yes |
 | 4.1.3 | Status Messages (aria-live regions) | Partial |
 
@@ -38,6 +37,8 @@ The framework uses **axe-core** integrated with Playwright to automatically dete
 | 1.4.11 | Non-Text Contrast | Axe partially checks; manual confirmation for custom UI components |
 | 1.4.12 | Text Spacing | Requires manual CSS inspection |
 | 1.4.13 | Content on Hover/Focus | Axe flags some issues; manual check for dismissibility and persistence |
+| 2.4.11 | Focus Not Obscured (Minimum) **[NEW 2.2]** | Axe may detect overlapping elements; manual verification of focus visibility required |
+| 2.5.8 | Target Size (Minimum) **[NEW 2.2]** | Axe cannot measure target sizes; requires manual measurement or scripted validation |
 
 ### 👀 Manual Only
 
@@ -48,9 +49,13 @@ The framework uses **axe-core** integrated with Playwright to automatically dete
 | 1.3.5 | Identify Input Purpose |
 | 2.2.x | Timing Adjustable |
 | 2.4.1 | Bypass Blocks (skip links, landmarks) |
-| 2.5.x | Pointer Gestures, Target Size |
+| 2.5.x | Pointer Gestures |
+| 2.5.7 | Dragging Movements **[NEW 2.2]** |
 | 3.2.x | Predictable (on focus/input behavior consistency) |
+| 3.2.6 | Consistent Help **[NEW 2.2]** |
 | 3.3.4 | Error Prevention (Legal, Financial, Data) |
+| 3.3.7 | Redundant Entry **[NEW 2.2]** |
+| 3.3.8 | Accessible Authentication (Minimum) **[NEW 2.2]** |
 | Screen Reader Compatibility | JAWS/NVDA tests for announcement order, verbosity, dynamic updates |
 
 ## Quick Start
@@ -87,7 +92,7 @@ Accessibility test configuration is managed in `tests/config/accessibility.confi
 
 ```json
 {
-  "includeTags": ["wcag2aa"],
+  "includeTags": ["wcag22aa"],
   "excludeTags": [],
   "disableRules": []
 }
@@ -96,6 +101,7 @@ Accessibility test configuration is managed in `tests/config/accessibility.confi
 **Available Tags:**
 - `wcag2a`, `wcag2aa` - WCAG 2.0 Level A/AA
 - `wcag21a`, `wcag21aa` - WCAG 2.1 Level A/AA
+- `wcag22a`, `wcag22aa` - WCAG 2.2 Level A/AA
 - `best-practice` - Best practice rules beyond WCAG
 
 

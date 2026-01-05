@@ -271,14 +271,14 @@ test.describe('Your Test Suite', () => {
 
 ## Accessibility Testing
 
-The framework includes accessibility testing to ensure WCAG 2.1 AA compliance using axe-core integration with Playwright.
+The framework includes accessibility testing to ensure WCAG 2.2 AA compliance using axe-core integration with Playwright.
 
 **Quick Start:**
 ```bash
 npx playwright test --project=accessibility
 ```
 
-📄 **For comprehensive WCAG 2.1 AA criteria coverage and testing approach, see [Accessibility Testing Documentation](Documentation/Accessibility.md)**
+📄 **For comprehensive WCAG 2.2 AA criteria coverage and testing approach, see [Accessibility Testing Documentation](Documentation/Accessibility.md)**
 
 ## Troubleshooting
 
