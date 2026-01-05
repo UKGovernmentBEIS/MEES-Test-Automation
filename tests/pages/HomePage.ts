@@ -1,7 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../utils/ElementUtilities';
 import { SignInOrCreatePage } from './Login/SignInOrCreatePage';
-import { PRSE_HaveRegisteredExemptionPage } from './ExemptionRegister/PRSE_HaveRegisteredExemptionPage';
 
 export class HomePage {
   private readonly page: Page;
