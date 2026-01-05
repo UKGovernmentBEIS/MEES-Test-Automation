@@ -4,6 +4,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:
 jobs:
   # Job 1: Authentication Setup - runs first and creates auth artifacts
   setup:
