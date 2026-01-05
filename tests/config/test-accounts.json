@@ -1,0 +1,15 @@
+{
+  "_comment": "Add more accounts here for parallel execution. Each worker needs a separate GOV.UK One Login account. Store actual credentials in .env file using TEST_ACCOUNT_N_EMAIL and TEST_ACCOUNT_N_PASSWORD format.",
+  "accounts": [
+    {
+      "email": "TEST_ACCOUNT_1_EMAIL",
+      "password": "TEST_ACCOUNT_1_PASSWORD",
+      "description": "Primary test account - Worker 0"
+    },
+    {
+      "email": "TEST_ACCOUNT_2_EMAIL",
+      "password": "TEST_ACCOUNT_2_PASSWORD",
+      "description": "Secondary test account - Worker 1"
+    }
+  ]
+}
