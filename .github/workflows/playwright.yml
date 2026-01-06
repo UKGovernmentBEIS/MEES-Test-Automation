@@ -62,11 +62,19 @@ jobs:
   #     env:
   #       BASE_URL: ${{ secrets.BASE_URL }}
   #       AUTH_WORKER_OFFSET: 0
-  #   - uses: actions/upload-artifact@v4
+  #   - name: Upload Playwright HTML report
+  #     uses: actions/upload-artifact@v4
   #     if: ${{ !cancelled() }}
   #     with:
   #       name: functional-test-report
   #       path: playwright-report/
+  #       retention-days: 30
+  #   - name: Upload Non-Functional Test Coverage Report
+  #     uses: actions/upload-artifact@v4
+  #     if: ${{ !cancelled() }}
+  #     with:
+  #       name: functional-coverage-report
+  #       path: test-results/non-functional-test-coverage.*
   #       retention-days: 30
 
   # Job 3: Accessibility Tests - depends on setup, runs in parallel with functional
@@ -94,9 +102,17 @@ jobs:
       env:
         BASE_URL: ${{ secrets.BASE_URL }}
         AUTH_WORKER_OFFSET: 1
-    - uses: actions/upload-artifact@v4
+    - name: Upload Playwright HTML report
+      uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
         name: accessibility-test-report
         path: playwright-report/
+        retention-days: 30
+    - name: Upload Non-Functional Test Coverage Report
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: non-functional-coverage-report
+        path: test-results/non-functional-test-coverage.*
         retention-days: 30

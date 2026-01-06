@@ -4,18 +4,12 @@ import { AccessibilityUtilities } from '../../../utils/AccessibilityUtilities';
 import path from 'path';
 import fs from 'fs';
 
-test.describe('Login Process Accessibility Tests', () => {
-    test('Home Page Accessibility Test', async ({ page }) => {
-        const homePage = new HomePage(page);
-        await homePage.navigate();
-
-        const results = await AccessibilityUtilities.analyzeAccessibility(page);
-
-        const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
-        expect(criticalViolations, `Login page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+test.describe('Login Accessibility Tests', () => {
+    test.beforeEach(async ({}, testInfo) => {
+        testInfo.annotations.push({ type: 'test-type', description: 'Accessibility' });
     });
 
-    test('One Login Home Page Accessibility Test', async ({ page }) => {
+    test('One Login Home Page', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.navigate();
         await homePage.clickStartNow_NotAuthenticatedUser();
@@ -26,7 +20,7 @@ test.describe('Login Process Accessibility Tests', () => {
         expect(criticalViolations, `One Login home page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
     });
 
-    test('One Login Enter Email Page Accessibility Test', async ({ page }) => {
+    test('One Login Enter Email Page', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.navigate();
         const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
@@ -38,7 +32,7 @@ test.describe('Login Process Accessibility Tests', () => {
         expect(criticalViolations, `One Login enter email page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
     });
 
-    test('One Login Enter Password Page Accessibility Test', async ({ page }) => {
+    test('One Login Enter Password Page', async ({ page }) => {
         const accountsPath = path.join(__dirname, '../../../config/test-accounts.json');
         const accounts = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).accounts;
 

@@ -9,3 +9,5 @@ node_modules/
 /playwright/auth-states/
 /CopilotHelper
 /.env
+**/non-functional-test-coverage.md
+**/non-functional-test-coverage.html

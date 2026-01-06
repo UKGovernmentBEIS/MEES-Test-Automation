@@ -156,10 +156,62 @@ To enable parallel execution without account conflicts:
 - Update `workers` count in [playwright.config.ts](../playwright.config.ts)
 - Jobs still execute in parallel without conflicts
 
+## Test Reports and Artifacts
+
+Each test job in the CI/CD pipeline generates and uploads test reports as artifacts:
+
+### Playwright HTML Reports
+
+- **Functional tests:** `functional-test-report` artifact
+- **Accessibility tests:** `accessibility-test-report` artifact
+- **Contains:** Detailed test execution results, screenshots, traces
+- **Retention:** 30 days
+
+### Non-Functional Test Coverage Reports
+
+- **Functional tests:** `functional-coverage-report` artifact
+- **Accessibility tests:** `accessibility-coverage-report` artifact
+- **Format:** Both Markdown (`.md`) and HTML (`.html`) versions
+- **Contains:** 
+  - Summary table of pages tested
+  - Test types performed on each page
+  - Accessibility violation counts
+  - Detailed test results
+- **Retention:** 30 days
+
+### Accessing Reports
+
+1. Navigate to the **Actions** tab in your GitHub repository
+2. Click on a workflow run
+3. Scroll to the **Artifacts** section at the bottom
+4. Download the report artifacts you need
+5. Extract and open the HTML files in your browser
+
+### Example Workflow Configuration
+
+```yaml
+- name: Upload Playwright HTML report
+  uses: actions/upload-artifact@v4
+  if: ${{ !cancelled() }}
+  with:
+    name: accessibility-test-report
+    path: playwright-report/
+    retention-days: 30
+
+- name: Upload Non-Functional Test Coverage Report
+  uses: actions/upload-artifact@v4
+  if: ${{ !cancelled() }}
+  with:
+    name: accessibility-coverage-report
+    path: test-results/non-functional-test-coverage.*
+    retention-days: 30
+```
+
 ## Best Practices
 
 1. **Keep secrets up to date** - Update GitHub secrets when credentials change
 2. **Match worker counts** - Ensure `playwright.config.ts` workers match available test accounts
 3. **Monitor workflow runs** - Check Actions tab for test results and failures
-4. **Review test reports** - Artifacts include HTML reports and trace files
+4. **Review test reports** - Download and review both Playwright HTML reports and coverage reports from artifacts
 5. **Secure MFA accounts** - Use dedicated test accounts with MFA enabled
+6. **Add annotations to tests** - Ensure all tests include proper annotations for accurate coverage reporting

@@ -203,6 +203,65 @@ npx playwright test
 - By default, you must run setup manually: `npx playwright test --project=setup`
 - Set `RUN_SETUP_AUTOMATICALLY=1` in `.env` for automatic setup (optional convenience feature)
 
+## Test Reports
+
+The framework generates multiple types of reports to track test execution and coverage:
+
+### Playwright HTML Report
+
+Standard Playwright test execution report with detailed test results:
+
+```bash
+# View the HTML report after test run
+npx playwright show-report
+```
+
+The report shows:
+- Test execution status (passed/failed/skipped)
+- Execution time and performance metrics
+- Test annotations (test type, page name, etc.)
+- Screenshots and traces for failed tests
+
+### Non-Functional Test Coverage Report
+
+Auto-generated report showing which non-functional tests have been performed on each page:
+
+**Location:** `test-results/non-functional-test-coverage.md` (and `.html`)
+
+**Generated:** After every test run
+
+**Contains:**
+- Summary table of pages tested
+- Test types performed (Accessibility, Context Verification, etc.)
+- Test results and violation counts
+- Detailed results for each page
+
+This report is auto-generated and should not be committed to the repository (see `.gitignore`).
+
+### Test Annotations
+
+All tests include annotations for better organization and reporting:
+
+```typescript
+test.describe('Your Test Suite', () => {
+  test.beforeEach(async ({}, testInfo) => {
+    testInfo.annotations.push({ type: 'test-type', description: 'Accessibility' });
+  });
+
+  test('Your Test', async ({ page }, testInfo) => {
+    testInfo.annotations.push({ type: 'page', description: 'Login Page' });
+    // Test code...
+  });
+});
+```
+
+**Standard annotation types:**
+- `test-type`: Category (e.g., 'Accessibility', 'Functional', 'Performance')
+- `page`: Page being tested (e.g., 'Login Page', 'Dashboard')
+- `feature`: Feature/module being tested (optional)
+
+Annotations are visible in Playwright's HTML report and used to generate the non-functional test coverage report.
+
 ## Authentication
 
 The framework uses **Playwright's stored authentication state** to maintain user sessions across test runs, avoiding repeated logins and enabling parallel execution with multiple test accounts.
