@@ -23,8 +23,9 @@ export default defineConfig({
   /* Set workers to match the number of fully configured test accounts.
      Each worker needs a separate GOV.UK One Login account with completed MFA setup.*/
   workers: 2,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html'], ['github']],
+  /* Reporter to use. See https://playwright.dev/docs/test-reporters
+     Using custom reporter to enhance non-functional test reports */
+  reporter: [['html'], ['github'], ['./tests/utils/NonFunctionalTestReporter.ts']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
@@ -58,10 +59,10 @@ export default defineConfig({
       dependencies: process.env.RUN_SETUP_AUTOMATICALLY ? ['setup'] : []
     },
 
-    // Non-functional tests - accessibility, performance, etc.
+    // Non-functional tests - accessibility, context verification, performance, etc.
     {
-      name: 'accessibility',
-      testDir: './tests/test/non-functional/accessibility',
+      name: 'non-functional',
+      testDir: './tests/test/non-functional',
       use: { 
         ...devices['Desktop Chrome'],
         // Note: storageState is loaded dynamically in authFixtures based on worker index

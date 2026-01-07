@@ -5,10 +5,12 @@ import { SignInOrCreatePage } from './Login/SignInOrCreatePage';
 export class HomePage {
   private readonly page: Page;
   private readonly startNowButton: Locator;
+  readonly contextElement: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.startNowButton = this.page.getByRole('button', { name: 'Start now' });
+    this.contextElement = this.page.locator('uxgovuk-gov-markup-text');
   }
 
   /**

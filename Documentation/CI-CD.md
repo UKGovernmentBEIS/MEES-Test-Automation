@@ -12,11 +12,11 @@ The CI/CD pipeline uses a **three-job architecture** optimized for speed and eff
 
 1. **Setup Job** - Runs authentication for all test accounts and creates auth artifacts
 2. **Functional Tests Job** - Downloads auth artifacts and runs functional tests (depends on setup)
-3. **Accessibility Tests Job** - Downloads auth artifacts and runs accessibility tests (depends on setup)
+3. **Non-Functional Tests Job** - Downloads auth artifacts and runs non-functional tests (depends on setup)
 
 **Benefits:**
 - Authentication runs **once** instead of being duplicated in each test job
-- Functional and accessibility tests run **in parallel** after setup completes
+- Functional and non-functional tests run **in parallel** after setup completes
 - Faster pipeline execution and reduced CI/CD minutes
 - Single point of authentication reduces failure points
 
@@ -55,6 +55,11 @@ Test jobs only need the base URL since they use downloaded auth artifacts:
 ```yaml
 - name: Run functional tests
   run: npx playwright test --project=functional
+  env:
+    BASE_URL: ${{ secrets.BASE_URL }}
+
+- name: Run non-functional tests
+  run: npx playwright test --project=non-functional
   env:
     BASE_URL: ${{ secrets.BASE_URL }}
 ```
@@ -145,13 +150,13 @@ To enable parallel execution without account conflicts:
 
 **Current Setup (2 accounts):**
 - Account 0 (TEST_ACCOUNT_1_*) → Functional tests
-- Account 1 (TEST_ACCOUNT_2_*) → Accessibility tests
+- Account 1 (TEST_ACCOUNT_2_*) → Non-functional tests
 - Each job runs with 1 worker
 - Jobs execute in parallel safely
 
 **Future Scaling (4+ accounts):**
 - Accounts 0-1 → Functional tests (2 workers)
-- Accounts 2-3 → Accessibility tests (2 workers)
+- Accounts 2-3 → Non-functional tests (2 workers)
 - Update `AUTH_WORKER_OFFSET` for each job
 - Update `workers` count in [playwright.config.ts](../playwright.config.ts)
 - Jobs still execute in parallel without conflicts
@@ -163,20 +168,19 @@ Each test job in the CI/CD pipeline generates and uploads test reports as artifa
 ### Playwright HTML Reports
 
 - **Functional tests:** `functional-test-report` artifact
-- **Accessibility tests:** `accessibility-test-report` artifact
+- **Non-functional tests:** `non-functional-test-report` artifact
 - **Contains:** Detailed test execution results, screenshots, traces
 - **Retention:** 30 days
 
 ### Non-Functional Test Coverage Reports
 
-- **Functional tests:** `functional-coverage-report` artifact
-- **Accessibility tests:** `accessibility-coverage-report` artifact
+- **Non-functional tests:** `non-functional-coverage-report` artifact
 - **Format:** Both Markdown (`.md`) and HTML (`.html`) versions
 - **Contains:** 
   - Summary table of pages tested
-  - Test types performed on each page
+  - Test types performed on each page (Accessibility, Context Verification, etc.)
   - Accessibility violation counts
-  - Detailed test results
+  - Test execution status and detailed results
 - **Retention:** 30 days
 
 ### Accessing Reports
@@ -194,7 +198,7 @@ Each test job in the CI/CD pipeline generates and uploads test reports as artifa
   uses: actions/upload-artifact@v4
   if: ${{ !cancelled() }}
   with:
-    name: accessibility-test-report
+    name: non-functional-test-report
     path: playwright-report/
     retention-days: 30
 
@@ -202,7 +206,7 @@ Each test job in the CI/CD pipeline generates and uploads test reports as artifa
   uses: actions/upload-artifact@v4
   if: ${{ !cancelled() }}
   with:
-    name: accessibility-coverage-report
+    name: non-functional-coverage-report
     path: test-results/non-functional-test-coverage.*
     retention-days: 30
 ```

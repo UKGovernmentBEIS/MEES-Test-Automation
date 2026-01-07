@@ -171,7 +171,7 @@ npx playwright test --trace on
 
 # Run specific project
 npx playwright test --project=functional
-npx playwright test --project=accessibility
+npx playwright test --project=non-functional
 
 # Run specific test by name
 npx playwright test -g "test name"
@@ -328,16 +328,36 @@ test.describe('Your Test Suite', () => {
 3. Setup project `workers` can also match account count for faster setup
 4. More workers = faster test execution (up to the number of available CPU cores)
 
-## Accessibility Testing
+## Non-Functional Testing
 
-The framework includes accessibility testing to ensure WCAG 2.2 AA compliance using axe-core integration with Playwright.
+The framework includes comprehensive non-functional testing including accessibility (WCAG 2.2 AA compliance) and context verification using axe-core integration with Playwright.
 
 **Quick Start:**
 ```bash
-npx playwright test --project=accessibility
+npx playwright test --project=non-functional
 ```
 
 📄 **For comprehensive WCAG 2.2 AA criteria coverage and testing approach, see [Accessibility Testing Documentation](Documentation/Accessibility.md)**
+
+### Custom Non-Functional Test Coverage Report
+
+The framework automatically generates a detailed coverage report showing which non-functional tests have been performed on each page:
+
+**Location:** `test-results/non-functional-test-coverage.md` (and `.html`)
+
+**Generated:** After every non-functional test run
+
+**Contains:**
+- Summary table of pages tested
+- Test types performed (Accessibility, Context Verification, etc.)
+- Test execution status
+- Detailed results for each page
+
+**Test Types Included:**
+- **Accessibility:** WCAG 2.2 AA compliance testing using axe-core
+- **Context Verification:** URL patterns, DOM structure, heading verification
+- **Performance:** (planned) Page load times, resource optimization
+- **Security:** (planned) Content Security Policy, authentication flows
 
 ## Troubleshooting
 

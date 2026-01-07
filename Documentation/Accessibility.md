@@ -1,10 +1,15 @@
-# Accessibility Testing Guide
+# Non-Functional Testing Guide: Accessibility
 
-This guide explains how to write automated accessibility tests using the `AccessibilityUtilities` class.
+This guide explains how to write automated accessibility tests as part of the comprehensive non-functional testing framework using the `AccessibilityUtilities` class.
 
 ## Overview
 
-The framework uses **axe-core** integrated with Playwright to automatically detect accessibility violations against WCAG 2.2 AA standards.
+The framework uses **axe-core** integrated with Playwright to automatically detect accessibility violations against WCAG 2.2 AA standards. Accessibility tests are combined with context verification tests in the `non-functional` project to provide comprehensive page validation.
+
+**Test Types Included:**
+- **Accessibility:** WCAG 2.2 AA compliance using axe-core
+- **Context Verification:** URL patterns, DOM structure, heading text validation
+- **Visual Regression:** (optional) DOM snapshots and screenshot comparison
 
 ## WCAG 2.2 AA Coverage
 
@@ -63,25 +68,53 @@ The framework uses **axe-core** integrated with Playwright to automatically dete
 ### 1. Import Required Modules
 
 ```typescript
-import { test, expect } from '../../../fixtures/authFixtures';
-import { AccessibilityUtilities } from '../../../utils/AccessibilityUtilities';
-import { HomePage } from '../../../pages/HomePage';
+import { test, expect } from '../../fixtures/authFixtures';
+import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
+import { HomePage } from '../../pages/HomePage';
+import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
 ```
 
-### 2. Basic Accessibility Test
+### 2. Basic Non-Functional Test (Accessibility + Context)
 
 ```typescript
-test('Page should have no critical accessibility violations', async ({ page }) => {
-  const homePage = new HomePage(page);
-  await homePage.navigate();
+test.describe('Home Page Non-Functional Tests', () => {
+  test.beforeEach(async ({}, testInfo) => {
+    testInfo.annotations.push(
+      TestAnnotations.testType(TestType.ACCESSIBILITY),
+      TestAnnotations.testType(TestType.CONTEXT_VERIFICATION)
+    );
+  });
 
-  // Analyze accessibility
-  const results = await AccessibilityUtilities.analyzeAccessibility(page);
+  test('Home Page', async ({ page }, testInfo) => {
+    testInfo.annotations.push(TestAnnotations.page(PageName.HOME_PAGE));
 
-  // Assert no critical violations
-  const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
-  expect(criticalViolations, `Page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+    const homePage = new HomePage(page);
+    await homePage.navigate();
+
+    // Verify accessibility
+    const results = await AccessibilityUtilities.analyzeAccessibility(page);
+    const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
+    expect(criticalViolations, `Page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+
+    // Context verification (optional)
+    await expect(page).toHaveURL(/expected-pattern/);
+    await expect(page.locator('h1')).toContainText('Expected Heading');
+  });
 });
+```
+
+### 3. Running Non-Functional Tests
+
+```bash
+# Run all non-functional tests (accessibility + context verification)
+npx playwright test --project=non-functional
+
+# Run specific test file
+npx playwright test HomePageTests --project=non-functional
+
+# View results and coverage report
+npx playwright show-report
+# Coverage report: test-results/non-functional-test-coverage.md
 ```
 
 ## Configuration
