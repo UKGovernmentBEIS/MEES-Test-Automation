@@ -10,13 +10,19 @@ This is a Proof of Concept (POC) project to prepare a Test Automation Framework 
 
 | Feature | Status |
 |---------|--------|
-| **CI Pipeline** | ✅ Done |
+| **CI/CD Pipeline** | ✅ Done |
 | **Parallel Execution using Configurable User Accounts** | ✅ Done |
 | - Encrypted passwords | ✅ Done |
 | **Parameterised Base URL** | ✅ Done |
+| **Authentication Setup & State Management** | ✅ Done |
+| **Page Object Model Architecture** | ✅ Done |
+| **Accessibility Testing (WCAG 2.2 AA)** | ✅ Done |
+| **Context Testing & Verification** | ✅ Done |
+| **Non-Functional Test Coverage Reporting** | ✅ Done |
+| **Test Utilities & Element Helpers** | ✅ Done |
+| **Comprehensive Documentation** | ✅ Done |
+| **HTML Test Reports with Traces** | ✅ Done |
 | **API Testing to Verify DMS Data** | ⏸️ On Hold |
-| **Accessibility Testing** | ✅ Done |
-| **Documentation** | ✅ Done |
 
 ## Table of Contents
 
@@ -296,21 +302,50 @@ test.describe('Your Test Suite', () => {
 
 ```
 ├── playwright.config.ts          # Playwright configuration
+├── package.json                  # Node.js dependencies and scripts
+├── README.md                     # This file
+├── CopilotHelper/               # AI assistant project documentation
+│   └── ProjectStandards.md      # Coding standards and guidelines
+├── Documentation/               # Framework documentation
+│   ├── Accessibility.md         # WCAG 2.2 AA testing guide
+│   ├── Authentication.md        # Authentication setup guide
+│   └── CI-CD.md                 # CI/CD pipeline configuration
+├── specs/                       # Test specifications (if any)
 ├── tests/
 │   ├── config/
-│   │   └── test-accounts.json    # Test account credentials (gitignored)
+│   │   ├── accessibility.config.json  # Accessibility testing configuration
+│   │   └── test-accounts.json         # Test account credentials (gitignored)
 │   ├── fixtures/
 │   │   └── authFixtures.ts       # Custom fixtures for shared context
 │   ├── pages/                    # Page Object Models
+│   │   ├── HomePage.ts
+│   │   ├── Compliance/
+│   │   │   └── LandingPage.ts
+│   │   └── Login/
+│   │       ├── LoginEmailPage.ts
+│   │       ├── LoginPasswordPage.ts
+│   │       └── SignInOrCreatePage.ts
 │   ├── test/
-│   │   └── *.spec.ts            # Test files
-│   └── utils/
-│       ├── auth.setup.ts         # Authentication setup (per worker)
-│       └── ElementUtilities.ts
-└── playwright/auth-states/
-    ├── user-0.json               # Worker 0 auth state
-    ├── user-1.json               # Worker 1 auth state
-    └── user-N.json               # Worker N auth state
+│   │   ├── functional/
+│   │   │   └── *.spec.ts         # Functional test files
+│   │   ├── non-functional/
+│   │   │   └── *.spec.ts         # Non-functional test files (accessibility, etc.)
+│   │   └── setup/
+│   │       └── auth.setup.ts     # Authentication setup (per worker)
+│   └── utils/                    # Test utilities
+│       ├── AccessibilityUtilities.ts    # WCAG testing utilities
+│       ├── ElementUtilities.ts          # DOM element utilities
+│       ├── NonFunctionalTestReporter.ts # Test coverage reporting
+│       └── TestTypes.ts                 # Type definitions
+├── playwright/
+│   └── auth-states/              # Stored authentication sessions
+│       ├── user-0.json           # Worker 0 auth state
+│       ├── user-1.json           # Worker 1 auth state
+│       └── user-N.json           # Worker N auth state
+├── playwright-report/            # Generated test reports
+│   └── index.html               # HTML test report
+└── test-results/                # Test execution results
+    └── non-functional-test-coverage.md  # Auto-generated coverage report
 ```
 
 ## Configuration
