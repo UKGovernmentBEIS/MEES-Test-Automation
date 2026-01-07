@@ -5,12 +5,20 @@ import { SignInOrCreatePage } from './Login/SignInOrCreatePage';
 export class HomePage {
   private readonly page: Page;
   private readonly startNowButton: Locator;
-  readonly generalInstructionsText: Locator;
+  private readonly generalInstructionsText: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.startNowButton = this.page.getByRole('button', { name: 'Start now' });
     this.generalInstructionsText = this.page.locator('uxgovuk-gov-markup-text');
+  }
+
+  /**
+   * Get the general instructions text locator for visual regression testing
+   * @returns Locator for the general instructions text element
+   */
+  getGeneralInstructionsTextLocator(): Locator {
+    return this.generalInstructionsText;
   }
 
   /**

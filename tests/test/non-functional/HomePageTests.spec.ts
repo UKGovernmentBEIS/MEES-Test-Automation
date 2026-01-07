@@ -21,7 +21,7 @@ test.describe('Home Page Non-Functional Tests', () => {
     expect(criticalViolations, `Home page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
 
     // Context Verification: Verify presence of key elements on the Home page
-    await expect(homePage.generalInstructionsText).toHaveScreenshot();
+    await expect(homePage.getGeneralInstructionsTextLocator()).toHaveScreenshot();
   });
 
 });
