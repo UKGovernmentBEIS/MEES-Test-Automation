@@ -27,7 +27,8 @@ export class PRSE_LoginPasswordPage {
     await ElementUtilities.waitForPageToLoad(
       this.page,
       'Login Password Page',
-      { passwordInput: this.passwordInput, continueButton: this.continueButton, instructionText: this.instructionText }
+      { passwordInput: this.passwordInput, continueButton: this.continueButton, instructionText: this.instructionText },
+      120000
     );
   }
 

@@ -53,13 +53,19 @@ test.describe('Login Process Non-Functional Tests', () => {
         testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_PASSWORD));
 
         const accountsPath = path.join(__dirname, '../../config/test-accounts.json');
-        const accounts = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).accounts;
+        const accountsConfig = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).accounts;
+        
+        // Resolve environment variables for the account credentials
+        const email = process.env[accountsConfig[0].email];
+        if (!email) {
+            throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
+        }
 
         const homePage = new HomePage(page);
         await homePage.navigate();
         const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
-        const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(accounts[0].email);
+        const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
 
         // Verify accessibility on the One Login enter password page
         const results = await AccessibilityUtilities.analyzeAccessibility(page);
