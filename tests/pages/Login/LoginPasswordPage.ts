@@ -6,12 +6,29 @@ export class PRSE_LoginPasswordPage {
   private readonly page: Page;
   private readonly passwordInput: Locator;
   private readonly continueButton: Locator;
+  private readonly instructionText: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.page.waitForLoadState('domcontentloaded');
     this.passwordInput = page.getByRole('textbox', { name: 'Password' });
     this.continueButton = page.getByRole('button', { name: 'Continue' });
+    this.instructionText = page.getByText('Enter your password');
+  }
+
+  // Context locators for verification
+  getContextLocators(): Locator[] {
+    return [
+      this.instructionText
+    ];
+  }
+
+  // Wait for the Login Password page to load
+  async waitForPageToLoad(): Promise<void> {
+    await ElementUtilities.waitForPageToLoad(
+      this.page,
+      'Login Password Page',
+      { passwordInput: this.passwordInput, continueButton: this.continueButton, instructionText: this.instructionText }
+    );
   }
 
   /**

@@ -17,7 +17,7 @@ export enum TestType {
  */
 export enum PageName {
   HOME_PAGE = 'Home Page',
-  ONE_LOGIN_HOME = 'One Login Home Page',
+  ONE_LOGIN_SIGNIN_OR_CREATE_ACCOUNT = 'One Login SignIn or Create Account Page',
   ONE_LOGIN_EMAIL = 'One Login Enter Email Page',
   ONE_LOGIN_PASSWORD = 'One Login Enter Password Page',
   DASHBOARD = 'Dashboard',

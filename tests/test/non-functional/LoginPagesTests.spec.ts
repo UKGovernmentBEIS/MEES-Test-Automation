@@ -13,16 +13,21 @@ test.describe('Login Process Non-Functional Tests', () => {
         );
     });
 
-    test('One Login Home Page', async ({ page }, testInfo) => {
-        testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_HOME));
+    test('One Login SignIn or Create Account Page', async ({ page }, testInfo) => {
+        testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_SIGNIN_OR_CREATE_ACCOUNT));
         const homePage = new HomePage(page);
         await homePage.navigate();
-        await homePage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
 
         // Verify accessibility on the One Login home page
         const results = await AccessibilityUtilities.analyzeAccessibility(page);
         const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
         expect(criticalViolations, `One Login home page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+
+        // Context Verification: Verify presence of key elements on the One Login home page
+        for (const locator of signInOrCreatePage.getContextLocators()) {
+            await expect(locator).toHaveScreenshot();
+        }
     });
 
     test('One Login Enter Email Page', async ({ page }, testInfo) => {
@@ -31,12 +36,17 @@ test.describe('Login Process Non-Functional Tests', () => {
         const homePage = new HomePage(page);
         await homePage.navigate();
         const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
-        await signInOrCreatePage.clickSignIn();
+        const loginEmailPage = await signInOrCreatePage.clickSignIn();
 
+        // Verify accessibility on the One Login enter email page
         const results = await AccessibilityUtilities.analyzeAccessibility(page);
-
         const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
         expect(criticalViolations, `One Login enter email page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+
+        // Context Verification: Verify presence of key elements on the One Login enter email page
+        for (const locator of loginEmailPage.getContextLocators()) {
+            await expect(locator).toHaveScreenshot();
+        }
     });
 
     test('One Login Enter Password Page', async ({ page }, testInfo) => {
@@ -49,11 +59,16 @@ test.describe('Login Process Non-Functional Tests', () => {
         await homePage.navigate();
         const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
-        await loginEmailPage.enterEmailAndContinue(accounts[0].email);
+        const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(accounts[0].email);
 
+        // Verify accessibility on the One Login enter password page
         const results = await AccessibilityUtilities.analyzeAccessibility(page);
-
         const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
         expect(criticalViolations, `One Login enter password page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+
+        // Context Verification: Verify presence of key elements on the One Login enter password page
+        for (const locator of loginPasswordPage.getContextLocators()) {
+            await expect(locator).toHaveScreenshot();
+        }
     });
 });
