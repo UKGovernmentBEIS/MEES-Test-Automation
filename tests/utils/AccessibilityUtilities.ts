@@ -25,9 +25,8 @@ export interface AccessibilityResult {
 export class AccessibilityUtilities {
   /**
    * Analyzes the current page for accessibility violations using axe-core
-   * Configuration is loaded from tests/config/accessibility.config.json
    * @param page - The Playwright page object
-   * @param selector - Optional CSS selector string (e.g., '#my-element', '.my-class', '[role="dialog"]')
+   * @param selector - Optional CSS selector string to limit analysis
    * @returns Accessibility analysis results
    */
   static async analyzeAccessibility(
@@ -35,22 +34,16 @@ export class AccessibilityUtilities {
     selector?: string
   ): Promise<AccessibilityResult> {
     const axeBuilder = new AxeBuilder({ page });
+    
+    // Use legacy mode to avoid page closure issues
+    axeBuilder.setLegacyMode(true);
 
-    // Apply configurations from config file
-    if (accessibilityConfig.includeTags && accessibilityConfig.includeTags.length > 0) {
-      axeBuilder.withTags(accessibilityConfig.includeTags);
-    }
-    if (accessibilityConfig.excludeTags && accessibilityConfig.excludeTags.length > 0) {
-      axeBuilder.disableTags(accessibilityConfig.excludeTags);
-    }
-    if (accessibilityConfig.disableRules && accessibilityConfig.disableRules.length > 0) {
-      axeBuilder.disableRules(accessibilityConfig.disableRules);
-    }
-
-    // Include specific element if selector is provided
-    if (selector) {
-      axeBuilder.include(selector);
-    }
+    // Apply configuration
+    const { includeTags, excludeTags, disableRules } = accessibilityConfig;
+    if (includeTags?.length) axeBuilder.withTags(includeTags);
+    if (excludeTags?.length) axeBuilder.disableTags(excludeTags);
+    if (disableRules?.length) axeBuilder.disableRules(disableRules);
+    if (selector) axeBuilder.include(selector);
 
     const results = await axeBuilder.analyze();
 
@@ -63,19 +56,22 @@ export class AccessibilityUtilities {
   }
 
   /**
+   * Checks if there are any critical or serious accessibility violations
+   */
+  static hasCriticalViolations(violations: AccessibilityViolation[]): boolean {
+    return violations.some(v => v.impact === 'critical' || v.impact === 'serious');
+  }
+
+  /**
    * Formats accessibility violations into a readable string for test reports
-   * @param violations - Array of accessibility violations
-   * @returns Formatted string describing violations
    */
   static formatViolations(violations: AccessibilityViolation[]): string {
-    if (violations.length === 0) {
-      return 'No accessibility violations found.';
-    }
+    if (!violations.length) return 'No accessibility violations found.';
 
     return violations
       .map((violation, index) => {
         const nodeInfo = violation.nodes
-          .map((node) => `    Target: ${node.target.join(', ')}\n    HTML: ${node.html}`)
+          .map(node => `    Target: ${node.target.join(', ')}\n    HTML: ${node.html}`)
           .join('\n\n');
 
         return `
@@ -84,31 +80,8 @@ ${index + 1}. ${violation.id} (${violation.impact})
    Help: ${violation.help}
    Help URL: ${violation.helpUrl}
    Affected elements (${violation.nodes.length}):
-${nodeInfo}
-`;
+${nodeInfo}`;
       })
       .join('\n');
-  }
-
-  /**
-   * Checks if there are any critical or serious accessibility violations
-   * @param violations - Array of accessibility violations
-   * @returns True if critical or serious violations exist
-   */
-  static hasCriticalViolations(violations: AccessibilityViolation[]): boolean {
-    return violations.some((v) => v.impact === 'critical' || v.impact === 'serious');
-  }
-
-  /**
-   * Filters violations by impact level
-   * @param violations - Array of accessibility violations
-   * @param impacts - Array of impact levels to filter by
-   * @returns Filtered violations
-   */
-  static filterViolationsByImpact(
-    violations: AccessibilityViolation[],
-    impacts: string[]
-  ): AccessibilityViolation[] {
-    return violations.filter((v) => impacts.includes(v.impact));
   }
 }
