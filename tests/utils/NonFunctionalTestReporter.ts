@@ -40,7 +40,8 @@ class NonFunctionalTestReporter implements Reporter {
 
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, markdown);
-    console.log(`\nNon-functional test coverage report: ${reportPath}`);
+    const relativePath = path.relative(process.cwd(), reportPath);
+    console.log(`\nNon-functional test coverage report generated at:\n\n  ${relativePath}`);
   }
 }
 
