@@ -6,20 +6,13 @@ export class PRSE_LoginPasswordPage {
   private readonly page: Page;
   private readonly passwordInput: Locator;
   private readonly continueButton: Locator;
-  private readonly instructionText: Locator;
+  readonly pageContext: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.passwordInput = page.getByRole('textbox', { name: 'Password' });
     this.continueButton = page.getByRole('button', { name: 'Continue' });
-    this.instructionText = page.getByText('Enter your password');
-  }
-
-  // Context locators for verification
-  getContextLocators(): Locator[] {
-    return [
-      this.instructionText
-    ];
+    this.pageContext = page.locator('#main-content');
   }
 
   // Wait for the Login Password page to load
@@ -27,7 +20,7 @@ export class PRSE_LoginPasswordPage {
     await ElementUtilities.waitForPageToLoad(
       this.page,
       'Login Password Page',
-      { passwordInput: this.passwordInput, continueButton: this.continueButton, instructionText: this.instructionText },
+      { passwordInput: this.passwordInput, continueButton: this.continueButton },
       120000
     );
   }
@@ -36,18 +29,15 @@ export class PRSE_LoginPasswordPage {
    * Enter password
    * @param password The password to enter
    */
-  private async enterPassword(password: string): Promise<void> {
+  async enterPassword(password: string): Promise<void> {
     await ElementUtilities.fillText(this.passwordInput, password);
   }
 
   /**
    * Click the continue button
    */
-  private async clickContinue(): Promise<LandingPage> {
+  async clickContinue(): Promise<void> {
     await ElementUtilities.clickElement(this.continueButton);
-    const landingPage = new LandingPage(this.page);
-    await landingPage.waitForPageToLoad();
-    return landingPage;
   }
 
   /**
@@ -57,6 +47,9 @@ export class PRSE_LoginPasswordPage {
    */
   async enterPasswordAndContinue(password: string): Promise<LandingPage> {
     await this.enterPassword(password);
-    return await this.clickContinue();
+    await this.clickContinue();
+    const landingPage = new LandingPage(this.page);
+    await landingPage.waitForPageToLoad();
+    return landingPage;
   }
 }

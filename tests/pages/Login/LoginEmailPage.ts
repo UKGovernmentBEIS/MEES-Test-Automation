@@ -6,19 +6,13 @@ export class PRSE_LoginEmailPage {
   private readonly page: Page;
   private readonly emailInput: Locator;
   private readonly continueButton: Locator;
-  private readonly instructionText: Locator;
+  readonly pageContext: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.emailInput = page.getByRole('textbox', { name: 'Email' });
     this.continueButton = page.getByRole('button', { name: 'Continue' });
-    this.instructionText = page.getByText('Enter your email address to')
-  }
-
-  getContextLocators(): Locator[] {
-    return [
-      this.instructionText
-    ];
+    this.pageContext = page.locator('#main-content');
   }
 
   /**
@@ -36,18 +30,15 @@ export class PRSE_LoginEmailPage {
     await ElementUtilities.waitForPageToLoad(
       this.page,
       'Login Email Page',
-      { emailInput: this.emailInput, continueButton: this.continueButton, instructionText: this.instructionText }
+      { emailInput: this.emailInput, continueButton: this.continueButton }
     );
   }
 
   /**
    * Click the continue button
    */
-  async clickContinue(): Promise<PRSE_LoginPasswordPage> {
+  async clickContinue(): Promise<void> {
     await ElementUtilities.clickElement(this.continueButton);
-    const loginPasswordPage = new PRSE_LoginPasswordPage(this.page);
-    await loginPasswordPage.waitForPageToLoad();
-    return loginPasswordPage;
   }
 
   /**
@@ -57,6 +48,9 @@ export class PRSE_LoginEmailPage {
    */
   async enterEmailAndContinue(email: string): Promise<PRSE_LoginPasswordPage> {
     await this.enterEmail(email);
-    return await this.clickContinue();
+    await this.clickContinue();
+    const loginPasswordPage = new PRSE_LoginPasswordPage(this.page);
+    await loginPasswordPage.waitForPageToLoad();
+    return loginPasswordPage;
   }
 }

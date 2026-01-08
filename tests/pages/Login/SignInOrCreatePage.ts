@@ -5,26 +5,20 @@ import { PRSE_LoginEmailPage } from './LoginEmailPage';
 export class SignInOrCreatePage {
   private readonly page: Page;
   private readonly signInButton: Locator;
-  private readonly mainContextText: Locator;
+  readonly pageContext: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.signInButton = page.getByRole('button', { name: 'Sign in' });
-    this.mainContextText = page.locator('#main-content')
+    this.pageContext = page.locator('#main-content')
   }
 
   async waitForPageToLoad(): Promise<void> {
     await ElementUtilities.waitForPageToLoad(
       this.page,
       'Sign In Or Create Page',
-      { signInButton: this.signInButton, mainContextText: this.mainContextText }
+      { signInButton: this.signInButton }
     );
-  }
-
-  getContextLocators(): Locator[] {
-    return [
-      this.mainContextText
-    ];
   }
 
   async clickSignIn(): Promise<PRSE_LoginEmailPage> {
