@@ -25,8 +25,10 @@ test.describe('Login Process Non-Functional Tests', () => {
         expect(criticalViolations, `One Login home page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
 
         // Context Verification: Verify presence of key elements on the One Login home page
-        for (const locator of signInOrCreatePage.getContextLocators()) {
-            await expect(locator).toHaveScreenshot();
+        const contextLocatorArray = signInOrCreatePage.getContextLocators();
+        for (let i = 0; i < contextLocatorArray.length; i++) {
+            const locator = contextLocatorArray[i];
+            await expect(locator).toHaveScreenshot(`one-login-signin-or-create-account-page-${i}.png`);
         }
     });
 
@@ -44,8 +46,10 @@ test.describe('Login Process Non-Functional Tests', () => {
         expect(criticalViolations, `One Login enter email page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
 
         // Context Verification: Verify presence of key elements on the One Login enter email page
-        for (const locator of loginEmailPage.getContextLocators()) {
-            await expect(locator).toHaveScreenshot();
+        const contextLocatorArray = loginEmailPage.getContextLocators();
+        for (let i = 0; i < contextLocatorArray.length; i++) {
+            const locator = contextLocatorArray[i];
+            await expect(locator).toHaveScreenshot(`one-login-enter-email-page-${i}.png`);
         }
     });
 
@@ -73,8 +77,10 @@ test.describe('Login Process Non-Functional Tests', () => {
         expect(criticalViolations, `One Login enter password page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
 
         // Context Verification: Verify presence of key elements on the One Login enter password page
-        for (const locator of loginPasswordPage.getContextLocators()) {
-            await expect(locator).toHaveScreenshot();
+        const contextLocatorArray = loginPasswordPage.getContextLocators();
+        for (let i = 0; i < contextLocatorArray.length; i++) {
+            const locator = contextLocatorArray[i];
+            await expect(locator).toHaveScreenshot(`one-login-enter-password-page-${i}.png`);
         }
     });
 });

@@ -35,7 +35,7 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
-  /* Configure projects for major browsers */
+  /* Configure projects */
   projects: [
     { 
       name: 'setup', 
@@ -43,8 +43,6 @@ export default defineConfig({
       fullyParallel: true,
       workers: 2
     },
-
-    // Functional tests - user journeys, data validation, etc.
     {
       name: 'functional',
       testDir: './tests/test/functional',
@@ -67,6 +65,8 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Note: storageState is loaded dynamically in authFixtures based on worker index
       },
+      // Custom snapshot path template to remove project name and platform suffix
+      snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}',
       // Set to 1 worker for CI to use dedicated account (account 1)
       workers: process.env.CI ? 1 : undefined,
       // By default, setup must be run separately (for CI/CD artifact pattern)
