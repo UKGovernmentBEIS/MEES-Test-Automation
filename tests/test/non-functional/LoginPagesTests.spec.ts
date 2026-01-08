@@ -57,11 +57,8 @@ test.describe('Login Process Non-Functional Tests', () => {
         
         // Resolve environment variables for the account credentials
         const email = process.env[accountsConfig[0].email];
-        if (!email || email.trim() === '') {
-            throw new Error(
-                `Environment variable ${accountsConfig[0].email} is not set or is empty. ` +
-                `Value: "${email}", Type: ${typeof email}`
-            );
+        if (!email) {
+            throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
         }
 
         const homePage = new HomePage(page);

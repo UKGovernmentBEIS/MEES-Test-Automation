@@ -100,6 +100,8 @@ jobs:
     - name: Run non-functional tests
       run: npx playwright test --project=non-functional
       env:
+        env:
+        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         BASE_URL: ${{ secrets.BASE_URL }}
         AUTH_WORKER_OFFSET: 1
     - name: Upload Playwright HTML report
