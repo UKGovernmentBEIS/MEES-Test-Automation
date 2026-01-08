@@ -309,7 +309,8 @@ test.describe('Your Test Suite', () => {
 ├── Documentation/               # Framework documentation
 │   ├── Accessibility.md         # WCAG 2.2 AA testing guide
 │   ├── Authentication.md        # Authentication setup guide
-│   └── CI-CD.md                 # CI/CD pipeline configuration
+│   ├── CI-CD.md                 # CI/CD pipeline configuration
+│   └── ContextVerification.md   # Context & structure validation guide
 ├── specs/                       # Test specifications (if any)
 ├── tests/
 │   ├── config/
@@ -365,14 +366,20 @@ test.describe('Your Test Suite', () => {
 
 ## Non-Functional Testing
 
-The framework includes comprehensive non-functional testing including accessibility (WCAG 2.2 AA compliance) and context verification using axe-core integration with Playwright.
+The framework includes comprehensive non-functional testing covering multiple validation types to ensure pages are accessible, structurally correct, and visually consistent.
 
 **Quick Start:**
 ```bash
 npx playwright test --project=non-functional
 ```
 
-📄 **For comprehensive WCAG 2.2 AA criteria coverage and testing approach, see [Accessibility Testing Documentation](Documentation/Accessibility.md)**
+**Test Types:**
+- **Accessibility:** WCAG 2.2 AA compliance using axe-core
+- **Context Verification:** DOM structure, content validation, visual regression
+
+📄 **For comprehensive testing guides:**
+- **[Accessibility Testing Documentation](Documentation/Accessibility.md)** - WCAG 2.2 AA criteria coverage
+- **[Context Verification Documentation](Documentation/ContextVerification.md)** - DOM structure and content validation
 
 ### Custom Non-Functional Test Coverage Report
 
@@ -388,11 +395,7 @@ The framework automatically generates a detailed coverage report showing which n
 - Test execution status
 - Detailed results for each page
 
-**Test Types Included:**
-- **Accessibility:** WCAG 2.2 AA compliance testing using axe-core
-- **Context Verification:** URL patterns, DOM structure, heading verification
-- **Performance:** (planned) Page load times, resource optimization
-- **Security:** (planned) Content Security Policy, authentication flows
+**Coverage includes:** Accessibility compliance, DOM structure validation, URL patterns, content verification, and visual regression testing. See documentation links above for detailed implementation guides.
 
 ## Troubleshooting
 
