@@ -65,25 +65,11 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Note: storageState is loaded dynamically in authFixtures based on worker index
       },
-      expect: {
-        // Set a higher screenshot comparison threshold for non-functional tests
-        // otherwise tests will fail on different operating systems
-        toHaveScreenshot: { threshold: 0.2 }
-      },
-      // Custom snapshot path template to remove project name and platform suffix
-      snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}',
       // Set to 1 worker for CI to use dedicated account (account 1)
       workers: process.env.CI ? 1 : undefined,
       // By default, setup must be run separately (for CI/CD artifact pattern)
       // Set RUN_SETUP_AUTOMATICALLY=1 to run setup before tests (convenient for local dev)
       dependencies: process.env.RUN_SETUP_AUTOMATICALLY ? ['setup'] : []
     },
-  ],
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  ]
 });

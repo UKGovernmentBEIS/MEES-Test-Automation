@@ -1,0 +1,15 @@
+- heading "Review non-compliant properties" [level=1]
+- paragraph: "Use this service to:"
+- list:
+  - listitem: Review non-compliant properties in your local authority area
+  - listitem: Review the exemptions
+  - listitem: Add comments
+- paragraph: This service is for local authorities only.
+- heading "To start using this service" [level=2]
+- paragraph:
+  - link "Complete our local authority sign up form if you have not already done so.":
+    - /url: https://google.co.uk
+- paragraph: "You will need:"
+- list:
+  - listitem: to use the email address you have in the sign up form
+  - listitem: log in through your government One Login account - this invitation was emailed to you by our team
