@@ -1,0 +1,17 @@
+- main:
+  - heading "Create your GOV.UK One Login or sign in" [level=1]
+  - paragraph: You can use your GOV.UK One Login to access some government services.
+  - paragraph: In the future, you’ll be able to use it to access all services on GOV.UK.
+  - paragraph: "You’ll need:"
+  - list:
+    - listitem: an email address
+    - listitem: a way to get security codes - this can be a mobile phone number or an authenticator app
+  - text: You can also
+  - link "use GOV.UK One Login in Welsh (Cymraeg)":
+    - /url: "?lng=cy"
+  - text: .
+  - button "Create your GOV.UK One Login"
+  - button "Sign in"
+  - paragraph:
+    - link "Services you can use with GOV.UK One Login (opens in new tab)":
+      - /url: https://www.gov.uk/using-your-gov-uk-one-login/services

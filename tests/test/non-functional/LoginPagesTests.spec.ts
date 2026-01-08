@@ -28,7 +28,7 @@ test.describe('Login Process Non-Functional Tests', () => {
         const contextLocatorArray = signInOrCreatePage.getContextLocators();
         for (let i = 0; i < contextLocatorArray.length; i++) {
             const locator = contextLocatorArray[i];
-            await expect(locator).toHaveScreenshot(`one-login-signin-or-create-account-page-${i}.png`);
+            await expect(locator).toMatchAriaSnapshot();
         }
     });
 
@@ -49,7 +49,7 @@ test.describe('Login Process Non-Functional Tests', () => {
         const contextLocatorArray = loginEmailPage.getContextLocators();
         for (let i = 0; i < contextLocatorArray.length; i++) {
             const locator = contextLocatorArray[i];
-            await expect(locator).toHaveScreenshot(`one-login-enter-email-page-${i}.png`);
+            await expect(locator).toMatchAriaSnapshot();
         }
     });
 
@@ -80,7 +80,7 @@ test.describe('Login Process Non-Functional Tests', () => {
         const contextLocatorArray = loginPasswordPage.getContextLocators();
         for (let i = 0; i < contextLocatorArray.length; i++) {
             const locator = contextLocatorArray[i];
-            await expect(locator).toHaveScreenshot(`one-login-enter-password-page-${i}.png`);
+            await expect(locator).toMatchAriaSnapshot();
         }
     });
 });
