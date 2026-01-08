@@ -139,7 +139,7 @@ test.describe('Login Process Non-Functional Tests', () => {
     });
     
     test('One Login Invalid Password Page', async ({ page }, testInfo) => {
-        testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_INVALID_EMAIL_ERROR));
+        testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_INVALID_PASSWORD_ERROR));
 
         // Load test account credentials
         const accountsPath = path.join(__dirname, '../../config/test-accounts.json');
