@@ -65,6 +65,11 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Note: storageState is loaded dynamically in authFixtures based on worker index
       },
+      expect: {
+        // Set a higher screenshot comparison threshold for non-functional tests
+        // otherwise tests will fail on different operating systems
+        toHaveScreenshot: { threshold: 0.2 }
+      },
       // Custom snapshot path template to remove project name and platform suffix
       snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}',
       // Set to 1 worker for CI to use dedicated account (account 1)
