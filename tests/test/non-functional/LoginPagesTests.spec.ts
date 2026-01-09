@@ -90,7 +90,7 @@ test.describe('Login Process Non-Functional Tests', () => {
         await expect(loginEmailPage.pageContext).toMatchAriaSnapshot();
     });
 
-    test.skip('One Login Invalid Email Error Page', async ({ page }, testInfo) => {
+    test('One Login Invalid Email Error Page', async ({ page }, testInfo) => {
         testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_INVALID_EMAIL_ERROR));
         const homePage = new HomePage(page);
         await homePage.navigate();
