@@ -1,0 +1,12 @@
+- main:
+  - heading "You have a GOV.UK One Login" [level=1]
+  - paragraph: There’s already a GOV.UK One Login using michal.swierkosz@googlemail.com
+  - paragraph: Enter your password to sign in.
+  - text: Password
+  - textbox "Password"
+  - button "Show password"
+  - text: Your password is hidden
+  - button "Continue"
+  - paragraph:
+    - link "I’ve forgotten my password":
+      - /url: /reset-password-request

@@ -1,0 +1,15 @@
+- main:
+  - heading "Enter your email address" [level=1]
+  - textbox "Enter your email address"
+  - heading "Agree to the GOV.UK One Login terms and conditions" [level=1]
+  - paragraph:
+    - text: By continuing, you confirm that you agree to our
+    - link "terms and conditions (opens in a new tab)":
+      - /url: /terms-and-conditions
+    - text: .
+  - paragraph:
+    - text: To find out how we use your personal information, see our
+    - link "privacy notice (opens in a new tab)":
+      - /url: /govuk-one-login-privacy-notice
+    - text: .
+  - button "Continue"

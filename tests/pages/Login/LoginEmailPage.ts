@@ -1,26 +1,12 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
-import { PRSE_LoginPasswordPage } from './LoginPasswordPage';
+import { LoginPasswordPage } from './LoginPasswordPage';
+import { BaseEmailPage } from './BasePages/BaseEmailPage';
 
-export class PRSE_LoginEmailPage {
-  private readonly page: Page;
-  private readonly emailInput: Locator;
-  private readonly continueButton: Locator;
-  readonly pageContext: Locator;
+export class LogInEmailPage extends BaseEmailPage {
 
   constructor(page: Page) {
-    this.page = page;
-    this.emailInput = page.getByRole('textbox', { name: 'Email' });
-    this.continueButton = page.getByRole('button', { name: 'Continue' });
-    this.pageContext = page.locator('#main-content');
-  }
-
-  /**
-   * Enter email address
-   * @param email The email address to enter
-   */
-  async enterEmail(email: string): Promise<void> {
-    await ElementUtilities.fillText(this.emailInput, email);
+    super(page);
   }
 
   /**
@@ -35,21 +21,14 @@ export class PRSE_LoginEmailPage {
   }
 
   /**
-   * Click the continue button
-   */
-  async clickContinue(): Promise<void> {
-    await ElementUtilities.clickElement(this.continueButton);
-  }
-
-  /**
    * Enter email and continue to password page
    * @param email The email address to enter
-   * @returns PRSE_LoginPasswordPage instance
+   * @returns LoginPasswordPage instance
    */
-  async enterEmailAndContinue(email: string): Promise<PRSE_LoginPasswordPage> {
+  async enterEmailAndContinue(email: string): Promise<LoginPasswordPage> {
     await this.enterEmail(email);
     await this.clickContinue();
-    const loginPasswordPage = new PRSE_LoginPasswordPage(this.page);
+    const loginPasswordPage = new LoginPasswordPage(this.page);
     await loginPasswordPage.waitForPageToLoad();
     return loginPasswordPage;
   }

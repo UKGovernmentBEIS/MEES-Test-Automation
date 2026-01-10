@@ -6,17 +6,20 @@ import path from 'path';
 import fs from 'fs';
 
 test.describe('Login Process Non-Functional Tests', () => {
-    test.beforeEach(async ({}, testInfo) => {
+    let homePage: HomePage;
+    test.beforeEach(async ({ page }, testInfo) => {
         testInfo.annotations.push(
             TestAnnotations.testType(TestType.ACCESSIBILITY),
             TestAnnotations.testType(TestType.CONTEXT_VERIFICATION)
         );
+
+        homePage = new HomePage(page);
+        await homePage.navigate();
     });
 
     test('One Login SignIn or Create Account Page', async ({ page }, testInfo) => {
         testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_SIGNIN_OR_CREATE_ACCOUNT));
-        const homePage = new HomePage(page);
-        await homePage.navigate();
+        
         const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
 
         // Verify accessibility on the One Login home page
@@ -29,12 +32,10 @@ test.describe('Login Process Non-Functional Tests', () => {
     });
 
     test('One Login Enter Email Page', async ({ page }, testInfo) => {
-        testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_EMAIL));
+        testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_ENTER_EMAIL));
 
-        const homePage = new HomePage(page);
-        await homePage.navigate();
         const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
-        const loginEmailPage = await signInOrCreatePage.clickSignIn();
+        const logInEmailPage = await signInOrCreatePage.clickSignIn();
 
         // Verify accessibility on the One Login enter email page
         const results = await AccessibilityUtilities.analyzeAccessibility(page);
@@ -42,11 +43,11 @@ test.describe('Login Process Non-Functional Tests', () => {
         expect(criticalViolations, `One Login enter email page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
 
         // Context Verification: Verify presence of key elements on the One Login enter email page
-        await expect(loginEmailPage.pageContext).toMatchAriaSnapshot();
+        await expect(logInEmailPage.pageContext).toMatchAriaSnapshot();
     });
 
     test('One Login Enter Password Page', async ({ page }, testInfo) => {
-        testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_PASSWORD));
+        testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_ENTER_PASSWORD));
 
         const accountsPath = path.join(__dirname, '../../config/test-accounts.json');
         const accountsConfig = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).accounts;
@@ -57,8 +58,6 @@ test.describe('Login Process Non-Functional Tests', () => {
             throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
         }
 
-        const homePage = new HomePage(page);
-        await homePage.navigate();
         const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
@@ -74,8 +73,7 @@ test.describe('Login Process Non-Functional Tests', () => {
 
     test('One Login Mandatory Email Error Page', async ({ page }, testInfo) => {
         testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_MANDATORY_EMAIL_ERROR));
-        const homePage = new HomePage(page);
-        await homePage.navigate();
+
         const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         // Leave email blank and click continue
@@ -92,8 +90,7 @@ test.describe('Login Process Non-Functional Tests', () => {
 
     test('One Login Invalid Email Error Page', async ({ page }, testInfo) => {
         testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_INVALID_EMAIL_ERROR));
-        const homePage = new HomePage(page);
-        await homePage.navigate();
+
         const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         await loginEmailPage.enterEmail('invalid-email');
@@ -121,8 +118,6 @@ test.describe('Login Process Non-Functional Tests', () => {
             throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
         }
 
-        const homePage = new HomePage(page);
-        await homePage.navigate();
         const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
@@ -151,8 +146,6 @@ test.describe('Login Process Non-Functional Tests', () => {
             throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
         }
 
-        const homePage = new HomePage(page);
-        await homePage.navigate();
         const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);

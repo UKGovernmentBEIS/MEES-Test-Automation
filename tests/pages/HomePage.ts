@@ -22,7 +22,7 @@ export class HomePage {
   }
 
   /**
-   * Navigate to the PRSE Exemptions Register page
+   * Navigate to the MEES page
    */
   async navigate(): Promise<void> {
     await this.page.goto('');
@@ -30,7 +30,7 @@ export class HomePage {
   }
 
   /**   
-   * Wait for the PRSE Home page to load
+   * Wait for the MEES Home page to load
    */
   private async waitForPageToLoad(): Promise<void> {
     await ElementUtilities.waitForPageToLoad(
@@ -48,24 +48,5 @@ export class HomePage {
     const signInOrCreatePage = new SignInOrCreatePage(this.page);
     await signInOrCreatePage.waitForPageToLoad();
     return signInOrCreatePage;
-  }
-
-  /**
-   * Authenticated User - Click Start Now button to navigate to Have You Registered Exemptions page
-   */
-  async clickStartNow_AuthenticatedUser(): Promise<PRSE_HaveRegisteredExemptionPage> {
-    await ElementUtilities.clickElement(this.startNowButton!);
-    
-    const nextPage = new PRSE_HaveRegisteredExemptionPage(this.page);
-    await ElementUtilities.waitForPageToLoad(
-      this.page,
-      'Have Registered Exemption Page',
-      {
-        registeredBeforeNoButton: nextPage['registeredBeforeNoButton'],
-        continueButton: nextPage['continueButton']
-      }
-    );
-    
-    return nextPage;
   }
 }

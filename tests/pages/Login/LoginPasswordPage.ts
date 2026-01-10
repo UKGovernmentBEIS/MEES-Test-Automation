@@ -2,7 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities.ts';
 import { LandingPage } from '../Compliance/LandingPage.ts';
 
-export class PRSE_LoginPasswordPage {
+export class LoginPasswordPage {
   private readonly page: Page;
   private readonly passwordInput: Locator;
   private readonly continueButton: Locator;
