@@ -3,7 +3,7 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import { CheckEmailPage } from './CheckEmailPage';
 import { BaseEmailPage } from './BasePages/BaseEmailPage';
 
-export class SignUpEmailPage extends BaseEmailPage {
+export class RegistrationEmailPage extends BaseEmailPage {
   private readonly termsAndConditionsText: Locator;
   private readonly termsAndConditionsLink: Locator;
   private readonly privacyNoticeLink: Locator;
