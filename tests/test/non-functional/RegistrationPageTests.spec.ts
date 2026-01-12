@@ -2,9 +2,10 @@ import { test, expect } from '@playwright/test';
 import { TestAnnotations, PageName, TestType } from '../../utils/TestTypes.ts';
 import { HomePage } from '../../pages/HomePage.ts';
 import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
+import { RegistrationEmailPage } from '../../pages/Login/RegistrationEmailPage.ts';
 import path from 'path';
 import fs from 'fs';
-import { RegistrationEmailPage } from '../../pages/Login/RegistrationEmailPage.ts';
+
 
 test.describe('Registration Pages Tests', () => {
     let registrationEmailPage: RegistrationEmailPage;
@@ -92,4 +93,7 @@ test.describe('Registration Pages Tests', () => {
         // Context Verification: Verify presence of key elements on the One Login Check Your Email Page
         await expect(checkYourEmailPage.pageContext).toMatchAriaSnapshot();
     });
+
+    // test('One Login Existing Email Error Page', async ({ page }, testInfo) => {
+    //     testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_EXISTING_EMAIL_REGISTRATION_ERROR));
 });

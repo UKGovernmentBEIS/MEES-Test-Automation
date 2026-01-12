@@ -1,7 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
-import { SignUpEmailPage } from './SignUpEmailPage';
 import { LogInEmailPage } from './LoginEmailPage';
+import { RegistrationEmailPage } from './RegistrationEmailPage';
 
 export class SignInOrCreatePage {
   private readonly page: Page;
@@ -33,10 +33,10 @@ export class SignInOrCreatePage {
     return loginEmailPage;
   }
 
-  async clickCreateAnAccountLink(): Promise<SignUpEmailPage> {
+  async clickCreateAnAccountLink(): Promise<RegistrationEmailPage> {
     await ElementUtilities.clickElement(this.createAnAccountButton);
-    const signUpEmailPage = new SignUpEmailPage(this.page);
-    await signUpEmailPage.waitForPageToLoad();
-    return signUpEmailPage;
+    const registrationEmailPage = new RegistrationEmailPage(this.page);
+    await registrationEmailPage.waitForPageToLoad();
+    return registrationEmailPage;
   }
 }
