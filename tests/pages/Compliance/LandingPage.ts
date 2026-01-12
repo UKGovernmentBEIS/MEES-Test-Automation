@@ -7,7 +7,7 @@ export class LandingPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.headingMessage = this.page.getByText('Search the non-compliant properties');
+        this.headingMessage = this.page.getByText('Check if properties meet minimum energy efficiency standards');
     }
 
     // Wait for the Compliance Landing page to load
