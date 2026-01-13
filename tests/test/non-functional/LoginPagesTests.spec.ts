@@ -187,4 +187,20 @@ test.describe('Login Process Non-Functional Tests', () => {
         // Context Verification: Verify presence of key elements on the One Login forgotten password page
         await expect(forgottenPasswordPage.pageContext).toMatchAriaSnapshot();
     });
+
+    test('One Login Account Not Found Page', async ({ page }, testInfo) => {
+        testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_ACCOUNT_NOT_FOUND));
+
+        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const loginEmailPage = await signInOrCreatePage.clickSignIn();
+        const accountNotFoundPage = await loginEmailPage.enterEmailAndContinueToAccountNotFoundPage('test@test.com');
+
+        // Verify accessibility on the One Login account not found page
+        const results = await AccessibilityUtilities.analyzeAccessibility(page);
+        const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
+        expect(criticalViolations, `One Login account not found page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+
+        // Context Verification: Verify presence of key elements on the One Login account not found page
+        await expect(accountNotFoundPage.pageContext).toMatchAriaSnapshot();
+    });
 });

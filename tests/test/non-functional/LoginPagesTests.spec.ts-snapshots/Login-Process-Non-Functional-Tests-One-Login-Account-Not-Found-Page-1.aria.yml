@@ -1,0 +1,9 @@
+- main:
+  - heading "You do not have a GOV.UK One Login" [level=1]
+  - paragraph: There is no GOV.UK One Login for test@test.com
+  - paragraph: You’ll need to create a GOV.UK One Login to use this service.
+  - paragraph: At the moment, there are separate accounts for signing in to different government services.
+  - button "Create a GOV.UK One Login"
+  - paragraph:
+    - link "Try another email address":
+      - /url: /enter-email

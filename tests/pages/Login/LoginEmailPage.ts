@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { LoginPasswordPage } from './LoginPasswordPage';
 import { BaseEmailPage } from './BasePages/BaseEmailPage';
+import { LogInAccountNotFoundPage } from './LogInAccountNotFoundPage';
 
 export class LogInEmailPage extends BaseEmailPage {
 
@@ -31,5 +32,13 @@ export class LogInEmailPage extends BaseEmailPage {
     const loginPasswordPage = new LoginPasswordPage(this.page);
     await loginPasswordPage.waitForPageToLoad();
     return loginPasswordPage;
+  }
+
+  async enterEmailAndContinueToAccountNotFoundPage(email: string) {
+    await this.enterEmail(email);
+    await this.clickContinue();
+    const accountNotFoundPage = new LogInAccountNotFoundPage(this.page);
+    await accountNotFoundPage.waitForPageToLoad();
+    return accountNotFoundPage;
   }
 }
