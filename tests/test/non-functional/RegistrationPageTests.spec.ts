@@ -7,7 +7,7 @@ import path from 'path';
 import fs from 'fs';
 
 
-test.describe('Registration Pages Tests', () => {
+test.describe('Registration Process Non-Functional Tests', () => {
     let registrationEmailPage: RegistrationEmailPage;
 
     test.beforeEach(async ({ page }, testInfo) => {
@@ -73,17 +73,8 @@ test.describe('Registration Pages Tests', () => {
     test('One Login Check Your Email Page', async ({ page }, testInfo) => {
         testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_CHECK_YOUR_EMAIL_REGISTRATION));
 
-        // Load test account credentials
-        const accountsPath = path.join(__dirname, '../../config/test-accounts.json');
-        const accountsConfig = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).accounts;
-        // Resolve environment variables for the account credentials
-        const email = process.env[accountsConfig[0].email];
-        if (!email) {
-            throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
-        }
-
         // Enter a test email and submit to navigate to Check Your Email Page
-        const checkYourEmailPage = await registrationEmailPage.enterEmailAndContinue(email);
+        const checkYourEmailPage = await registrationEmailPage.enterEmailAndContinue("test@test.com");
 
         // Verify accessibility of One Login Check Your Email Page
         const results = await AccessibilityUtilities.analyzeAccessibility(page);
@@ -94,6 +85,39 @@ test.describe('Registration Pages Tests', () => {
         await expect(checkYourEmailPage.pageContext).toMatchAriaSnapshot();
     });
 
-    // test('One Login Existing Email Error Page', async ({ page }, testInfo) => {
-    //     testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_EXISTING_EMAIL_REGISTRATION_ERROR));
+    test('One Login Existing Email Provide Password Page', async ({ page }, testInfo) => {
+        testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_EXISTING_EMAIL_REGISTRATION));
+
+        // Load test account credentials
+        const accountsPath = path.join(__dirname, '../../config/test-accounts.json');
+        const accountsConfig = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).accounts;
+        // Resolve environment variables for the account credentials
+        const email = process.env[accountsConfig[0].email];
+        if (!email) {
+            throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
+        }
+
+        // Enter a already registered email and submit to navigate to Check Your Email Page
+        const checkYourEmailPage = await registrationEmailPage.enterEmailAndContinue(email);
+
+        // Verify accessibility of One Login Existing Email Page
+        const results = await AccessibilityUtilities.analyzeAccessibility(page);
+        const criticalViolations = await AccessibilityUtilities.hasCriticalViolations(results.violations);
+        expect(criticalViolations, `One Login Existing Email Provide Password page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+
+        // Context Verification: Verify presence of key elements on the One Login Existing Email Page
+        // Use template literal to inject the email into the snapshot
+        await expect(checkYourEmailPage.pageContext).toMatchAriaSnapshot(`- main:
+  - heading "You have a GOV.UK One Login" [level=1]
+  - paragraph: There’s already a GOV.UK One Login using ${email}
+  - paragraph: Enter your password to sign in.
+  - text: Password
+  - textbox "Password"
+  - button "Show password": Show
+  - text: Your password is hidden
+  - button "Continue"
+  - paragraph:
+    - link "I’ve forgotten my password":
+      - /url: /reset-password-request`);
+    });
 });

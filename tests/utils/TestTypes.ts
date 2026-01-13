@@ -22,7 +22,7 @@ export enum PageName {
   ONE_LOGIN_ENTER_PASSWORD = 'One Login Enter Password Page',
   ONE_LOGIN_MANDATORY_EMAIL_ERROR = 'One Login Mandatory Email Error Page',
   ONE_LOGIN_INVALID_EMAIL_ERROR = 'One Login Invalid Email Error Page',
-  ONE_LOGIN_EXISTING_EMAIL_REGISTRATION_ERROR = 'One Login Existing Email Registration Error Page',
+  ONE_LOGIN_EXISTING_EMAIL_REGISTRATION = 'One Login Existing Email Registration Page',
   ONE_LOGIN_MISSING_PASSWORD_ERROR = 'One Login Missing Password Error Page',
   ONE_LOGIN_INVALID_PASSWORD_ERROR = 'One Login Invalid Password Error Page',
   ONE_LOGIN_ENTER_EMAIL_REGISTRATION = 'One Login Enter Email Registration Page',

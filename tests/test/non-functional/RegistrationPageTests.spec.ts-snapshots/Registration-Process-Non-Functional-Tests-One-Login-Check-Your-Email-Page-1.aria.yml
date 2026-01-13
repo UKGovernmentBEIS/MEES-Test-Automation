@@ -1,0 +1,10 @@
+- main:
+  - heading "Check your email" [level=1]
+  - text: "We have sent an email to: test@test.com"
+  - paragraph: The email contains a 6 digit security code.
+  - paragraph: Your email might take a few minutes to arrive. If you do not get an email, check your spam folder.
+  - paragraph: The code will expire after one hour.
+  - text: Enter the 6 digit code
+  - textbox "Enter the 6 digit code"
+  - button "Continue"
+  - group: Problems with the code?
