@@ -1,15 +1,14 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
+import { BaseCheckEmailPage } from './BasePages/BaseCheckEmailPage';
 
-export class CheckEmailPage {
-  private readonly page: Page
-  readonly pageContext: Locator;
+export class CheckEmailRegistrationPage extends BaseCheckEmailPage {
 
   constructor(page: Page) {
+    super(page);
     this.page = page;
-    this.pageContext = page.locator('#main-content');
   }
-
+ 
     // Wait for the Check Email page to load
     async waitForPageToLoad(): Promise<void> {
         await ElementUtilities.waitForPageToLoad(

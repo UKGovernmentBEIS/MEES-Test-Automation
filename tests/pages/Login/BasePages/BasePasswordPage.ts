@@ -1,17 +1,20 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../../utils/ElementUtilities';
 import { LandingPage } from '../../Compliance/LandingPage';
+import { CheckEmailResetPasswordPage } from '../CheckEmailResetPasswordPage';
 
 export abstract class BasePasswordPage {
   protected readonly page: Page;
   protected passwordInput: Locator;
   protected continueButton: Locator;
+  protected forgotPasswordLink: Locator;
   pageContext: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.passwordInput = page.getByRole('textbox', { name: 'Password' });
     this.continueButton = page.getByRole('button', { name: 'Continue' });
+    this.forgotPasswordLink = page.getByRole('link', { name: 'I’ve forgotten my password' });
     this.pageContext = page.locator('#main-content');
   }
 
@@ -21,6 +24,13 @@ export abstract class BasePasswordPage {
 
   async clickContinue(): Promise<void> {
     await ElementUtilities.clickElement(this.continueButton);
+  }
+
+  async clickForgotPasswordLink(): Promise<CheckEmailResetPasswordPage> {
+    await ElementUtilities.clickElement(this.forgotPasswordLink);
+    const checkEmailResetPasswordPage = new CheckEmailResetPasswordPage(this.page);
+    await checkEmailResetPasswordPage.waitForPageToLoad();
+    return checkEmailResetPasswordPage;
   }
 
   // Wait for the Login Password page to load

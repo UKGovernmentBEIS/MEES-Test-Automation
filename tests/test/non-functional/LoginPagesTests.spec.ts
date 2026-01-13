@@ -160,4 +160,31 @@ test.describe('Login Process Non-Functional Tests', () => {
         // Context Verification: Verify presence of key elements on the One Login invalid password error page
         await expect(loginPasswordPage.pageContext).toMatchAriaSnapshot();
     });
+
+    test('One Login Forgotten Password Page', async ({ page }, testInfo) => {
+        testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_FORGOTTEN_PASSWORD));
+
+        // Load test account credentials
+        const accountsPath = path.join(__dirname, '../../config/test-accounts.json');
+        const accountsConfig = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).accounts;
+
+        // Resolve environment variables for the account credentials
+        const email = process.env[accountsConfig[0].email]; 
+        if (!email) {
+            throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
+        }
+
+        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const loginEmailPage = await signInOrCreatePage.clickSignIn();
+        const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
+        const forgottenPasswordPage = await loginPasswordPage.clickForgotPasswordLink();
+
+        // Verify accessibility on the One Login forgotten password page
+        const results = await AccessibilityUtilities.analyzeAccessibility(page);
+        const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
+        expect(criticalViolations, `One Login forgotten password page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+
+        // Context Verification: Verify presence of key elements on the One Login forgotten password page
+        await expect(forgottenPasswordPage.pageContext).toMatchAriaSnapshot();
+    });
 });

@@ -1,6 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
-import { CheckEmailPage } from './CheckEmailPage';
+import { CheckEmailRegistrationPage } from './CheckEmailRegistrationPage';
 import { BaseEmailPage } from './BasePages/BaseEmailPage';
 
 export class RegistrationEmailPage extends BaseEmailPage {
@@ -40,10 +40,10 @@ export class RegistrationEmailPage extends BaseEmailPage {
      * @param email The email address to enter
      * @returns SignUpPasswordPage instance
      */
-    async enterEmailAndContinue(email: string): Promise<CheckEmailPage> {
+    async enterEmailAndContinue(email: string): Promise<CheckEmailRegistrationPage> {
       await this.enterEmail(email);
       await this.clickContinue();
-      const checkEmailPage = new CheckEmailPage(this.page);
+      const checkEmailPage = new CheckEmailRegistrationPage(this.page);
       await checkEmailPage.waitForPageToLoad();
       return checkEmailPage;
     }
