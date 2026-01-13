@@ -1,0 +1,20 @@
+- main:
+  - link "Back":
+    - /url: /
+  - list:
+    - listitem:
+      - button "Logout"
+  - link "Back":
+    - /url: /
+  - list
+  - heading "You do not have access to this service" [level=1]
+  - paragraph: This service is only for local authorities.
+  - heading "To start using this service" [level=2]
+  - paragraph:
+    - text: If you are a local authority user who needs access, complete our
+    - link "local authority sign up form.":
+      - /url: https://google.co.uk
+  - paragraph: "If you have completed this form, to log in you need to:"
+  - list:
+    - listitem: to use the email address you gave in the local authority sign up form
+    - listitem: log in through your government One Login account; this information was emailed to you by our team
