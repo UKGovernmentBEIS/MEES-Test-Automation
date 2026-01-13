@@ -70,6 +70,10 @@ Follow these steps to set up the test framework on your local machine:
    TEST_ACCOUNT_2_EMAIL=your-email-2@example.com
    TEST_ACCOUNT_2_PASSWORD=YourPassword2!
    
+   # No Access Account (for No Access Page testing)
+   TEST_NO_ACCESS_EMAIL=no-access-account@example.com
+   TEST_NO_ACCESS_PASSWORD=YourNoAccessPassword!
+   
    # Application URL
    BASE_URL=https://desnz-gm--prseqa.sandbox.my.site.com/PRSExemptionsRegister
    ```
@@ -104,7 +108,12 @@ Follow these steps to set up the test framework on your local machine:
          "password": "TEST_ACCOUNT_2_PASSWORD",
          "description": "Secondary test account - Worker 1"
        }
-     ]
+     ],
+     "noAccessAccount": {
+       "email": "TEST_NO_ACCESS_EMAIL",
+       "password": "TEST_NO_ACCESS_PASSWORD",
+       "description": "Test account that has no access to the Compliance Hub"
+     }
    }
    ```
 
@@ -132,6 +141,8 @@ Follow these steps to set up the test framework on your local machine:
 |----------|---------|---------|----------|
 | `TEST_ACCOUNT_N_EMAIL` | Test user email addresses | `test@example.com` | ✅ Yes |
 | `TEST_ACCOUNT_N_PASSWORD` | Test user passwords | `SecurePass123!` | ✅ Yes |
+| `TEST_NO_ACCESS_EMAIL` | No-access account email | `noaccess@example.com` | ✅ Yes (for No Access Page tests) |
+| `TEST_NO_ACCESS_PASSWORD` | No-access account password | `NoAccessPass123!` | ✅ Yes (for No Access Page tests) |
 | `BASE_URL` | Application base URL | `https://app.example.com` | ✅ Yes |
 | `RUN_SETUP_AUTOMATICALLY` | Auto-run setup before tests | `1` (auto-run) or `0`/unset (manual) | 🔧 Optional |
 

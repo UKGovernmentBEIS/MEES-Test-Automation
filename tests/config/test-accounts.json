@@ -11,5 +11,10 @@
       "password": "TEST_ACCOUNT_2_PASSWORD",
       "description": "Secondary test account - Worker 1"
     }
-  ]
+  ],
+  "noAccessAccount": {
+    "email": "TEST_NO_ACCESS_EMAIL",
+    "password": "TEST_NO_ACCESS_PASSWORD",
+    "description": "Test account that has no access to the Compliance Hub"
+  }
 }
