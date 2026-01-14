@@ -36,7 +36,7 @@ This is a Proof of Concept (POC) project to prepare a Test Automation Framework 
 6. [Creating New Test Files](#creating-new-test-files)
 7. [Project Structure](#project-structure)
 8. [Configuration](#configuration)
-9. [Accessibility Testing](#accessibility-testing)
+9. [Non-Functional Testing](#non-functional-testing)
 10. [Troubleshooting](#troubleshooting)
 
 ## Getting Started
@@ -315,50 +315,33 @@ test.describe('Your Test Suite', () => {
 ├── playwright.config.ts          # Playwright configuration
 ├── package.json                  # Node.js dependencies and scripts
 ├── README.md                     # This file
-├── CopilotHelper/               # AI assistant project documentation
-│   └── ProjectStandards.md      # Coding standards and guidelines
 ├── Documentation/               # Framework documentation
 │   ├── Accessibility.md         # WCAG 2.2 AA testing guide
 │   ├── Authentication.md        # Authentication setup guide
 │   ├── CI-CD.md                 # CI/CD pipeline configuration
 │   └── ContextVerification.md   # Context & structure validation guide
-├── specs/                       # Test specifications (if any)
-├── tests/
-│   ├── config/
-│   │   ├── accessibility.config.json  # Accessibility testing configuration
-│   │   └── test-accounts.json         # Test account credentials (gitignored)
-│   ├── fixtures/
-│   │   └── authFixtures.ts       # Custom fixtures for shared context
-│   ├── pages/                    # Page Object Models
-│   │   ├── HomePage.ts
-│   │   ├── Compliance/
-│   │   │   └── LandingPage.ts
-│   │   └── Login/
-│   │       ├── LoginEmailPage.ts
-│   │       ├── LoginPasswordPage.ts
-│   │       └── SignInOrCreatePage.ts
-│   ├── test/
-│   │   ├── functional/
-│   │   │   └── *.spec.ts         # Functional test files
-│   │   ├── non-functional/
-│   │   │   └── *.spec.ts         # Non-functional test files (accessibility, etc.)
-│   │   └── setup/
-│   │       └── auth.setup.ts     # Authentication setup (per worker)
-│   └── utils/                    # Test utilities
-│       ├── AccessibilityUtilities.ts    # WCAG testing utilities
-│       ├── ElementUtilities.ts          # DOM element utilities
-│       ├── NonFunctionalTestReporter.ts # Test coverage reporting
-│       └── TestTypes.ts                 # Type definitions
-├── playwright/
-│   └── auth-states/              # Stored authentication sessions
-│       ├── user-0.json           # Worker 0 auth state
-│       ├── user-1.json           # Worker 1 auth state
-│       └── user-N.json           # Worker N auth state
-├── playwright-report/            # Generated test reports
-│   └── index.html               # HTML test report
-└── test-results/                # Test execution results
-    └── non-functional-test-coverage.md  # Auto-generated coverage report
+└── tests/
+    ├── config/                   # Test configuration files
+    ├── fixtures/                 # Custom test fixtures and shared context
+    ├── pages/                    # Page Object Models
+    │   ├── Compliance/          # Compliance Hub page objects
+    │   └── Login/               # Authentication and login page objects
+    │       └── BasePages/       # Base classes for login pages
+    ├── test/
+    │   ├── functional/          # End-to-end functional tests
+    │   ├── non-functional/      # Accessibility, performance, and validation tests
+    │   │   └── *-snapshots/     # Visual regression test snapshots
+    │   └── setup/               # Authentication setup and configuration
+    └── utils/                   # Test utilities and helper functions
 ```
+
+**Note:** The following directories and files are generated at runtime and are excluded from version control:
+- `node_modules/` - Package dependencies
+- `playwright/auth-states/` - Stored authentication sessions
+- `playwright-report/` - Generated test reports
+- `test-results/` - Test execution results and coverage reports
+- `.env` - Environment variables (contains sensitive credentials)
+- `CopilotHelper/` - AI assistant project documentation
 
 ## Configuration
 
