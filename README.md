@@ -335,14 +335,6 @@ test.describe('Your Test Suite', () => {
     └── utils/                   # Test utilities and helper functions
 ```
 
-**Note:** The following directories and files are generated at runtime and are excluded from version control:
-- `node_modules/` - Package dependencies
-- `playwright/auth-states/` - Stored authentication sessions
-- `playwright-report/` - Generated test reports
-- `test-results/` - Test execution results and coverage reports
-- `.env` - Environment variables (contains sensitive credentials)
-- `CopilotHelper/` - AI assistant project documentation
-
 ## Configuration
 
 **Current Settings:**
