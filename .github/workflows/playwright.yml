@@ -37,45 +37,45 @@ jobs:
         retention-days: 1
         if-no-files-found: error
 
-  # # Job 2: Functional Tests - depends on setup, runs in parallel with accessibility
-  # functional-tests:
-  #   name: Functional Tests
-  #   timeout-minutes: 60
-  #   runs-on: ubuntu-latest
-  #   needs: setup
-  #   steps:
-  #   - uses: actions/checkout@v5
-  #   - uses: actions/setup-node@v5
-  #     with:
-  #       node-version: lts/*
-  #   - name: Install dependencies
-  #     run: npm ci
-  #   - name: Install Playwright Browsers
-  #     run: npx playwright install --with-deps
-  #   - name: Download authentication state
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: playwright-auth
-  #       path: playwright/auth-states
-  #   - name: Run functional tests
-  #     run: npx playwright test --project=functional
-  #     env:
-  #       BASE_URL: ${{ secrets.BASE_URL }}
-  #       AUTH_WORKER_OFFSET: 0
-  #   - name: Upload Playwright HTML report
-  #     uses: actions/upload-artifact@v4
-  #     if: ${{ !cancelled() }}
-  #     with:
-  #       name: functional-test-report
-  #       path: playwright-report/
-  #       retention-days: 30
-  #   - name: Upload Non-Functional Test Coverage Report
-  #     uses: actions/upload-artifact@v4
-  #     if: ${{ !cancelled() }}
-  #     with:
-  #       name: functional-coverage-report
-  #       path: test-results/non-functional-test-coverage.*
-  #       retention-days: 30
+  # Job 2: Functional Tests - depends on setup, runs in parallel with accessibility
+  functional-tests:
+    name: Functional Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+    - uses: actions/checkout@v5
+    - uses: actions/setup-node@v5
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Download authentication state
+      uses: actions/download-artifact@v4
+      with:
+        name: playwright-auth
+        path: playwright/auth-states
+    - name: Run functional tests
+      run: npx playwright test --project=functional
+      env:
+        BASE_URL: ${{ secrets.BASE_URL }}
+        AUTH_WORKER_OFFSET: 0
+    - name: Upload Playwright HTML report
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: functional-test-report
+        path: playwright-report/
+        retention-days: 30
+    - name: Upload Non-Functional Test Coverage Report
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: functional-coverage-report
+        path: test-results/non-functional-test-coverage.*
+        retention-days: 30
 
   # Job 3: Non-Functional Tests - depends on setup, runs in parallel with functional
   non-functional-tests:
