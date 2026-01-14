@@ -1,12 +1,12 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
+import { CompliancePageBase } from './ComplianceBasePage';
 
-export class LandingPage {
-    private readonly page: Page;
-    private readonly headingMessage: Locator;;
+export class LandingPage extends CompliancePageBase {
+    private readonly headingMessage: Locator;
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.headingMessage = this.page.getByText('Check if properties meet minimum energy efficiency standards');
     }
 
@@ -17,7 +17,8 @@ export class LandingPage {
             this.page,
             'Compliance Landing Page',
             {
-                headingMessage: this.headingMessage
+                headingMessage: this.headingMessage,
+                pageFooter: this.pageFooter
             },
             60000);
     }
