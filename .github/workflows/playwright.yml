@@ -102,6 +102,8 @@ jobs:
       env:
         env:
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+        TEST_NO_ACCESS_EMAIL: ${{ secrets.TEST_NO_ACCESS_EMAIL }}
+        TEST_NO_ACCESS_PASSWORD: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
         BASE_URL: ${{ secrets.BASE_URL }}
         AUTH_WORKER_OFFSET: 1
     - name: Upload Playwright HTML report
