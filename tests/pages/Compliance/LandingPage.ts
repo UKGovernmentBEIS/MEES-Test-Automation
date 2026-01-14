@@ -22,4 +22,8 @@ export class LandingPage extends CompliancePageBase {
             },
             60000);
     }
+
+    async isDisplayed(): Promise<boolean> {
+        return await this.headingMessage.isVisible();
+    }
 }

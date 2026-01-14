@@ -53,6 +53,8 @@ export class ElementUtilities {
    * @param pageName The name of the page (for error messages)
    * @param locators An object containing locator names and their Locator objects to wait for
    * @param timeout Optional timeout in milliseconds (defaults to Playwright's global config)
+   * @param waitForLoadState Optional load state to wait for (defaults to 'domcontentloaded')
+   * @param locatorState Optional state to wait for ('visible' or 'attached'). Defaults to 'attached' for more robust page load validation
    * @throws Error with detailed information about which locators failed to load
    */
   static async waitForPageToLoad(
@@ -60,21 +62,27 @@ export class ElementUtilities {
     pageName: string,
     locators: Record<string, Locator>,
     timeout?: number,
-    waitForLoadState: 'domcontentloaded' | 'networkidle' = 'domcontentloaded'
+    waitForLoadState: 'domcontentloaded' | 'networkidle' = 'domcontentloaded',
+    locatorState: 'visible' | 'attached' = 'attached'
   ): Promise<void> {
-    // First wait for key locators to be visible
+    // First wait for key locators to be in the desired state
     // This ensures all redirects have completed and we're on the correct final page
-    await this.waitForLocatorsToBeVisible(pageName, locators, timeout);
+    await this.waitForLocatorsToBeInState(pageName, locators, locatorState, timeout);
 
     // Then wait for the DOM to be fully loaded on the final page
     await page.waitForLoadState(waitForLoadState);
   }
 
-  private static async waitForLocatorsToBeVisible(pageName: string, locators: Record<string, Locator>, timeout?: number) {
+  private static async waitForLocatorsToBeInState(
+    pageName: string, 
+    locators: Record<string, Locator>, 
+    state: 'visible' | 'attached',
+    timeout?: number
+  ) {
     const failedLocators: string[] = [];
     for (const [locatorName, locator] of Object.entries(locators)) {
       try {
-        await locator.waitFor({ state: 'visible', timeout });
+        await locator.waitFor({ state, timeout });
       } catch (error) {
         failedLocators.push(locatorName);
       }

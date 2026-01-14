@@ -1,6 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../utils/ElementUtilities';
 import { SignInOrCreatePage } from './Login/SignInOrCreatePage';
+import { LandingPage } from './Compliance/LandingPage';
 
 export class HomePage {
   private readonly page: Page;
@@ -40,6 +41,10 @@ export class HomePage {
     );
   }
 
+  async isDisplayed(): Promise<boolean> {
+    return await this.startNowButton.isVisible() && await this.generalInstructionsText.isVisible();
+  }
+
   /**
    * Not Authenticated User - Click Start Now button to navigate to Sign In Or Create Account page
    */
@@ -48,5 +53,13 @@ export class HomePage {
     const signInOrCreatePage = new SignInOrCreatePage(this.page);
     await signInOrCreatePage.waitForPageToLoad();
     return signInOrCreatePage;
+  }
+
+  // Authenticated User - Click Start Now button to navigate to Compliance Landing Page
+  async clickStartNow_AuthenticatedUser(): Promise<LandingPage> {
+    await ElementUtilities.clickElement(this.startNowButton!);
+    const landingPage = new LandingPage(this.page);
+    await landingPage.waitForPageToLoad();
+    return landingPage;
   }
 }

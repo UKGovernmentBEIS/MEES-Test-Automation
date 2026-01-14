@@ -7,7 +7,7 @@ export abstract class CompliancePageBase {
 
     constructor(page: Page) {
         this.page = page;
-        this.pageFooter = this.page.getByRole('contentinfo')
+        this.pageFooter = this.page.locator('c-gds-footer').getByRole('contentinfo');
     }
 
     abstract waitForPageToLoad(): Promise<void>;
