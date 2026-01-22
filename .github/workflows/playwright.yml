@@ -1,16 +1,25 @@
 name: Playwright Tests
-on:
+on: 
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to test'
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+
 jobs:
-  # Job 1: Authentication Setup - runs first and creates auth artifacts
   setup:
     name: Authentication Setup
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'dev' }}
     steps:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
@@ -32,18 +41,18 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: playwright-auth
+        name: playwright-auth-${{ inputs.environment || 'dev' }}
         path: ${{ github.workspace }}/playwright/auth-states
         retention-days: 1
         if-no-files-found: error
 
-  # Job 2: Functional Tests - depends on setup, runs in parallel with accessibility
   functional-tests:
     name: Functional Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'dev' }}
     needs: setup
-    steps:
+    steps: 
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
       with:
@@ -54,8 +63,8 @@ jobs:
       run: npx playwright install --with-deps
     - name: Download authentication state
       uses: actions/download-artifact@v4
-      with:
-        name: playwright-auth
+      with: 
+        name: playwright-auth-${{ inputs.environment || 'dev' }}
         path: playwright/auth-states
     - name: Run functional tests
       run: npx playwright test --project=functional
@@ -66,22 +75,15 @@ jobs:
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: functional-test-report
+        name: functional-test-report-${{ inputs.environment || 'dev' }}
         path: playwright-report/
         retention-days: 30
-    - name: Upload Non-Functional Test Coverage Report
-      uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: functional-coverage-report
-        path: test-results/non-functional-test-coverage.*
-        retention-days: 30
 
-  # Job 3: Non-Functional Tests - depends on setup, runs in parallel with functional
-  non-functional-tests:
+  non-functional-tests: 
     name: Non-Functional Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'dev' }}
     needs: setup
     steps:
     - uses: actions/checkout@v5
@@ -95,12 +97,11 @@ jobs:
     - name: Download authentication state
       uses: actions/download-artifact@v4
       with:
-        name: playwright-auth
+        name: playwright-auth-${{ inputs.environment || 'dev' }}
         path: playwright/auth-states
     - name: Run non-functional tests
       run: npx playwright test --project=non-functional
       env:
-        env:
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         TEST_NO_ACCESS_EMAIL: ${{ secrets.TEST_NO_ACCESS_EMAIL }}
         TEST_NO_ACCESS_PASSWORD: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
@@ -110,13 +111,13 @@ jobs:
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: non-functional-test-report
+        name: non-functional-test-report-${{ inputs.environment || 'dev' }}
         path: playwright-report/
         retention-days: 30
     - name: Upload Non-Functional Test Coverage Report
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: non-functional-coverage-report
+        name: non-functional-coverage-report-${{ inputs.environment || 'dev' }}
         path: test-results/non-functional-test-coverage.*
         retention-days: 30
