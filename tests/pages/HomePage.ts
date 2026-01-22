@@ -6,20 +6,20 @@ import { LandingPage } from './Compliance/LandingPage';
 export class HomePage {
   private readonly page: Page;
   private readonly startNowButton: Locator;
-  private readonly generalInstructionsText: Locator;
+  private readonly pageContext: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.startNowButton = this.page.getByRole('button', { name: 'Start now' });
-    this.generalInstructionsText = this.page.locator('uxgovuk-gov-markup-text');
+    this.pageContext = page.locator('#main-content');
   }
 
   /**
-   * Get the general instructions text locator for visual regression testing
-   * @returns Locator for the general instructions text element
+   * Get the page context locator for visual regression testing
+   * @returns Locator for the page context element
    */
-  getGeneralInstructionsTextLocator(): Locator {
-    return this.generalInstructionsText;
+  getPageContextLocator(): Locator {
+    return this.pageContext;
   }
 
   /**
@@ -37,12 +37,12 @@ export class HomePage {
     await ElementUtilities.waitForPageToLoad(
       this.page,
       'Home Page',
-      { startNowButton: this.startNowButton, generalInstructionsText: this.generalInstructionsText }
+      { startNowButton: this.startNowButton, pageContext: this.pageContext }
     );
   }
 
   async isDisplayed(): Promise<boolean> {
-    return await this.startNowButton.isVisible() && await this.generalInstructionsText.isVisible();
+    return await this.startNowButton.isVisible() && await this.pageContext.isVisible();
   }
 
   /**
