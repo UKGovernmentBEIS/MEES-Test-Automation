@@ -185,7 +185,19 @@ test.describe('Login Process Non-Functional Tests', () => {
         expect(criticalViolations, `One Login forgotten password page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
 
         // Context Verification: Verify presence of key elements on the One Login forgotten password page
-        await expect(forgottenPasswordPage.pageContext).toMatchAriaSnapshot();
+        // Use template literal to inject the email into the snapshot
+        await expect(forgottenPasswordPage.pageContext).toMatchAriaSnapshot(`- main:
+            - heading "Check your email" [level=1]
+            - paragraph: We need to make sure this is your GOV.UK One Login before you can reset your password.
+            - paragraph
+            - text: "We have sent an email to: ${email}"
+            - paragraph
+            - paragraph: The email contains a 6 digit security code.
+            - paragraph: Your email might take a few minutes to arrive. If you do not get an email, check your spam folder.
+            - text: Enter the 6 digit code
+            - textbox "Enter the 6 digit code"
+            - group: Problems with the code?
+            - button "Continue"`);
     });
 
     test('One Login Account Not Found Page', async ({ page }, testInfo) => {

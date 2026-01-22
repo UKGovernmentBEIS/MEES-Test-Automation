@@ -1,15 +1,33 @@
-- heading "Review non-compliant properties" [level=1]
-- paragraph: "Use this service to:"
-- list:
-  - listitem: Review non-compliant properties in your local authority area
-  - listitem: Review the exemptions
-  - listitem: Add comments
-- paragraph: This service is for local authorities only.
-- heading "To start using this service" [level=2]
-- paragraph:
-  - link "Complete our local authority sign up form if you have not already done so.":
-    - /url: https://google.co.uk
-- paragraph: "You will need:"
-- list:
-  - listitem: to use the email address you have in the sign up form
-  - listitem: log in through your government One Login account - this invitation was emailed to you by our team
+- main:
+  - heading "Review compliance for private rented sector energy standards" [level=1]
+  - paragraph: This service is for non-domestic private rented sector (PRS) properties only.
+  - paragraph: The Minimum Energy Efficiency Standards (MEES) apply to all properties that are legally required to have an energy performance certificate (EPC). To be compliant with the standards, properties must have an energy rating of E or higher.
+  - paragraph: "You can use this service to:"
+  - list:
+    - listitem: search for properties with a sub-standard energy rating
+    - listitem: check property exemption status
+    - listitem: find landlord details
+    - listitem: view enforcement guidance
+    - listitem: calculate penalties for non-compliance
+  - text: This service is for local authorities only.
+  - heading "Register" [level=2]
+  - paragraph:
+    - link "Complete our local authority sign up form if you have not already done so.":
+      - /url: "#"
+  - heading "Sign in" [level=2]
+  - paragraph: "You will need:"
+  - list:
+    - listitem: to use the email you used in the sign up form
+    - listitem: to login to your government One Login account – this invitation was emailed to you by our team after your account was created after you submitted the sign up form
+  - button "Start now"
+  - heading "If you need help" [level=2]
+  - paragraph: "Contact our support team if your local authority:"
+  - list:
+    - listitem: has not been given sign in information
+    - listitem: needs to give access to more people
+    - listitem: needs access to property details in another local authority area
+    - listitem: needs technical support
+  - paragraph:
+    - link "email@department.gov.uk":
+      - /url: mailto:email@department.gov.uk
+    - text: /Monday to Friday, 9am to \d+[hmsp]+/
