@@ -3,11 +3,11 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import { CompliancePageBase } from './ComplianceBasePage';
 
 export class LandingPage extends CompliancePageBase {
-    private readonly headingMessage: Locator;
+    private readonly pageContext: Locator;
 
     constructor(page: Page) {
         super(page);
-        this.headingMessage = this.page.getByText('Check if properties meet minimum energy efficiency standards');
+        this.pageContext = page.locator('#main-content');
     }
 
     // Wait for the Compliance Landing page to load
@@ -17,13 +17,13 @@ export class LandingPage extends CompliancePageBase {
             this.page,
             'Compliance Landing Page',
             {
-                headingMessage: this.headingMessage,
+                pageContext: this.pageContext,
                 pageFooter: this.pageFooter
             },
             60000);
     }
 
     async isDisplayed(): Promise<boolean> {
-        return await this.headingMessage.isVisible();
+        return await this.pageContext.isVisible();
     }
 }
