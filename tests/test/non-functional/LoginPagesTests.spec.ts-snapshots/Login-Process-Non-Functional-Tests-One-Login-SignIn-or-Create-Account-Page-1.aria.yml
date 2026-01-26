@@ -5,7 +5,7 @@
   - paragraph: "You’ll need:"
   - list:
     - listitem: an email address
-    - listitem: a way to get security codes - this can be a mobile phone number or an authenticator app
+    - listitem: a way to get security codes - this can be a UK mobile phone number or an authenticator app
   - text: You can also
   - link "use GOV.UK One Login in Welsh (Cymraeg)":
     - /url: "?lng=cy"

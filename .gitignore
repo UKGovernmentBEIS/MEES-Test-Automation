@@ -8,6 +8,6 @@ node_modules/
 /playwright/storage/
 /playwright/auth-states/
 /CopilotHelper
-/.env
+/.env*
 **/non-functional-test-coverage.md
 **/non-functional-test-coverage.html
