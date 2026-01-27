@@ -11,3 +11,4 @@ node_modules/
 /.env*
 **/non-functional-test-coverage.md
 **/non-functional-test-coverage.html
+/ProjectDocumentation/
