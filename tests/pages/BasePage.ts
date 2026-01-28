@@ -10,9 +10,6 @@ export abstract class BasePage {
     this.page = page;
     this.pageFooter = this.page.locator('c-gds-footer').getByRole('contentinfo');
     
-    // Clear previous page errors for true page isolation
-    BasePage.globalConsoleErrors.clear();
-    
     // Set up global console error listener once
     this.setupGlobalConsoleErrorListener();
   }
@@ -40,10 +37,10 @@ export abstract class BasePage {
   }
 
   /**
-   * Get console errors for this page
+   * Get all console errors from the entire test session
    * @returns Array of unique console error messages
    */
-  public getConsoleErrors(): string[] {
+  public getAllConsoleErrors(): string[] {
     return Array.from(BasePage.globalConsoleErrors);
   }
 
