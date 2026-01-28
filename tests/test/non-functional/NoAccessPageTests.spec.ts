@@ -1,20 +1,20 @@
 import { test, expect } from '@playwright/test';
 import { TestAnnotations, PageName, TestType } from '../../utils/TestTypes.ts';
-import { HomePage } from '../../pages/HomePage.ts';
+import { LandingPage } from '../../pages/LandingPage';
 import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
 import fs from 'fs';
 import path from 'path';
 
 test.describe('No Access Page Non-Functional Tests', () => {
-    let homePage: HomePage;
+    let landingPage: LandingPage;
     test.beforeEach(async ({ page }, testInfo) => {
         testInfo.annotations.push(
             TestAnnotations.testType(TestType.ACCESSIBILITY),
             TestAnnotations.testType(TestType.CONTEXT_VERIFICATION)
         );
 
-        homePage = new HomePage(page);
-        await homePage.navigate();
+        landingPage = new LandingPage(page);
+        await landingPage.navigate();
     });
 
     test('No Access Page', async ({ page }, testInfo) => {
@@ -34,7 +34,7 @@ test.describe('No Access Page Non-Functional Tests', () => {
             );
         }
 
-        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
         const noAccessPage = await loginPasswordPage.enterPasswordAndContinueToNoAccessPage(password);

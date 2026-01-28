@@ -1,5 +1,5 @@
 import { test as setup } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage';
+import { LandingPage } from '../../pages/LandingPage';
 import path from 'path';
 import fs from 'fs';
 
@@ -59,15 +59,15 @@ function resolveCredentials(account: any): { email: string; password: string } {
  * @param password - User's password for authentication
  */
 async function performLogin(page: any, email: string, password: string) {
-    const homePage = new HomePage(page);
-    await homePage.navigate();
+    const landingPage = new LandingPage(page);
+    await landingPage.navigate();
 
-    const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+    const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
     const loginEmailPage = await signInOrCreatePage.clickSignIn();
 
     const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
-    const landingPage = await loginPasswordPage.enterPasswordAndContinueToComplianceLandingPage(password);
-    await landingPage.waitForPageToLoad();
+    const homePage = await loginPasswordPage.enterPasswordAndContinueToComplianceLandingPage(password);
+    await homePage.waitForPageToLoad();
 }
 
 /**

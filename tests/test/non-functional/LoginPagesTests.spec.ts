@@ -1,26 +1,26 @@
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage';
+import { LandingPage } from '../../pages/LandingPage';
 import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
 import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
 import path from 'path';
 import fs from 'fs';
 
 test.describe('Login Process Non-Functional Tests', () => {
-    let homePage: HomePage;
+    let landingPage: LandingPage;
     test.beforeEach(async ({ page }, testInfo) => {
         testInfo.annotations.push(
             TestAnnotations.testType(TestType.ACCESSIBILITY),
             TestAnnotations.testType(TestType.CONTEXT_VERIFICATION)
         );
 
-        homePage = new HomePage(page);
-        await homePage.navigate();
+        landingPage = new LandingPage(page);
+        await landingPage.navigate();
     });
 
     test('One Login SignIn or Create Account Page', async ({ page }, testInfo) => {
         testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_SIGNIN_OR_CREATE_ACCOUNT));
         
-        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
 
         // Verify accessibility on the One Login home page
         const results = await AccessibilityUtilities.analyzeAccessibility(page);
@@ -34,7 +34,7 @@ test.describe('Login Process Non-Functional Tests', () => {
     test('One Login Enter Email Page', async ({ page }, testInfo) => {
         testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_ENTER_EMAIL));
 
-        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
         const logInEmailPage = await signInOrCreatePage.clickSignIn();
 
         // Verify accessibility on the One Login enter email page
@@ -58,7 +58,7 @@ test.describe('Login Process Non-Functional Tests', () => {
             throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
         }
 
-        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
 
@@ -74,7 +74,7 @@ test.describe('Login Process Non-Functional Tests', () => {
     test('One Login Mandatory Email Error Page', async ({ page }, testInfo) => {
         testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_MANDATORY_EMAIL_ERROR));
 
-        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         // Leave email blank and click continue
         await loginEmailPage.clickContinue();
@@ -91,7 +91,7 @@ test.describe('Login Process Non-Functional Tests', () => {
     test('One Login Invalid Email Error Page', async ({ page }, testInfo) => {
         testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_INVALID_EMAIL_ERROR));
 
-        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         await loginEmailPage.enterEmail('invalid-email');
         await loginEmailPage.clickContinue();
@@ -118,7 +118,7 @@ test.describe('Login Process Non-Functional Tests', () => {
             throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
         }
 
-        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
         // Leave password blank and click continue
@@ -146,7 +146,7 @@ test.describe('Login Process Non-Functional Tests', () => {
             throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
         }
 
-        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
         await loginPasswordPage.enterPassword('InvalidPassword123!');
@@ -174,7 +174,7 @@ test.describe('Login Process Non-Functional Tests', () => {
             throw new Error(`Environment variable ${accountsConfig[0].email} is not set`);
         }
 
-        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
         const forgottenPasswordPage = await loginPasswordPage.clickForgotPasswordLink();
@@ -203,7 +203,7 @@ test.describe('Login Process Non-Functional Tests', () => {
     test('One Login Account Not Found Page', async ({ page }, testInfo) => {
         testInfo.annotations.push(TestAnnotations.page(PageName.ONE_LOGIN_ACCOUNT_NOT_FOUND));
 
-        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         const accountNotFoundPage = await loginEmailPage.enterEmailAndContinueToAccountNotFoundPage('test@test.com');
 

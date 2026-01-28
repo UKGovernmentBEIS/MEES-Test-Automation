@@ -1,6 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
-import { LandingPage } from '../Compliance/LandingPage';
+import { HomePage } from '../Compliance/HomePage';
 import { CheckEmailResetPasswordPage } from './CheckEmailResetPasswordPage';
 import { NoAccessPage } from '../Compliance/NoAccessPage';
 
@@ -46,14 +46,14 @@ export class LoginPasswordPage {
   /**
    * Enter password and continue to exemption register page
    * @param password The password to enter
-   * @returns LandingPage instance after successful login
+   * @returns HomePage instance after successful login
    */
-  async enterPasswordAndContinueToComplianceLandingPage(password: string): Promise<LandingPage> {
+  async enterPasswordAndContinueToComplianceLandingPage(password: string): Promise<HomePage> {
     await this.enterPassword(password);
     await this.clickContinue();
-    const landingPage = new LandingPage(this.page);
-    await landingPage.waitForPageToLoad();
-    return landingPage;
+    const homePage = new HomePage(this.page);
+    await homePage.waitForPageToLoad();
+    return homePage;
   }
 
   /**

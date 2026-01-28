@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { TestAnnotations, PageName, TestType } from '../../utils/TestTypes.ts';
-import { HomePage } from '../../pages/HomePage.ts';
+import { LandingPage } from '../../pages/LandingPage';
 import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
 import { RegistrationEmailPage } from '../../pages/Login/RegistrationEmailPage.ts';
 import path from 'path';
@@ -17,11 +17,11 @@ test.describe('Registration Process Non-Functional Tests', () => {
         );
 
         // Navigate to Home Page
-        const homePage = new HomePage(page);
-        await homePage.navigate();
+        const landingPage = new LandingPage(page);
+        await landingPage.navigate();
 
         // Click on the Start Now button to navigate to Sign In Or Create Account Page
-        const signInOrCreatePage = await homePage.clickStartNow_NotAuthenticatedUser(); 
+        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser(); 
 
         // Click on the Create an account link to navigate to One Login Enter Email Page
         registrationEmailPage = await signInOrCreatePage.clickCreateAnAccountLink();

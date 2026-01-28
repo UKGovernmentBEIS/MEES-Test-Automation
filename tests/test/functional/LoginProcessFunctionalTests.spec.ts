@@ -1,17 +1,17 @@
 import { test, expect } from '../../fixtures/authFixtures';
-import { HomePage } from '../../pages/HomePage';
+import { LandingPage } from '../../pages/LandingPage';
 import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
 
 test.describe('Login Process Functional Tests', () => {
-    let homePage: HomePage;
+    let landingPage: LandingPage;
     
     test.beforeEach(async ({ page }, testInfo) => {
         testInfo.annotations.push(
             TestAnnotations.testType(TestType.FUNCTIONAL)
         );
         
-        homePage = new HomePage(page);
-        await homePage.navigate();
+        landingPage = new LandingPage(page);
+        await landingPage.navigate();
     });
 
     test('Authentication persistence across browser sessions', async ({ page }, testInfo) => {
@@ -19,13 +19,13 @@ test.describe('Login Process Functional Tests', () => {
         // we need to test that the authentication state persists correctly.
         
         // Test session persistence by navigating to different pages and back
-        await homePage.navigate();
+        await landingPage.navigate();
         
         // After reload, verify authentication state is maintained
-        await expect(homePage.isDisplayed()).toBeTruthy();
+        await expect(landingPage.isDisplayed()).toBeTruthy();
         
         // Test that Start Now does not prompt for login again
-        const landingPage = await homePage.clickStartNow_AuthenticatedUser();
-        await expect(landingPage.isDisplayed()).toBeTruthy();
+        const homePage = await landingPage.clickStartNow_AuthenticatedUser();
+        await expect(homePage.isDisplayed()).toBeTruthy();
     });
 });

@@ -1,9 +1,9 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../utils/ElementUtilities';
 import { SignInOrCreatePage } from './Login/SignInOrCreatePage';
-import { LandingPage } from './Compliance/LandingPage';
+import { HomePage } from './Compliance/HomePage';
 
-export class HomePage {
+export class LandingPage {
   private readonly page: Page;
   private readonly startNowButton: Locator;
   private readonly pageContext: Locator;
@@ -31,12 +31,12 @@ export class HomePage {
   }
 
   /**   
-   * Wait for the MEES Home page to load
+   * Wait for the MEES Landing page to load
    */
   private async waitForPageToLoad(): Promise<void> {
     await ElementUtilities.waitForPageToLoad(
       this.page,
-      'Home Page',
+      'Landing Page',
       { startNowButton: this.startNowButton, pageContext: this.pageContext }
     );
   }
@@ -56,10 +56,10 @@ export class HomePage {
   }
 
   // Authenticated User - Click Start Now button to navigate to Compliance Landing Page
-  async clickStartNow_AuthenticatedUser(): Promise<LandingPage> {
+  async clickStartNow_AuthenticatedUser(): Promise<HomePage> {
     await ElementUtilities.clickElement(this.startNowButton!);
-    const landingPage = new LandingPage(this.page);
-    await landingPage.waitForPageToLoad();
-    return landingPage;
+    const homePage = new HomePage(this.page);
+    await homePage.waitForPageToLoad();
+    return homePage;
   }
 }

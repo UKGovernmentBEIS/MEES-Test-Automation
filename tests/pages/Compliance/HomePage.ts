@@ -2,7 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { CompliancePageBase } from './ComplianceBasePage';
 
-export class LandingPage extends CompliancePageBase {
+export class HomePage extends CompliancePageBase {
     private readonly pageContext: Locator;
 
     constructor(page: Page) {
