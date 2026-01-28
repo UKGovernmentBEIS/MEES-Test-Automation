@@ -1,8 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
-import { CompliancePageBase } from './ComplianceBasePage';
+import { BasePage } from '../BasePage';
 
-export class HomePage extends CompliancePageBase {
+export class HomePage extends BasePage {
     private readonly pageContext: Locator;
 
     constructor(page: Page) {
@@ -25,5 +25,9 @@ export class HomePage extends CompliancePageBase {
 
     async isDisplayed(): Promise<boolean> {
         return await this.pageContext.isVisible();
+    }
+
+    getPageContextLocator(): Locator {
+        return this.pageContext;
     }
 }

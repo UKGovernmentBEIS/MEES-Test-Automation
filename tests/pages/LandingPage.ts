@@ -2,14 +2,14 @@ import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../utils/ElementUtilities';
 import { SignInOrCreatePage } from './Login/SignInOrCreatePage';
 import { HomePage } from './Compliance/HomePage';
+import { BasePage } from './BasePage';
 
-export class LandingPage {
-  private readonly page: Page;
+export class LandingPage extends BasePage {
   private readonly startNowButton: Locator;
   private readonly pageContext: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.startNowButton = this.page.getByRole('button', { name: 'Start now' });
     this.pageContext = page.locator('#main-content');
   }
@@ -33,7 +33,7 @@ export class LandingPage {
   /**   
    * Wait for the MEES Landing page to load
    */
-  private async waitForPageToLoad(): Promise<void> {
+  async waitForPageToLoad(): Promise<void> {
     await ElementUtilities.waitForPageToLoad(
       this.page,
       'Landing Page',
