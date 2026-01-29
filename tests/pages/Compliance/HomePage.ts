@@ -4,10 +4,14 @@ import { BasePage } from '../BasePage';
 
 export class HomePage extends BasePage {
     private readonly pageContext: Locator;
+    private readonly backButton: Locator;
+    private readonly signOutButton: Locator;
 
     constructor(page: Page) {
         super(page);
         this.pageContext = page.locator('#main-content');
+        this.backButton = page.getByRole('link', { name: 'Back', exact: true });
+        this.signOutButton = page.getByRole('link', { name: 'Sign out' });
     }
 
     // Wait for the Compliance Landing page to load
@@ -18,7 +22,9 @@ export class HomePage extends BasePage {
             'Compliance Landing Page',
             {
                 pageContext: this.pageContext,
-                pageFooter: this.pageFooter
+                pageFooter: this.pageFooter,
+                backButton: this.backButton,
+                signOutButton: this.signOutButton
             },
             60000);
     }
