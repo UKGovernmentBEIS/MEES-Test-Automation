@@ -7,7 +7,7 @@ test.describe('Landing Page Non-Functional Tests', () => {
 
   test('Landing Page', async ({ page }) => {
     test.info().annotations.push(
-        TestAnnotations.page(PageName.HOME_PAGE),
+        TestAnnotations.page(PageName.LANDING_PAGE),
         TestAnnotations.testType(TestType.ACCESSIBILITY),
         TestAnnotations.testType(TestType.CONTEXT_VERIFICATION)
     );
