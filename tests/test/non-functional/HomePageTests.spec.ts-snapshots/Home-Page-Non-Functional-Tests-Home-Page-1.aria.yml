@@ -1,0 +1,23 @@
+- main:
+  - link "Back":
+    - /url: /
+  - list:
+    - listitem:
+      - link "Sign out":
+        - /url: "#"
+  - main:
+    - heading "Find properties" [level=1]
+    - paragraph: To find properties that do not adhere to the Minimum Energy Efficiency Standards (MEES), you can view a list of property records in your jurisdiction.
+    - paragraph: Each property has detailed information listed, including address details, landlord details, EPC rating, and exemption status.
+    - button "View property records"
+    - separator
+    - heading "Guidance" [level=2]
+    - paragraph: View enforcement steps you can take for non-compliant properties in your local authority.
+    - paragraph:
+      - link "Browse guidance":
+        - /url: "#-32"
+    - heading "Templates" [level=2]
+    - paragraph: Download letter templates for issuing compliance notices and penalty notices.
+    - paragraph:
+      - link "Browse templates":
+        - /url: "#-32"
