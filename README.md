@@ -22,7 +22,7 @@ This is a Proof of Concept (POC) project to prepare a Test Automation Framework 
 | **Test Utilities & Element Helpers** | ✅ Done |
 | **Comprehensive Documentation** | ✅ Done |
 | **HTML Test Reports with Traces** | ✅ Done |
-| **API Testing to Verify DMS Data** | ⏸️ On Hold |
+| **API Testing (Page API & DMS API)** | ✅ Done |
 
 ## Table of Contents
 
@@ -32,12 +32,13 @@ This is a Proof of Concept (POC) project to prepare a Test Automation Framework 
    - [Local Setup](#local-setup)
    - [CI/CD Setup](#cicd-setup)
 4. [Running Tests](#running-tests)
-5. [Authentication](#authentication)
-6. [Creating New Test Files](#creating-new-test-files)
-7. [Project Structure](#project-structure)
-8. [Configuration](#configuration)
-9. [Non-Functional Testing](#non-functional-testing)
-10. [Troubleshooting](#troubleshooting)
+5. [API Testing](#api-testing)
+6. [Authentication](#authentication)
+7. [Creating New Test Files](#creating-new-test-files)
+8. [Project Structure](#project-structure)
+9. [Configuration](#configuration)
+10. [Non-Functional Testing](#non-functional-testing)
+11. [Troubleshooting](#troubleshooting)
 
 ## Getting Started
 
@@ -76,6 +77,9 @@ Follow these steps to set up the test framework on your local machine:
    
    # Application URL
    BASE_URL=https://desnz-gm--prseqa.sandbox.my.site.com/PRSExemptionsRegister
+   
+   # API Keys
+   PROPERTIES_KEY=your-properties-api-key-here
    ```
    
    ⚠️ **Important:** The `.env` file is gitignored and should never be committed to the repository.
@@ -119,13 +123,15 @@ Follow these steps to set up the test framework on your local machine:
 
 5. **Run authentication setup:**
    
-   Create authentication session files (required before first test run):
+   Create authentication session files (required for UI and Page API tests):
    
    ```bash
    npx playwright test --project=setup
    ```
    
    This creates authentication files in `playwright/auth-states/user-*.json`.
+   
+   **Note:** DMS API tests do not require authentication setup as they use service keys directly.
 
 6. **Verify setup:**
    
@@ -144,6 +150,7 @@ Follow these steps to set up the test framework on your local machine:
 | `TEST_NO_ACCESS_EMAIL` | No-access account email | `noaccess@example.com` | ✅ Yes (for No Access Page tests) |
 | `TEST_NO_ACCESS_PASSWORD` | No-access account password | `NoAccessPass123!` | ✅ Yes (for No Access Page tests) |
 | `BASE_URL` | Application base URL | `https://app.example.com` | ✅ Yes |
+| `PROPERTIES_KEY` | DMS API x-functions-key | `abc123...` | ✅ Yes (for API tests) |
 | `RUN_SETUP_AUTOMATICALLY` | Auto-run setup before tests | `1` (auto-run) or `0`/unset (manual) | 🔧 Optional |
 
 **About `RUN_SETUP_AUTOMATICALLY` (Optional - Local Development):**
@@ -189,6 +196,7 @@ npx playwright test --trace on
 # Run specific project
 npx playwright test --project=functional
 npx playwright test --project=non-functional
+npx playwright test --project=api
 
 # Run specific test by name
 npx playwright test -g "test name"
@@ -219,6 +227,37 @@ npx playwright test
 - Authentication files are valid for ~30 minutes of inactivity
 - By default, you must run setup manually: `npx playwright test --project=setup`
 - Set `RUN_SETUP_AUTOMATICALLY=1` in `.env` for automatic setup (optional convenience feature)
+
+## API Testing
+
+The framework includes API testing for both user-level and service-level boundaries:
+
+### API Test Types
+
+- **Page API** (`tests/test/api/page-api/`) - Tests user authentication and authorization at the backend API level
+- **DMS API** (`tests/test/api/dms-api/`) - Tests service-to-service security using x-functions-key authentication
+
+### Running API Tests
+
+```bash
+# Run all API tests
+npx playwright test --project=api
+
+# Run specific API boundary tests
+npx playwright test --grep "Valid x-functions-key returns 200"
+
+# Run API tests in specific folder
+npx playwright test tests/test/api/dms-api/
+npx playwright test tests/test/api/page-api/
+```
+
+### API Test Setup
+
+- **DMS API tests**: No authentication setup required - use service keys directly
+- **Page API tests**: Require user authentication setup (same as UI tests)
+- **Environment**: Requires `PROPERTIES_KEY` in `.env` file for DMS API tests
+
+**Note:** DMS API tests bypass user authentication and test service-to-service security boundaries directly.
 
 ## Test Reports
 
@@ -331,6 +370,9 @@ test.describe('Your Test Suite', () => {
     │   ├── functional/          # End-to-end functional tests
     │   ├── non-functional/      # Accessibility, performance, and validation tests
     │   │   └── *-snapshots/     # Visual regression test snapshots
+    │   ├── api/                 # API testing
+    │   │   ├── page-api/        # Page-to-backend API tests (user auth)
+    │   │   └── dms-api/         # Backend-to-DMS API tests (service auth)
     │   └── setup/               # Authentication setup and configuration
     └── utils/                   # Test utilities and helper functions
 ```

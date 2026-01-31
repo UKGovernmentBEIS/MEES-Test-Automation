@@ -74,5 +74,16 @@ export default defineConfig({
       // Set RUN_SETUP_AUTOMATICALLY=1 to run setup before tests (convenient for local dev)
       dependencies: process.env.RUN_SETUP_AUTOMATICALLY ? ['setup'] : []
     },
+
+    // API tests - page-api (user auth) and dms-api (service auth)
+    {
+      name: 'api',
+      testDir: './tests/test/api',
+      use: { 
+        // API tests don't need browser, but keep minimal config for consistency
+        baseURL: process.env.BASE_URL
+      },
+      fullyParallel: true
+    },
   ]
 });

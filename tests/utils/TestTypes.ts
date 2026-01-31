@@ -32,7 +32,8 @@ export enum PageName {
   ONE_LOGIN_CHECK_YOUR_EMAIL_REGISTRATION = 'One Login Check Your Email Registration Page',
   ONE_LOGIN_MANDATORY_EMAIL_REGISTRATION_ERROR = 'One Login Mandatory Email Registration Error Page',
   ONE_LOGIN_INVALID_EMAIL_REGISTRATION_ERROR = 'One Login Invalid Email Registration Error Page',
-  ONE_LOGIN_FORGOTTEN_PASSWORD = 'One Login Forgotten Password Page'
+  ONE_LOGIN_FORGOTTEN_PASSWORD = 'One Login Forgotten Password Page',
+  VIEW_PROPERTIES = 'View Properties Page'
 }
 
 /**
