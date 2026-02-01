@@ -48,11 +48,6 @@ export default defineConfig({
     {
       name: 'functional',
       testDir: './tests/test/functional',
-      use: { 
-        ...devices['Desktop Chrome'],
-        // Note: storageState is loaded dynamically in authFixtures based on worker index
-      },
-      // By default, setup must be run separately (for CI/CD artifact pattern)
       // Set RUN_SETUP_AUTOMATICALLY=1 to run setup before tests (convenient for local dev)
       dependencies: process.env.RUN_SETUP_AUTOMATICALLY ? ['setup'] : []
     },
@@ -61,11 +56,6 @@ export default defineConfig({
     {
       name: 'non-functional',
       testDir: './tests/test/non-functional',
-      use: { 
-        ...devices['Desktop Chrome'],
-        // Note: storageState is loaded dynamically in authFixtures based on worker index
-      },
-      // By default, setup must be run separately (for CI/CD artifact pattern)
       // Set RUN_SETUP_AUTOMATICALLY=1 to run setup before tests (convenient for local dev)
       dependencies: process.env.RUN_SETUP_AUTOMATICALLY ? ['setup'] : []
     },
@@ -74,10 +64,6 @@ export default defineConfig({
     {
       name: 'api',
       testDir: './tests/test/api',
-      use: { 
-        // API tests don't need browser, but keep minimal config for consistency
-        baseURL: process.env.BASE_URL
-      },
       fullyParallel: true
     },
   ]

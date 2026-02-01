@@ -1,52 +1,36 @@
 # Authentication Guide
 
-## Overview
+## What It Is
 
-This framework uses **Playwright's stored authentication state** to maintain user sessions across test runs. This approach significantly improves test execution speed by avoiding repeated login flows while enabling parallel test execution with multiple user accounts.
+**Stored Authentication State**: Playwright saves browser cookies and session data after initial login, allowing tests to reuse authentication without repeated login flows.
 
-## Stored Authentication State
+## Why It's Needed
 
-### What is Stored Authentication State?
+- **Speed**: Avoids 10+ seconds of GOV.UK One Login flow per test
+- **Parallel execution**: Each worker uses separate authenticated session 
+- **Reliability**: Reduces authentication-related test failures
+- **Performance**: 34-38% speed improvement, up to 71% with parallelization
 
-Playwright's **stored authentication state** saves browser cookies, localStorage, and session data after initial authentication. Tests reuse this state instead of re-authenticating each time.
+## How It Works
 
-### Performance Impact (30 tests example)
+1. **Setup project** authenticates each test account and saves session cookies to `playwright/auth-states/user-N.json`
+2. **Test workers** load their assigned session file (user-0.json, user-1.json, etc.)
+3. **Tests run** immediately with authenticated sessions - no login required
+4. **Sessions expire** after ~30 minutes of inactivity
 
-| Approach | Workers | Stored Auth? | Time | Performance |
-|----------|---------|--------------|------|-------------|
-| Sequential | 1 | ✅ Yes | 370s (6.2 min) | Baseline |
-| Sequential | 1 | ❌ No | 600s (10 min) | 1.6x slower |
-| Parallel | 2 | ✅ Yes | **190s (3.2 min)** | 2x faster ⚡ |
-| Parallel | 2 | ❌ No | 300s (5 min) | 1.2x slower |
-| Parallel | 4 | ✅ Yes | **106s (1.8 min)** | 3.5x faster ⚡⚡ |
-| Parallel | 4 | ❌ No | 160s (2.7 min) | 1.5x slower |
+## Test Account Requirements
 
-**Key Insight:** Stored auth provides 34-38% speed improvement even with parallel execution. Combined with parallelization, it delivers up to **71% time savings**.
+Each test account must:
+- Be a complete GOV.UK One Login account
+- Have MFA setup completed (SMS or authenticator app)
+- Be registered in the target application
+- Have logged into the application at least once manually
 
-### How We Use It
+## Setup
 
-1. **Setup Project** (`tests/test/auth.setup.ts`) - Authenticates and saves state per worker
-2. **Test Execution** - Each worker loads its auth state into a shared context
-3. **Test Accounts** (`tests/config/test-accounts.json`) - Multiple accounts enable parallel execution
-4. **Test Isolation** - Each test gets a new page but reuses authenticated context
+### 1. Configure Test Accounts
 
-## Test Accounts Configuration
-
-### Setting Up User Accounts with Encrypted Passwords
-
-The framework uses environment variables to securely store passwords, keeping them out of version control while working both locally and in GitHub Actions. For parallel execution, each worker requires its own GOV.UK One Login account with completed MFA setup.
-
-#### Prerequisites
-
-⚠️ Each test account must:
-1. Be a fully registered GOV.UK One Login account
-2. Have completed MFA setup (text message or authenticator app)
-3. Have logged into the application at least once
-
-#### Local Setup
-
-1. **Edit `tests/config/test-accounts.json`** - Use environment variable names instead of actual passwords:
-
+**File**: `tests/config/test-accounts.json`
 ```json
 {
   "accounts": [
@@ -56,7 +40,7 @@ The framework uses environment variables to securely store passwords, keeping th
       "description": "Primary test account - Worker 0"
     },
     {
-      "email": "TEST_ACCOUNT_2_EMAIL",
+      "email": "TEST_ACCOUNT_2_EMAIL", 
       "password": "TEST_ACCOUNT_2_PASSWORD",
       "description": "Secondary test account - Worker 1"
     }
@@ -64,40 +48,40 @@ The framework uses environment variables to securely store passwords, keeping th
 }
 ```
 
-2. **Create `.env` file in project root** with actual passwords:
+### 2. Local Environment Variables
 
+**File**: `.env` (create in project root)
 ```env
-TEST_ACCOUNT_1_EMAIL=test1@example.com
-TEST_ACCOUNT_1_PASSWORD=YourActualPassword1!
-TEST_ACCOUNT_2_EMAIL=test2@example.com
-TEST_ACCOUNT_2_PASSWORD=YourActualPassword2!
+TEST_ACCOUNT_1_EMAIL=user1@example.com
+TEST_ACCOUNT_1_PASSWORD=Password123!
+TEST_ACCOUNT_2_EMAIL=user2@example.com
+TEST_ACCOUNT_2_PASSWORD=Password456!
 ```
 
-⚠️ **Important:** The `.env` file is gitignored and never committed to the repository.
+### 3. Run Authentication Setup
 
-#### GitHub Actions / CI/CD Setup
+```bash
+# Creates auth files: playwright/auth-states/user-0.json, user-1.json, etc.
+npx playwright test --project=setup
+```
 
-For configuring test accounts in GitHub Actions and CI/CD pipelines, see:
+## Troubleshooting
 
-📄 **[CI/CD Configuration Guide](CI-CD.md)**
+**Setup fails**: 
+- Verify test accounts have completed MFA setup
+- Manually log into each account once to confirm they work
 
-#### How It Works
+**Session expired**:
+- Re-run setup: `npx playwright test --project=setup`
+- Auth files are valid for ~30 minutes of inactivity
 
-- The framework reads variable names from `test-accounts.json` (e.g., `TEST_ACCOUNT_1_EMAIL`)
-- Locally: Variables are loaded from `.env` file via dotenv
-- GitHub Actions: Variables are injected from repository secrets
-- Actual credentials are resolved at runtime and never stored in code
+**Missing auth files**:
+- Ensure worker count matches number of test accounts
+- Run setup to create all required auth files
 
-#### Adding More Accounts for Increased Parallelization
-
-To increase parallelization, add more test accounts. Each worker needs its own account.
-
-1. Register a new GOV.UK One Login account
-2. Add entry to `test-accounts.json` following the naming convention:
-   ```json
-   {
-     "email": "TEST_ACCOUNT_3_EMAIL",
-     "password": "TEST_ACCOUNT_3_PASSWORD",
+**Parallel execution issues**:
+- Each worker needs its own test account
+- Accounts cannot be shared between parallel workers
      "description": "Additional test account - Worker 2"
    }
    ```
@@ -113,14 +97,6 @@ To increase parallelization, add more test accounts. Each worker needs its own a
 5. **Update `playwright.config.ts`** to match the number of accounts:
    ```typescript
    workers: 3,  // Match number of test accounts
-   ```
-   ```typescript
-   projects: [
-     { 
-       name: 'setup',
-       workers: 3  // Match for faster parallel setup
-     }
-   ]
    ```
 
 **Naming Convention:** Use `TEST_ACCOUNT_N_EMAIL` and `TEST_ACCOUNT_N_PASSWORD` where N is the account number (1, 2, 3...).
@@ -151,7 +127,7 @@ When you run tests, the setup project creates separate authentication files for 
 
 1. **Setup project runs** with multiple workers for faster authentication
 2. **For each account** in `test-accounts.json`:
-   - Navigates to home page
+   - Navigates to the Landing page
    - Clicks "Start now" → GOV.UK One Login
    - Enters credentials and authenticates
    - Checks for incomplete account setup (MFA not configured)
@@ -167,65 +143,6 @@ When you run tests, the setup project creates separate authentication files for 
 2. **Auth state** is loaded into a worker-scoped browser context
 3. **All tests** in that worker reuse the authenticated session
 4. **Each test** gets a new page but maintains authentication
-
-### Account Allocation in CI/CD (AUTH_WORKER_OFFSET)
-
-**Note:** This is only required for CI/CD pipelines when running multiple test jobs in parallel. Local test execution does not need `AUTH_WORKER_OFFSET` since you run one project at a time.
-
-When running multiple test jobs in parallel in CI/CD (e.g., functional and accessibility tests), you can allocate different accounts to each job using the `AUTH_WORKER_OFFSET` environment variable. This prevents account conflicts.
-
-**The Problem Without AUTH_WORKER_OFFSET:**
-
-In CI/CD, each GitHub Actions job is a separate Playwright process. The `workerIndex` **always starts at 0** for each job, even when jobs run simultaneously:
-
-```bash
-# Without AUTH_WORKER_OFFSET - BOTH JOBS RUN AT THE SAME TIME ❌
-
-Job: functional-tests (separate GitHub runner)
-├─ Worker 0 (workerIndex = 0) → loads user-0.json
-
-Job: accessibility-tests (separate GitHub runner, parallel)
-├─ Worker 0 (workerIndex = 0) → loads user-0.json  ⚠️ CONFLICT!
-
-# Both jobs try to use TEST_ACCOUNT_1 simultaneously in the application
-# This causes authentication conflicts and test failures
-```
-
-**The Solution - AUTH_WORKER_OFFSET (Set in CI/CD Pipeline):**
-
-The offset is configured in [.github/workflows/playwright.yml](../.github/workflows/playwright.yml) and shifts which accounts each job uses:
-
-```
-accountIndex = workerIndex + AUTH_WORKER_OFFSET
-```
-
-**Example with 2 accounts:**
-```bash
-# Functional tests job (in playwright.yml)
-AUTH_WORKER_OFFSET=0
-Worker 0: 0 + 0 = 0 → uses user-0.json (TEST_ACCOUNT_1)
-
-# Accessibility tests job (in playwright.yml, running in parallel)
-AUTH_WORKER_OFFSET=1
-Worker 0: 0 + 1 = 1 → uses user-1.json (TEST_ACCOUNT_2)
-
-# Result: Different accounts, no conflicts, both jobs run in parallel ✅
-```
-
-**Example with 4 accounts:**
-```bash
-# Functional tests job (2 workers)
-AUTH_WORKER_OFFSET=0
-Worker 0: 0 + 0 = 0 → uses user-0.json
-Worker 1: 1 + 0 = 1 → uses user-1.json
-
-# Accessibility tests job (2 workers)
-AUTH_WORKER_OFFSET=2
-Worker 0: 0 + 2 = 2 → uses user-2.json
-Worker 1: 1 + 2 = 3 → uses user-3.json
-
-# Result: 4 separate accounts, no conflicts ✅
-```
 
 For CI/CD configuration details, see the **[CI/CD Configuration Guide](CI-CD.md)**.
 

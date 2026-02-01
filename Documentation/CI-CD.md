@@ -2,101 +2,86 @@
 
 ## Overview
 
-The framework includes a GitHub Actions workflow for automated test execution on every push and pull request. This ensures continuous integration and early detection of issues.
+GitHub Actions pipeline for automated test execution with three-job architecture:
+
+1. **Setup** - Authenticates all test accounts, saves auth artifacts
+2. **Functional Tests** - Downloads auth artifacts, runs functional tests (parallel with #3)
+3. **Non-Functional Tests** - Downloads auth artifacts, runs accessibility/validation tests (parallel with #2)
+
+**Benefits**: Authentication runs once, test jobs run in parallel, faster overall execution.
 
 ## GitHub Actions Setup
 
-### Pipeline Architecture
+### Configure Repository Secrets
 
-The CI/CD pipeline uses a **three-job architecture** optimized for speed and efficiency:
+**Path**: Repository Settings → Secrets and variables → Actions
 
-1. **Setup Job** - Runs authentication for all test accounts and creates auth artifacts
-2. **Functional Tests Job** - Downloads auth artifacts and runs functional tests (depends on setup)
-3. **Non-Functional Tests Job** - Downloads auth artifacts and runs non-functional tests (depends on setup)
-
-**Benefits:**
-- Authentication runs **once** instead of being duplicated in each test job
-- Functional and non-functional tests run **in parallel** after setup completes
-- Faster pipeline execution and reduced CI/CD minutes
-- Single point of authentication reduces failure points
-
-### Configuring Secrets
-
-Test account credentials are stored as GitHub repository secrets to keep them secure and out of version control.
-
-#### Steps to Configure Secrets
-
-1. Navigate to **Settings** → **Secrets and variables** → **Actions**
-2. Add each credential as a repository secret:
-   - `TEST_ACCOUNT_1_EMAIL` = `test1@example.com`
-   - `TEST_ACCOUNT_1_PASSWORD` = `YourActualPassword1!`
-   - `TEST_ACCOUNT_2_EMAIL` = `test2@example.com`
-   - `TEST_ACCOUNT_2_PASSWORD` = `YourActualPassword2!`
-   - Continue for additional accounts...
-   - `BASE_URL` = Your application base URL
-
-#### Workflow Configuration
-
-The setup job requires test account credentials:
-
-```yaml
-- name: Run authentication setup
-  run: npx playwright test --project=setup
-  env:
-    TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
-    TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-    TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
-    TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-    BASE_URL: ${{ secrets.BASE_URL }}
+**Required secrets**:
+```
+TEST_ACCOUNT_1_EMAIL = user1@example.com
+TEST_ACCOUNT_1_PASSWORD = Password123!
+TEST_ACCOUNT_2_EMAIL = user2@example.com  
+TEST_ACCOUNT_2_PASSWORD = Password456!
+BASE_URL = https://your-app-url.com
+PROPERTIES_KEY = your-api-key-here
+DMS_URL=url-to-dms-service
 ```
 
-Test jobs only need the base URL since they use downloaded auth artifacts:
+### Workflow Triggers
 
+- Manual trigger (workflow_dispatch)
+
+### Authentication Artifacts
+
+Setup job creates `playwright-auth` artifact containing session files:
+- `user-0.json`, `user-1.json`, etc.
+- Downloaded by test jobs before execution
+- 1-day retention
+- Prevents account conflicts in parallel jobs via `AUTH_WORKER_OFFSET`
+
+## Test Reports
+
+**Artifacts generated** (30-day retention):
+- `functional-test-report` - Playwright HTML report for functional tests
+- `non-functional-test-report` - Playwright HTML report for accessibility tests  
+- `non-functional-coverage-report` - Coverage summary (markdown + HTML)
+
+**Access**: Repository → Actions → Workflow run → Artifacts section (bottom of page)
+
+## Adding More Test Accounts
+
+When scaling parallelization:
+
+1. **Add GitHub secrets**: `TEST_ACCOUNT_N_EMAIL`, `TEST_ACCOUNT_N_PASSWORD`
+2. **Update [`test-accounts.json`](../tests/config/test-accounts.json)** with new account entry
+3. **Update [`.github/workflows/playwright.yml`](../.github/workflows/playwright.yml)** setup job env vars
+4. **Update [`playwright.config.ts`](../playwright.config.ts)** worker counts
+5. **Adjust `AUTH_WORKER_OFFSET`** for each test job to prevent account conflicts
+
+### Account Allocation Example
+
+**4 accounts, 2 workers each**:
+- Functional tests: `AUTH_WORKER_OFFSET=0` → uses accounts 0-1
+- Non-functional tests: `AUTH_WORKER_OFFSET=2` → uses accounts 2-3
+- No conflicts, full parallelization
+
+## Workflow Configuration
+
+**Setup job** (requires all test credentials):
 ```yaml
-- name: Run functional tests
-  run: npx playwright test --project=functional
-  env:
-    BASE_URL: ${{ secrets.BASE_URL }}
-
-- name: Run non-functional tests
-  run: npx playwright test --project=non-functional
-  env:
-    BASE_URL: ${{ secrets.BASE_URL }}
+env:
+  TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+  TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+  # ... all test accounts
+  BASE_URL: ${{ secrets.BASE_URL }}
 ```
 
-⚠️ **Important:** Each test account environment variable (email and password) must be explicitly listed in the setup job.
-
-### Adding More Test Accounts to CI/CD
-
-When you add new test accounts for increased parallelization:
-
-1. **Add the secrets to GitHub Actions** (Settings → Secrets and variables → Actions):
-   - `TEST_ACCOUNT_N_EMAIL`
-   - `TEST_ACCOUNT_N_PASSWORD`
-
-2. **Update [tests/config/test-accounts.json](../tests/config/test-accounts.json)** to include the new account
-
-3. **Update [.github/workflows/playwright.yml](../.github/workflows/playwright.yml)** setup job to include the new variables:
-   ```yaml
-   env:
-     TEST_ACCOUNT_3_EMAIL: ${{ secrets.TEST_ACCOUNT_3_EMAIL }}
-     TEST_ACCOUNT_3_PASSWORD: ${{ secrets.TEST_ACCOUNT_3_PASSWORD }}
-   ```
-
-4. **Update [playwright.config.ts](../playwright.config.ts)** worker counts:
-   - `setup` project: Match total number of accounts
-   - `functional` project: Set workers for functional tests
-   - `accessibility` project: Set workers for accessibility tests
-
-5. **Adjust `AUTH_WORKER_OFFSET`** in the workflow:
-   - Functional tests: Offset 0 (uses accounts 0, 1, 2...)
-   - Accessibility tests: Offset = number of functional workers (uses remaining accounts)
-   
-   Example with 4 accounts:
-   - Functional: `AUTH_WORKER_OFFSET=0`, `workers: 2` → uses accounts 0-1
-   - Accessibility: `AUTH_WORKER_OFFSET=2`, `workers: 2` → uses accounts 2-3
-
-### How It Works
+**Test jobs** (only need BASE_URL, use downloaded auth artifacts):
+```yaml
+env:
+  BASE_URL: ${{ secrets.BASE_URL }}
+  AUTH_WORKER_OFFSET: 0  # or 2 for non-functional
+```
 
 - **Locally**: Environment variables are loaded from `.env` file via dotenv
 - **GitHub Actions**: Variables are injected from repository secrets at runtime

@@ -1,127 +1,64 @@
-# Non-Functional Testing Guide: Accessibility
+# Accessibility Testing Guide
 
-This guide explains how to write automated accessibility tests as part of the comprehensive non-functional testing framework using the `AccessibilityUtilities` class.
+**Purpose**: Automated WCAG 2.2 AA compliance testing using axe-core integrated with Playwright.
 
-## Overview
-
-The framework uses **axe-core** integrated with Playwright to automatically detect accessibility violations against WCAG 2.2 AA standards. Accessibility tests are combined with context verification tests in the `non-functional` project to provide comprehensive page validation.
-
-**Test Types Included:**
-- **Accessibility:** WCAG 2.2 AA compliance using axe-core
-- **Context Verification:** URL patterns, DOM structure, heading text validation
-- **Visual Regression:** (optional) DOM snapshots and screenshot comparison
-
-## WCAG 2.2 AA Coverage
-
-### ✅ Fully Automatable with axe-core
-
-| **SC** | **Description** | **axe-core Coverage** |
-|--------|-----------------|------------------------|
-| 1.1.1 | Non-text Content (alt text for images/icons) | Yes |
-| 1.3.1 | Info and Relationships (semantic structure, ARIA roles) | Yes |
-| 1.3.2 | Meaningful Sequence (DOM order) | Yes |
-| 1.4.3 | Contrast (Minimum) | Yes |
-| 1.4.6 | Contrast (Enhanced) | Yes |
-| 1.4.10 | Reflow (viewport zoom) | Yes |
-| 2.4.4 | Link Purpose (In Context) | Yes |
-| 2.4.6 | Headings and Labels | Yes |
-| 3.1.1 | Language of Page | Yes |
-| 3.1.2 | Language of Parts | Yes |
-| 4.1.2 | Name, Role, Value (ARIA validity) | Yes |
-| 4.1.3 | Status Messages (aria-live regions) | Partial |
-
-### ⚠️ Hybrid (Automation + Manual/Scripted)
-
-| **SC** | **Description** | **Why Hybrid?** |
-|--------|-----------------|-----------------|
-| 2.1.1 | Keyboard | Axe flags tabindex issues; full operability needs scripted tests |
-| 2.1.2 | No Keyboard Trap | Axe detects some traps; confirm with Playwright navigation |
-| 2.4.3 | Focus Order | Axe checks hidden focusable elements; logical order needs manual/scripted validation |
-| 2.4.7 | Focus Visible | Axe cannot verify visual styling; manual visual check required |
-| 3.3.1 | Error Identification | Axe checks missing labels; verify error messages appear and are announced |
-| 1.4.11 | Non-Text Contrast | Axe partially checks; manual confirmation for custom UI components |
-| 1.4.12 | Text Spacing | Requires manual CSS inspection |
-| 1.4.13 | Content on Hover/Focus | Axe flags some issues; manual check for dismissibility and persistence |
-| 2.4.11 | Focus Not Obscured (Minimum) **[NEW 2.2]** | Axe may detect overlapping elements; manual verification of focus visibility required |
-| 2.5.8 | Target Size (Minimum) **[NEW 2.2]** | Axe cannot measure target sizes; requires manual measurement or scripted validation |
-
-### 👀 Manual Only
-
-| **SC** | **Description** |
-|--------|-----------------|
-| 1.2.x | Time-based Media (captions, audio descriptions) |
-| 1.3.4 | Orientation (support portrait/landscape) |
-| 1.3.5 | Identify Input Purpose |
-| 2.2.x | Timing Adjustable |
-| 2.4.1 | Bypass Blocks (skip links, landmarks) |
-| 2.5.x | Pointer Gestures |
-| 2.5.7 | Dragging Movements **[NEW 2.2]** |
-| 3.2.x | Predictable (on focus/input behavior consistency) |
-| 3.2.6 | Consistent Help **[NEW 2.2]** |
-| 3.3.4 | Error Prevention (Legal, Financial, Data) |
-| 3.3.7 | Redundant Entry **[NEW 2.2]** |
-| 3.3.8 | Accessible Authentication (Minimum) **[NEW 2.2]** |
-| Screen Reader Compatibility | JAWS/NVDA tests for announcement order, verbosity, dynamic updates |
+**What it includes**:
+- Automated accessibility violation detection
+- WCAG 2.2 AA standard compliance checking
+- Integration with context verification for comprehensive page validation
+- Coverage reporting for accessibility testing status
 
 ## Quick Start
-
-### 1. Import Required Modules
 
 ```typescript
 import { test, expect } from '../../fixtures/authFixtures';
 import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
-import { HomePage } from '../../pages/HomePage';
-import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
-```
 
-### 2. Basic Non-Functional Test (Accessibility + Context)
-
-```typescript
-test.describe('Home Page Non-Functional Tests', () => {
-  test.beforeEach(async ({}, testInfo) => {
-    testInfo.annotations.push(
-      TestAnnotations.testType(TestType.ACCESSIBILITY),
-      TestAnnotations.testType(TestType.CONTEXT_VERIFICATION)
-    );
-  });
-
-  test('Home Page', async ({ page }, testInfo) => {
-    testInfo.annotations.push(TestAnnotations.page(PageName.HOME_PAGE));
-
-    const homePage = new HomePage(page);
-    await homePage.navigate();
-
-    // Verify accessibility
-    const results = await AccessibilityUtilities.analyzeAccessibility(page);
-    const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
-    expect(criticalViolations, `Page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
-
-    // Context verification (optional)
-    await expect(page).toHaveURL(/expected-pattern/);
-    await expect(page.locator('h1')).toContainText('Expected Heading');
-  });
+test('Page accessibility test', async ({ page }) => {
+  await page.goto('/your-page');
+  
+  // Run accessibility analysis
+  const results = await AccessibilityUtilities.analyzeAccessibility(page);
+  const hasCritical = AccessibilityUtilities.hasCriticalViolations(results.violations);
+  
+  expect(hasCritical, 
+    `Critical accessibility violations found:\n${AccessibilityUtilities.formatViolations(results.violations)}`
+  ).toBe(false);
 });
 ```
 
-### 3. Running Non-Functional Tests
-
 ```bash
-# Run all non-functional tests (accessibility + context verification)
+# Run accessibility tests
 npx playwright test --project=non-functional
-
-# Run specific test file
-npx playwright test HomePageTests --project=non-functional
-
-# View results and coverage report
-npx playwright show-report
-# Coverage report: test-results/non-functional-test-coverage.md
 ```
+
+## WCAG 2.2 AA Coverage
+
+**✅ Fully Automated** (detected by axe-core):
+- Alt text for images
+- Color contrast ratios
+- Semantic HTML structure
+- ARIA roles and properties
+- Form labels and error identification
+- Heading hierarchy
+- Language declarations
+- Keyboard navigation issues
+
+**⚠️ Partially Automated** (requires additional validation):
+- Keyboard operability (basic detection only)
+- Focus management and visibility
+- Target size for touch interfaces
+- Content appearing on hover/focus
+
+**👀 Manual Testing Required**:
+- Screen reader compatibility
+- Timing and animations
+- Complex user interactions
+- Context-specific content requirements
 
 ## Configuration
 
-### Centralized Config File
-
-Accessibility test configuration is managed in `tests/config/accessibility.config.json`:
+Accessibility testing configured in `tests/config/accessibility.config.json`:
 
 ```json
 {
@@ -129,100 +66,4 @@ Accessibility test configuration is managed in `tests/config/accessibility.confi
   "excludeTags": [],
   "disableRules": []
 }
-```
-
-**Available Tags:**
-- `wcag2a`, `wcag2aa` - WCAG 2.0 Level A/AA
-- `wcag21a`, `wcag21aa` - WCAG 2.1 Level A/AA
-- `wcag22a`, `wcag22aa` - WCAG 2.2 Level A/AA
-- `best-practice` - Best practice rules beyond WCAG
-
-
-## Available Methods
-
-### `analyzeAccessibility(page)`
-
-Analyzes the current page for accessibility violations using axe-core. Configuration is loaded from `tests/config/accessibility.config.json`.
-
-**Parameters:**
-- `page: Page` - The Playwright page object
-
-**Returns:** `Promise<AccessibilityResult>`
-- `violations: AccessibilityViolation[]` - Array of violations found
-- `passes: number` - Number of passed checks
-- `incomplete: number` - Number of incomplete checks
-- `violationCount: number` - Total violations
-
-**Example:**
-```typescript
-const results = await AccessibilityUtilities.analyzeAccessibility(page);
-```
-
-### `hasCriticalViolations(violations)`
-
-Checks if there are any critical or serious accessibility violations.
-
-**Parameters:**
-- `violations: AccessibilityViolation[]` - Array of violations
-
-**Returns:** `boolean` - True if critical or serious violations exist
-
-**Example:**
-```typescript
-const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
-if (criticalViolations) {
-  console.log('Critical issues found!');
-}
-```
-
-### `formatViolations(violations)`
-
-Formats accessibility violations into a readable string for test reports.
-
-**Parameters:**
-- `violations: AccessibilityViolation[]` - Array of violations
-
-**Returns:** `string` - Formatted violations with details
-
-**Example:**
-```typescript
-const formatted = AccessibilityUtilities.formatViolations(results.violations);
-console.log(formatted);
-// Output:
-// 1. color-contrast (serious)
-//    Description: Elements must have sufficient color contrast
-//    Help: Ensure text has sufficient contrast
-//    Help URL: https://...
-//    Affected elements (2):
-//     Target: #submit-button
-//     HTML: <button id="submit-button">Submit</button>
-```
-
-### `filterViolationsByImpact(violations, impacts)`
-
-Filters violations by impact level.
-
-**Parameters:**
-- `violations: AccessibilityViolation[]` - Array of violations
-- `impacts: string[]` - Impact levels to filter by: `'critical'`, `'serious'`, `'moderate'`, `'minor'`
-
-**Returns:** `AccessibilityViolation[]` - Filtered violations
-
-**Example:**
-```typescript
-// Get only critical violations
-const critical = AccessibilityUtilities.filterViolationsByImpact(results.violations, ['critical']);
-
-// Get critical and serious violations
-const highPriority = AccessibilityUtilities.filterViolationsByImpact(results.violations, ['critical', 'serious']);
-```
-
-## Running Accessibility Tests
-
-```bash
-# Run all accessibility tests
-npx playwright test --project=accessibility
-
-# Run specific accessibility test in debug mode
-npx playwright test --project=accessibility -g "Validation error panel" --debug
 ```

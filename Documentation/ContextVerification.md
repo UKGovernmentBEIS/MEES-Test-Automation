@@ -1,24 +1,20 @@
-# Non-Functional Testing Guide: Context Verification
+# Context Verification Guide
 
-This guide explains how to write automated context verification tests to ensure pages load correctly with expected content, structure, and behavior patterns.
+## What It Is
 
-## Overview
+Automated validation that pages load correctly with expected content, structure, and behavior patterns. Works alongside accessibility testing for comprehensive page validation.
 
-Context verification tests validate that pages display the correct content and maintain expected DOM structure across different test runs. These tests work alongside accessibility testing to provide comprehensive page validation in the `non-functional` project.
+## What It Includes
 
-**Context Verification includes:**
-- **DOM Structure Validation:** Verify key elements are present and correctly positioned
-- **Content Verification:** Check headings, text content, and labels match expectations
-- **Aria Structure:** Validate semantic structure through aria snapshots
+- **DOM Structure**: Key elements present and correctly positioned
+- **Content Verification**: Headings, text, and labels match expectations  
+- **Aria Structure**: Semantic structure validation through aria snapshots
+- **URL Patterns**: Correct page routing and navigation
 
 ## Quick Start
 
-### Basic Context Verification Test
-
-Each page class implements a `getContextLocators()` method. Use it to verify aria structure of page elements:
-
 ```typescript
-// Context Verification: Verify presence of key elements on the page
+// Basic context verification using page object
 const contextLocatorArray = yourPage.getContextLocators();
 for (let i = 0; i < contextLocatorArray.length; i++) {
     const locator = contextLocatorArray[i];
@@ -26,26 +22,19 @@ for (let i = 0; i < contextLocatorArray.length; i++) {
 }
 ```
 
-### Running Context Verification Tests
-
 ```bash
-# Run all non-functional tests (includes context verification)
-npx playwright test --project=non-functional
-
-# Run specific context verification test
-npx playwright test PageTests --project=non-functional -g "context"
+# Run context verification tests
+npx playwright test --project=non-functional -g "context"
 ```
 
-## Page Object Pattern for Context Verification
+## Page Object Pattern
 
-### Implementing `getContextLocators()` Method
-
-Every page object should implement a `getContextLocators()` method that returns critical UI elements for verification:
+Every page object implements `getContextLocators()` method returning critical UI elements:
 
 ```typescript
 /**
  * Returns critical UI elements for context verification
- * Order matters - should be consistent across test runs
+ * Order matters - must be consistent across test runs
  */
 getContextLocators(): Locator[] {
   return [
@@ -55,3 +44,49 @@ getContextLocators(): Locator[] {
     this.contentArea
   ];
 }
+```
+
+## Test Pattern
+
+```typescript
+import { test, expect } from '../../fixtures/authFixtures';
+import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
+
+test.describe('Page Context Verification', () => {
+  test.beforeEach(async ({}, testInfo) => {
+    testInfo.annotations.push(
+      TestAnnotations.testType(TestType.CONTEXT_VERIFICATION)
+    );
+  });
+
+  test('Page structure validation', async ({ page }, testInfo) => {
+    testInfo.annotations.push(TestAnnotations.page(PageName.YOUR_PAGE));
+
+    // Navigate to page
+    const yourPage = new YourPage(page);
+    await yourPage.navigate();
+
+    // Verify URL pattern
+    await expect(page).toHaveURL(/expected-pattern/);
+
+    // Verify content structure
+    const contextLocators = yourPage.getContextLocators();
+    for (let i = 0; i < contextLocators.length; i++) {
+      await expect(contextLocators[i]).toMatchAriaSnapshot(`your-page-element-${i}.aria.yml`);
+    }
+  });
+});
+```
+
+## Running Tests
+
+```bash
+# Run all context verification tests
+npx playwright test --project=non-functional
+
+# Run specific page context tests
+npx playwright test PageTests --project=non-functional -g "context"
+
+# Generate/update snapshots
+npx playwright test --project=non-functional --update-snapshots
+```
