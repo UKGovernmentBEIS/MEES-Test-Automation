@@ -43,8 +43,7 @@ export default defineConfig({
     { 
       name: 'setup', 
       testMatch: /.*\/test\/setup\/.*\.setup\.ts/,
-      fullyParallel: true,
-      workers: 2
+      fullyParallel: true
     },
     {
       name: 'functional',
@@ -53,8 +52,6 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Note: storageState is loaded dynamically in authFixtures based on worker index
       },
-      // Set to 1 worker for CI to use dedicated account (account 0)
-      workers: process.env.CI ? 1 : undefined,
       // By default, setup must be run separately (for CI/CD artifact pattern)
       // Set RUN_SETUP_AUTOMATICALLY=1 to run setup before tests (convenient for local dev)
       dependencies: process.env.RUN_SETUP_AUTOMATICALLY ? ['setup'] : []
@@ -68,8 +65,6 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Note: storageState is loaded dynamically in authFixtures based on worker index
       },
-      // Set to 1 worker for CI to use dedicated account (account 1)
-      workers: process.env.CI ? 1 : undefined,
       // By default, setup must be run separately (for CI/CD artifact pattern)
       // Set RUN_SETUP_AUTOMATICALLY=1 to run setup before tests (convenient for local dev)
       dependencies: process.env.RUN_SETUP_AUTOMATICALLY ? ['setup'] : []
