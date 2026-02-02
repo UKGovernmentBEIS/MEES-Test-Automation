@@ -134,7 +134,7 @@ test.describe('Properties DMS API Tests', () => {
     });
 
     test.describe('Filter Criteria Tests', () => {
-        test('BUG: Missing required lacodes field returns 500 instead of 400', async ({ request }) => {
+        test('Missing required lacodes field returns 400', async ({ request }) => {
             const invalidRequestBody = {
                 "street": "main street",
                 "town": "Brighton",
@@ -151,11 +151,10 @@ test.describe('Properties DMS API Tests', () => {
                 }
             });
 
-            expect(response.status()).toBe(500);
+            expect(response.status()).toBe(400);
             
-            // API returns 500 with empty response body when lacodes is missing
+            // API correctly returns 400 Bad Request when required lacodes field is missing
             const responseText = await response.text();
-            // Verify we get a server error, response body may be empty
             expect(responseText).toBeDefined();
         });
 
