@@ -26,8 +26,6 @@ export class HomePage extends BasePage {
             {
                 pageContext: this.pageContext,
                 pageFooter: this.pageFooter,
-                backButton: this.backButton,
-                signOutButton: this.signOutButton,
                 viewPropertiesButton: this.viewPropertiesButton
             },
             60000);
