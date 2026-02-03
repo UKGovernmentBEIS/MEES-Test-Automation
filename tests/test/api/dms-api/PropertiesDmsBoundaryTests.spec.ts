@@ -529,5 +529,51 @@ test.describe('Properties DMS API Tests', () => {
                 }
             }
         });
+
+        test('Specific property data integrity check (UPRN 100050060776)', async ({ request }) => {
+            // Data integrity test - validates a known property to detect data pipeline issues
+            const requestBodyForSpecificProperty = {
+                "lacodes": ["E06000011"],
+                "town": "SNAITH",
+                "postcode": "DN14 0AA"
+            };
+
+            const response = await request.post(`${baseUrl}?page=1&size=50`, {
+                data: requestBodyForSpecificProperty,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'x-functions-key': process.env.PROPERTIES_KEY!
+                }
+            });
+
+            expect(response.status()).toBe(200);
+            
+            const responseBody = await response.json();
+            const parsedBody = JSON.parse(responseBody);
+            
+            // Find the specific property by UPRN
+            const targetProperty = parsedBody.data.find(property => property.Uprn === 100050060776);
+            expect(targetProperty).toBeDefined();
+            
+            // Validate complete data structure including null fields
+            expect(targetProperty.Uprn).toBe(100050060776);
+            expect(targetProperty.BuildingReferenceNumber).toBeNull();
+            expect(targetProperty.Name).toBe('AIRE VIEW');
+            expect(targetProperty.Number).toBeNull();
+            expect(targetProperty.FlatNameNumber).toBe('SNAITH DENTAL CARE');
+            expect(targetProperty.Line1).toBe('GOWDALL LANE');
+            expect(targetProperty.Line2).toBeNull();
+            expect(targetProperty.Line3).toBeNull();
+            expect(targetProperty.Town).toBe('SNAITH');
+            expect(targetProperty.County).toBeNull();
+            expect(targetProperty.Postcode).toBe('DN14 0AA');
+            expect(targetProperty.LocalAuthority).toBe('E06000011');
+            expect(targetProperty.EPCEnergyRating).toBe(47);
+            expect(targetProperty.EPCEnergyRatingBand).toBe('B');
+            expect(targetProperty.EPCExpiryDate).toBe('2029-10-08');
+            expect(targetProperty.Location).toBe('Onshore');
+            expect(targetProperty.RateableValue).toBe(5500);
+        });
     });
 });
