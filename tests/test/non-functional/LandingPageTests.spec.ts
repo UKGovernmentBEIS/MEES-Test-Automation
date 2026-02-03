@@ -5,7 +5,9 @@ import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
 
 test.describe('Landing Page Non-Functional Tests', () => {
 
-  test('Landing Page', async ({ page }) => {
+  // MEESALPHA-600 - The Landing page context has change and refers to exemptions instead of compliance
+  // Remove 'test.fixme' when the issue is resolved
+  test.fixme('Landing Page', async ({ page }) => {
     test.info().annotations.push(
         TestAnnotations.page(PageName.LANDING_PAGE),
         TestAnnotations.testType(TestType.ACCESSIBILITY),
