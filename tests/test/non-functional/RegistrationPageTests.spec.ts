@@ -21,7 +21,7 @@ test.describe('Registration Process Non-Functional Tests', () => {
         await landingPage.navigate();
 
         // Click on the Start Now button to navigate to Sign In Or Create Account Page
-        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser(); 
+        const signInOrCreatePage = await landingPage.clickSignIn_NotAuthenticatedUser();
 
         // Click on the Create an account link to navigate to One Login Enter Email Page
         registrationEmailPage = await signInOrCreatePage.clickCreateAnAccountLink();

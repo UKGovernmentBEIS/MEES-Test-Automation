@@ -34,7 +34,7 @@ test.describe('No Access Page Non-Functional Tests', () => {
             );
         }
 
-        const signInOrCreatePage = await landingPage.clickStartNow_NotAuthenticatedUser();
+        const signInOrCreatePage = await landingPage.clickSignIn_NotAuthenticatedUser();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
         const noAccessPage = await loginPasswordPage.enterPasswordAndContinueToNoAccessPage(password);

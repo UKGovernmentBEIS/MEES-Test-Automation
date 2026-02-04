@@ -16,8 +16,8 @@ test.describe('Home Page Functional Tests', () => {
 
     test('Home page loads successfully', async ({ page }, testInfo) => {
         
-        // Test that Start Now navigates to home page successfully
-        const homePage = await landingPage.clickStartNow_AuthenticatedUser();
+        // Test that Sign In navigates to home page successfully
+        const homePage = await landingPage.clickSignIn_AuthenticatedUser();
 
         // Verify Home Page URL
         await expect(page).toHaveURL(/.*landing-page/);

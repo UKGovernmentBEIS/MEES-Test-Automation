@@ -14,7 +14,7 @@ test.describe('Home Page Non-Functional Tests', () => {
 
     const landingPage = new LandingPage(page);
     await landingPage.navigate();
-    const homePage = await landingPage.clickStartNow_AuthenticatedUser();
+    const homePage = await landingPage.clickSignIn_AuthenticatedUser();
 
     // Verify accessibility on the Home page
     const results = await AccessibilityUtilities.analyzeAccessibility(page);
