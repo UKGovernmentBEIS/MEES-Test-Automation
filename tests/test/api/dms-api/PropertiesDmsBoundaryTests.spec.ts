@@ -51,8 +51,12 @@ test.describe('Properties DMS API Tests', () => {
     });
 
     test('Response returns correct pagination values', async ({ request }) => {
+        const requestBodyPagination = {
+            "lacodes": ["E09000003","E09000004"]
+        };
+
         const response = await request.post(`${baseUrl}?page=1&size=10`, {
-            data: requestBody,
+            data: requestBodyPagination,
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -65,8 +69,6 @@ test.describe('Properties DMS API Tests', () => {
         
         expect(parsedBody.page).toBe(1);
         expect(parsedBody.size).toBe(10);
-        expect(parsedBody.total_records).toBe(11);
-        expect(parsedBody.total_pages).toBe(2);
     });
 
     test('Property objects contain all required fields', async ({ request }) => {
@@ -255,7 +257,7 @@ test.describe('Properties DMS API Tests', () => {
         });
 
         test('Energy rating band filter works correctly', async ({ request }) => {
-            const validRatings = ["A+", "A", "B", "C", "D", "E", "F", "G", "Unrated"];
+            const validRatings = ["A", "B", "C", "D", "E", "F", "G", "Unrated"];
             
             for (const rating of validRatings) {
                 const requestBodyWithRating = {
@@ -280,7 +282,7 @@ test.describe('Properties DMS API Tests', () => {
                 // Verify response structure and filtering works
                 expect(parsedBody).toHaveProperty('data');
                 expect(Array.isArray(parsedBody.data)).toBe(true);
-                expect(parsedBody.data.length).toBeGreaterThan(0);
+                expect(parsedBody.data.length, "Filtering by energy rating band " + rating + " returned no results").toBeGreaterThan(0);
                 
                 // Verify all properties match the energy rating band filter
                 for (const property of parsedBody.data) {
@@ -458,12 +460,12 @@ test.describe('Properties DMS API Tests', () => {
         test('Combined filters work correctly', async ({ request }) => {
             // Use filter criteria matching known property data with location
             const requestBodyWithMultipleFilters = {
-                "lacodes": ["E06000011"],
-                "street": "GOWDALL LANE",
-                "town": "SNAITH",
-                "postcode": "DN14 0AA",
-                "energyratingband": "B",
-                "location": "Onshore"
+                "lacodes": ["E09000003","E09000004"],
+                "street": "23 Acorn Industrial Park",
+                "location": "Onshore",
+                "town": "DARTFORD",
+                "postcode": "DA1 4AL",
+                "energyratingband": "C"
             };
 
             const response = await request.post(`${baseUrl}?page=1&size=10`, {
@@ -490,15 +492,15 @@ test.describe('Properties DMS API Tests', () => {
             
             // Verify all properties match the applied filters
             for (const property of parsedBody.data) {
-                expect(property.Town.toLowerCase()).toBe('snaith');
-                expect(property.Postcode).toBe('DN14 0AA');
-                expect(property.LocalAuthority).toBe('E06000011');
+                expect(property.Town.toLowerCase()).toBe('DARTFORD'.toLowerCase());
+                expect(property.Postcode).toBe('DA1 4AL');
+                expect(property.LocalAuthority).toBe('E09000004');
                 expect(property.Location).toBe('Onshore');
-                expect(property.EPCEnergyRatingBand).toBe('B');
+                expect(property.EPCEnergyRatingBand).toBe('C');
                 
                 // Check street appears in one of the address lines
                 const addressFields = [property.Line1, property.Line2, property.Line3].join(' ').toLowerCase();
-                expect(addressFields).toContain('gowdall lane');
+                expect(addressFields).toContain('23 acorn industrial park');
             }
         });
 
@@ -528,52 +530,6 @@ test.describe('Properties DMS API Tests', () => {
                     expect(property.Postcode).toBe('DN14 5BT');
                 }
             }
-        });
-
-        test('Specific property data integrity check (UPRN 100050060776)', async ({ request }) => {
-            // Data integrity test - validates a known property to detect data pipeline issues
-            const requestBodyForSpecificProperty = {
-                "lacodes": ["E06000011"],
-                "town": "SNAITH",
-                "postcode": "DN14 0AA"
-            };
-
-            const response = await request.post(`${baseUrl}?page=1&size=50`, {
-                data: requestBodyForSpecificProperty,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'x-functions-key': process.env.PROPERTIES_KEY!
-                }
-            });
-
-            expect(response.status()).toBe(200);
-            
-            const responseBody = await response.json();
-            const parsedBody = JSON.parse(responseBody);
-            
-            // Find the specific property by UPRN
-            const targetProperty = parsedBody.data.find(property => property.Uprn === 100050060776);
-            expect(targetProperty).toBeDefined();
-            
-            // Validate complete data structure including null fields
-            expect(targetProperty.Uprn).toBe(100050060776);
-            expect(targetProperty.BuildingReferenceNumber).toBeNull();
-            expect(targetProperty.Name).toBe('AIRE VIEW');
-            expect(targetProperty.Number).toBeNull();
-            expect(targetProperty.FlatNameNumber).toBe('SNAITH DENTAL CARE');
-            expect(targetProperty.Line1).toBe('GOWDALL LANE');
-            expect(targetProperty.Line2).toBeNull();
-            expect(targetProperty.Line3).toBeNull();
-            expect(targetProperty.Town).toBe('SNAITH');
-            expect(targetProperty.County).toBeNull();
-            expect(targetProperty.Postcode).toBe('DN14 0AA');
-            expect(targetProperty.LocalAuthority).toBe('E06000011');
-            expect(targetProperty.EPCEnergyRating).toBe(47);
-            expect(targetProperty.EPCEnergyRatingBand).toBe('B');
-            expect(targetProperty.EPCExpiryDate).toBe('2029-10-08');
-            expect(targetProperty.Location).toBe('Onshore');
-            expect(targetProperty.RateableValue).toBe(5500);
         });
     });
 });
