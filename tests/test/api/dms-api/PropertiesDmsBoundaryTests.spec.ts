@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { PassThrough } from 'stream';
 
 test.describe('Properties DMS API Tests', () => {
     const baseUrl = process.env.DMS_URL
