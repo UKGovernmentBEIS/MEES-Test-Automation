@@ -148,6 +148,7 @@ jobs:
       env:
         PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
         DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
+        LOCAL_AUTHORITIES_KEY: ${{ secrets.LOCAL_AUTHORITIES_KEY }}
     - name: Upload Playwright HTML report
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
