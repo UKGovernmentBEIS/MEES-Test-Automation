@@ -1,23 +1,44 @@
 - main:
-  - link "Back":
-    - /url: /
+  - navigation "Menu":
+    - list:
+      - listitem:
+        - link "Property records":
+          - /url: /filter-properties
+      - listitem:
+        - link "Guidance":
+          - /url: /guidance
+      - listitem:
+        - link "Penalty calculator":
+          - /url: /penalty-calculator
+      - listitem:
+        - link "Templates":
+          - /url: /templates
   - list:
     - listitem:
       - link "Sign out":
         - /url: "#"
   - main:
-    - heading "Find properties" [level=1]
-    - paragraph: To find properties that do not adhere to the Minimum Energy Efficiency Standards (MEES), you can view a list of property records in your jurisdiction.
-    - paragraph: Each property has detailed information listed, including address details, landlord details, EPC rating, and exemption status.
-    - button "View property records"
+    - heading "Tools and guidance for enforcing energy standards" [level=1]
+    - paragraph: Use this service to access information and tools to help you enforce the Minimum Energy Efficiency Standards (MEES) Regulations for non-domestic properties in the Private Rented Sector (PRS).
+    - paragraph: You can view property and landlord details, get guidance on enforcement, download letter templates, and calculate financial penalties.
     - separator
+    - heading "Property records" [level=2]
+    - paragraph: This includes non-domestic property details, landlord details, energy rating, and PRS exemption status.
+    - paragraph:
+      - link "View property records":
+        - /url: /filter-properties
     - heading "Guidance" [level=2]
-    - paragraph: View enforcement steps you can take for non-compliant properties in your local authority.
+    - paragraph: Check enforcement steps you can take for suspected non-domestic properties in breach of the MEES Regulations.
     - paragraph:
-      - link "Browse guidance":
-        - /url: "#-31"
+      - link "View guidance":
+        - /url: "#-33"
     - heading "Templates" [level=2]
-    - paragraph: Download letter templates for issuing compliance notices and penalty notices.
+    - paragraph: Download letter templates for issuing compliance notices and penalty notices to non-domestic landlords.
     - paragraph:
-      - link "Browse templates":
-        - /url: "#-31"
+      - link "View templates":
+        - /url: "#-33"
+    - heading "Penalty calculator" [level=2]
+    - paragraph: Calculate a possible penalty amount for a non-domestic property in breach of the MEES Regulations.
+    - paragraph:
+      - link "View penalty calculator":
+        - /url: "#-33"
