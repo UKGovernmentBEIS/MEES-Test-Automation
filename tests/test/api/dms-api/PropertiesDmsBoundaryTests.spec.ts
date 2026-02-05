@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Properties DMS API Tests', () => {
-    const baseUrl = process.env.DMS_URL
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
     const requestBody = {
         "lacodes": ["E06000009", "E06000011"],
         "town": "GOWDALL"

@@ -47,7 +47,7 @@
    
    # API key for DMS API tests
    PROPERTIES_KEY=your-api-key-here
-   DMS_URL=url-to-dms-service
+   DMS_BASE_URL=url-to-dms-service
    ```
 
 4. **Run authentication setup** (creates session files):

@@ -24,7 +24,7 @@ TEST_ACCOUNT_2_EMAIL = user2@example.com
 TEST_ACCOUNT_2_PASSWORD = Password456!
 BASE_URL = https://your-app-url.com
 PROPERTIES_KEY = your-api-key-here
-DMS_URL=url-to-dms-service
+DMS_BASE_URL=url-to-dms-service
 ```
 
 ### Workflow Triggers

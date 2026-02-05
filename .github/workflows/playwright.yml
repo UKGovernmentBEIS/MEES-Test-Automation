@@ -147,7 +147,7 @@ jobs:
       run: npx playwright test --project=api
       env:
         PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
-        DMS_URL: ${{ secrets.DMS_URL }} 
+        DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
     - name: Upload Playwright HTML report
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
