@@ -1,9 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
-import { BasePage } from '../BasePage';
+import { BaseCompliancePage } from './BaseCompliancePage';
 
-export class ViewPropertiesPage extends BasePage {
-    private readonly pageContext: Locator;
+export class ViewPropertiesPage extends BaseCompliancePage {
 
     constructor(page: Page) {
         super(page);
@@ -13,6 +12,8 @@ export class ViewPropertiesPage extends BasePage {
     // Wait for the View Properties page to load
     // Timeout set to 60 seconds, as this page generally loads slower
     async waitForPageToLoad(): Promise<void> {
+        await super.waitForPageToLoad();
+
         await ElementUtilities.waitForPageToLoad(
             this.page,
             'View Properties Page',

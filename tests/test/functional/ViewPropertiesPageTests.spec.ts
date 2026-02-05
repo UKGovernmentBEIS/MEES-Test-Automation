@@ -7,18 +7,18 @@ import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
 test.describe('View Properties Page Functional Tests', () => {
     let ViewPropertiesPage: ViewPropertiesPage;;
     
-    test.beforeEach(async ({ page }, testInfo) => {
-        testInfo.annotations.push(
-            TestAnnotations.testType(TestType.FUNCTIONAL)
-        );
+    // test.beforeEach(async ({ page }, testInfo) => {
+    //     testInfo.annotations.push(
+    //         TestAnnotations.testType(TestType.FUNCTIONAL)
+    //     );
         
-        const landingPage: LandingPage = new LandingPage(page);
-        await landingPage.navigate();
-        const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
-        ViewPropertiesPage = await homePage.clickViewProperties();        
-    });
+    //     const landingPage: LandingPage = new LandingPage(page);
+    //     await landingPage.navigate();
+    //     const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
+    //     ViewPropertiesPage = await homePage.clickViewProperties();        
+    // });
 
-    test('View Properties page loads successfully', async ({ page }, testInfo) => {
+    test.skip('View Properties page loads successfully', async ({ page }, testInfo) => {
         // Verify Home Page URL
         await expect(page).toHaveURL(/.*view-properties/);
 

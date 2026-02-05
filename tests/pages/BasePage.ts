@@ -4,7 +4,7 @@ export abstract class BasePage {
   protected readonly page: Page;
   private static readonly globalConsoleErrors: Set<string> = new Set();
   private static consoleListenerAttached: boolean = false;
-  readonly pageFooter: Locator;
+  protected readonly pageFooter: Locator;
 
   constructor(page: Page) {
     this.page = page;
