@@ -27,7 +27,7 @@ test.describe('View Properties Page Functional Tests', () => {
         // Check console errors on View Properties Page
         const viewPropertiesPageErrors = viewPropertiesPage.getAllConsoleErrors();
         await expect(viewPropertiesPageErrors.length, 
-            'Known Issue MEESCH-439: View Properties Page should have 3 console errors'
+            'TODO: Console errors should be investigated and resolved. If they are expected, this assertion can be removed or updated accordingly.'
         ).toBe(1);
 
         // Verify page title
