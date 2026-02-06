@@ -32,7 +32,8 @@ test.describe('Filter Properties Page Functional Tests', () => {
         await expect(page).toHaveTitle('Filter properties');
     });
 
-    test('Verify that the Reset filter button resets all filters', async ({ page }, testInfo) => {
+    // Activate on QA evironment where users with proper data are setup
+    test.skip('Verify that the Reset filter button resets all filters', async ({ page }, testInfo) => {
         // Apply various filters first
         await filterPropertiesPage.setCouncilFilter('Adur District Council');
         await filterPropertiesPage.setEnergyRatingFilter('A');
