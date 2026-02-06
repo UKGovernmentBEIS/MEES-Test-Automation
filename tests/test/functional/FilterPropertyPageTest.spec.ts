@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures/authFixtures';
-import { FilterPropertyPage } from '../../pages/Compliance/FilterpropertyPage';
+import { FilterPropertyPage } from '../../pages/Compliance/FilterPropertyPage';
 import { HomePage } from '../../pages/Compliance/HomePage';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';

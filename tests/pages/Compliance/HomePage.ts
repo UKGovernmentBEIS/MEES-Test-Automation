@@ -1,7 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { BaseCompliancePage } from './BaseCompliancePage';
-import { FilterPropertyPage } from './FilterpropertyPage';
+import { FilterPropertyPage } from './FilterPropertyPage';
 
 export class HomePage extends BaseCompliancePage {
     private readonly viewPropertiesLink: Locator;
