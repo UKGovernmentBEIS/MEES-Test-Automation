@@ -4,6 +4,7 @@ import { ViewPropertiesPage } from './ViewPropertiesPage';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 
 export class FilterPropertyPage extends BaseCompliancePage {
+    private pageContext: Locator;
     private readonly homeBreadcrumb: Locator;
     private readonly councilsList: Locator;
     private readonly councilsDropdown: Locator;
@@ -19,7 +20,7 @@ export class FilterPropertyPage extends BaseCompliancePage {
 
     constructor(page: Page) {
         super(page);
-        this.pageContext = page.getByText('Select your filters and')
+        this.pageContext = page.locator('#main-contentxxx');
         this.homeBreadcrumb = page.getByRole('link', { name: 'Home' })
         this.councilsList = page.getByText('You are viewing records for', { exact: false })
         this.councilsDropdown = page.getByLabel('Council')
@@ -32,6 +33,7 @@ export class FilterPropertyPage extends BaseCompliancePage {
         this.allLALocationsRadioButton = page.getByRole('radio', { name: 'All locations' })
         this.onshoreLALocationsRadioButton = page.getByRole('radio', { name: 'Onshore (England and Wales)' })
         this.offshoreLALocationsRadioButton = page.getByRole('radio', { name: 'Offshore' })
+        
     }
 
         // Wait for the Filter Property Page to load
@@ -42,6 +44,7 @@ export class FilterPropertyPage extends BaseCompliancePage {
             this.page,
             'Filter Property Page',
             {
+                pageContext: this.pageContext,
                 homeBreadcrumb: this.homeBreadcrumb,
                 councilsList: this.councilsList,
                 councilsDropdown: this.councilsDropdown,

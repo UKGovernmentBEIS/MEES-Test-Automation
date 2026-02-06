@@ -4,6 +4,7 @@ import { BaseCompliancePage } from './BaseCompliancePage';
 import { FilterPropertyPage } from './FilterPropertyPage';
 
 export class HomePage extends BaseCompliancePage {
+    private pageContext: Locator;
     private readonly viewPropertiesLink: Locator;
     private readonly viewGuidanceLink: Locator;
     private readonly viewTemplatesLink: Locator;
@@ -12,6 +13,7 @@ export class HomePage extends BaseCompliancePage {
 
     constructor(page: Page) {
         super(page);
+        this.pageContext = page.locator('#main-content');
         this.viewPropertiesLink = page.getByRole('link', { name: 'View property records' });
         this.viewGuidanceLink = page.getByRole('link', { name: 'View guidance' });
         this.viewTemplatesLink = page.getByRole('link', { name: 'View templates' });
@@ -26,6 +28,7 @@ export class HomePage extends BaseCompliancePage {
             this.page,
             'Home Page',
             {
+                pageContext: this.pageContext,
                 viewGuidanceButton: this.viewGuidanceLink,
                 viewTemplatesButton: this.viewTemplatesLink,
                 viewPenaltyCalculatorButton: this.viewPenaltyCalculatorLink,

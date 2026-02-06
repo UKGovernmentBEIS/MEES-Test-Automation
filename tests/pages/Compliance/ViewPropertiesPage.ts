@@ -3,6 +3,7 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import { BaseCompliancePage } from './BaseCompliancePage';
 
 export class ViewPropertiesPage extends BaseCompliancePage {
+    private pageContext: Locator;
 
     constructor(page: Page) {
         super(page);

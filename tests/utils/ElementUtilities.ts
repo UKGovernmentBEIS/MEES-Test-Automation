@@ -82,7 +82,7 @@ export class ElementUtilities {
     const failedLocators: string[] = [];
     for (const [locatorName, locator] of Object.entries(locators)) {
       try {
-        await locator.waitFor({ state, timeout });
+        await locator.waitFor({ state, timeout: 5000 });
       } catch (error) {
         failedLocators.push(locatorName);
       }
