@@ -1,0 +1,57 @@
+- main:
+  - navigation "Menu":
+    - list:
+      - listitem:
+        - link "Property records":
+          - /url: /landing-page
+          - strong: Property records
+      - listitem:
+        - link "Guidance":
+          - /url: /guidance
+      - listitem:
+        - link "Penalty calculator":
+          - /url: /penalty-calculator
+      - listitem:
+        - link "Templates":
+          - /url: /templates
+  - navigation "Breadcrumb":
+    - list:
+      - listitem:
+        - link "Home":
+          - /url: /compliance/landing-page
+      - listitem: Filter property records
+  - list:
+    - listitem:
+      - link "Sign out":
+        - /url: "#"
+  - main:
+    - heading "View property records" [level=1]
+    - heading "Filters applied" [level=2]
+    - term: Council
+    - definition: All
+    - term: Energy rating
+    - definition: None
+    - term: Town
+    - definition: None
+    - term: Street
+    - definition: None
+    - term: Postcode
+    - definition: None
+    - term: Landlord location
+    - definition: All locations
+    - link "Change filters":
+      - /url: javascript:void(0)
+    - heading "Property records" [level=1]
+    - text: 0 results
+    - button "Download all (CSV)"
+    - table:
+      - rowgroup:
+        - row "Property address EPC rating EPC expiry date PRSE Exemption status Action":
+          - columnheader "Property address"
+          - columnheader "EPC rating"
+          - columnheader "EPC expiry date"
+          - columnheader "PRSE Exemption status"
+          - columnheader "Action"
+      - rowgroup:
+        - row "No property records found":
+          - cell "No property records found"
