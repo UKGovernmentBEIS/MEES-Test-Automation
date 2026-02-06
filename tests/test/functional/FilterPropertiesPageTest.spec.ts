@@ -31,4 +31,32 @@ test.describe('Filter Properties Page Functional Tests', () => {
         // Verify page title
         await expect(page).toHaveTitle('Filter properties');
     });
+
+    test('Verify that the Reset filter button resets all filters', async ({ page }, testInfo) => {
+        // Apply various filters first
+        await filterPropertiesPage.setCouncilFilter('Adur District Council');
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        await filterPropertiesPage.setStreetFilter('High Street');
+        await filterPropertiesPage.setTownFilter('Brighton');
+        await filterPropertiesPage.setPostcodeFilter('BN1 1AA');
+        await filterPropertiesPage.selectOnshoreLALocations();
+        
+        // Check the radio button selection
+        const onshoreLARadio = page.getByRole('radio', { name: 'Onshore (England and Wales)' });
+        await expect(onshoreLARadio).toBeChecked();
+
+        // Click the Reset filters button
+        await filterPropertiesPage.clickClearFilters();
+
+        // Verify all filters have been reset
+        await expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('');
+        await expect(await filterPropertiesPage.getSelectedEnergyRatingFilter()).toBe('');
+        await expect(await filterPropertiesPage.getStreetFilterValue()).toBe('');
+        await expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
+        await expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');
+        
+        // Verify radio button has reset to default (All locations)
+        const allLARadio = page.getByRole('radio', { name: 'All locations' });
+        await expect(allLARadio).toBeChecked();
+    });
 });
