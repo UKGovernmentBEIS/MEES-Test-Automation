@@ -3,8 +3,8 @@ import { test, expect } from '@playwright/test';
 test.describe('Properties DMS API Tests', () => {
     const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
     const requestBody = {
-        "lacodes": ["E06000009", "E06000011"],
-        "town": "GOWDALL"
+        "lacodes": ["E09000003","E09000004"],
+        "street": "23 Acorn Industrial Park"
     };
     
     test('Valid x-functions-key returns 200 status', async ({ request }) => {
@@ -88,7 +88,7 @@ test.describe('Properties DMS API Tests', () => {
         const property = parsedBody.data[0];
         
         // Verify all expected property fields are present
-        expect(Object.keys(property).length).toBe(17);
+        expect(Object.keys(property).length).toBe(18);
         expect(property).toHaveProperty('Uprn');
         expect(property).toHaveProperty('BuildingReferenceNumber');
         expect(property).toHaveProperty('Name');
@@ -106,6 +106,7 @@ test.describe('Properties DMS API Tests', () => {
         expect(property).toHaveProperty('EPCExpiryDate');
         expect(property).toHaveProperty('Location');
         expect(property).toHaveProperty('RateableValue');
+        expect(property).toHaveProperty('TransactionType');
     });
 
     test('Missing x-functions-key returns 401 or 403', async ({ request }) => {
