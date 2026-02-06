@@ -20,7 +20,7 @@ export class FilterPropertyPage extends BaseCompliancePage {
 
     constructor(page: Page) {
         super(page);
-        this.pageContext = page.locator('#main-contentxxx');
+        this.pageContext = page.locator('#main-content');
         this.homeBreadcrumb = page.getByRole('link', { name: 'Home' })
         this.councilsList = page.getByText('You are viewing records for', { exact: false })
         this.councilsDropdown = page.getByLabel('Council')
