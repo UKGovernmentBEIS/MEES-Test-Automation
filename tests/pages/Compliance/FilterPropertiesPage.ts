@@ -3,14 +3,14 @@ import { BaseCompliancePage } from './BaseCompliancePage';
 import { ViewPropertiesPage } from './ViewPropertiesPage';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 
-export class FilterPropertyPage extends BaseCompliancePage {
+export class FilterPropertiesPage extends BaseCompliancePage {
     private pageContext: Locator;
     private readonly homeBreadcrumb: Locator;
     private readonly councilsList: Locator;
     private readonly councilsDropdown: Locator;
     private readonly energyRatingDropdown: Locator;
     private readonly streetTextBox: Locator;
-    private readonly TownTextBox: Locator;
+    private readonly townTextBox: Locator;
     private readonly postcodeTextBox: Locator;
     private readonly applyFiltersButton: Locator;
     private readonly clearFiltersButton: Locator;
@@ -26,7 +26,7 @@ export class FilterPropertyPage extends BaseCompliancePage {
         this.councilsDropdown = page.getByLabel('Council')
         this.energyRatingDropdown = page.getByLabel('Energy rating')
         this.streetTextBox = page.getByRole('textbox', { name: 'Street' })
-        this.TownTextBox = page.getByRole('textbox', { name: 'Town' })
+        this.townTextBox = page.getByRole('textbox', { name: 'Town' })
         this.postcodeTextBox = page.getByRole('textbox', { name: 'Postcode' })
         this.applyFiltersButton = page.getByRole('button', { name: 'Apply filters' })
         this.clearFiltersButton = page.getByRole('link', { name: 'Reset filters' })
@@ -36,13 +36,13 @@ export class FilterPropertyPage extends BaseCompliancePage {
         
     }
 
-        // Wait for the Filter Property Page to load
+        // Wait for the Filter Properties Page to load
         async waitForPageToLoad(): Promise<void> {
         await super.waitForPageToLoad();
         
         await ElementUtilities.waitForPageToLoad(
             this.page,
-            'Filter Property Page',
+            'Filter Properties Page',
             {
                 pageContext: this.pageContext,
                 homeBreadcrumb: this.homeBreadcrumb,
@@ -50,7 +50,7 @@ export class FilterPropertyPage extends BaseCompliancePage {
                 councilsDropdown: this.councilsDropdown,
                 energyRatingDropdown: this.energyRatingDropdown,
                 streetTextBox: this.streetTextBox,
-                TownTextBox: this.TownTextBox,
+                townTextBox: this.townTextBox,
                 postcodeTextBox: this.postcodeTextBox,
                 applyFiltersButton: this.applyFiltersButton,
                 clearFiltersButton: this.clearFiltersButton,
@@ -113,7 +113,7 @@ export class FilterPropertyPage extends BaseCompliancePage {
     }
 
     async setTownFilter(town: string): Promise<void> {
-        await this.TownTextBox.fill(town);
+        await this.townTextBox.fill(town);
 
         //Confirm the textbox value has been set
         const enteredValue = await this.getTownFilterValue();
@@ -123,7 +123,7 @@ export class FilterPropertyPage extends BaseCompliancePage {
     }
 
     async getTownFilterValue(): Promise<string> {
-        return await this.TownTextBox.inputValue();
+        return await this.townTextBox.inputValue();
     }
 
     async setPostcodeFilter(postcode: string): Promise<void> {

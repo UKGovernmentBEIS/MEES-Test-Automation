@@ -1,7 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { BaseCompliancePage } from './BaseCompliancePage';
-import { FilterPropertyPage } from './FilterPropertyPage';
+import { FilterPropertiesPage } from './FilterPropertiesPage';
 
 export class HomePage extends BaseCompliancePage {
     private pageContext: Locator;
@@ -44,10 +44,10 @@ export class HomePage extends BaseCompliancePage {
         return this.pageContext;
     }
 
-    async clickViewProperties(): Promise<FilterPropertyPage> {
+    async clickViewProperties(): Promise<FilterPropertiesPage> {
         await this.viewPropertiesLink.click();
-        const filterPropertyPage = new FilterPropertyPage(this.page);
-        await filterPropertyPage.waitForPageToLoad();
-        return filterPropertyPage;
+        const filterPropertiesPage = new FilterPropertiesPage(this.page);
+        await filterPropertiesPage.waitForPageToLoad();
+        return filterPropertiesPage;
     }
 }
