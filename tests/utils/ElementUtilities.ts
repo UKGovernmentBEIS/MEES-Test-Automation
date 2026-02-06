@@ -79,19 +79,78 @@ export class ElementUtilities {
     state: 'visible' | 'attached',
     timeout?: number
   ) {
-    const failedLocators: string[] = [];
-    for (const [locatorName, locator] of Object.entries(locators)) {
+    const effectiveTimeout = timeout || 30000; // Default to 30 seconds if not specified
+    const maxRetries = 3;
+    const retryDelay = 1000; // 1 second between retries
+    const phaseTimeout = Math.floor(effectiveTimeout / 2); // Split timeout between two phases
+    
+    // Phase 1: Retry until all locators exist in the DOM
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      const missingLocators: string[] = [];
+      
+      // Create an array of promises to check the existence of each locator later on
+      const existencePromises = Object.entries(locators).map(async ([locatorName, locator]) => {
+        try {
+          await locator.waitFor({ state: 'attached', timeout: phaseTimeout / maxRetries });
+          return { locatorName, exists: true };
+        } catch (error) {
+          return { locatorName, exists: false };
+        }
+      });
+      
+      // Execute all promises in parallel and wait for them to complete
+      const existenceResults = await Promise.all(existencePromises);
+      
+      // Now, when all promises have completed, we can check which locators exist and which do not
+      for (const result of existenceResults) {
+        if (!result.exists) {
+          missingLocators.push(result.locatorName);
+        }
+      }
+      
+      // If all locators exist, proceed to phase 2
+      if (missingLocators.length === 0) {
+        break;
+      }
+      
+      // If this was the last attempt for phase 1, throw error
+      if (attempt === maxRetries) {
+        throw new Error(
+          `Page '${pageName}' did not load correctly. The following elements are missing from the DOM after ${maxRetries} attempts: ${missingLocators.join(', ')}`
+        );
+      }
+      
+      // Wait before retrying
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
+    }
+    
+    // Phase 2: Now that all locators exist, wait for them to be in the desired state
+    const failedStateLocators: string[] = [];
+
+    // Create an array of promises to check the state of each locator
+    const statePromises = Object.entries(locators).map(async ([locatorName, locator]) => {
       try {
-        await locator.waitFor({ state, timeout: 5000 });
+        await locator.waitFor({ state, timeout: phaseTimeout });
+        return { locatorName, success: true };
       } catch (error) {
-        failedLocators.push(locatorName);
+        return { locatorName, success: false };
+      }
+    });
+    
+    // Now, when all promises have completed, we can check which locators reached the desired state and which did not
+    const stateResults = await Promise.all(statePromises);
+    
+    // Collect locators that failed to reach the desired state
+    for (const result of stateResults) {
+      if (!result.success) {
+        failedStateLocators.push(result.locatorName);
       }
     }
-
-    // If any locators failed, throw an informative error
-    if (failedLocators.length > 0) {
+    
+    // If any locators failed to reach the desired state, throw error
+    if (failedStateLocators.length > 0) {
       throw new Error(
-        `Page '${pageName}' did not load correctly. The following elements failed to appear: ${failedLocators.join(', ')}`
+        `Page '${pageName}' elements exist but failed to reach '${state}' state: ${failedStateLocators.join(', ')}`
       );
     }
   }
