@@ -32,7 +32,7 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Run authentication setup
+    - name: Run authentication setup on '${{ inputs.environment}}' environment
       run: npx playwright test --project=setup
       env:
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
