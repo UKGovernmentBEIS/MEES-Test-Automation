@@ -1,34 +1,36 @@
 import { test, expect } from '../../fixtures/authFixtures';
+import { FilterPropertiesPage } from '../../pages/Compliance/FilterPropertiesPage';
 import { HomePage } from '../../pages/Compliance/HomePage';
 import { ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
 import { LandingPage } from '../../pages/LandingPage';
-import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
+import { TestType, TestAnnotations } from '../../utils/TestTypes';
 
 test.describe('View Properties Page Functional Tests', () => {
-    let ViewPropertiesPage: ViewPropertiesPage;;
+    let viewPropertiesPage: ViewPropertiesPage;;
     
-    // test.beforeEach(async ({ page }, testInfo) => {
-    //     testInfo.annotations.push(
-    //         TestAnnotations.testType(TestType.FUNCTIONAL)
-    //     );
+    test.beforeEach(async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.FUNCTIONAL)
+        );
         
-    //     const landingPage: LandingPage = new LandingPage(page);
-    //     await landingPage.navigate();
-    //     const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
-    //     ViewPropertiesPage = await homePage.clickViewProperties();        
-    // });
+        const landingPage: LandingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
+        const filterPropertiesPage: FilterPropertiesPage = await homePage.clickViewProperties();
+        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+    });
 
-    test.skip('View Properties page loads successfully', async ({ page }, testInfo) => {
+    test('View Properties page loads successfully', async ({ page }, testInfo) => {
         // Verify Home Page URL
-        await expect(page).toHaveURL(/.*view-properties/);
+        await expect(page).toHaveURL(/.*filter-properties/);
 
         // Check console errors on View Properties Page
-        const viewPropertiesPageErrors = ViewPropertiesPage.getAllConsoleErrors();
+        const viewPropertiesPageErrors = viewPropertiesPage.getAllConsoleErrors();
         await expect(viewPropertiesPageErrors.length, 
             'Known Issue MEESCH-439: View Properties Page should have 3 console errors'
-        ).toBe(0);
+        ).toBe(1);
 
         // Verify page title
-        await expect(page).toHaveTitle('View Properties');
+        await expect(page).toHaveTitle('Filter properties');
     });
 });
