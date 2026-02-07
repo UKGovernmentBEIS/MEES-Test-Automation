@@ -57,11 +57,7 @@ export default defineConfig({
       name: 'non-functional',
       testDir: './tests/test/non-functional',
       // Set RUN_SETUP_AUTOMATICALLY=1 to run setup before tests (convenient for local dev)
-      dependencies: process.env.RUN_SETUP_AUTOMATICALLY ? ['setup'] : [],
-      // Run tests sequentially to ensure authenticated tests run first
-      fullyParallel: false,
-      // Force single worker to ensure true sequential execution and deterministic order
-      workers: 1
+      dependencies: process.env.RUN_SETUP_AUTOMATICALLY ? ['setup'] : []
     },
 
     // API tests - page-api (user auth) and dms-api (service auth)
