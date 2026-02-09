@@ -32,8 +32,8 @@ jobs:
     - name: Run authentication setup
       run: npx playwright test --project=setup
       env:
-        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
-        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_3_EMAIL }}
+        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_3_PASSWORD }}
         TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
         TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
         BASE_URL: ${{ secrets.BASE_URL }}
@@ -69,8 +69,8 @@ jobs:
     - name: Run authentication setup
       run: npx playwright test --project=setup
       env:
-        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
-        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_3_EMAIL }}
+        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_3_PASSWORD }}
         TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
         TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
         BASE_URL: ${{ secrets.BASE_URL }}
