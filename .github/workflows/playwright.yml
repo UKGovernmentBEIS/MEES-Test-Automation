@@ -15,41 +15,41 @@ on:
           - qa
 
 jobs:
-  # functional-tests:
-  #   name: Functional Tests
-  #   timeout-minutes: 60
-  #   runs-on: ubuntu-latest
-  #   environment: ${{ inputs.environment || 'qa' }}
-  #   steps: 
-  #   - uses: actions/checkout@v5
-  #   - uses: actions/setup-node@v5
-  #     with:
-  #       node-version: lts/*
-  #   - name: Install dependencies
-  #     run: npm ci
-  #   - name: Install Playwright Browsers
-  #     run: npx playwright install --with-deps
-  #   - name: Run authentication setup
-  #     run: npx playwright test --project=setup
-  #     env:
-  #       TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
-  #       TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-  #       TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
-  #       TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-  #       BASE_URL: ${{ secrets.BASE_URL }}
-  #   - name: Run functional tests
-  #     run: npx playwright test --project=functional
-  #     env:
-  #       BASE_URL: ${{ secrets.BASE_URL }}
-  #   - name: Clear authentication state
-  #     run: npx playwright test --project=teardown
-  #   - name: Upload Playwright HTML report
-  #     uses: actions/upload-artifact@v4
-  #     if: ${{ !cancelled() }}
-  #     with:
-  #       name: functional-test-report-${{ inputs.environment || 'qa' }}
-  #       path: playwright-report/
-  #       retention-days: 30
+  functional-tests:
+    name: Functional Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'qa' }}
+    steps: 
+    - uses: actions/checkout@v5
+    - uses: actions/setup-node@v5
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run authentication setup
+      run: npx playwright test --project=setup
+      env:
+        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+        TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
+        TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+        BASE_URL: ${{ secrets.BASE_URL }}
+    - name: Run functional tests
+      run: npx playwright test --project=functional
+      env:
+        BASE_URL: ${{ secrets.BASE_URL }}
+    - name: Clear authentication state
+      run: npx playwright test --project=teardown
+    - name: Upload Playwright HTML report
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: functional-test-report-${{ inputs.environment || 'qa' }}
+        path: playwright-report/
+        retention-days: 30
 
   non-functional-tests: 
     name: Non-Functional Tests
