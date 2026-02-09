@@ -19,7 +19,7 @@ jobs:
   #   name: Functional Tests
   #   timeout-minutes: 60
   #   runs-on: ubuntu-latest
-  #   environment: ${{ inputs.environment || 'dev' }}
+  #   environment: ${{ inputs.environment || 'qa' }}
   #   steps: 
   #   - uses: actions/checkout@v5
   #   - uses: actions/setup-node@v5
@@ -47,7 +47,7 @@ jobs:
   #     uses: actions/upload-artifact@v4
   #     if: ${{ !cancelled() }}
   #     with:
-  #       name: functional-test-report-${{ inputs.environment || 'dev' }}
+  #       name: functional-test-report-${{ inputs.environment || 'qa' }}
   #       path: playwright-report/
   #       retention-days: 30
 
@@ -55,7 +55,7 @@ jobs:
     name: Non-Functional Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'dev' }}
+    environment: ${{ inputs.environment || 'qa' }}
     steps:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
@@ -86,14 +86,14 @@ jobs:
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: non-functional-test-report-${{ inputs.environment || 'dev' }}
+        name: non-functional-test-report-${{ inputs.environment || 'qa' }}
         path: playwright-report/
         retention-days: 30
     - name: Upload Non-Functional Test Coverage Report
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: non-functional-coverage-report-${{ inputs.environment || 'dev' }}
+        name: non-functional-coverage-report-${{ inputs.environment || 'qa' }}
         path: test-results/non-functional-test-coverage.*
         retention-days: 30
 
@@ -101,7 +101,7 @@ jobs:
   #   name: API Tests
   #   timeout-minutes: 60
   #   runs-on: ubuntu-latest
-  #   environment: ${{ inputs.environment || 'dev' }}
+  #   environment: ${{ inputs.environment || 'qa' }}
   #   steps:
   #   - uses: actions/checkout@v5
   #   - uses: actions/setup-node@v5
@@ -119,6 +119,6 @@ jobs:
   #     uses: actions/upload-artifact@v4
   #     if: ${{ !cancelled() }}
   #     with:
-  #       name: api-test-report-${{ inputs.environment || 'dev' }}
+  #       name: api-test-report-${{ inputs.environment || 'qa' }}
   #       path: playwright-report/
   #       retention-days: 30
