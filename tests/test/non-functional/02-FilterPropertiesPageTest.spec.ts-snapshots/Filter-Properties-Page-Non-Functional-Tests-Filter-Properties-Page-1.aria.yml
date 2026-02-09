@@ -51,7 +51,7 @@
     - button "Apply filters"
     - paragraph:
       - link "Reset filters":
-        - /url: /compliance/filter-properties
+        - /url: javascript:void(0);
     - group "Landlord location":
       - text: Landlord location Filter properties by where the landlord is based
       - radio "All locations" [checked]
