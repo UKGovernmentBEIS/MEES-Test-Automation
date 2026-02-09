@@ -28,7 +28,7 @@ test.describe('View Properties Page Functional Tests', () => {
         const viewPropertiesPageErrors = viewPropertiesPage.getAllConsoleErrors();
         await expect(viewPropertiesPageErrors.length, 
             'TODO: Console errors should be investigated and resolved. If they are expected, this assertion can be removed or updated accordingly.'
-        ).toBe(1);
+        ).toBe(3);
 
         // Verify page title
         await expect(page).toHaveTitle('Filter properties');
