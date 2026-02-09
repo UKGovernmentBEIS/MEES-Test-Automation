@@ -41,10 +41,21 @@ function resolveCredentials(account: any): { email: string; password: string } {
     const password = process.env[account.password];
     
     if (!email || !password) {
+        // Add debugging information to help identify the issue
+        const availableTestAccounts = Object.keys(process.env)
+            .filter(key => key.includes('TEST_ACCOUNT') || key.includes('EMAIL') || key.includes('PASSWORD'))
+            .map(key => `${key}=${process.env[key] ? '[SET]' : '[UNSET]'}`)
+            .join(', ');
+            
+        console.error(`[Auth Debug] Looking for: ${account.email}, ${account.password}`);
+        console.error(`[Auth Debug] Available test-related env vars: ${availableTestAccounts}`);
+        console.error(`[Auth Debug] All env var keys containing 'TEST': ${Object.keys(process.env).filter(k => k.includes('TEST')).join(', ')}`);
+        
         throw new Error(
             `Email or password not resolved for ${account.email} and/or ${account.password}. ` +
             `Environment variable for "${account.email}" resolves to "${email}". ` +
-            `Environment variable for "${account.password}" resolves to "${password}". `
+            `Environment variable for "${account.password}" resolves to "${password}". ` +
+            `Available test-related env vars: ${availableTestAccounts}`
         );
     }
     
