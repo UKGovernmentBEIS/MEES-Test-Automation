@@ -41,7 +41,6 @@ jobs:
       run: npx playwright test --project=functional
       env:
         BASE_URL: ${{ secrets.BASE_URL }}
-        AUTH_WORKER_OFFSET: 0
     - name: Clear authentication state
       run: npx playwright test --project=teardown
     - name: Upload Playwright HTML report
@@ -82,7 +81,6 @@ jobs:
         TEST_NO_ACCESS_EMAIL: ${{ secrets.TEST_NO_ACCESS_EMAIL }}
         TEST_NO_ACCESS_PASSWORD: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
         BASE_URL: ${{ secrets.BASE_URL }}
-        AUTH_WORKER_OFFSET: 1
     - name: Clear authentication state
       run: npx playwright test --project=teardown
     - name: Upload Playwright HTML report

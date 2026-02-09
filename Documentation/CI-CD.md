@@ -2,13 +2,12 @@
 
 ## Overview
 
-GitHub Actions pipeline for automated test execution with three-job architecture:
+GitHub Actions pipeline for automated test execution with two-job architecture:
 
-1. **Setup** - Authenticates all test accounts, saves auth artifacts
-2. **Functional Tests** - Downloads auth artifacts, runs functional tests (parallel with #3)
-3. **Non-Functional Tests** - Downloads auth artifacts, runs accessibility/validation tests (parallel with #2)
+1. **Functional Tests** - Runs setup, functional tests, then teardown
+2. **Non-Functional Tests** - Runs setup, accessibility/validation tests, then teardown (depends on functional tests completion)
 
-**Benefits**: Authentication runs once, test jobs run in parallel, faster overall execution.
+**Benefits**: Each test project gets fresh authentication state, no account conflicts, simplified workflow.
 
 ## GitHub Actions Setup
 
@@ -32,13 +31,13 @@ DMS_BASE_URL=url-to-dms-service
 
 - Manual trigger (workflow_dispatch)
 
-### Authentication Artifacts
+### Authentication Lifecycle
 
-Setup job creates `playwright-auth` artifact containing session files:
-- `user-0.json`, `user-1.json`, etc.
-- Downloaded by test jobs before execution
-- 1-day retention
-- Prevents account conflicts in parallel jobs via `AUTH_WORKER_OFFSET`
+Each test job is self-contained:
+- **Functional Tests**: setup → tests → teardown
+- **Non-Functional Tests**: setup → tests → teardown
+- No shared artifacts or account conflicts
+- Fresh authentication state for each project
 
 ## Test Reports
 
@@ -55,33 +54,41 @@ When scaling parallelization:
 
 1. **Add GitHub secrets**: `TEST_ACCOUNT_N_EMAIL`, `TEST_ACCOUNT_N_PASSWORD`
 2. **Update [`test-accounts.json`](../tests/config/test-accounts.json)** with new account entry
-3. **Update [`.github/workflows/playwright.yml`](../.github/workflows/playwright.yml)** setup job env vars
+3. **Update [`.github/workflows/playwright.yml`](../.github/workflows/playwright.yml)** setup steps in both jobs
 4. **Update [`playwright.config.ts`](../playwright.config.ts)** worker counts
-5. **Adjust `AUTH_WORKER_OFFSET`** for each test job to prevent account conflicts
 
-### Account Allocation Example
+### Account Usage
 
-**4 accounts, 2 workers each**:
-- Functional tests: `AUTH_WORKER_OFFSET=0` → uses accounts 0-1
-- Non-functional tests: `AUTH_WORKER_OFFSET=2` → uses accounts 2-3
-- No conflicts, full parallelization
+**Current Setup (2 accounts):**
+- Both test jobs use the same 2 accounts
+- Teardown ensures no conflicts between sequential jobs
+- Each job runs with 2 workers using `user-0.json` and `user-1.json`
+
+**Future Scaling (4+ accounts):**
+- Update `workers` count in [playwright.config.ts](../playwright.config.ts)
+- All test jobs can use the same expanded account pool
+- Teardown still prevents conflicts between jobs
 
 ## Workflow Configuration
 
-**Setup job** (requires all test credentials):
+**Both test jobs** (require test credentials and BASE_URL):
 ```yaml
-env:
-  TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
-  TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-  # ... all test accounts
-  BASE_URL: ${{ secrets.BASE_URL }}
-```
+- name: Run authentication setup
+  run: npx playwright test --project=setup
+  env:
+    TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+    TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+    TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
+    TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+    BASE_URL: ${{ secrets.BASE_URL }}
 
-**Test jobs** (only need BASE_URL, use downloaded auth artifacts):
-```yaml
-env:
-  BASE_URL: ${{ secrets.BASE_URL }}
-  AUTH_WORKER_OFFSET: 0  # or 2 for non-functional
+- name: Run tests
+  run: npx playwright test --project=functional  # or non-functional
+  env:
+    BASE_URL: ${{ secrets.BASE_URL }}
+
+- name: Clear authentication state
+  run: npx playwright test --project=teardown
 ```
 
 - **Locally**: Environment variables are loaded from `.env` file via dotenv
@@ -98,54 +105,52 @@ The current workflow is configured to run on:
 
 ## Parallel Execution in CI/CD
 
-The CI/CD pipeline is optimized for parallel execution at multiple levels:
+The CI/CD pipeline is optimized for execution at multiple levels:
 
-**Job-level Parallelization:**
-- Functional and accessibility test jobs run in parallel after setup completes
-- Each job runs independently on separate runners
-- Reduces total pipeline execution time
+**Job-level Execution:**
+- Functional tests run first, followed by non-functional tests
+- Each job is self-contained with its own authentication lifecycle
+- Sequential execution prevents resource conflicts
 
 **Worker-level Parallelization:**
 - Multiple workers run concurrently within each test job
-- Each worker uses its own authenticated session from downloaded artifacts
+- Each worker uses its own authenticated session file
 - Worker count should match the number of configured test accounts
-- Faster feedback on test results
+- Faster feedback on test results within each job
 
-## Authentication State Artifacts
+## Authentication Lifecycle Management
 
-The setup job creates authentication state files that are shared across test jobs:
+Each test job handles its own authentication lifecycle:
 
-1. **Setup Job**: 
+1. **Test Job Start**: 
    - Runs `project=setup` to authenticate all test accounts
-   - Creates auth files: `user-0.json`, `user-1.json`, etc.
+   - Creates fresh auth files: `user-0.json`, `user-1.json`, etc.
    - Saves auth state files to `playwright/auth-states/` directory
-   - Uploads the directory as a GitHub Actions artifact (retention: 1 day)
 
-2. **Test Jobs**:
-   - Download the `playwright-auth` artifact before running tests
-   - Extract auth files to `playwright/auth-states/` directory
-   - Each job uses a dedicated account via `AUTH_WORKER_OFFSET`:
-     - **Functional tests**: `AUTH_WORKER_OFFSET=0` → uses `user-0.json`
-     - **Accessibility tests**: `AUTH_WORKER_OFFSET=1` → uses `user-1.json`
-   - This prevents account conflicts when jobs run in parallel
-   - No credentials needed in test jobs (already authenticated)
+2. **Test Execution**:
+   - Workers load their assigned auth files (`user-0.json`, `user-1.json`)
+   - No account conflicts as each job runs independently
+   - Tests execute with authenticated sessions
 
-## Account Allocation Strategy
+3. **Cleanup**:
+   - Runs `project=teardown` to clear authentication files
+   - Ensures fresh authentication state for subsequent test jobs
+   - Prevents session conflicts between different test projects
 
-To enable parallel execution without account conflicts:
+## Account Strategy
+
+Simplified approach with teardown-based isolation:
 
 **Current Setup (2 accounts):**
-- Account 0 (TEST_ACCOUNT_1_*) → Functional tests
-- Account 1 (TEST_ACCOUNT_2_*) → Non-functional tests
-- Each job runs with 1 worker
-- Jobs execute in parallel safely
+- Both jobs use the same 2 test accounts
+- No conflicts due to sequential execution with teardown
+- Each job: setup → tests (2 workers) → teardown
 
 **Future Scaling (4+ accounts):**
-- Accounts 0-1 → Functional tests (2 workers)
-- Accounts 2-3 → Non-functional tests (2 workers)
-- Update `AUTH_WORKER_OFFSET` for each job
-- Update `workers` count in [playwright.config.ts](../playwright.config.ts)
-- Jobs still execute in parallel without conflicts
+- All jobs can use the same expanded account pool
+- Increase `workers` count in [playwright.config.ts](../playwright.config.ts) to match available accounts
+- Teardown ensures clean state between jobs
+- No complex offset management required
 
 ## Test Reports and Artifacts
 
