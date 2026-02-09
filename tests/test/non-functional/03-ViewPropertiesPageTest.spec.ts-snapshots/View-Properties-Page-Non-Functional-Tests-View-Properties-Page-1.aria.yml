@@ -14,12 +14,18 @@
       - listitem:
         - link "Templates":
           - /url: /templates
+  - paragraph:
+    - strong: BETA
+    - text: This is a new service - your feedback will help us improve it.
   - navigation "Breadcrumb":
     - list:
       - listitem:
         - link "Home":
           - /url: /compliance/landing-page
-      - listitem: Filter property records
+      - listitem:
+        - link "Filter property records":
+          - /url: /compliance/filter-properties
+      - listitem: View property records
   - list:
     - listitem:
       - link "Sign out":
@@ -39,8 +45,7 @@
     - definition: None
     - term: Landlord location
     - definition: All locations
-    - link "Change filters":
-      - /url: javascript:void(0)
+    - button "Change filters"
     - heading "Property records" [level=1]
     - text: 0 results
     - button "Download all (CSV)"

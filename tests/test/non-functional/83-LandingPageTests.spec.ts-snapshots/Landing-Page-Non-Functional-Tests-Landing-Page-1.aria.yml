@@ -1,25 +1,43 @@
 - main:
-  - heading "Review compliance for private rented sector energy standards" [level=1]
-  - paragraph: This service is for non-domestic private rented sector (PRS) properties only.
-  - paragraph: The Minimum Energy Efficiency Standards (MEES) apply to all properties that are legally required to have an energy performance certificate (EPC). To be compliant with the standards, properties must have an energy rating of E or higher.
+  - paragraph:
+    - strong: BETA
+    - text: This is a new service - your
+    - link "feedback":
+      - /url: mailto:PRSregisterfeedback@energysecurity.gov.uk
+    - text: will help us improve it.
+  - heading "Check if properties meet minimum energy efficiency standards" [level=1]
+  - paragraph: This service is for non-domestic Private Rented Sector (PRS) properties only.
+  - paragraph: The Minimum Energy Efficiency Standards (MEES) apply to all properties that are legally required to have an energy performance certificate (EPC).
+  - paragraph: The minimum level of energy efficiency is currently an energy rating of E.
   - paragraph: "You can use this service to:"
   - list:
-    - listitem: search for properties with a sub-standard energy rating
-    - listitem: check property exemption status
+    - listitem: search for non-domestic properties with a sub-standard energy rating
+    - listitem: check non-domestic property PRS exemption status
     - listitem: find landlord details
     - listitem: view enforcement guidance
     - listitem: calculate penalties for non-compliance
   - text: This service is for local authorities only.
   - heading "Register" [level=2]
+  - paragraph: You must register for a personal account to access this service.
   - paragraph:
-    - link "Complete our local authority sign up form if you have not already done so.":
+    - link "Complete the local authority sign up form if you have not already done so.":
       - /url: "#"
+  - paragraph: You will receive an email when your account has been successfully created.
   - heading "Sign in" [level=2]
   - paragraph: "You will need:"
   - list:
     - listitem: to use the email you used in the sign up form
-    - listitem: to login to your government One Login account – this invitation was emailed to you by our team after your account was created after you submitted the sign up form
-  - button "Start now"
+    - listitem: to log in to your GOV.UK One Login account via the invitation that was emailed to you
+  - complementary:
+    - heading "Related" [level=2]
+    - list:
+      - listitem:
+        - link "Review exemptions for private rented sector energy standards":
+          - /url: "#"
+      - listitem:
+        - link "Find an energy certificate":
+          - /url: "#"
+  - button "Sign in"
   - heading "If you need help" [level=2]
   - paragraph: "Contact our support team if your local authority:"
   - list:
