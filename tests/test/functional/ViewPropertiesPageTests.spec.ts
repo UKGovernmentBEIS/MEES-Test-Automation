@@ -22,7 +22,7 @@ test.describe('View Properties Page Functional Tests', () => {
 
     test('View Properties page loads successfully', async ({ page }, testInfo) => {
         // Verify Home Page URL
-        await expect(page).toHaveURL(/.*filter-properties/);
+        await expect(page).toHaveURL(/.*view-properties?/);
 
         // Check console errors on View Properties Page
         const viewPropertiesPageErrors = viewPropertiesPage.getAllConsoleErrors();
