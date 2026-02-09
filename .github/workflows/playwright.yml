@@ -15,50 +15,11 @@ on:
           - qa
 
 jobs:
-  setup:
-    name: Authentication Setup
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'dev' }}
-    steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-node@v5
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run authentication setup on '${{ inputs.environment || 'dev' }}' environment
-      run: npx playwright test --project=setup
-      env:
-        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
-        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-        TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
-        TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-        BASE_URL: ${{ secrets.BASE_URL }}
-    - name: Upload Playwright HTML report
-      uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: setup-test-report-${{ inputs.environment || 'dev' }}
-        path: playwright-report/
-        retention-days: 30
-    - name: Upload authentication state
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: playwright-auth-${{ inputs.environment || 'dev' }}
-        path: ${{ github.workspace }}/playwright/auth-states
-        retention-days: 1
-        if-no-files-found: error
-
   functional-tests:
     name: Functional Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment || 'dev' }}
-    needs: setup
     steps: 
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
@@ -68,16 +29,21 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Download authentication state
-      uses: actions/download-artifact@v4
-      with: 
-        name: playwright-auth-${{ inputs.environment || 'dev' }}
-        path: playwright/auth-states
+    - name: Run authentication setup
+      run: npx playwright test --project=setup
+      env:
+        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+        TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
+        TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+        BASE_URL: ${{ secrets.BASE_URL }}
     - name: Run functional tests
       run: npx playwright test --project=functional
       env:
         BASE_URL: ${{ secrets.BASE_URL }}
         AUTH_WORKER_OFFSET: 0
+    - name: Clear authentication state
+      run: npx playwright test --project=teardown
     - name: Upload Playwright HTML report
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
@@ -91,7 +57,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment || 'dev' }}
-    needs: setup
+    needs: functional-tests
     steps:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
@@ -101,11 +67,14 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Download authentication state
-      uses: actions/download-artifact@v4
-      with:
-        name: playwright-auth-${{ inputs.environment || 'dev' }}
-        path: playwright/auth-states
+    - name: Run authentication setup
+      run: npx playwright test --project=setup
+      env:
+        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+        TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
+        TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+        BASE_URL: ${{ secrets.BASE_URL }}
     - name: Run non-functional tests
       run: npx playwright test --project=non-functional
       env:
@@ -114,6 +83,8 @@ jobs:
         TEST_NO_ACCESS_PASSWORD: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
         BASE_URL: ${{ secrets.BASE_URL }}
         AUTH_WORKER_OFFSET: 1
+    - name: Clear authentication state
+      run: npx playwright test --project=teardown
     - name: Upload Playwright HTML report
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}

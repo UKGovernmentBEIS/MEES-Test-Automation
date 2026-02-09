@@ -16,7 +16,20 @@
 1. **Setup project** authenticates each test account and saves session cookies to `playwright/auth-states/user-N.json`
 2. **Test workers** load their assigned session file (user-0.json, user-1.json, etc.)
 3. **Tests run** immediately with authenticated sessions - no login required
-4. **Sessions expire** after ~30 minutes of inactivity
+4. **Teardown project** clears authentication files when fresh sessions are needed
+5. **Sessions expire** after ~30 minutes of inactivity
+
+## Authentication Lifecycle Management
+
+### Local Development
+- **Flexible**: Run setup once, reuse authentication for multiple test runs
+- **Manual control**: Only run teardown when you need fresh authentication
+- **Efficient debugging**: No re-authentication required between test runs
+
+### CI/CD Pipeline
+- **Automatic isolation**: Each test project runs fresh setup and teardown
+- **Workflow**: setup → functional tests → teardown → setup → non-functional tests → teardown
+- **No conflicts**: Prevents authentication state conflicts between test suites
 
 ## Test Account Requirements
 
@@ -65,6 +78,19 @@ TEST_ACCOUNT_2_PASSWORD=Password456!
 npx playwright test --project=setup
 ```
 
+### 4. Clear Authentication State (Optional)
+
+```bash
+# Clears all auth files when you need fresh authentication
+npx playwright test --project=teardown
+```
+
+**When to use teardown:**
+- When switching between test environments
+- When authentication sessions become stale
+- Before running tests that require completely fresh authentication
+- In CI/CD to ensure test isolation between projects
+
 ## Troubleshooting
 
 **Setup fails**: 
@@ -74,6 +100,7 @@ npx playwright test --project=setup
 **Session expired**:
 - Re-run setup: `npx playwright test --project=setup`
 - Auth files are valid for ~30 minutes of inactivity
+- For completely fresh sessions: `npx playwright test --project=teardown` then `npx playwright test --project=setup`
 
 **Missing auth files**:
 - Ensure worker count matches number of test accounts

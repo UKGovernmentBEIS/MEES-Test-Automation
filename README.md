@@ -66,6 +66,9 @@
 # For more information look at the 'Authentication Setup' section
 npx playwright test --project=setup
 
+# Clear authentication state (when you need fresh sessions)
+npx playwright test --project=teardown
+
 # Run all tests
 npx playwright test
 
@@ -94,7 +97,12 @@ npx playwright show-report                     # View test results
 1. Setup project logs into each test account and saves session cookies
 2. Test workers load their assigned session file (user-0.json, user-1.json, etc.)
 3. Tests run immediately without login flow
-4. Sessions expire after ~30 minutes of inactivity
+4. Teardown project clears authentication files when fresh sessions are needed
+5. Sessions expire after ~30 minutes of inactivity
+
+**Authentication lifecycle**:
+- **Local development**: Run setup once, reuse for multiple test runs. Use teardown only when you need fresh authentication
+- **CI/CD**: Each test project automatically runs setup and teardown to ensure isolation
 
 **Test account requirements**: Each account must be a complete GOV.UK One Login with MFA enabled and registered in the application.
 
@@ -116,7 +124,8 @@ npx playwright show-report  # Open after test run
 
 **GitHub Actions**: Configured in `.github/workflows/playwright.yml`
 - **Triggers**: Push, PR, manual dispatch
-- **Jobs**: Setup → Functional tests + Non-functional tests (parallel)
+- **Jobs**: Functional tests and Non-functional tests (each with own setup/teardown)
+- **Workflow**: setup → functional tests → teardown → setup → non-functional tests → teardown
 - **Secrets needed**: Test account credentials, BASE_URL, API keys
 - **Reports**: Downloadable artifacts with test results and coverage
 
@@ -126,6 +135,7 @@ npx playwright show-report  # Open after test run
 
 **Authentication issues**:
 - Run `npx playwright test --project=setup` to refresh sessions
+- For completely fresh authentication: `npx playwright test --project=teardown` then `npx playwright test --project=setup`
 - Ensure test accounts have completed MFA setup in GOV.UK One Login
 - Check `.env` file has correct credentials
 
@@ -150,7 +160,8 @@ npx playwright show-report  # Open after test run
 │   │   ├── functional/  # End-to-end user flows
 │   │   ├── non-functional/ # Accessibility + validation
 │   │   ├── api/         # API boundary testing
-│   │   └── setup/       # Authentication setup
+│   │   ├── setup/       # Authentication setup
+│   │   └── teardown/    # Authentication cleanup
 │   └── utils/           # Test utilities
 ├── Documentation/       # Guides and setup instructions
 └── playwright.config.ts # Test configuration
