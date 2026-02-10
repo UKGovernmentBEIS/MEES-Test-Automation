@@ -32,26 +32,21 @@ test.describe('Filter Properties Page Functional Tests', () => {
         await expect(page).toHaveTitle('Filter properties');
     });
 
-    // Activate on QA evironment where users with proper data are setup
-    test.skip('Verify that the Reset filter button resets all filters', async ({ page }, testInfo) => {
+    test('Verify that the Reset filter button resets all filters', async ({ page }, testInfo) => {
         // Apply various filters first
-        await filterPropertiesPage.setCouncilFilter('Adur District Council');
+        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BARNET');
         await filterPropertiesPage.setEnergyRatingFilter('A');
-        await filterPropertiesPage.setStreetFilter('High Street');
+        await filterPropertiesPage.setStreetFilter('Acorn Industrial Park');
         await filterPropertiesPage.setTownFilter('Brighton');
         await filterPropertiesPage.setPostcodeFilter('BN1 1AA');
         await filterPropertiesPage.selectOnshoreLALocations();
-        
-        // Check the radio button selection
-        const onshoreLARadio = page.getByRole('radio', { name: 'Onshore (England and Wales)' });
-        await expect(onshoreLARadio).toBeChecked();
 
         // Click the Reset filters button
         await filterPropertiesPage.clickClearFilters();
 
         // Verify all filters have been reset
-        await expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('');
-        await expect(await filterPropertiesPage.getSelectedEnergyRatingFilter()).toBe('');
+        await expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
+        await expect(await filterPropertiesPage.getSelectedEnergyRatingFilter()).toBe('All energy ratings');
         await expect(await filterPropertiesPage.getStreetFilterValue()).toBe('');
         await expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
         await expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');

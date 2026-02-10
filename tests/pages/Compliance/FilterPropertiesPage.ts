@@ -105,7 +105,11 @@ export class FilterPropertiesPage extends BaseCompliancePage {
     }
 
     async setEnergyRatingFilter(energyRating: string): Promise<void> {
-        await this.energyRatingDropdown.selectOption(energyRating);
+        if (energyRating === 'All energy ratings') {
+            await this.energyRatingDropdown.selectOption('');
+        } else {
+            await this.energyRatingDropdown.selectOption({ label: energyRating });
+        }
 
         //Confirm the dropdown value has been set
         const selectedValue = await this.getSelectedEnergyRatingFilter();
@@ -115,7 +119,22 @@ export class FilterPropertiesPage extends BaseCompliancePage {
     }
 
     async getSelectedEnergyRatingFilter(): Promise<string> {
-        return await this.energyRatingDropdown.inputValue();
+        const selectedValue = await this.energyRatingDropdown.inputValue();
+        
+        // If no value selected (empty string), it means "All energy ratings" is selected
+        if (selectedValue === '') {
+            return 'All energy ratings';
+        }
+        
+        // Find the option with this value and return its text content
+        const selectedOption = await this.energyRatingDropdown.locator(`option[value="${selectedValue}"]`);
+        const textContent = await selectedOption.textContent();
+        
+        if (!textContent) {
+            throw new Error(`Could not find option text for value: ${selectedValue}`);
+        }
+        
+        return textContent.trim();
     }
 
     async setStreetFilter(street: string): Promise<void> {
@@ -177,7 +196,7 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         const townValue = await this.getTownFilterValue();
         const postcodeValue = await this.getPostcodeFilterValue();
 
-        if (selectedCouncil !== '' || selectedEnergyRating !== '' || streetValue !== '' || townValue !== '' || postcodeValue !== '') {
+        if (selectedCouncil !== 'Show all councils' || selectedEnergyRating !== 'All energy ratings' || streetValue !== '' || townValue !== '' || postcodeValue !== '') {
             throw new Error('Failed to clear filters. Some filters are still set.');
         }
     }
