@@ -31,6 +31,6 @@ test.describe('View Properties Page Functional Tests', () => {
         ).toBe(3);
 
         // Verify page title
-        await expect(page).toHaveTitle('Filter properties');
+        await expect(page).toHaveTitle('View Properties');
     });
 });
