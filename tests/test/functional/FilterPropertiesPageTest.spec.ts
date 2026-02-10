@@ -45,11 +45,11 @@ test.describe('Filter Properties Page Functional Tests', () => {
         await filterPropertiesPage.clickClearFilters();
 
         // Verify all filters have been reset
-        await expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
-        await expect(await filterPropertiesPage.getSelectedEnergyRatingFilter()).toBe('All energy ratings');
-        await expect(await filterPropertiesPage.getStreetFilterValue()).toBe('');
-        await expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
-        await expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');
+        expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
+        expect(await filterPropertiesPage.getSelectedEnergyRatingFilter()).toBe('All energy ratings');
+        expect(await filterPropertiesPage.getStreetFilterValue()).toBe('');
+        expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
+        expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');
         
         // Verify radio button has reset to default (All locations)
         const allLARadio = page.getByRole('radio', { name: 'All locations' });
