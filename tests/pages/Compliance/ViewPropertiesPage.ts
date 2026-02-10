@@ -22,8 +22,6 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         this.changeFiltersButton = page.getByRole('button', { name: 'Change filters' });
     }
 
-    // Wait for the View Properties page to load
-    // Timeout set to 60 seconds, as this page generally loads slower
     async waitForPageToLoad(): Promise<void> {
         await super.waitForPageToLoad();
 

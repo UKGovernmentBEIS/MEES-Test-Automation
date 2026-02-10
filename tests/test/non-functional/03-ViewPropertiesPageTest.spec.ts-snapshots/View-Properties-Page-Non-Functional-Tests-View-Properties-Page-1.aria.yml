@@ -51,7 +51,8 @@
     - button "Download all (CSV)"
     - table:
       - rowgroup:
-        - row "Property address EPC rating EPC expiry date PRSE Exemption status Action":
+        - row "Uprn# Property address EPC rating EPC expiry date PRSE Exemption status Action":
+          - columnheader "Uprn#"
           - columnheader "Property address"
           - columnheader "EPC rating"
           - columnheader "EPC expiry date"
