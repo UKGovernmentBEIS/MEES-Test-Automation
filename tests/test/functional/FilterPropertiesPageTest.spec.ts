@@ -1,5 +1,6 @@
 import { test, expect } from '../../fixtures/authFixtures';
 import { FilterPropertiesPage } from '../../pages/Compliance/FilterPropertiesPage';
+import { ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
 import { HomePage } from '../../pages/Compliance/HomePage';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
@@ -55,4 +56,35 @@ test.describe('Filter Properties Page Functional Tests', () => {
         const allLARadio = page.getByRole('radio', { name: 'All locations' });
         await expect(allLARadio).toBeChecked();
     });
+
+    test('Apply multiple filters and verify filter summary on View Properties page', async ({ page }, testInfo) => {
+        // Set up test data for filter criteria
+        const councilFilter = 'LONDON BOROUGH OF BARNET';
+        const energyRatingFilter = 'A';
+        const streetFilter = 'Acorn Industrial Park';
+        const townFilter = 'Brighton';
+        const postcodeFilter = 'BN1 1AA';
+        const landlordLocation = 'Onshore';
+
+        // Populate filter criteria on the Filter Properties page
+        await filterPropertiesPage.setCouncilFilter(councilFilter);
+        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+        await filterPropertiesPage.setStreetFilter(streetFilter);
+        await filterPropertiesPage.setTownFilter(townFilter);
+        await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
+        await filterPropertiesPage.selectOnshoreLALocations();
+
+        // Apply the filters using clickApplyFilters method
+        const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+
+        // Verify filter summary on the View Properties page using LocatorAssertions
+        await expect(await viewPropertiesPage.getFilterCriterionValueField('Council')).toContainText(councilFilter);
+        await expect(await viewPropertiesPage.getFilterCriterionValueField('Energy rating')).toContainText(energyRatingFilter);
+        await expect(await viewPropertiesPage.getFilterCriterionValueField('Street')).toContainText(streetFilter);
+        await expect(await viewPropertiesPage.getFilterCriterionValueField('Town')).toContainText(townFilter);
+        await expect(await viewPropertiesPage.getFilterCriterionValueField('Postcode')).toContainText(postcodeFilter);
+        await expect(await viewPropertiesPage.getFilterCriterionValueField('Landlord location')).toContainText(landlordLocation);
+    });
+
+
 });

@@ -4,10 +4,14 @@ import { BaseCompliancePage } from './BaseCompliancePage';
 
 export class ViewPropertiesPage extends BaseCompliancePage {
     private pageContext: Locator;
+    private propertyFilterRow: Locator;
+    private propertyFilterRowKey: Locator;
 
     constructor(page: Page) {
         super(page);
         this.pageContext = page.locator('#main-content');
+        this.propertyFilterRow = this.page.locator('.govuk-summary-list__row');
+        this.propertyFilterRowKey = this.page.locator('.govuk-summary-list__key');
     }
 
     // Wait for the View Properties page to load
@@ -30,5 +34,15 @@ export class ViewPropertiesPage extends BaseCompliancePage {
 
     getPageContextLocator(): Locator {
         return this.pageContext;
+    }
+
+    async getFilterCriterionValueField(filterName: string): Promise<Locator> {
+        // Find the specific filter criterion row based on the provided filter name
+        
+        const filterRow = this.propertyFilterRow
+            .filter({ has: this.propertyFilterRowKey.filter({ hasText: filterName }) });
+        
+        // Return the value field associated with the filter criterion
+        return filterRow.locator('dd.govuk-summary-list__value');
     }
 }
