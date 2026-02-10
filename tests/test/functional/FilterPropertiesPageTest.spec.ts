@@ -86,5 +86,33 @@ test.describe('Filter Properties Page Functional Tests', () => {
         await expect(await viewPropertiesPage.getFilterCriterionValueField('Landlord location')).toContainText(landlordLocation);
     });
 
+    test('Ensure filter criteria are persistent when navigating back to Filter Properties page', async ({ page }, testInfo) => {
+        // Set up test data for filter criteria
+        const councilFilter = 'LONDON BOROUGH OF BARNET';
+        const energyRatingFilter = 'A';
+        const streetFilter = 'Acorn Industrial Park';
+        const townFilter = 'Brighton';
+        const postcodeFilter = 'BN1 1AA';
+
+        // Populate filter criteria on the Filter Properties page
+        await filterPropertiesPage.setCouncilFilter(councilFilter);
+        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+        await filterPropertiesPage.setStreetFilter(streetFilter);
+        await filterPropertiesPage.setTownFilter(townFilter);
+        await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
+
+        // Apply the filters using clickApplyFilters method
+        const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+
+        // Navigate back to the Filter Properties page
+        const returnedFilterPropertiesPage: FilterPropertiesPage = await viewPropertiesPage.clickBreadcrumbViewProperties();
+
+        // Verify that the previously selected filter criteria are still populated
+        expect(await returnedFilterPropertiesPage.getSelectedCouncilFilter()).toBe(councilFilter);
+        expect(await returnedFilterPropertiesPage.getSelectedEnergyRatingFilter()).toBe(energyRatingFilter);
+        expect(await returnedFilterPropertiesPage.getStreetFilterValue()).toBe(streetFilter);
+        expect(await returnedFilterPropertiesPage.getTownFilterValue()).toBe(townFilter);
+        expect(await returnedFilterPropertiesPage.getPostcodeFilterValue()).toBe(postcodeFilter);
+    });
 
 });
