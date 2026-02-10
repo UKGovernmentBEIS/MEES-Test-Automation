@@ -16,6 +16,8 @@ test.describe('View Properties Page Non-Functional Tests', () => {
     await landingPage.navigate();
     const homePage = await landingPage.clickSignIn_AuthenticatedUser();
     const filterPropertiesPage = await homePage.clickViewProperties();
+    // Set street filter to invalid value to ensure there are no results
+    await filterPropertiesPage.setStreetFilter('Invalid Street Name');
     const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
 
     // Verify accessibility on the View Properties page
