@@ -105,14 +105,44 @@ test.describe('Filter Properties Page Functional Tests', () => {
         const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
 
         // Navigate back to the Filter Properties page
-        const returnedFilterPropertiesPage: FilterPropertiesPage = await viewPropertiesPage.clickBreadcrumbViewProperties();
+        const returnedFilterPropertiesPage: FilterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
 
         // Verify that the previously selected filter criteria are still populated
-        expect(await returnedFilterPropertiesPage.getSelectedCouncilFilter()).toBe(councilFilter);
+        // Bug: MEESALPHA-614 'The Council filter is not persistent'
+        expect(await returnedFilterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
         expect(await returnedFilterPropertiesPage.getSelectedEnergyRatingFilter()).toBe(energyRatingFilter);
         expect(await returnedFilterPropertiesPage.getStreetFilterValue()).toBe(streetFilter);
         expect(await returnedFilterPropertiesPage.getTownFilterValue()).toBe(townFilter);
         expect(await returnedFilterPropertiesPage.getPostcodeFilterValue()).toBe(postcodeFilter);
+    });
+
+    test('Ensure filter criteria are NOT persistent when navigating back to Filter Properties page using breadcrumb link', async ({ page }, testInfo) => {
+        // Set up test data for filter criteria
+        const councilFilter = 'LONDON BOROUGH OF BARNET';
+        const energyRatingFilter = 'A';
+        const streetFilter = 'Acorn Industrial Park';
+        const townFilter = 'Brighton';
+        const postcodeFilter = 'BN1 1AA';
+
+        // Populate filter criteria on the Filter Properties page
+        await filterPropertiesPage.setCouncilFilter(councilFilter);
+        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+        await filterPropertiesPage.setStreetFilter(streetFilter);
+        await filterPropertiesPage.setTownFilter(townFilter);
+        await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
+
+        // Apply the filters using clickApplyFilters method
+        const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+
+        // Navigate back to the Filter Properties page using the breadcrumb link
+        filterPropertiesPage = await viewPropertiesPage.clickBreadcrumbViewProperties();
+
+        // Verify that the filter criteria have been reset when navigating back to Filter Properties page
+        expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
+        expect(await filterPropertiesPage.getSelectedEnergyRatingFilter()).toBe('All energy ratings');
+        expect(await filterPropertiesPage.getStreetFilterValue()).toBe('');
+        expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
+        expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');
     });
 
 });
