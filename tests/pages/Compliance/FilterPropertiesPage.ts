@@ -71,7 +71,12 @@ export class FilterPropertiesPage extends BaseCompliancePage {
     }
 
     async setCouncilFilter(council: string): Promise<void> {
-        await this.councilsDropdown.selectOption(council);
+        if (council === 'Show all councils') {
+            await this.councilsDropdown.selectOption('');
+        } else {
+            // Select by label (text content)
+            await this.councilsDropdown.selectOption({ label: council });
+        }
 
         //Confirm the dropdown value has been set
         const selectedValue = await this.getSelectedCouncilFilter();
@@ -81,7 +86,22 @@ export class FilterPropertiesPage extends BaseCompliancePage {
     }
 
     async getSelectedCouncilFilter(): Promise<string> {
-        return await this.councilsDropdown.inputValue();
+        const selectedValue = await this.councilsDropdown.inputValue();
+        
+        // If no value selected (empty string), it means "Show all councils" is selected
+        if (selectedValue === '') {
+            return 'Show all councils';
+        }
+        
+        // Find the option with this value and return its text content
+        const selectedOption = await this.councilsDropdown.locator(`option[value="${selectedValue}"]`);
+        const textContent = await selectedOption.textContent();
+        
+        if (!textContent) {
+            throw new Error(`Could not find option text for value: ${selectedValue}`);
+        }
+        
+        return textContent.trim();
     }
 
     async setEnergyRatingFilter(energyRating: string): Promise<void> {
