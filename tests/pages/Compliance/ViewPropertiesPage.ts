@@ -33,8 +33,6 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             {
                 pageContext: this.pageContext,
                 pageFooter: this.pageFooter,
-                propertyFilterRow: this.propertyFilterRow,
-                propertyFilterRowKey: this.propertyFilterRowKey,
                 breadcrumbHomeLink: this.breadcrumbHomeLink,
                 breadcrumbViewPropertiesLink: this.breadcrumbViewPropertiesLink,
                 changeFiltersButton: this.changeFiltersButton
