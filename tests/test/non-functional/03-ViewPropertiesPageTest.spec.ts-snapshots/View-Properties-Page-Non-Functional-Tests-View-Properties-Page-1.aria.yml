@@ -40,7 +40,7 @@
     - term: Town
     - definition: None
     - term: Street
-    - definition: None
+    - definition: Invalid Street Name
     - term: Postcode
     - definition: None
     - term: Landlord location

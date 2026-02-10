@@ -25,12 +25,14 @@
       - link "Sign out":
         - /url: "#"
   - main:
-    - group: You are viewing records for 0 councils
+    - group: You are viewing records for 2 councils
     - heading "Filter property records" [level=1]
     - paragraph: Select your filters and choose Apply filters to view the property records.
     - text: Council Select the council you want to view records for
     - combobox "Council":
       - option "Show all councils" [selected]
+      - option "LONDON BOROUGH OF BARNET"
+      - option "LONDON BOROUGH OF BEXLEY"
     - text: Energy rating
     - combobox "Energy rating":
       - option "All energy ratings" [selected]
