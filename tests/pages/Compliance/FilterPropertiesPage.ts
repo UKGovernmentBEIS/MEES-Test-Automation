@@ -6,6 +6,7 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 export class FilterPropertiesPage extends BaseCompliancePage {
     private pageContext: Locator;
     private readonly homeBreadcrumb: Locator;
+    private readonly councilStatement: Locator;
     private readonly councilsList: Locator;
     private readonly councilsDropdown: Locator;
     private readonly energyRatingDropdown: Locator;
@@ -22,7 +23,8 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         super(page);
         this.pageContext = page.locator('#main-content');
         this.homeBreadcrumb = page.getByRole('link', { name: 'Home' })
-        this.councilsList = page.getByText('You are viewing records for', { exact: false })
+        this.councilStatement = page.getByText('You are viewing records for', { exact: false })
+        this.councilsList = page.locator('.govuk-details__text ul.govuk-list--bullet');
         this.councilsDropdown = page.getByLabel('Council')
         this.energyRatingDropdown = page.getByLabel('Energy rating')
         this.streetTextBox = page.getByRole('textbox', { name: 'Street' })
@@ -46,7 +48,7 @@ export class FilterPropertiesPage extends BaseCompliancePage {
             {
                 pageContext: this.pageContext,
                 homeBreadcrumb: this.homeBreadcrumb,
-                councilsList: this.councilsList,
+                councilStatement: this.councilStatement,
                 councilsDropdown: this.councilsDropdown,
                 energyRatingDropdown: this.energyRatingDropdown,
                 streetTextBox: this.streetTextBox,
@@ -226,5 +228,16 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         if (!await this.offshoreLALocationsRadioButton.isChecked()) {
             throw new Error('Failed to select "Offshore" radio button.');
         }
+    }
+
+    async getLACouncilsList(): Promise<Locator[]> {
+        // Check if the councils list is already visible, if not click to expand it
+        const isVisible: boolean = await this.councilsList.isVisible();
+        if (!isVisible) {
+            await this.councilStatement.click();
+            await this.councilsList.waitFor({ state: 'visible', timeout: 5000 });
+        }
+        const councilItems = await this.councilsList.locator('li').all();
+            return councilItems;
     }
 }

@@ -60,6 +60,10 @@ Each test account must:
   ]
 }
 ```
+It is expected that each account has access to the following councils or test 'Verify councils list' needs to be updated with configured councils for the user accounts. 
+- LONDON BOROUGH OF BARNET
+- LONDON BOROUGH OF BEXLEY
+Council configuration for LA users can be done in Salesforce.
 
 ### 2. Local Environment Variables
 

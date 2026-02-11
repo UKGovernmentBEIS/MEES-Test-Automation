@@ -145,4 +145,15 @@ test.describe('Filter Properties Page Functional Tests', () => {
         expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');
     });
 
+    // This test requires explicit selection of LA users with council associations.
+    // Please go to the '/Documentation/Authentication.md' document for instructions on how to set up and run this test.
+    test('Verify councils list', async ({ page }, testInfo) => {
+        // Verify that the councils list is displayed when clicking the link
+        const councilsList = await filterPropertiesPage.getLACouncilsList();
+
+        // Verify that the LA has two councils associated with it and that they are the expected councils
+        expect(councilsList.length).toBe(2);
+        await expect(councilsList[0]).toContainText('LONDON BOROUGH OF BARNET');
+        await expect(councilsList[1]).toContainText('LONDON BOROUGH OF BEXLEY');
+    });
 });
