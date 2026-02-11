@@ -51,13 +51,12 @@
     - button "Download all (CSV)"
     - table:
       - rowgroup:
-        - row "Uprn# Property address EPC rating EPC expiry date PRSE Exemption status Action":
-          - columnheader "Uprn#"
+        - row "Property address Energy ratings EPC expiry date PRS Exemptions":
           - columnheader "Property address"
-          - columnheader "EPC rating"
+          - columnheader "Energy ratings"
           - columnheader "EPC expiry date"
-          - columnheader "PRSE Exemption status"
-          - columnheader "Action"
+          - columnheader "PRS Exemptions"
+          - columnheader
       - rowgroup:
         - row "No property records found":
           - cell "No property records found"

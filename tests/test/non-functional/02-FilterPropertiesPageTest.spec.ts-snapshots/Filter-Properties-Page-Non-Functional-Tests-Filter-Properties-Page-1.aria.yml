@@ -14,6 +14,12 @@
       - listitem:
         - link "Templates":
           - /url: /templates
+  - paragraph:
+    - strong: BETA
+    - text: This is a new service - your
+    - link "feedback":
+      - /url: mailto:PRSregisterfeedback@energysecurity.gov.uk
+    - text: will help us improve it.
   - navigation "Breadcrumb":
     - list:
       - listitem:
@@ -51,9 +57,8 @@
     - text: Postcode
     - textbox "Postcode"
     - button "Apply filters"
-    - paragraph:
-      - link "Reset filters":
-        - /url: /compliance/filter-properties
+    - link "Reset filters":
+      - /url: /compliance/filter-properties
     - group "Landlord location":
       - text: Landlord location Filter properties by where the landlord is based
       - radio "All locations" [checked]
