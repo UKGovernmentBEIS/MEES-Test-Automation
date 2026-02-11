@@ -2,6 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { BaseCompliancePage } from './BaseCompliancePage';
 import { ViewPropertiesPage } from './ViewPropertiesPage';
 import { ElementUtilities } from '../../utils/ElementUtilities';
+import { HomePage } from './HomePage';
 
 export class FilterPropertiesPage extends BaseCompliancePage {
     private pageContext: Locator;
@@ -239,5 +240,13 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         }
         const councilItems = await this.councilsList.locator('li').all();
             return councilItems;
+    }
+
+    async clickBreadcrumbHome(): Promise<HomePage> {
+        await this.homeBreadcrumb.click();
+
+        const homePage = new HomePage(this.page);
+        await homePage.waitForPageToLoad();
+        return homePage;
     }
 }

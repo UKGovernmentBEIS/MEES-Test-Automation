@@ -156,4 +156,13 @@ test.describe('Filter Properties Page Functional Tests', () => {
         await expect(councilsList[0]).toContainText('LONDON BOROUGH OF BARNET');
         await expect(councilsList[1]).toContainText('LONDON BOROUGH OF BEXLEY');
     });
+
+    test('Navigate to the Home page using the breadcrumb link', async ({ page }, testInfo) => {
+        // Click the Home breadcrumb link
+        const homePage: HomePage = await filterPropertiesPage.clickBreadcrumbHome();
+        
+        // Verify that the Home page loads successfully
+        await homePage.waitForPageToLoad();
+        await expect(homePage.isDisplayed()).resolves.toBeTruthy();
+    });
 });
