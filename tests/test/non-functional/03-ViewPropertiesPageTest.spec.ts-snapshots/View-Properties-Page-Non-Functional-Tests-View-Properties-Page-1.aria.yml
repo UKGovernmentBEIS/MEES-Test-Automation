@@ -45,7 +45,8 @@
     - definition: None
     - term: Landlord location
     - definition: All locations
-    - button "Change filters"
+    - link "Change filters":
+      - /url: "#-85"
     - heading "Property records" [level=1]
     - text: 0 results
     - button "Download all (CSV)"
