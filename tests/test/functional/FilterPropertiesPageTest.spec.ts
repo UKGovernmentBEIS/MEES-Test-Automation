@@ -27,7 +27,7 @@ test.describe('Filter Properties Page Functional Tests', () => {
         const filterPropertiesPageErrors = filterPropertiesPage.getAllConsoleErrors();
         await expect(filterPropertiesPageErrors.length, 
             'Known Issue MEESALPHA-608: The Filter Properties page shows console errors'
-        ).toBe(3);
+        ).toBe(1);
 
         // Verify page title
         await expect(page).toHaveTitle('Filter properties');

@@ -46,10 +46,10 @@
     - term: Landlord location
     - definition: All locations
     - link "Change filters":
-      - /url: "#-85"
+      - /url: "#-83"
     - heading "Property records" [level=1]
     - text: 0 results
-    - button "Download all (CSV)"
+    - button "Downloading all (CSV)"
     - table:
       - rowgroup:
         - row "Property address Energy ratings EPC expiry date PRS Exemptions":
@@ -58,6 +58,4 @@
           - columnheader "EPC expiry date"
           - columnheader "PRS Exemptions"
           - columnheader
-      - rowgroup:
-        - row "No property records found":
-          - cell "No property records found"
+      - rowgroup

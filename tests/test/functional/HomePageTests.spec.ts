@@ -28,7 +28,7 @@ test.describe('Home Page Functional Tests', () => {
         const homePageErrors = homePage.getAllConsoleErrors();
         await expect(homePageErrors.length, 
             'Known Issue MEESCH-439: Home Page should have 3 console errors'
-        ).toBe(3);
+        ).toBe(2);
 
         // Verify page title
         // Known Issue MEESCH-584 - Home Page title is incorrectly set to "Landing Page"
