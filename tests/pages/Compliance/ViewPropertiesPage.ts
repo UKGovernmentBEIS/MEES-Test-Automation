@@ -9,7 +9,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
     private propertyFilterRow: Locator = this.page.locator('.govuk-summary-list__row');
     private propertyFilterRowKey: Locator = this.page.locator('.govuk-summary-list__key');
     private breadcrumbHomeLink: Locator = this.page.getByRole('link', { name: 'Home' });
-    private breadcrumbViewPropertiesLink: Locator = this.page.getByRole('link', { name: 'Filter property records' });
+    private breadcrumbFilterPropertiesLink: Locator = this.page.getByRole('link', { name: 'Filter property records' });
     private changeFiltersLink: Locator = this.page.getByRole('link', { name: 'Change filters' });
     private propertyTableRow: Locator = this.page.locator('table.govuk-table tbody tr');
     private paginationContainer: Locator = this.page.locator('nav.govuk-pagination');
@@ -28,7 +28,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             pageContext: this.pageContext,
             pageFooter: this.pageFooter,
             breadcrumbHomeLink: this.breadcrumbHomeLink,
-            breadcrumbViewPropertiesLink: this.breadcrumbViewPropertiesLink,
+            breadcrumbFilterPropertiesLink: this.breadcrumbFilterPropertiesLink,
             changeFiltersLink: this.changeFiltersLink
         };
 
@@ -69,8 +69,8 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         return homePage;
     }
 
-    async clickBreadcrumbViewProperties(): Promise<FilterPropertiesPage> {
-        await this.breadcrumbViewPropertiesLink.click();
+    async clickBreadcrumbFilterProperties(): Promise<FilterPropertiesPage> {
+        await this.breadcrumbFilterPropertiesLink.click();
 
         const filterPropertiesPage = new FilterPropertiesPage(this.page);
         await filterPropertiesPage.waitForPageToLoad();

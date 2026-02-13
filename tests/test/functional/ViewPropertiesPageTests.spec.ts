@@ -75,17 +75,14 @@ test.describe('View Properties Page Functional Tests', () => {
 
     test('Breadcrumb navigation works correctly', async ({ page }) => {
         // Click on the Filter Properties breadcrumb link and verify navigation to Filter Properties Page
-        const filterPropertiesPage = await viewPropertiesPage.clickBreadcrumbViewProperties();
-        await filterPropertiesPage.waitForPageToLoad();
+        const filterPropertiesPage = await viewPropertiesPage.clickBreadcrumbFilterProperties();
         await expect(filterPropertiesPage.isDisplayed()).resolves.toBeTruthy();
 
         // Navigate back to View Properties Page
         viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
 
         // Click on the Home breadcrumb link and verify navigation to Home Page
         const homePage = await viewPropertiesPage.clickBreadcrumbHome();
-        await homePage.waitForPageToLoad();
         await expect(homePage.isDisplayed()).resolves.toBeTruthy();
     });
 });

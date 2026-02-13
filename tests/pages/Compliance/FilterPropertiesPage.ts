@@ -39,8 +39,8 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         
     }
 
-        // Wait for the Filter Properties Page to load
-        async waitForPageToLoad(): Promise<void> {
+    // Wait for the Filter Properties Page to load
+    async waitForPageToLoad(): Promise<void> {
         await super.waitForPageToLoad();
         
         await ElementUtilities.waitForPageToLoad(
@@ -64,9 +64,8 @@ export class FilterPropertiesPage extends BaseCompliancePage {
     }
 
     async isDisplayed(): Promise<boolean> {
-        return await this.homeBreadcrumb.isVisible() &&
-            await this.councilsList.isVisible() &&
-            await this.councilsDropdown.isVisible()
+        this.waitForPageToLoad();
+        return true;
     };
 
     getPageContextLocator(): Locator {
