@@ -5,20 +5,31 @@ import { HomePage } from './HomePage';
 import { FilterPropertiesPage } from './FilterPropertiesPage';
 
 export class ViewPropertiesPage extends BaseCompliancePage {
-    private pageContext: Locator = this.page.locator('#main-content');
-    private propertyFilterRow: Locator = this.page.locator('.govuk-summary-list__row');
-    private propertyFilterRowKey: Locator = this.page.locator('.govuk-summary-list__key');
-    private breadcrumbHomeLink: Locator = this.page.getByRole('link', { name: 'Home' });
-    private breadcrumbFilterPropertiesLink: Locator = this.page.getByRole('link', { name: 'Filter property records' });
-    private changeFiltersLink: Locator = this.page.getByRole('link', { name: 'Change filters' });
-    private propertyTableRow: Locator = this.page.locator('table.govuk-table tbody tr');
-    private paginationContainer: Locator = this.page.locator('nav.govuk-pagination');
-    private nextPageButton: Locator = this.paginationContainer.getByRole('link', { name: 'Next page' })
-    private previousPageButton: Locator = this.paginationContainer.getByRole('link', { name: 'Previous page' });
-    private lastPageButton: Locator = this.paginationContainer.locator('.govuk-pagination__list .govuk-pagination__item');
+    private pageContext: Locator;
+    private propertyFilterRow: Locator;
+    private propertyFilterRowKey: Locator;
+    private breadcrumbHomeLink: Locator;
+    private breadcrumbFilterPropertiesLink: Locator;
+    private changeFiltersLink: Locator;
+    private propertyTableRow: Locator;
+    private paginationContainer: Locator;
+    private nextPageButton: Locator;
+    private previousPageButton: Locator;
+    private lastPageButton: Locator;
 
     constructor(page: Page) {
         super(page);
+        this.pageContext = this.page.locator('#main-content');
+        this.propertyFilterRow = this.page.locator('.govuk-summary-list__row');
+        this.propertyFilterRowKey = this.page.locator('.govuk-summary-list__key');
+        this.breadcrumbHomeLink = this.page.getByRole('link', { name: 'Home' });
+        this.breadcrumbFilterPropertiesLink = this.page.getByRole('link', { name: 'Filter property records' });
+        this.changeFiltersLink = this.page.getByRole('link', { name: 'Change filters' });
+        this.propertyTableRow = this.page.locator('table.govuk-table tbody tr');
+        this.paginationContainer = this.page.locator('nav.govuk-pagination');
+        this.nextPageButton = this.paginationContainer.getByRole('link', { name: 'Next page' });
+        this.previousPageButton = this.paginationContainer.getByRole('link', { name: 'Previous page' });
+        this.lastPageButton = this.paginationContainer.locator('.govuk-pagination__list .govuk-pagination__item');
     }
 
     async waitForPageToLoad(additionalLocators?: Record<string, Locator>): Promise<void> {
