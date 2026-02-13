@@ -37,8 +37,7 @@ export class HomePage extends BaseCompliancePage {
     }
 
     async isDisplayed(): Promise<boolean> {
-        this.waitForPageToLoad();
-        return true;
+        return this.page.url().includes('landing-page');
     }
 
     getPageContextLocator(): Locator {

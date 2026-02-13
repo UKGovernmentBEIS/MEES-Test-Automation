@@ -64,9 +64,8 @@ export class FilterPropertiesPage extends BaseCompliancePage {
     }
 
     async isDisplayed(): Promise<boolean> {
-        this.waitForPageToLoad();
-        return true;
-    };
+        return this.page.url().includes('filter-properties');
+    }
 
     getPageContextLocator(): Locator {
         return this.pageContext;
