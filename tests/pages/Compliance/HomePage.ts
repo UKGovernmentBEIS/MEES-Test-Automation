@@ -13,11 +13,11 @@ export class HomePage extends BaseCompliancePage {
 
     constructor(page: Page) {
         super(page);
-        this.pageContext = this.page.locator('#main-content');
-        this.viewPropertiesLink = this.page.getByRole('link', { name: 'View properties' });
-        this.viewGuidanceLink = this.page.getByRole('link', { name: 'View guidance' });
-        this.viewTemplatesLink = this.page.getByRole('link', { name: 'View templates' });
-        this.viewPenaltyCalculatorLink = this.page.getByRole('link', { name: 'View penalty calculator' });
+        this.pageContext = page.locator('#main-content');
+        this.viewPropertiesLink = page.getByRole('link', { name: 'View property records' });
+        this.viewGuidanceLink = page.getByRole('link', { name: 'View guidance' });
+        this.viewTemplatesLink = page.getByRole('link', { name: 'View templates' });
+        this.viewPenaltyCalculatorLink = page.getByRole('link', { name: 'View penalty calculator' });
     }
 
     // Wait for the Home Page page to load
