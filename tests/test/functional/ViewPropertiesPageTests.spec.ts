@@ -87,7 +87,7 @@ test.describe('View Properties Page Functional Tests', () => {
         const homePage = await viewPropertiesPage.clickBreadcrumbHome();
         await homePage.waitForPageToLoad();
         await expect(homePage.isDisplayed()).resolves.toBeTruthy();
-    }
+    });
 });
 
 test.describe('Verify page pagination functionality', () => {
