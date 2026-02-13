@@ -136,7 +136,7 @@ test.describe('Filter Properties Page Functional Tests', () => {
         const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
 
         // Navigate back to the Filter Properties page using the breadcrumb link
-        filterPropertiesPage = await viewPropertiesPage.clickBreadcrumbViewProperties();
+        filterPropertiesPage = await viewPropertiesPage.clickBreadcrumbFilterProperties();
 
         // Verify that the filter criteria have been reset when navigating back to Filter Properties page
         expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
