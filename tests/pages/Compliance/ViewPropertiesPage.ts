@@ -5,36 +5,42 @@ import { HomePage } from './HomePage';
 import { FilterPropertiesPage } from './FilterPropertiesPage';
 
 export class ViewPropertiesPage extends BaseCompliancePage {
-    private pageContext: Locator;
-    private propertyFilterRow: Locator;
-    private propertyFilterRowKey: Locator;
-    private breadcrumbHomeLink: Locator;
-    private breadcrumbViewPropertiesLink: Locator;
-    private changeFiltersLink: Locator;
+    private pageContext: Locator = this.page.locator('#main-content');
+    private propertyFilterRow: Locator = this.page.locator('.govuk-summary-list__row');
+    private propertyFilterRowKey: Locator = this.page.locator('.govuk-summary-list__key');
+    private breadcrumbHomeLink: Locator = this.page.getByRole('link', { name: 'Home' });
+    private breadcrumbViewPropertiesLink: Locator = this.page.getByRole('link', { name: 'Filter property records' });
+    private changeFiltersLink: Locator = this.page.getByRole('link', { name: 'Change filters' });
+    private propertyTableRow: Locator = this.page.locator('table.govuk-table tbody tr');
+    private paginationContainer: Locator = this.page.locator('nav.govuk-pagination');
+    private nextPageButton: Locator = this.paginationContainer.getByRole('link', { name: 'Next page' })
+    private previousPageButton: Locator = this.paginationContainer.getByRole('link', { name: 'Previous page' });
+    private lastPageButton: Locator = this.paginationContainer.locator('.govuk-pagination__list .govuk-pagination__item');
 
     constructor(page: Page) {
         super(page);
-        this.pageContext = page.locator('#main-content');
-        this.propertyFilterRow = this.page.locator('.govuk-summary-list__row');
-        this.propertyFilterRowKey = this.page.locator('.govuk-summary-list__key');
-        this.breadcrumbHomeLink = page.getByRole('link', { name: 'Home' });
-        this.breadcrumbViewPropertiesLink = page.getByRole('link', { name: 'Filter property records' });
-        this.changeFiltersLink = page.getByRole('link', { name: 'Change filters' });
     }
 
-    async waitForPageToLoad(): Promise<void> {
+    async waitForPageToLoad(additionalLocators?: Record<string, Locator>): Promise<void> {
         await super.waitForPageToLoad();
+
+        const defaultLocators = {
+            pageContext: this.pageContext,
+            pageFooter: this.pageFooter,
+            breadcrumbHomeLink: this.breadcrumbHomeLink,
+            breadcrumbViewPropertiesLink: this.breadcrumbViewPropertiesLink,
+            changeFiltersLink: this.changeFiltersLink
+        };
+
+        const locatorsToWaitFor = additionalLocators 
+            ? { ...defaultLocators, ...additionalLocators }
+            : defaultLocators;
 
         await ElementUtilities.waitForPageToLoad(
             this.page,
             'View Properties Page',
-            {
-                pageContext: this.pageContext,
-                pageFooter: this.pageFooter,
-                breadcrumbHomeLink: this.breadcrumbHomeLink,
-                breadcrumbViewPropertiesLink: this.breadcrumbViewPropertiesLink,
-                changeFiltersLink: this.changeFiltersLink
-            });
+            locatorsToWaitFor
+        );
     }
 
     async isDisplayed(): Promise<boolean> {
@@ -77,5 +83,54 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         const filterPropertiesPage = new FilterPropertiesPage(this.page);
         await filterPropertiesPage.waitForPageToLoad();
         return filterPropertiesPage;
+    }
+
+    getPropertyTableRow(): Locator {
+        return this.propertyTableRow;
+    }
+
+    async getTotalRecordsCount(): Promise<number> {
+        return await this.getPropertyTableRow().count();
+    }
+
+    getPaginationContainer(): Locator {
+        return this.paginationContainer;
+    }
+
+    getNextPageButton(): Locator {
+        return this.nextPageButton;
+    }
+
+    getPreviousPageButton(): Locator {
+        return this.previousPageButton;
+    }
+
+    getCurrentPageNumber(): Locator {
+        return this.paginationContainer.locator('.govuk-pagination__item--current a');
+    }
+
+    getPageNumber(pageNum: number): Locator {
+        return this.paginationContainer.locator(`a[data-page="${pageNum}"]`);
+    }
+
+    isPageCurrent(pageNum: number): Locator {
+        return this.paginationContainer.locator(`.govuk-pagination__item--current a[aria-label="Page ${pageNum}"]`);
+    }
+
+    async clickNextPage(): Promise<void> {
+        await this.nextPageButton.click();
+    }
+
+    async clickPreviousPage(): Promise<void> {
+        await this.previousPageButton.click();
+    }
+
+    async navigateToLastPage(): Promise<void> {
+        const lastPageItem = this.lastPageButton
+            .filter({ has: this.page.locator('a') })
+            .last();
+        
+        // Click on the link within the last page item
+        await lastPageItem.locator('a').click();
     }
 }
