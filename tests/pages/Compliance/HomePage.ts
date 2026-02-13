@@ -4,20 +4,15 @@ import { BaseCompliancePage } from './BaseCompliancePage';
 import { FilterPropertiesPage } from './FilterPropertiesPage';
 
 export class HomePage extends BaseCompliancePage {
-    private pageContext: Locator;
-    private readonly viewPropertiesLink: Locator;
-    private readonly viewGuidanceLink: Locator;
-    private readonly viewTemplatesLink: Locator;
-    private readonly viewPenaltyCalculatorLink: Locator;
+    private pageContext: Locator = this.page.locator('#main-content');
+    private readonly viewPropertiesLink: Locator = this.page.getByRole('link', { name: 'View properties' });
+    private readonly viewGuidanceLink: Locator = this.page.getByRole('link', { name: 'View guidance' });
+    private readonly viewTemplatesLink: Locator = this.page.getByRole('link', { name: 'View templates' });
+    private readonly viewPenaltyCalculatorLink: Locator = this.page.getByRole('link', { name: 'View penalty calculator' });
     
 
     constructor(page: Page) {
         super(page);
-        this.pageContext = page.locator('#main-content');
-        this.viewPropertiesLink = page.getByRole('link', { name: 'View property records' });
-        this.viewGuidanceLink = page.getByRole('link', { name: 'View guidance' });
-        this.viewTemplatesLink = page.getByRole('link', { name: 'View templates' });
-        this.viewPenaltyCalculatorLink = page.getByRole('link', { name: 'View penalty calculator' });
     }
 
     // Wait for the Home Page page to load
