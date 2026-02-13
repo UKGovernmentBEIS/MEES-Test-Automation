@@ -35,6 +35,43 @@ test.describe('View Properties Page Functional Tests', () => {
         // Verify page title
         await expect(page).toHaveTitle('View Properties');
     });
+
+    test('Page provides filtered data based on selected criteria', async ({ page }) => {
+        let filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
+        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
+        await filterPropertiesPage.setEnergyRatingFilter('B');
+        await filterPropertiesPage.setStreetFilter('Crayford Road');
+        await filterPropertiesPage.setTownFilter('DARTFORD');
+        await filterPropertiesPage.setPostcodeFilter('DA1 4AL');
+        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await viewPropertiesPage.waitForTableContent();
+
+        // Verify that data displayed matches the applied filters
+        const filteredDataRow = viewPropertiesPage.getPropertyTableRow().first();
+        await expect(filteredDataRow).toBeVisible();
+        await expect(filteredDataRow).toContainText('B');
+        await expect(filteredDataRow).toContainText('Crayford Road');
+        await expect(filteredDataRow).toContainText('DARTFORD');
+        await expect(filteredDataRow).toContainText('DA1 4AL');
+
+        // Change the Landrold Location filter to Offshore and verify that no records are found
+        filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
+        await filterPropertiesPage.waitForPageToLoad();
+        await filterPropertiesPage.selectOffshoreLALocations();
+        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await expect(viewPropertiesPage.getPropertyTableRow()).not.toBeVisible();
+
+        // Change the Landrold Location filter to All and set the council filter to 'LONDON BOROUGH OF BARNET' and verify that no records are found
+        filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
+        await filterPropertiesPage.waitForPageToLoad();
+        await filterPropertiesPage.selectAllLALocations();
+        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BARNET');
+        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await expect(viewPropertiesPage.getPropertyTableRow()).not.toBeVisible();
+    });
 });
 
 test.describe('Verify page pagination functionality', () => {

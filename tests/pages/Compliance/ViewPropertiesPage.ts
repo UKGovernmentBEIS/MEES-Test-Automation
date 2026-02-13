@@ -133,4 +133,10 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         // Click on the link within the last page item
         await lastPageItem.locator('a').click();
     }
+
+    async waitForTableContent(): Promise<void> {
+    await Promise.race([
+        this.propertyTableRow.first().waitFor({ state: 'attached', timeout: 10000 })
+    ]);
+}
 }
