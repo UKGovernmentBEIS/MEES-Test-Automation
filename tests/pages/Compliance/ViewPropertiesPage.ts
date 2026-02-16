@@ -16,6 +16,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
     private nextPageButton: Locator;
     private previousPageButton: Locator;
     private lastPageButton: Locator;
+    private totalRecordsField: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -30,6 +31,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         this.nextPageButton = this.paginationContainer.getByRole('link', { name: 'Next page' });
         this.previousPageButton = this.paginationContainer.getByRole('link', { name: 'Previous page' });
         this.lastPageButton = this.paginationContainer.locator('.govuk-pagination__list .govuk-pagination__item');
+        this.totalRecordsField = this.page.getByText('results');
     }
 
     async waitForPageToLoad(additionalLocators?: Record<string, Locator>): Promise<void> {
@@ -146,8 +148,12 @@ export class ViewPropertiesPage extends BaseCompliancePage {
     }
 
     async waitForTableContent(): Promise<void> {
-    await Promise.race([
-        this.propertyTableRow.first().waitFor({ state: 'attached', timeout: 10000 })
-    ]);
-}
+        await Promise.race([
+            this.propertyTableRow.first().waitFor({ state: 'attached', timeout: 10000 })
+        ]);
+    }
+
+    async getPropertiesCountField(): Promise<Locator> {
+        return this.totalRecordsField;
+    }
 }

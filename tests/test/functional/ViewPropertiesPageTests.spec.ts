@@ -165,4 +165,45 @@ test.describe('View Properties Page Tests', () => {
         // Verify pagination controls are not visible
         await expect(viewPropertiesPage.getPaginationContainer()).not.toBeVisible();
     });
+
+    test('DMS Integration - UI and DMS data are matching', async ({ page, request }) => {
+        // Set specific filter criteria to get manageable dataset
+        const filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
+        await filterPropertiesPage.setPostcodeFilter('DA1 3QQ');
+        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+
+        // Get total records count from UI (e.g., "12345 results")
+        const displayedPropertiesLocator = await viewPropertiesPage.getPropertiesCountField();
+        const uiResultsText = await displayedPropertiesLocator.textContent();
+        const uiTotalRecords = parseInt(uiResultsText?.match(/(\d+)/)?.[1] || '0');
+
+        // Make API call to DMS with same filters
+        const dmsApiUrl = `${process.env.DMS_BASE_URL}/mees/properties?page=1&size=10`;
+        const apiResponse = await request.post(dmsApiUrl, {
+            data: {
+                "lacodes": ["E09000003","E09000004"],
+                "postcode": "DA1 3QQ"
+            },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.PROPERTIES_KEY!
+            }
+        });
+        
+        expect(apiResponse.status()).toBe(200);
+        const apiResponseData = await apiResponse.json();
+
+        // Double parsing required: API returns JSON-encoded string instead of proper JSON object
+        // response.json() parses the outer JSON layer returning a string, then JSON.parse() gets the actual data
+        const parsedResponseData = JSON.parse(apiResponseData);
+        
+        // Extract total records count from API response - use fallback if total_records is undefined
+        const apiTotalRecords: number = parsedResponseData.total_records;
+
+        // Compare total record counts
+        expect(uiTotalRecords).toBe(apiTotalRecords);
+    });
+
 });
