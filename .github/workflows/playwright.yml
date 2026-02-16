@@ -32,6 +32,7 @@ jobs:
     - name: Run authentication setup
       run: npx playwright test --project=setup
       env:
+        PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
         DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}

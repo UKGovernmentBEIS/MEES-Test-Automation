@@ -179,6 +179,9 @@ test.describe('View Properties Page Tests', () => {
         const uiTotalRecords = parseInt(uiResultsText?.match(/(\d+)/)?.[1] || '0');
 
         // Make API call to DMS with same filters
+        if (!process.env.DMS_BASE_URL || !process.env.PROPERTIES_KEY) {
+            throw new Error('DMS_BASE_URL and PROPERTIES_KEY must be set in environment variables for this test');
+        }
         const dmsApiUrl = `${process.env.DMS_BASE_URL}/mees/properties?page=1&size=10`;
         const apiResponse = await request.post(dmsApiUrl, {
             data: {
