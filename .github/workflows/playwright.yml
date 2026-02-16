@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main, master ]
   schedule:
-    - cron: '0 4 * * *'  # Runs at 4:00 AM UTC every day
+    - cron: '55 21 * * *'  # Runs at 9:55 PM UTC every day
   workflow_dispatch:
     inputs:
       environment:
