@@ -109,8 +109,7 @@ test.describe('Filter Properties Page Functional Tests', () => {
         const returnedFilterPropertiesPage: FilterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
 
         // Verify that the previously selected filter criteria are still populated
-        // Bug: MEESALPHA-614 'The Council filter is not persistent'
-        expect(await returnedFilterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
+        expect(await returnedFilterPropertiesPage.getSelectedCouncilFilter()).toBe(councilFilter);
         expect(await returnedFilterPropertiesPage.getSelectedEnergyRatingFilter()).toBe(energyRatingFilter);
         expect(await returnedFilterPropertiesPage.getStreetFilterValue()).toBe(streetFilter);
         expect(await returnedFilterPropertiesPage.getTownFilterValue()).toBe(townFilter);
