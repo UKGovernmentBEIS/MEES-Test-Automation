@@ -48,14 +48,9 @@
     - link "Change filters":
       - /url: "#-83"
     - heading "Property records" [level=1]
-    - text: 0 results
+    - paragraph: 0 results
     - button "Downloading all (CSV)"
     - table:
       - rowgroup:
-        - row "Property address Energy ratings EPC expiry date PRS Exemptions":
-          - columnheader "Property address"
-          - columnheader "Energy ratings"
-          - columnheader "EPC expiry date"
-          - columnheader "PRS Exemptions"
-          - columnheader
-      - rowgroup
+        - row "No records found":
+          - cell "No records found"
