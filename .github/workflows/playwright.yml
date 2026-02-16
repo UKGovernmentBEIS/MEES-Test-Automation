@@ -32,6 +32,7 @@ jobs:
     - name: Run authentication setup
       run: npx playwright test --project=setup
       env:
+        DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
         TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
@@ -77,7 +78,6 @@ jobs:
     - name: Run non-functional tests
       run: npx playwright test --project=non-functional
       env:
-        DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         TEST_NO_ACCESS_EMAIL: ${{ secrets.TEST_NO_ACCESS_EMAIL }}
         TEST_NO_ACCESS_PASSWORD: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
