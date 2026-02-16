@@ -197,8 +197,20 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         const townValue = await this.getTownFilterValue();
         const postcodeValue = await this.getPostcodeFilterValue();
 
-        if (selectedCouncil !== 'Show all councils' || selectedEnergyRating !== 'All energy ratings' || streetValue !== '' || townValue !== '' || postcodeValue !== '') {
-            throw new Error('Failed to clear filters. Some filters are still set.');
+        if (selectedCouncil !== 'Show all councils') {
+            throw new Error(`Failed to clear council filter. Expected: Show all councils, but got: ${selectedCouncil}`);
+        }
+        if (selectedEnergyRating !== 'All energy ratings') {
+            throw new Error(`Failed to clear energy rating filter. Expected: All energy ratings, but got: ${selectedEnergyRating}`);
+        }
+        if (streetValue !== '') {
+            throw new Error(`Failed to clear street filter. Expected: empty string, but got: ${streetValue}`);
+        }
+        if (townValue !== '') {
+            throw new Error(`Failed to clear town filter. Expected: empty string, but got: ${townValue}`);
+        }
+        if (postcodeValue !== '') {
+            throw new Error(`Failed to clear postcode filter. Expected: empty string, but got: ${postcodeValue}`);
         }
     }
 
