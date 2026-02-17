@@ -67,12 +67,7 @@ test.describe('Response Structure Tests', () => {
         const responseBody = await response.json();
         const property = responseBody.property;
 
-        // Verify all expected property fields are present
-        // - Property object has exactly 18 fields
-        // - Each field exists (presence check)
-        // - Field types match schema:
-        //   - Numbers: uprn, buildingReferenceNumber, epcEnergyRating, rateableValue
-        //   - Strings: name, number, flatNameNumber, line1, line2, line3, town, county, postcode, localAuthority, epcEnergyRatingBand, epcExpiryDate, location, transactionType
+        // Verify all expected property fields are present and have correct types
         expect(Object.keys(property).length).toBe(18);
         expect(property).toHaveProperty('uprn');
         expect(property).toHaveProperty('buildingReferenceNumber');
@@ -110,5 +105,42 @@ test.describe('Response Structure Tests', () => {
         expect(['string', 'object']).toContain(typeof property.location); // can be string or null
         expect(['number', 'object']).toContain(typeof property.rateableValue); // can be number or null
         expect(typeof property.transactionType).toBe('string');
+    });
+
+    test('EPC certificates array has correct structure', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingRefNumber=${paramBuildingRefNumber}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);    
+
+        // Verify EPC certificates structure and field types
+        const responseBody = await response.json();
+        const epcCertificates = responseBody.epcCertificates;
+        expect(Array.isArray(epcCertificates)).toBe(true);
+        if (epcCertificates.length > 0) {
+            const certificate = epcCertificates[0];
+            expect(Object.keys(certificate).length).toBe(4);
+            expect(typeof certificate.assetRating).toBe('number');
+            expect(typeof certificate.assetRatingBand).toBe('string');
+            expect(typeof certificate.lodgementDate).toBe('string');
+            expect(typeof certificate.expiryDate).toBe('string');
+        }
+    });
+
+    test('Landlords array has correct structure', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingRefNumber=${paramBuildingRefNumber}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        // Verify landlords structure and field types
+        const responseBody = await response.json();
+        expect(responseBody).toHaveProperty('landlords');
+        const landlords = responseBody.landlords;
+        expect(Array.isArray(landlords)).toBe(true);
     });
 });
