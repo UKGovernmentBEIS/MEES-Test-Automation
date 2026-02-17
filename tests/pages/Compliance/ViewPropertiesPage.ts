@@ -152,4 +152,64 @@ export class ViewPropertiesPage extends BaseCompliancePage {
     async getPropertiesCountField(): Promise<Locator> {
         return this.totalRecordsField;
     }
+
+    async getPropertiesDataFromTable(): Promise<PropertyData[]> {
+        const propertiesData: PropertyData[] = [];
+        const rowsCount = await this.propertyTableRow.count();
+
+        for (let i = 0; i < rowsCount; i++) {
+            const row = this.propertyTableRow.nth(i);
+            const address = await row.locator('td').nth(0).innerText();
+            const energyRating = await row.locator('td').nth(1).innerText();
+            const epcExpiryDate = await row.locator('td').nth(2).innerText();
+            const PRSExemptions = await row.locator('td').nth(3).innerText();
+            const PRSEExemptionsColourClassName = await row.locator('td').nth(3).locator('strong').getAttribute('class') || '';
+            const PRSEExemptionsColour = await this.extractExemptionsColourFromClassName(PRSEExemptionsColourClassName);
+            propertiesData.push(new PropertyData(address, energyRating, epcExpiryDate, PRSExemptions, PRSEExemptionsColour));
+        }
+        return propertiesData;
+    }
+
+    private async extractExemptionsColourFromClassName(className: string): Promise<string> {
+        // Assuming the class name contains a color indicator like "govuk-tag govuk-tag--light-blue"
+        // Available colors: light-blue, blue, green, grey, orange, pink and yellow
+        if (className.includes('govuk-tag--light-blue')) {
+            return 'light-blue';
+        } else if (className.includes('govuk-tag--blue') && !className.includes('govuk-tag--light-blue')) {
+            return 'blue';
+        } else if (className.includes('govuk-tag--green')) {
+            return 'green';
+        } else if (className.includes('govuk-tag--grey')) {
+            return 'grey';
+        } else if (className.includes('govuk-tag--orange')) {
+            return 'orange';
+        } else if (className.includes('govuk-tag--pink')) {
+            return 'pink';
+        } else if (className.includes('govuk-tag--yellow')) {
+            return 'yellow';
+        }
+        return '';
+    }
+}
+
+export class PropertyData {
+    readonly address: string;
+    readonly energyRating: string;
+    readonly epcExpiryDate: string;
+    readonly PRSExemptions: string;
+    readonly PRSEExemptionsColour: string;
+
+    constructor(
+        address: string,
+        energyRating: string,
+        epcExpiryDate: string,
+        PRSExemptions: string,
+        PRSEExemptionsColour: string
+    ) {
+        this.address = address;
+        this.energyRating = energyRating;
+        this.epcExpiryDate = epcExpiryDate;
+        this.PRSExemptions = PRSExemptions;
+        this.PRSEExemptionsColour = PRSEExemptionsColour;
+    }
 }

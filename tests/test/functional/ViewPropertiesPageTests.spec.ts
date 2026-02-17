@@ -203,4 +203,42 @@ test.describe('View Properties Page Tests', () => {
         expect(uiTotalRecords).toBe(apiTotalRecords);
     });
 
+    test('Verify PRS Exemption data is displayed correctly in the table', async ({ page }) => {
+        // Set specific filter criteria to get manageable dataset
+        const filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
+        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+
+        // Get all property data from the table
+        const propertiesData = await viewPropertiesPage.getPropertiesDataFromTable();
+
+        // Search for a properties with below PRSE Exemption and verify the exemption and color are displayed correctly
+        const exemptionToColorMapping: Record<string, string> = {
+            'Penalty sent': 'light-blue',
+            'Received': 'blue',
+            'Approved': 'green',
+            'Updated': 'orange',
+            'Ended': 'pink',
+            'Expired': 'grey',
+            'Needs update': 'yellow',
+            'Draft': 'blue',
+            'Data not found': 'grey' 
+        };
+
+        const invalidExemptionsColors: string[] = [];
+
+        Object.entries(exemptionToColorMapping).forEach(([exemption, expectedColor]) => {
+            const property = propertiesData.find(p => p.PRSExemptions === exemption);
+            if (!property) {
+                invalidExemptionsColors.push(`No property with '${exemption}' exemption was found`);
+            } else
+            if (property.PRSEExemptionsColour !== expectedColor) {
+                invalidExemptionsColors.push(`Exemption '${exemption}': expected '${expectedColor}', got '${property.PRSEExemptionsColour}'`);
+            }
+        });
+
+        expect(invalidExemptionsColors, `Invalid PRS Exemptions colors found: ${invalidExemptionsColors.join(', ')}`).toEqual([]);
+    });
 });
