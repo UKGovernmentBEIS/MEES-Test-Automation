@@ -96,8 +96,6 @@ test.describe('View Properties Page Tests', () => {
     });
 
     test('Pagination next button navigates to next page correctly', async ({ page }) => {
-        const totalRecords = await viewPropertiesPage.getTotalRecordsCount();
-        
         // Verify page 1 is current initially
         await expect(viewPropertiesPage.isPageCurrent(1)).toBeVisible();
         
@@ -118,8 +116,6 @@ test.describe('View Properties Page Tests', () => {
     });
 
     test('Pagination previous button navigates to previous page correctly', async ({ page }) => {
-        const totalRecords = await viewPropertiesPage.getTotalRecordsCount();
-        
         // Navigate to second page first
         await viewPropertiesPage.clickNextPage();
         
@@ -139,9 +135,7 @@ test.describe('View Properties Page Tests', () => {
         await expect(viewPropertiesPage.getPreviousPageButton()).not.toBeVisible();
     });
 
-    test('Last page navigation disables next button', async ({ page }) => {
-        const totalRecords = await viewPropertiesPage.getTotalRecordsCount();
-        
+    test('Last page navigation disables next button', async ({ page }) => {    
         // Navigate to last page
         await viewPropertiesPage.navigateToLastPage();
         

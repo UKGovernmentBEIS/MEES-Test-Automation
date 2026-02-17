@@ -102,10 +102,6 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         return this.propertyTableRow;
     }
 
-    async getTotalRecordsCount(): Promise<number> {
-        return await this.getPropertyTableRow().count();
-    }
-
     getPaginationContainer(): Locator {
         return this.paginationContainer;
     }
