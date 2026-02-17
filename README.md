@@ -47,6 +47,7 @@
    
    # API key for DMS API tests
    PROPERTIES_KEY=your-api-key-here
+   PROPERTY_KEY=your-api-property-key
    LOCAL_AUTHORITIES_KEY=your-la-key-here
    DMS_BASE_URL=url-to-dms-service
    ```

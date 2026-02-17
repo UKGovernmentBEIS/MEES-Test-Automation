@@ -115,6 +115,7 @@ jobs:
     - name: Run api tests
       run: npx playwright test --project=api
       env:
+        PROPERTY_KEY: ${{ secrets.PROPERTY_KEY }}
         PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
         DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
         LOCAL_AUTHORITIES_KEY: ${{ secrets.LOCAL_AUTHORITIES_KEY }}
