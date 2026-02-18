@@ -34,11 +34,11 @@ test.describe('Authentication Tests', () => {
 
 test.describe('Response Structure Tests', () => {
     const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
-    const paramBuildingRefNumber = '924865340001';
+    const parambuildingrefnum = '924865340001';
     const paramUprn = '10002418410';
 
     test('Response returns valid JSON with correct top-level structure', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingRefNumber=${paramBuildingRefNumber}`, {
+        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingrefnum=${parambuildingrefnum}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
             }
@@ -57,7 +57,7 @@ test.describe('Response Structure Tests', () => {
     });
 
     test('Property object contains all required fields with correct types', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingRefNumber=${paramBuildingRefNumber}`, {
+        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingrefnum=${parambuildingrefnum}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
             }
@@ -108,7 +108,7 @@ test.describe('Response Structure Tests', () => {
     });
 
     test('EPC certificates array has correct structure', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingRefNumber=${paramBuildingRefNumber}`, {
+        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingrefnum=${parambuildingrefnum}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
             }
@@ -130,7 +130,7 @@ test.describe('Response Structure Tests', () => {
     });
 
     test('Landlords array has correct structure', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingRefNumber=${paramBuildingRefNumber}`, {
+        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingrefnum=${parambuildingrefnum}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
             }
@@ -142,5 +142,169 @@ test.describe('Response Structure Tests', () => {
         expect(responseBody).toHaveProperty('landlords');
         const landlords = responseBody.landlords;
         expect(Array.isArray(landlords)).toBe(true);
+    });
+});
+
+test.describe('Parameter Validation Tests', () => {
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
+    const validUprn = '10002418410';
+    const validbuildingrefnum = '924865340001';
+
+    test('Missing required parameters returns 400 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(400);
+    });
+
+    test('Invalid UPRN returns 400 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=invalid`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(400);
+    });
+
+    test('Invalid Building Reference Number returns 400 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=invalid`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(400);
+    });
+
+    test('Valid UPRN parameter return 200 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${validUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+    });
+
+    test('Valid Building Reference Number parameter return 200 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=${validbuildingrefnum}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+    });
+
+    test('Valid UPRN and Building Reference Number parameters return 200 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${validUprn}&buildingrefnum=${validbuildingrefnum}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+    });
+
+    test('Empty UPRN parameter returns 400 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(400);
+    });
+
+    test('Empty Building Reference Number parameter returns 400 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(400);
+    });
+
+    test('First valid UPRN followed by invalid Building Reference Number returns 200 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${validUprn}&buildingrefnum=invalid`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }        });
+        expect(response.status()).toBe(200);
+    });
+
+    test('First valid Building Reference Number followed by invalid UPRN returns 200 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=${validbuildingrefnum}&uprn=invalid`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+    });
+
+    test('First invalid UPRN followed by valid Building Reference Number returns 200 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=invalid&buildingrefnum=${validbuildingrefnum}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+    });
+
+    test('First invalid Building Reference Number followed by valid UPRN returns 200 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=invalid&uprn=${validUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+    });
+});
+
+test.describe('Edge Case Tests', () => {
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
+    const paramUprn = '10002418410';
+    const parambuildingrefnum = '924865340001';
+
+    test('Invalid query parameter names handled gracefully', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?invalidparam=value`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(400);
+    });
+
+    test('First valid uprn with invalid parameter', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&invalidparam=value`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+    });
+
+    test('First valid buildingrefnum with invalid parameter', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=${parambuildingrefnum}&invalidparam=value`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+    });
+
+    test('First invalid parameter followed by valid uprn', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?invalidparam=value&uprn=${paramUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+    });
+
+    test('First invalid parameter followed by valid buildingrefnum', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?invalidparam=value&buildingrefnum=${parambuildingrefnum}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
     });
 });
