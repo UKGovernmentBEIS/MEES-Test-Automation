@@ -173,18 +173,40 @@ export const test = base.extend<
     await use(context);
     
     // Clean up: close the context after all tests are done
-    await context.close();
+    // Make this safe in case context is already closed
+    try {
+      await context.close();
+    } catch (error) {
+      console.log(`[Auth Fixture] Context already closed for Worker ${workerIndex}: ${error}`);
+    }
   }, { scope: 'worker' }],
   
   /**
    * Test-scoped page that validates authentication before each test.
    * This prevents retry failures caused by invalidated authentication sessions.
+   * Enhanced to handle closed worker contexts by recreating them.
    */
-  page: async ({ workerContext }, use, testInfo) => {
+  page: async ({ browser, workerContext }, use, testInfo) => {
     const workerIndex = testInfo.parallelIndex;
+    let contextToUse = workerContext;
     
-    // Create a new page from the shared authenticated context
-    const page = await workerContext.newPage();
+    // Check if the worker context is still valid (not closed)
+    try {
+      // Try to create a test page - this will fail if context is closed
+      await contextToUse.newPage();
+    } catch (error) {
+      console.log(`[Auth Fixture] Worker context closed for Worker ${workerIndex}, recreating: ${error}`);
+      
+      // Context is closed, create a new one from stored auth state
+      const storageStatePath = getAuthStoragePath(workerIndex);
+      validateAuthStateExists(storageStatePath, workerIndex);
+      contextToUse = await createAuthenticatedContext(browser, storageStatePath, workerIndex);
+      
+      console.log(`[Auth Fixture] Created new context for Worker ${workerIndex}`);
+    }
+    
+    // Create a new page from the working context
+    const page = await contextToUse.newPage();
     
     try {
       // Validate and ensure authentication before each test
@@ -194,15 +216,22 @@ export const test = base.extend<
       // Provide this authenticated page to the test
       await use(page);
       
-    } catch (authError) {
-      console.error(`[Auth Fixture] Authentication setup failed for test '${testInfo.title}' on Worker ${workerIndex}: ${authError}`);
-      
-      // If authentication fails, we still need to provide a page to avoid fixture errors
-      await use(page);
-      
     } finally {
       // Clean up: close only this page (not the context)
-      await page.close();
+      try {
+        await page.close();
+      } catch (error) {
+        console.log(`[Auth Fixture] Page already closed: ${error}`);
+      }
+      
+      // If we created a new context (not the worker context), close it
+      if (contextToUse !== workerContext) {
+        try {
+          await contextToUse.close();
+        } catch (error) {
+          console.log(`[Auth Fixture] Temporary context already closed: ${error}`);
+        }
+      }
     }
   },
 });

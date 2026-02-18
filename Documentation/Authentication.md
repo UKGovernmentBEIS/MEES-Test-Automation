@@ -16,8 +16,9 @@
 1. **Setup project** authenticates each test account and saves session cookies to `playwright/auth-states/user-N.json`
 2. **Test workers** load their assigned session file (user-0.json, user-1.json, etc.)
 3. **Tests run** immediately with authenticated sessions - no login required
-4. **Teardown project** clears authentication files when fresh sessions are needed
-5. **Sessions expire** after ~30 minutes of inactivity
+4. **Authentication recovery** automatically detects and fixes broken sessions during test failures
+5. **Teardown project** clears authentication files when fresh sessions are needed
+6. **Sessions expire** after ~30 minutes of inactivity
 
 ## Authentication Lifecycle Management
 
@@ -175,12 +176,30 @@ When you run tests, the setup project creates separate authentication files for 
 3. **All tests** in that worker reuse the authenticated session
 4. **Each test** gets a new page but maintains authentication
 
+### Authentication Recovery (Automatic)
+
+**What it is**: Built-in system that automatically fixes broken authentication during test runs.
+
+**Why it's needed**: When tests fail, Playwright sometimes closes the shared browser context, breaking authentication for retry attempts and subsequent tests.
+
+**How it works**:
+1. **Before each test** - Checks if authentication is still working
+2. **If context is closed** - Creates a new browser context from stored auth files
+3. **If session expired** - Automatically re-authenticates using the same login flow
+4. **Recovery is transparent** - Tests continue normally without manual intervention
+
+**When it activates**: 
+- During test retries after failures
+- When browser contexts are unexpectedly closed
+- When authentication sessions become invalid
+
 For CI/CD configuration details, see the **[CI/CD Configuration Guide](CI-CD.md)**.
 
 ## Troubleshooting
 
 **Authentication fails in tests:**
-- Run `npx playwright test --project=setup` to refresh authentication state
+- **Auto-recovery handles most issues** - The system automatically detects and fixes authentication problems
+- Run `npx playwright test --project=setup` to refresh authentication state if recovery fails
 - Verify all accounts in `tests/config/test-accounts.json` are registered and valid
 - Check if `playwright/auth-states/user-*.json` files exist for all workers
 - Verify environment variables are set correctly in `.env` file
