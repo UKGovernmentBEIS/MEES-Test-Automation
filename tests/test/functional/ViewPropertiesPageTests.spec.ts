@@ -241,4 +241,61 @@ test.describe('View Properties Page Tests', () => {
 
         expect(invalidExemptionsColors, `Invalid PRS Exemptions colors found: ${invalidExemptionsColors.join(', ')}`).toEqual([]);
     });
+
+    test('Verify Energy Ratings data', async ({ page, request }) => {
+        // Get all property data from the table
+        const propertiesData = await viewPropertiesPage.getPropertiesDataFromTable();
+
+        // Get data from DMS API
+        const url = process.env.DMS_BASE_URL + '/mees/properties?page=1&size=30';
+        const requestBody = {
+            "lacodes": ["E09000003","E09000004"]
+        };
+        const response = await request.post(`${url}`, {
+            data: requestBody,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.PROPERTIES_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        // Double parsing required: API returns JSON-encoded string instead of proper JSON object
+        // response.json() parses the outer JSON layer returning a string, then JSON.parse() gets the actual data
+        const apiResponseData = await response.json();
+        const parsedResponseData = JSON.parse(apiResponseData);
+        const apiProperties = parsedResponseData.data;
+
+        const discrepancies: string[] = [];
+
+        apiProperties.forEach((apiProperty: any) => {
+            // Build address string in the same format as displayed in the UI
+            const addressParts = [
+                apiProperty.Number ? apiProperty.Number : '',
+                apiProperty.FlatNameNumber ? apiProperty.FlatNameNumber : '',
+                apiProperty.Line1 ? apiProperty.Line1 : '',
+                apiProperty.Line2 ? apiProperty.Line2 : '',
+                apiProperty.Line3 ? apiProperty.Line3 : '',
+                apiProperty.Town ? apiProperty.Town : '',
+                apiProperty.County ? apiProperty.County : '',
+                apiProperty.Postcode ? apiProperty.Postcode : ''
+            ].filter(part => part.trim() !== '');
+            const address = addressParts.join(', ');
+
+            // Concatenate energy rating. For example: C(55) - EPCEnergyRatingBand(EPCEnergyRating)
+            const energyRating = `${apiProperty.EPCEnergyRatingBand}(${apiProperty.EPCEnergyRating})`;
+
+            // Find the corresponding property data from the UI based on the address and compare energy ratings
+            const propertyData = propertiesData.find(p => p.address === address);
+            if (!propertyData) {
+                discrepancies.push(`Property with address '${address}' found in API but not in UI`);
+            } else
+             if (propertyData.energyRating !== energyRating) {
+                discrepancies.push(`Energy rating mismatch for '${address}': UI shows '${propertyData.energyRating}', API shows '${energyRating}'`);
+            }
+        });
+
+        expect(discrepancies, `Discrepancies found: ${discrepancies.join(', ')}`).toEqual([]);
+    });
 });
