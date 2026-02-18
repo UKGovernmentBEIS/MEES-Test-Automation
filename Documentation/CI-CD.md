@@ -4,10 +4,10 @@
 
 GitHub Actions pipeline for automated test execution with two-job architecture:
 
-1. **Functional Tests** - Runs setup, functional tests, then teardown
-2. **Non-Functional Tests** - Runs setup, accessibility/validation tests, then teardown (depends on functional tests completion)
+1. **Functional Tests** - Runs setup and functional tests with authentication recovery
+2. **Non-Functional Tests** - Runs setup and accessibility/validation tests with authentication recovery (depends on functional tests completion)
 
-**Benefits**: Each test project gets fresh authentication state, no account conflicts, simplified workflow.
+**Benefits**: Each test project gets fresh authentication state, authentication recovery prevents conflicts, simplified workflow.
 
 ## GitHub Actions Setup
 
@@ -35,8 +35,8 @@ DMS_BASE_URL=url-to-dms-service
 ### Authentication Lifecycle
 
 Each test job is self-contained:
-- **Functional Tests**: setup → tests → teardown
-- **Non-Functional Tests**: setup → tests → teardown
+- **Functional Tests**: setup → tests with automatic recovery
+- **Non-Functional Tests**: setup → tests with automatic recovery
 - No shared artifacts or account conflicts
 - Fresh authentication state for each project
 
@@ -62,13 +62,13 @@ When scaling parallelization:
 
 **Current Setup (2 accounts):**
 - Both test jobs use the same 2 accounts
-- Teardown ensures no conflicts between sequential jobs
+- Authentication recovery prevents conflicts between sequential jobs
 - Each job runs with 2 workers using `user-0.json` and `user-1.json`
 
 **Future Scaling (4+ accounts):**
 - Update `workers` count in [playwright.config.ts](../playwright.config.ts)
 - All test jobs can use the same expanded account pool
-- Teardown still prevents conflicts between jobs
+- Authentication recovery prevents conflicts between jobs
 
 ## Workflow Configuration
 
@@ -88,8 +88,7 @@ When scaling parallelization:
   env:
     BASE_URL: ${{ secrets.BASE_URL }}
 
-- name: Clear authentication state
-  run: npx playwright test --project=teardown
+# Authentication recovery handles cleanup automatically - no manual teardown needed
 ```
 
 - **Locally**: Environment variables are loaded from `.env` file via dotenv
@@ -133,24 +132,24 @@ Each test job handles its own authentication lifecycle:
    - No account conflicts as each job runs independently
    - Tests execute with authenticated sessions
 
-3. **Cleanup**:
-   - Runs `project=teardown` to clear authentication files
-   - Ensures fresh authentication state for subsequent test jobs
+3. **Automatic Recovery**:
+   - Built-in authentication recovery handles session issues
+   - Fresh authentication state created automatically when needed
    - Prevents session conflicts between different test projects
 
 ## Account Strategy
 
-Simplified approach with teardown-based isolation:
+Simplified approach with authentication recovery:
 
 **Current Setup (2 accounts):**
 - Both jobs use the same 2 test accounts
-- No conflicts due to sequential execution with teardown
-- Each job: setup → tests (2 workers) → teardown
+- No conflicts due to sequential execution with automatic recovery
+- Each job: setup → tests (2 workers) with recovery
 
 **Future Scaling (4+ accounts):**
 - All jobs can use the same expanded account pool
 - Increase `workers` count in [playwright.config.ts](../playwright.config.ts) to match available accounts
-- Teardown ensures clean state between jobs
+- Authentication recovery ensures clean state between jobs
 - No complex offset management required
 
 ## Test Reports and Artifacts

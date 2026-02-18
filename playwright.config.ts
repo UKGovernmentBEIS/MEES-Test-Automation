@@ -45,11 +45,6 @@ export default defineConfig({
       testMatch: /.*\/test\/setup\/.*\.setup\.ts/,
       fullyParallel: true
     },
-    { 
-      name: 'teardown', 
-      testMatch: /.*\/test\/teardown\/.*\.teardown\.ts/,
-      fullyParallel: true
-    },
     {
       name: 'functional',
       testDir: './tests/test/functional',

@@ -43,8 +43,6 @@ jobs:
         PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
         DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
         BASE_URL: ${{ secrets.BASE_URL }}
-    - name: Clear authentication state
-      run: npx playwright test --project=teardown
     - name: Upload Playwright HTML report
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
@@ -83,8 +81,6 @@ jobs:
         TEST_NO_ACCESS_EMAIL: ${{ secrets.TEST_NO_ACCESS_EMAIL }}
         TEST_NO_ACCESS_PASSWORD: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
         BASE_URL: ${{ secrets.BASE_URL }}
-    - name: Clear authentication state
-      run: npx playwright test --project=teardown
     - name: Upload Playwright HTML report
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
