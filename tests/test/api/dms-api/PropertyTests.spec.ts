@@ -129,8 +129,8 @@ test.describe('Response Structure Tests', () => {
         }
     });
 
-    test('Landlords array has correct structure', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingrefnum=${parambuildingrefnum}`, {
+    test('Landlords array has correct structure using UPRN', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${paramUprn}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
             }
@@ -142,6 +142,38 @@ test.describe('Response Structure Tests', () => {
         expect(responseBody).toHaveProperty('landlords');
         const landlords = responseBody.landlords;
         expect(Array.isArray(landlords)).toBe(true);
+        expect(landlords.length).toBeGreaterThan(0);
+        const landlord = landlords[0];
+        expect(Object.keys(landlord).length).toBe(5);
+        expect(typeof landlord.uprn).toBe('number');
+        expect(typeof landlord.companyName).toBe('string');
+        expect(typeof landlord.location).toBe('string');
+        expect(typeof landlord.address).toBe('string');
+        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText); // can be string or null
+    });
+
+    // Bug: MEESALPHA-651 - Landlords array is empty when using Building Reference Number parameter
+    test.skip('Landlords array has correct structure using Building Reference Number', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=${parambuildingrefnum}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        // Verify landlords structure and field types
+        const responseBody = await response.json();
+        expect(responseBody).toHaveProperty('landlords');
+        const landlords = responseBody.landlords;
+        expect(Array.isArray(landlords)).toBe(true);
+        expect(landlords.length).toBeGreaterThan(0);
+        const landlord = landlords[0];
+        expect(Object.keys(landlord).length).toBe(5);
+        expect(typeof landlord.uprn).toBe('number');
+        expect(typeof landlord.companyName).toBe('string');
+        expect(typeof landlord.location).toBe('string');
+        expect(typeof landlord.address).toBe('string');
+        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText); // can be string or null
     });
 });
 
