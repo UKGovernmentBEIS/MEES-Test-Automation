@@ -156,6 +156,10 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         await this.noRecordsFoundMessage.waitFor({ state: 'visible', timeout: 10000 });
     }
 
+    async getNoRecordsFoundMessage(): Promise<Locator> {
+        return this.noRecordsFoundMessage;
+    }
+
     async waitForTableOrNoRecords(): Promise<'content' | 'no-records'> {
         try {
             await Promise.race([

@@ -62,7 +62,7 @@ test.describe('View Properties Page Tests', () => {
         await filterPropertiesPage2.selectOffshoreLALocations();
         viewPropertiesPage = await filterPropertiesPage2.clickApplyFilters();
         await viewPropertiesPage.waitForPageToLoad();
-        await expect(viewPropertiesPage.getPropertyTableRow()).not.toBeVisible();
+        await expect(await viewPropertiesPage.getNoRecordsFoundMessage()).toBeVisible();
 
         // Change the Landrold Location filter to All and set the council filter to 'LONDON BOROUGH OF BARNET' and verify that no records are found
         const filterPropertiesPage3 = await viewPropertiesPage.clickChangeFilters();
@@ -71,7 +71,7 @@ test.describe('View Properties Page Tests', () => {
         await filterPropertiesPage3.setCouncilFilter('LONDON BOROUGH OF BARNET');
         viewPropertiesPage = await filterPropertiesPage3.clickApplyFilters();
         await viewPropertiesPage.waitForPageToLoad();
-        await expect(viewPropertiesPage.getPropertyTableRow()).not.toBeVisible();
+        await expect(await viewPropertiesPage.getNoRecordsFoundMessage()).toBeVisible();
     });
 
     test('Breadcrumb navigation works correctly', async ({ page }) => {
