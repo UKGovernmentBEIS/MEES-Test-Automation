@@ -245,6 +245,7 @@ test.describe('View Properties Page Tests', () => {
     test('Verify Energy Ratings data', async ({ page, request }) => {
         // Get all property data from the table
         const propertiesData = await viewPropertiesPage.getPropertiesDataFromTable();
+        expect(propertiesData.length, 'No properties found in the table').toBeGreaterThan(0);
 
         // Get data from DMS API
         const url = process.env.DMS_BASE_URL + '/mees/properties?page=1&size=30';

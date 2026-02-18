@@ -17,6 +17,8 @@ export class ViewPropertiesPage extends BaseCompliancePage {
     private previousPageButton: Locator;
     private lastPageButton: Locator;
     private totalRecordsField: Locator;
+    private downloadButton: Locator;
+    private noRecordsFoundMessage: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -32,6 +34,8 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         this.previousPageButton = this.paginationContainer.getByRole('link', { name: 'Previous page' });
         this.lastPageButton = this.paginationContainer.locator('.govuk-pagination__list .govuk-pagination__item');
         this.totalRecordsField = this.page.getByText('results');
+        this.downloadButton = this.page.getByRole('button', { name: 'Downloading all (CSV)' });
+        this.noRecordsFoundMessage = this.page.getByText('No records found');
     }
 
     async waitForPageToLoad(additionalLocators?: Record<string, Locator>): Promise<void> {
@@ -42,7 +46,8 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             pageFooter: this.pageFooter,
             breadcrumbHomeLink: this.breadcrumbHomeLink,
             breadcrumbFilterPropertiesLink: this.breadcrumbFilterPropertiesLink,
-            changeFiltersLink: this.changeFiltersLink
+            changeFiltersLink: this.changeFiltersLink,
+            downloadButton: this.downloadButton
         };
 
         const locatorsToWaitFor = additionalLocators 
@@ -144,9 +149,29 @@ export class ViewPropertiesPage extends BaseCompliancePage {
     }
 
     async waitForTableContent(): Promise<void> {
-        await Promise.race([
-            this.propertyTableRow.first().waitFor({ state: 'attached', timeout: 10000 })
-        ]);
+    await this.propertyTableRow.first().waitFor({ state: 'attached', timeout: 10000 });
+    }
+
+    async waitForNoRecordsMessage(): Promise<void> {
+        await this.noRecordsFoundMessage.waitFor({ state: 'visible', timeout: 10000 });
+    }
+
+    async waitForTableOrNoRecords(): Promise<'content' | 'no-records'> {
+        try {
+            await Promise.race([
+                this.propertyTableRow.first().waitFor({ state: 'attached', timeout: 10000 }),
+                this.noRecordsFoundMessage.waitFor({ state: 'visible', timeout: 10000 })
+            ]);
+            
+            // Determine which condition was met
+            if (await this.propertyTableRow.first().isVisible()) {
+                return 'content';
+            } else {
+                return 'no-records';
+            }
+        } catch (error) {
+            throw error;
+        }
     }
 
     async getPropertiesCountField(): Promise<Locator> {
