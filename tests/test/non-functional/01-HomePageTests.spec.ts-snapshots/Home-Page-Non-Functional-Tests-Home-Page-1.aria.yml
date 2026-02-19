@@ -14,11 +14,10 @@
         - link "Templates":
           - /url: /templates
   - paragraph:
-    - strong: BETA
-    - text: This is a new service - your
-    - link "feedback":
-      - /url: mailto:PRSregisterfeedback@energysecurity.gov.uk
-    - text: will help us improve it.
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback by email":
+      - /url: "#"
+    - text: .
   - navigation "Breadcrumb":
     - list:
       - listitem: Home
@@ -40,14 +39,14 @@
     - paragraph: Read guidance on understanding the MEES Regulations, view enforcement activities, and learn where the data comes from.
     - paragraph:
       - link "View guidance":
-        - /url: "#-36"
+        - /url: "#-35"
     - heading "Templates" [level=2]
     - paragraph: Download letter templates for issuing compliance notices and penalty notices to non-domestic landlords.
     - paragraph:
       - link "View templates":
-        - /url: "#-36"
+        - /url: "#-35"
     - heading "Penalty calculator" [level=2]
     - paragraph: Calculate a possible penalty amount for a non-domestic property in breach of the MEES Regulations.
     - paragraph:
       - link "View penalty calculator":
-        - /url: "#-36"
+        - /url: "#-35"

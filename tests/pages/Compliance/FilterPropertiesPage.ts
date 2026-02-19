@@ -4,13 +4,14 @@ import { ViewPropertiesPage } from './ViewPropertiesPage';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { HomePage } from './HomePage';
 
+type EnergyRatings = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'Show all';
+
 export class FilterPropertiesPage extends BaseCompliancePage {
     private pageContext: Locator;
     private readonly homeBreadcrumb: Locator;
     private readonly councilStatement: Locator;
     private readonly councilsList: Locator;
     private readonly councilsDropdown: Locator;
-    private readonly energyRatingDropdown: Locator;
     private readonly streetTextBox: Locator;
     private readonly townTextBox: Locator;
     private readonly postcodeTextBox: Locator;
@@ -20,6 +21,10 @@ export class FilterPropertiesPage extends BaseCompliancePage {
     private readonly onshoreLALocationsRadioButton: Locator;
     private readonly offshoreLALocationsRadioButton: Locator;
 
+    private energyRatingCheckboxes(letter: EnergyRatings): Locator {
+        return this.page.getByRole('checkbox', { name: letter, exact: true });
+    }
+
     constructor(page: Page) {
         super(page);
         this.pageContext = page.locator('#main-content');
@@ -27,7 +32,6 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         this.councilStatement = page.getByText('You are viewing records for', { exact: false })
         this.councilsList = page.locator('.govuk-details__text ul.govuk-list--bullet');
         this.councilsDropdown = page.getByLabel('Council')
-        this.energyRatingDropdown = page.getByLabel('Energy rating')
         this.streetTextBox = page.getByRole('textbox', { name: 'Street' })
         this.townTextBox = page.getByRole('textbox', { name: 'Town' })
         this.postcodeTextBox = page.getByRole('textbox', { name: 'Postcode' })
@@ -51,7 +55,6 @@ export class FilterPropertiesPage extends BaseCompliancePage {
                 homeBreadcrumb: this.homeBreadcrumb,
                 councilStatement: this.councilStatement,
                 councilsDropdown: this.councilsDropdown,
-                energyRatingDropdown: this.energyRatingDropdown,
                 streetTextBox: this.streetTextBox,
                 townTextBox: this.townTextBox,
                 postcodeTextBox: this.postcodeTextBox,
@@ -105,37 +108,29 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         return textContent.trim();
     }
 
-    async setEnergyRatingFilter(energyRating: string): Promise<void> {
-        if (energyRating === 'All energy ratings') {
-            await this.energyRatingDropdown.selectOption('');
-        } else {
-            await this.energyRatingDropdown.selectOption({ label: energyRating });
-        }
+    async setEnergyRatingFilter(energyRating: EnergyRatings): Promise<void> {
+        await this.energyRatingCheckboxes(energyRating).check();
 
         //Confirm the dropdown value has been set
-        const selectedValue = await this.getSelectedEnergyRatingFilter();
-        if (selectedValue !== energyRating) {
-            throw new Error(`Failed to set energy rating filter. Expected: ${energyRating}, but got: ${selectedValue}`);
+        if (await this.energyRatingCheckboxes(energyRating).isChecked() === false) {
+            throw new Error(`Failed to set energy rating filter. Expected: ${energyRating} to be checked.`);
         }
     }
 
-    async getSelectedEnergyRatingFilter(): Promise<string> {
-        const selectedValue = await this.energyRatingDropdown.inputValue();
-        
-        // If no value selected (empty string), it means "All energy ratings" is selected
-        if (selectedValue === '') {
-            return 'All energy ratings';
+    async getSelectedEnergyRatingFilter(): Promise<string[]> {
+        const selectedRatings: string[] = [];
+        for (const rating of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'Show all'] as EnergyRatings[]) {
+            if (await this.energyRatingCheckboxes(rating).isChecked()) {
+                selectedRatings.push(rating);
+            }
         }
-        
-        // Find the option with this value and return its text content
-        const selectedOption = await this.energyRatingDropdown.locator(`option[value="${selectedValue}"]`);
-        const textContent = await selectedOption.textContent();
-        
-        if (!textContent) {
-            throw new Error(`Could not find option text for value: ${selectedValue}`);
+        // Check if at least one checkbox is selected, if not, it means that something went wrong with the selection process
+        // because there should always be one selected (either a specific rating or "Show all")
+        // Throw an error if no checkboxes are selected to indicate that the filter state is invalid
+        if (selectedRatings.length === 0) {
+            throw new Error('No energy rating filters are selected. Expected at least one to be selected.');
         }
-        
-        return textContent.trim();
+        return selectedRatings;
     }
 
     async setStreetFilter(street: string): Promise<void> {
@@ -200,7 +195,7 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         if (selectedCouncil !== 'Show all councils') {
             throw new Error(`Failed to clear council filter. Expected: Show all councils, but got: ${selectedCouncil}`);
         }
-        if (selectedEnergyRating !== 'All energy ratings') {
+        if (selectedEnergyRating.length !== 1 || selectedEnergyRating[0] !== 'Show all') {
             throw new Error(`Failed to clear energy rating filter. Expected: All energy ratings, but got: ${selectedEnergyRating}`);
         }
         if (streetValue !== '') {

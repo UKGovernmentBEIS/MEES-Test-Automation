@@ -48,7 +48,8 @@ test.describe('Filter Properties Page Functional Tests', () => {
 
         // Verify all filters have been reset
         expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
-        expect(await filterPropertiesPage.getSelectedEnergyRatingFilter()).toBe('All energy ratings');
+        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter()).length).toBe(1);
+        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter())[0]).toBe('Show all');
         expect(await filterPropertiesPage.getStreetFilterValue()).toBe('');
         expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
         expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');
@@ -110,7 +111,8 @@ test.describe('Filter Properties Page Functional Tests', () => {
 
         // Verify that the previously selected filter criteria are still populated
         expect(await returnedFilterPropertiesPage.getSelectedCouncilFilter()).toBe(councilFilter);
-        expect(await returnedFilterPropertiesPage.getSelectedEnergyRatingFilter()).toBe(energyRatingFilter);
+        expect((await returnedFilterPropertiesPage.getSelectedEnergyRatingFilter()).length).toBe(1);
+        expect((await returnedFilterPropertiesPage.getSelectedEnergyRatingFilter())[0]).toBe(energyRatingFilter);
         expect(await returnedFilterPropertiesPage.getStreetFilterValue()).toBe(streetFilter);
         expect(await returnedFilterPropertiesPage.getTownFilterValue()).toBe(townFilter);
         expect(await returnedFilterPropertiesPage.getPostcodeFilterValue()).toBe(postcodeFilter);
@@ -139,7 +141,8 @@ test.describe('Filter Properties Page Functional Tests', () => {
 
         // Verify that the filter criteria have been reset when navigating back to Filter Properties page
         expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
-        expect(await filterPropertiesPage.getSelectedEnergyRatingFilter()).toBe('All energy ratings');
+        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter()).length).toBe(1);
+        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter())[0]).toBe('Show all');
         expect(await filterPropertiesPage.getStreetFilterValue()).toBe('');
         expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
         expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');

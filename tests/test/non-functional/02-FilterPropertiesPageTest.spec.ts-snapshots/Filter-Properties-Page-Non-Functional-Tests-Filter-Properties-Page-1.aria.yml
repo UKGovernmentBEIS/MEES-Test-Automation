@@ -15,11 +15,10 @@
         - link "Templates":
           - /url: /templates
   - paragraph:
-    - strong: BETA
-    - text: This is a new service - your
-    - link "feedback":
-      - /url: mailto:PRSregisterfeedback@energysecurity.gov.uk
-    - text: will help us improve it.
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback by email":
+      - /url: "#"
+    - text: .
   - navigation "Breadcrumb":
     - list:
       - listitem:
@@ -39,26 +38,32 @@
       - option "Show all councils" [selected]
       - option "LONDON BOROUGH OF BARNET"
       - option "LONDON BOROUGH OF BEXLEY"
-    - text: Energy rating
-    - combobox "Energy rating":
-      - option "All energy ratings" [selected]
-      - option "A"
-      - option "B"
-      - option "C"
-      - option "D"
-      - option "E"
-      - option "F"
-      - option "G"
-      - option "Unrated"
+    - group "Energy rating":
+      - text: ""
+      - checkbox "Show all" [checked]
+      - text: Show all Or select one or more energy ratings
+      - checkbox "A"
+      - text: ""
+      - checkbox "B"
+      - text: ""
+      - checkbox "C"
+      - text: ""
+      - checkbox "D"
+      - text: ""
+      - checkbox "E"
+      - text: ""
+      - checkbox "F"
+      - text: ""
+      - checkbox "G"
+      - text: ""
+      - checkbox "Not rated"
+      - text: ""
     - text: Street
     - textbox "Street"
     - text: Town
     - textbox "Town"
     - text: Postcode
     - textbox "Postcode"
-    - button "Apply filters"
-    - link "Reset filters":
-      - /url: /compliance/filter-properties
     - group "Landlord location":
       - text: Landlord location Filter properties by where the landlord is based
       - radio "All locations" [checked]
@@ -67,3 +72,6 @@
       - text: Onshore (England and Wales)
       - radio "Offshore"
       - text: ""
+    - button "Apply filters"
+    - link "Reset filters":
+      - /url: /compliance/filter-properties

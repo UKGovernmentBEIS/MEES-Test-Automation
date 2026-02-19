@@ -15,8 +15,10 @@
         - link "Templates":
           - /url: /templates
   - paragraph:
-    - strong: BETA
-    - text: This is a new service - your feedback will help us improve it.
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback":
+      - /url: "#"
+    - text: .
   - navigation "Breadcrumb":
     - list:
       - listitem:
@@ -36,7 +38,7 @@
     - term: Council
     - definition: All
     - term: Energy rating
-    - definition: None
+    - definition: All ratings
     - term: Town
     - definition: None
     - term: Street
@@ -46,7 +48,7 @@
     - term: Landlord location
     - definition: All locations
     - link "Change filters":
-      - /url: "#-83"
+      - /url: "#-80"
     - heading "Property records" [level=1]
     - paragraph: 0 results
     - button "Downloading all (CSV)"

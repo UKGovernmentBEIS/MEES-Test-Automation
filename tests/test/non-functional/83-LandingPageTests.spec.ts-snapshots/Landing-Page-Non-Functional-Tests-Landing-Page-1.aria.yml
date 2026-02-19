@@ -1,10 +1,9 @@
 - main:
   - paragraph:
-    - strong: BETA
-    - text: This is a new service - your
-    - link "feedback":
-      - /url: mailto:PRSregisterfeedback@energysecurity.gov.uk
-    - text: will help us improve it.
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback by email":
+      - /url: "#"
+    - text: .
   - heading "Check if properties meet minimum energy efficiency standards" [level=1]
   - paragraph: This service is for non-domestic Private Rented Sector (PRS) properties only.
   - paragraph: The Minimum Energy Efficiency Standards (MEES) apply to all properties that are legally required to have an energy performance certificate (EPC).
