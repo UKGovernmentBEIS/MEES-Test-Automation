@@ -91,7 +91,7 @@ test.describe('View Properties Page Tests', () => {
     
     test('Pagination displays when data exceeds page limit', async ({ page }) => {
         
-        await expect(viewPropertiesPage.getPaginationContainer()).toBeVisible();
+        await expect(await viewPropertiesPage.getPaginationContainer()).toBeVisible();
         await expect(viewPropertiesPage.getNextPageButton()).toBeVisible();
     });
 
@@ -154,16 +154,16 @@ test.describe('View Properties Page Tests', () => {
         await viewPropertiesPage.waitForPageToLoad();
 
         // Verify no records are found
-        await expect(viewPropertiesPage.getPropertyTableRow()).not.toBeVisible();
+        await expect(await viewPropertiesPage.getNoRecordsFoundMessage()).toBeVisible();
 
         // Verify pagination controls are not visible
-        await expect(viewPropertiesPage.getPaginationContainer()).not.toBeVisible();
+        await expect(await viewPropertiesPage.getPaginationContainer()).not.toBeVisible();
     });
 
     test('DMS Integration - UI and DMS data are matching', async ({ page, request }) => {
         // Set specific filter criteria to get manageable dataset
         const filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
-        await filterPropertiesPage.setPostcodeFilter('DA1 3QQ');
+        await filterPropertiesPage.setPostcodeFilter('DA1 3PY');
         viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForTableContent();
 
@@ -180,7 +180,7 @@ test.describe('View Properties Page Tests', () => {
         const apiResponse = await request.post(dmsApiUrl, {
             data: {
                 "lacodes": ["E09000003","E09000004"],
-                "postcode": "DA1 3QQ"
+                "postcode": "DA1 3PY"
             },
             headers: {
                 'Accept': 'application/json',
@@ -243,6 +243,9 @@ test.describe('View Properties Page Tests', () => {
     });
 
     test('Verify Energy Ratings data', async ({ page, request }) => {
+        // Make sure that all data are loaded first
+        await viewPropertiesPage.waitForTableContent();
+
         // Get all property data from the table
         const propertiesData = await viewPropertiesPage.getPropertiesDataFromTable();
         expect(propertiesData.length, 'No properties found in the table').toBeGreaterThan(0);
@@ -290,7 +293,7 @@ test.describe('View Properties Page Tests', () => {
             // Find the corresponding property data from the UI based on the address and compare energy ratings
             const propertyData = propertiesData.find(p => p.address === address);
             if (!propertyData) {
-                discrepancies.push(`Property with address '${address}' found in API but not in UI`);
+                discrepancies.push(`Property with address '${address}' found in API but not in UI. We have the following addresses in the UI: ${propertiesData.map(p => p.address).join('; ')}  `);
             } else
              if (propertyData.energyRating !== energyRating) {
                 discrepancies.push(`Energy rating mismatch for '${address}': UI shows '${propertyData.energyRating}', API shows '${energyRating}'`);

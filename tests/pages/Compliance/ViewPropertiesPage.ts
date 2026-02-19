@@ -107,7 +107,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         return this.propertyTableRow;
     }
 
-    getPaginationContainer(): Locator {
+    async getPaginationContainer(): Promise<Locator> {
         return this.paginationContainer;
     }
 
@@ -149,33 +149,39 @@ export class ViewPropertiesPage extends BaseCompliancePage {
     }
 
     async waitForTableContent(): Promise<void> {
-    await this.propertyTableRow.first().waitFor({ state: 'attached', timeout: 10000 });
-    }
+        const timeout = 10000; // 10 seconds timeout
+        const pollInterval = 500; // Check every 500ms
+        const startTime = Date.now();
 
-    async waitForNoRecordsMessage(): Promise<void> {
-        await this.noRecordsFoundMessage.waitFor({ state: 'visible', timeout: 10000 });
+        while (Date.now() - startTime < timeout) {
+            try {
+                // Get results count from the total records field
+                const totalRecordsText = await this.totalRecordsField.innerText();
+                const totalRecordsMatch = totalRecordsText.match(/(\d+)/);
+                const totalRecords = totalRecordsMatch ? parseInt(totalRecordsMatch[1], 10) : 0;
+
+                if (totalRecords > 0) {
+                    // Check if the property address column header is visible (only present when data table is loaded)
+                    const columnHeaderVisible = await this.page.getByRole('columnheader', { name: 'Property address' }).isVisible();
+                    if (columnHeaderVisible) {
+                        return; // Success - records found and table rendered
+                    }
+                }
+            } catch (error) {
+                // Continue retrying on any error during polling
+            }
+
+            // Wait before next retry
+            await this.page.waitForTimeout(pollInterval);
+        }
+
+        // If we get here, timeout was reached
+        const finalRecordsText = await this.totalRecordsField.innerText();
+        throw new Error(`Timeout waiting for table content. Expected records > 0, but got '${finalRecordsText}' after ${timeout}ms`);
     }
 
     async getNoRecordsFoundMessage(): Promise<Locator> {
         return this.noRecordsFoundMessage;
-    }
-
-    async waitForTableOrNoRecords(): Promise<'content' | 'no-records'> {
-        try {
-            await Promise.race([
-                this.propertyTableRow.first().waitFor({ state: 'attached', timeout: 10000 }),
-                this.noRecordsFoundMessage.waitFor({ state: 'visible', timeout: 10000 })
-            ]);
-            
-            // Determine which condition was met
-            if (await this.propertyTableRow.first().isVisible()) {
-                return 'content';
-            } else {
-                return 'no-records';
-            }
-        } catch (error) {
-            throw error;
-        }
     }
 
     async getPropertiesCountField(): Promise<Locator> {
