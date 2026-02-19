@@ -3,6 +3,7 @@ import { ElementUtilities } from '../utils/ElementUtilities';
 import { SignInOrCreatePage } from './Login/SignInOrCreatePage';
 import { HomePage } from './Compliance/HomePage';
 import { BasePage } from './BasePage';
+import { accounts, resolveCredentials, performLogin, saveAuthState } from '../utils/AuthUtils';
 
 export class LandingPage extends BasePage {
   private readonly signInButton: Locator;
@@ -68,9 +69,6 @@ export class LandingPage extends BasePage {
     // Check if we were redirected to GOV.UK login (authentication lost)
     if (currentUrl.includes('gov.uk') || currentUrl.includes('login') || currentUrl.includes('signin')) {
       console.log(`[LandingPage] Authentication lost - redirected to login. Performing re-authentication...`);
-      
-      // Import authentication utilities
-      const { accounts, resolveCredentials, performLogin, saveAuthState } = await import('../utils/AuthUtils');
       
       // Get worker index from test info if available, otherwise use 0
       let workerIndex = 0;
