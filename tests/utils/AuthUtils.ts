@@ -58,3 +58,24 @@ export async function performLogin(page: Page, email: string, password: string):
     const homePage = await loginPasswordPage.enterPasswordAndContinueToComplianceLandingPage(password);
     await homePage.waitForPageToLoad();
 }
+
+/**
+ * Saves the authenticated browser context state to a JSON file.
+ * This storage state includes cookies, localStorage, and sessionStorage.
+ * Each worker gets a unique auth file to maintain isolated sessions during parallel execution.
+ * 
+ * @param page - Playwright page object with authenticated session
+ * @param workerIndex - Worker identifier used to create unique auth file names
+ */
+export async function saveAuthState(page: Page, workerIndex: number): Promise<void> {
+    const authDir = path.join(__dirname, '../../playwright/auth-states');
+    const authFile = path.join(authDir, `user-${workerIndex}.json`);
+    
+    // Ensure the auth-states directory exists (needed for CI environments)
+    if (!fs.existsSync(authDir)) {
+        fs.mkdirSync(authDir, { recursive: true });
+    }
+    
+    await page.context().storageState({ path: authFile });
+    console.log(`[Auth Utils] Saved authentication state to: ${authFile}`);
+}

@@ -4,10 +4,10 @@
 
 GitHub Actions pipeline for automated test execution with two-job architecture:
 
-1. **Functional Tests** - Runs setup and functional tests with authentication recovery
-2. **Non-Functional Tests** - Runs setup and accessibility/validation tests with authentication recovery (depends on functional tests completion)
+1. **Functional Tests** - Runs setup and functional tests with real-time authentication recovery
+2. **Non-Functional Tests** - Runs setup and accessibility/validation tests with real-time authentication recovery (depends on functional tests completion)
 
-**Benefits**: Each test project gets fresh authentication state, authentication recovery prevents conflicts, simplified workflow.
+**Benefits**: Each test project gets fresh authentication state, LandingPage-based recovery prevents all conflicts, streamlined architecture with shared utilities.
 
 ## GitHub Actions Setup
 
@@ -35,10 +35,10 @@ DMS_BASE_URL=url-to-dms-service
 ### Authentication Lifecycle
 
 Each test job is self-contained:
-- **Functional Tests**: setup → tests with automatic recovery
-- **Non-Functional Tests**: setup → tests with automatic recovery
+- **Functional Tests**: setup → tests with LandingPage-based real-time recovery
+- **Non-Functional Tests**: setup → tests with LandingPage-based real-time recovery
 - No shared artifacts or account conflicts
-- Fresh authentication state for each project
+- Fresh authentication state for each project with streamlined fixture architecture
 
 ## Test Reports
 
@@ -62,8 +62,9 @@ When scaling parallelization:
 
 **Current Setup (2 accounts):**
 - Both test jobs use the same 2 accounts
-- Authentication recovery prevents conflicts between sequential jobs
+- LandingPage-based authentication recovery prevents all conflicts between sequential jobs
 - Each job runs with 2 workers using `user-0.json` and `user-1.json`
+- Streamlined fixtures with shared AuthUtils for reliable session management
 
 **Future Scaling (4+ accounts):**
 - Update `workers` count in [playwright.config.ts](../playwright.config.ts)
@@ -132,10 +133,11 @@ Each test job handles its own authentication lifecycle:
    - No account conflicts as each job runs independently
    - Tests execute with authenticated sessions
 
-3. **Automatic Recovery**:
-   - Built-in authentication recovery handles session issues
-   - Fresh authentication state created automatically when needed
-   - Prevents session conflicts between different test projects
+3. **Real-time Recovery**:
+   - LandingPage-based authentication recovery detects and fixes sessions at exact point of need
+   - Shared AuthUtils.saveAuthState() ensures consistent session management
+   - Streamlined fixtures delegate recovery to page-level detection
+   - Prevents session conflicts between different test projects with simplified architecture
 
 ## Account Strategy
 
@@ -149,8 +151,8 @@ Simplified approach with authentication recovery:
 **Future Scaling (4+ accounts):**
 - All jobs can use the same expanded account pool
 - Increase `workers` count in [playwright.config.ts](../playwright.config.ts) to match available accounts
-- Authentication recovery ensures clean state between jobs
-- No complex offset management required
+- LandingPage-based recovery with shared AuthUtils ensures clean state between jobs
+- Simplified architecture requires no complex management
 
 ## Test Reports and Artifacts
 

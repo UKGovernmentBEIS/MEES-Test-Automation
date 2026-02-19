@@ -176,31 +176,35 @@ When you run tests, the setup project creates separate authentication files for 
 
 ### Authentication Recovery (Automatic)
 
-**What it is**: Built-in system that automatically fixes broken authentication during test runs.
+**What it is**: Real-time authentication recovery system that detects and fixes broken sessions exactly when needed during test execution.
 
 **Why it's needed**: When tests fail, Playwright sometimes closes the shared browser context, breaking authentication for retry attempts and subsequent tests.
 
 **How it works**:
-1. **Before each test** - Checks if authentication is still working
-2. **If context is closed** - Creates a new browser context from stored auth files
-3. **If session expired** - Automatically re-authenticates using the same login flow
-4. **Recovery is transparent** - Tests continue normally without manual intervention
+1. **Real-time detection** - LandingPage automatically detects authentication loss via URL inspection during critical navigation points
+2. **Immediate recovery** - Performs re-authentication using the same login flow when GOV.UK redirect is detected
+3. **Shared state management** - Uses AuthUtils.saveAuthState() to update session files for all workers
+4. **Streamlined fixtures** - Simple fixtures delegate authentication recovery to page-level detection
+5. **Recovery is transparent** - Tests continue normally without manual intervention
 
 **When it activates**: 
 - During test retries after failures
 - When browser contexts are unexpectedly closed
 - When authentication sessions become invalid
+- At exact point of authentication loss (not preemptively)
 
 For CI/CD configuration details, see the **[CI/CD Configuration Guide](CI-CD.md)**.
 
 ## Troubleshooting
 
 **Authentication fails in tests:**
-- **Auto-recovery handles most issues** - The system automatically detects and fixes authentication problems
-- Run `npx playwright test --project=setup` to refresh authentication state if recovery fails
+- **LandingPage-based auto-recovery handles all issues** - Real-time detection and recovery at exact point of authentication loss
+- **Zero manual intervention needed** - Streamlined architecture automatically fixes session issues during test execution
+- **Shared AuthUtils** - Consistent saveAuthState function ensures reliable session management across setup and recovery
+- **Simplified fixtures** - Clean page fixtures delegate authentication recovery to LandingPage for maximum reliability
+- Run `npx playwright test --project=setup` only if switching test environments or updating credentials
 - Verify all accounts in `tests/config/test-accounts.json` are registered and valid
 - Check if `playwright/auth-states/user-*.json` files exist for all workers
-- Verify environment variables are set correctly in `.env` file
 
 **"Finish creating your GOV.UK One Login" error:**
 - This means a test account hasn't completed MFA setup

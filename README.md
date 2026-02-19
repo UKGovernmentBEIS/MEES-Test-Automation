@@ -53,12 +53,14 @@
    ```
 
 4. **Run authentication setup** (creates session files):
-  Run authentication setup before each test to store authenticated session in cookies or configure automatic
-  authentication setup execution before each test by enabling `RUN_SETUP_AUTOMATICALLY=1` config in the `.env` file.
-  
+   Authentication system includes real-time recovery that handles session issues automatically.
+   Run setup once initially or when switching environments:
+   
    ```bash
    npx playwright test --project=setup
    ```
+   
+   **Note**: LandingPage-based recovery handles authentication issues during test execution automatically.
    
 ## Essential Commands
 
@@ -96,14 +98,14 @@ npx playwright show-report                     # View test results
 
 **How it works**:
 1. Setup project logs into each test account and saves session cookies
-2. Test workers load their assigned session file (user-0.json, user-1.json, etc.)
+2. Test workers load their assigned session file (user-0.json, user-1.json, etc.) via streamlined fixtures
 3. Tests run immediately without login flow
-4. Authentication recovery automatically handles session issues during test failures
-5. Sessions expire after ~30 minutes of inactivity
+4. LandingPage-based recovery detects authentication loss in real-time and automatically re-authenticates
 
 **Authentication lifecycle**:
-- **Local development**: Run setup once, reuse for multiple test runs. Authentication recovery handles session issues automatically
-- **CI/CD**: Each test project automatically runs setup with built-in recovery to ensure test reliability
+- **Local development**: Run setup once, reuse for multiple test runs. LandingPage-based recovery handles all session issues automatically with zero manual intervention
+- **CI/CD**: Each test project runs setup with streamlined fixtures and real-time recovery to ensure maximum reliability
+- **Architecture**: Simplified fixtures delegate to LandingPage detection, shared AuthUtils for consistency
 
 **Test account requirements**: Each account must be a complete GOV.UK One Login with MFA enabled and registered in the application.
 
@@ -126,7 +128,7 @@ npx playwright show-report  # Open after test run
 **GitHub Actions**: Configured in `.github/workflows/playwright.yml`
 - **Triggers**: Push, PR, manual dispatch
 - **Jobs**: Functional tests and Non-functional tests (each with setup + recovery)
-- **Workflow**: setup → functional tests → setup → non-functional tests (with automatic recovery)
+- **Workflow**: setup → functional tests → setup → non-functional tests (with LandingPage-based real-time recovery)
 - **Secrets needed**: Test account credentials, BASE_URL, API keys
 - **Reports**: Downloadable artifacts with test results and coverage
 
@@ -135,8 +137,10 @@ npx playwright show-report  # Open after test run
 ## Quick Troubleshooting
 
 **Authentication issues**:
-- Run `npx playwright test --project=setup` to refresh sessions
-- Authentication recovery handles session issues automatically: no manual intervention needed
+- **LandingPage-based recovery handles all authentication issues automatically** - zero manual intervention needed
+- **Streamlined architecture** - simplified fixtures with shared AuthUtils ensure maximum reliability
+- **Real-time detection** - authentication recovery happens exactly when needed during test execution
+- Run `npx playwright test --project=setup` only when switching environments or updating credentials
 - Ensure test accounts have completed MFA setup in GOV.UK One Login
 - Check `.env` file has correct credentials
 

@@ -1,8 +1,6 @@
 import { test as base, type BrowserContext, type Page } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
-import { HomePage } from '../pages/Compliance/HomePage';
-import { accounts, resolveCredentials, performLogin } from '../utils/AuthUtils';
 
 /**
  * Gets the authentication storage state file path for a specific worker.
@@ -51,107 +49,17 @@ async function createAuthenticatedContext(
 }
 
 /**
- * Checks if the current session is authenticated by trying to access a protected page.
- * @param page - Playwright page object
- * @returns true if authenticated, false if redirected to login
- */
-async function isAuthenticated(page: Page): Promise<boolean> {
-  try {
-    // Navigate to the protected compliance home page
-    await page.goto('/compliance/landing-page');
-    
-    // Use HomePage's waitForPageToLoad method for proper page loading
-    const homePage = new HomePage(page);
-    await homePage.waitForPageToLoad();
-    
-    // Check if we're on the compliance landing page
-    const currentUrl = page.url();
-    const isAuthenticated = currentUrl.includes('compliance/landing-page');
-    
-    if (isAuthenticated) {
-      console.log(`[Auth Check] Authentication confirmed - on compliance landing page: ${currentUrl}`);
-      return true;
-    } else {
-      console.log(`[Auth Check] Authentication lost - not on compliance landing page: ${currentUrl}`);
-      return false;
-    }
-    
-  } catch (error) {
-    console.log(`[Auth Check] Error checking authentication: ${error}`);
-    return false;
-  }
-}
-
-/**
- * Re-authenticates the user by performing the complete login flow.
- * Uses the same functions as auth.setup.ts to ensure identical behavior.
- * @param page - Playwright page object
- * @param workerIndex - The parallel index of the worker
- */
-async function reAuthenticate(page: Page, workerIndex: number): Promise<void> {
-  try {
-    console.log(`[Auth Recovery] Starting re-authentication for Worker ${workerIndex}`);
-    
-    // Get the account for this worker (same logic as auth.setup.ts)
-    const account = accounts[workerIndex];
-    
-    if (!account) {
-      throw new Error(`No account available for worker ${workerIndex}`);
-    }
-    
-    // Use the same credential resolution as auth.setup.ts
-    const { email, password } = resolveCredentials(account);
-    
-    // Clear any existing state and perform fresh login
-    await page.context().clearCookies();
-    
-    // Use the exact same login flow as auth.setup.ts
-    await performLogin(page, email, password);
-    
-    console.log(`[Auth Recovery] Re-authentication successful for Worker ${workerIndex}`);
-    
-  } catch (error) {
-    console.error(`[Auth Recovery] Failed to re-authenticate Worker ${workerIndex}: ${error}`);
-    throw error;
-  }
-}
-
-/**
- * Validates authentication state and recovers if needed.
- * @param page - Playwright page object 
- * @param workerIndex - The parallel index of the worker
- */
-async function ensureAuthenticated(page: Page, workerIndex: number): Promise<void> {
-  const isAuth = await isAuthenticated(page);
-  
-  if (!isAuth) {
-    console.log(`[Auth Fixture] Authentication lost for Worker ${workerIndex}, attempting recovery...`);
-    await reAuthenticate(page, workerIndex);
-    
-    // Verify recovery was successful
-    const isAuthAfterRecovery = await isAuthenticated(page);
-    if (!isAuthAfterRecovery) {
-      throw new Error(`Authentication recovery failed for Worker ${workerIndex}`);
-    }
-    
-    console.log(`[Auth Fixture] Authentication successfully recovered for Worker ${workerIndex}`);
-  }
-}
-
-/**
  * Custom Playwright test fixture that enables shared browser context across tests.
  * This allows stored authentication state to persist between tests without re-authenticating.
  * 
- * Enhanced with authentication validation and recovery to handle retry mechanism issues:
- * - Checks authentication status before each test
- * - Automatically recovers from lost authentication
- * - Handles test failures that invalidate sessions
+ * Authentication recovery is now handled by LandingPage.clickSignIn_AuthenticatedUser() 
+ * which provides more reliable and accurate authentication recovery at the exact point needed.
  * 
  * How it works:
  * 1. Creates ONE browser context per worker (shared across all tests)
  * 2. Loads authentication state from user.json into this context
  * 3. Each test gets a new page (tab) but reuses the same authenticated context
- * 4. Validates authentication before each test and recovers if needed
+ * 4. Authentication issues are handled by LandingPage when they actually occur
  * 5. Session cookies and authentication persist throughout all tests
  */
 export const test = base.extend<
@@ -183,12 +91,15 @@ export const test = base.extend<
   
   /**
    * Test-scoped page that validates authentication before each test.
-   * This prevents retry failures caused by invalidated authentication sessions.
    * Enhanced to handle closed worker contexts by recreating them.
+   * Authentication recovery now happens at LandingPage level for better reliability.
    */
   page: async ({ browser, workerContext }, use, testInfo) => {
     const workerIndex = testInfo.parallelIndex;
+    const testTitle = testInfo.title;
     let contextToUse = workerContext;
+    
+    console.log(`[Auth Fixture] Starting test "${testTitle}" on Worker ${workerIndex}`);
     
     // Check if the worker context is still valid (not closed)
     try {
@@ -209,11 +120,11 @@ export const test = base.extend<
     const page = await contextToUse.newPage();
     
     try {
-      // Validate and ensure authentication before each test
-      // This is crucial for handling retries and test failures
-      await ensureAuthenticated(page, workerIndex);
+      // Authentication recovery now handled by LandingPage.clickSignIn_AuthenticatedUser()
+      // No need for preemptive authentication checking - let the real actions handle it
+      console.log(`[Auth Fixture] Page ready for Worker ${workerIndex} - authentication recovery handled by LandingPage`);
       
-      // Provide this authenticated page to the test
+      // Provide this page to the test
       await use(page);
       
     } finally {
@@ -232,6 +143,8 @@ export const test = base.extend<
           console.log(`[Auth Fixture] Temporary context already closed: ${error}`);
         }
       }
+      
+      console.log(`[Auth Fixture] Completed test "${testTitle}" on Worker ${workerIndex}`);
     }
   },
 });
