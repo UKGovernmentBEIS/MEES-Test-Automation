@@ -68,7 +68,7 @@ test.describe('Response Structure Tests', () => {
         const property = responseBody.property;
 
         // Verify all expected property fields are present and have correct types
-        expect(Object.keys(property).length).toBe(18);
+        expect(Object.keys(property).length).toBe(19);
         expect(property).toHaveProperty('uprn');
         expect(property).toHaveProperty('buildingReferenceNumber');
         expect(property).toHaveProperty('name');
@@ -87,6 +87,7 @@ test.describe('Response Structure Tests', () => {
         expect(property).toHaveProperty('location');
         expect(property).toHaveProperty('rateableValue');
         expect(property).toHaveProperty('transactionType');
+        expect(property).toHaveProperty('datasetCode');
         expect(['number', 'object']).toContain(typeof property.uprn); // can be number or null
         expect(typeof property.buildingReferenceNumber).toBe('number');
         expect(['string', 'object']).toContain(typeof property.name); // can be string or null
@@ -105,6 +106,7 @@ test.describe('Response Structure Tests', () => {
         expect(['string', 'object']).toContain(typeof property.location); // can be string or null
         expect(['number', 'object']).toContain(typeof property.rateableValue); // can be number or null
         expect(typeof property.transactionType).toBe('string');
+        expect(typeof property.datasetCode).toBe('string');
     });
 
     test('EPC certificates array has correct structure', async ({ request }) => {
@@ -287,6 +289,80 @@ test.describe('Parameter Validation Tests', () => {
             }
         });
         expect(response.status()).toBe(200);
+    });
+
+    test('UPRN too short returns 200 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=12345678901`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+    });
+
+    test('UPRN too long returns 200 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=1234567890123`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+    });
+
+    test('UPRN with non-numeric characters returns 400 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=1000241841A`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(400);
+    });
+
+    test('UPRN with special characters returns 400 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=10002418-10`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(400);
+    });
+
+    // Bug: MEESALPHA-652 - Building Reference Number length validation is not consistent with UPRN
+    test('Building Reference Number too short returns 500 instead of 400', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=12345678901`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(500);
+    });
+
+    // Bug: MEESALPHA-652 - Building Reference Number length validation is not consistent with UPRN
+    test('Building Reference Number too long returns 500 instead of 400', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=1234567890123`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(500);
+    });
+
+    test('Building Reference Number with non-numeric characters returns 400 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=92486534000A`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(400);
+    });
+
+    test('Building Reference Number with special characters returns 400 status', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=924865340-01`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(400);
     });
 });
 

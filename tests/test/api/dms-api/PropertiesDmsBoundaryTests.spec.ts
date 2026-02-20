@@ -88,7 +88,7 @@ test.describe('Properties DMS API Tests', () => {
         const property = parsedBody.data[0];
         
         // Verify all expected property fields are present
-        expect(Object.keys(property).length).toBe(18);
+        expect(Object.keys(property).length).toBe(19);
         expect(property).toHaveProperty('Uprn');
         expect(property).toHaveProperty('BuildingReferenceNumber');
         expect(property).toHaveProperty('Name');
@@ -107,6 +107,7 @@ test.describe('Properties DMS API Tests', () => {
         expect(property).toHaveProperty('Location');
         expect(property).toHaveProperty('RateableValue');
         expect(property).toHaveProperty('TransactionType');
+        expect(property).toHaveProperty('DatasetCode');
     });
 
     test('Missing x-functions-key returns 401 or 403', async ({ request }) => {
