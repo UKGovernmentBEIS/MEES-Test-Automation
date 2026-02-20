@@ -34,7 +34,7 @@ test.describe('Authentication Tests', () => {
 
 test.describe('Response Structure Tests', () => {
     const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
-    const parambuildingrefnum = '924865340001';
+    const parambuildingrefnum = '829378510001';
     const paramUprn = '10002418410';
 
     test('Response returns valid JSON with correct top-level structure', async ({ request }) => {
@@ -154,8 +154,7 @@ test.describe('Response Structure Tests', () => {
         expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText); // can be string or null
     });
 
-    // Bug: MEESALPHA-651 - Landlords array is empty when using Building Reference Number parameter
-    test.skip('Landlords array has correct structure using Building Reference Number', async ({ request }) => {
+    test('Landlords array has correct structure using Building Reference Number', async ({ request }) => {
         const response = await request.get(`${baseUrl}?buildingrefnum=${parambuildingrefnum}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
