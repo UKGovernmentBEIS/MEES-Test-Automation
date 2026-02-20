@@ -4,7 +4,7 @@ import { ViewPropertiesPage } from './ViewPropertiesPage';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { HomePage } from './HomePage';
 
-type EnergyRatings = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'Show all';
+type EnergyRatings = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
 
 export class FilterPropertiesPage extends BaseCompliancePage {
     private pageContext: Locator;
@@ -29,7 +29,7 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         super(page);
         this.pageContext = page.locator('#main-content');
         this.homeBreadcrumb = page.getByRole('link', { name: 'Home' })
-        this.councilStatement = page.getByText('You are viewing records for', { exact: false })
+        this.councilStatement = page.getByText('You can view records for', { exact: false })
         this.councilsList = page.locator('.govuk-details__text ul.govuk-list--bullet');
         this.councilsDropdown = page.getByLabel('Council')
         this.streetTextBox = page.getByRole('textbox', { name: 'Street' })
@@ -119,16 +119,10 @@ export class FilterPropertiesPage extends BaseCompliancePage {
 
     async getSelectedEnergyRatingFilter(): Promise<string[]> {
         const selectedRatings: string[] = [];
-        for (const rating of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'Show all'] as EnergyRatings[]) {
+        for (const rating of ['A', 'B', 'C', 'D', 'E', 'F', 'G'] as EnergyRatings[]) {
             if (await this.energyRatingCheckboxes(rating).isChecked()) {
                 selectedRatings.push(rating);
             }
-        }
-        // Check if at least one checkbox is selected, if not, it means that something went wrong with the selection process
-        // because there should always be one selected (either a specific rating or "Show all")
-        // Throw an error if no checkboxes are selected to indicate that the filter state is invalid
-        if (selectedRatings.length === 0) {
-            throw new Error('No energy rating filters are selected. Expected at least one to be selected.');
         }
         return selectedRatings;
     }
@@ -195,7 +189,7 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         if (selectedCouncil !== 'Show all councils') {
             throw new Error(`Failed to clear council filter. Expected: Show all councils, but got: ${selectedCouncil}`);
         }
-        if (selectedEnergyRating.length !== 1 || selectedEnergyRating[0] !== 'Show all') {
+        if (selectedEnergyRating.length !== 0) {
             throw new Error(`Failed to clear energy rating filter. Expected: All energy ratings, but got: ${selectedEnergyRating}`);
         }
         if (streetValue !== '') {

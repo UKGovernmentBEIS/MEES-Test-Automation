@@ -1,4 +1,5 @@
 - main:
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]
   - navigation "Menu":
     - list:
       - listitem:
@@ -39,14 +40,14 @@
     - paragraph: Read guidance on understanding the MEES Regulations, view enforcement activities, and learn where the data comes from.
     - paragraph:
       - link "View guidance":
-        - /url: "#-35"
+        - /url: "#-33"
     - heading "Templates" [level=2]
     - paragraph: Download letter templates for issuing compliance notices and penalty notices to non-domestic landlords.
     - paragraph:
       - link "View templates":
-        - /url: "#-35"
+        - /url: "#-33"
     - heading "Penalty calculator" [level=2]
     - paragraph: Calculate a possible penalty amount for a non-domestic property in breach of the MEES Regulations.
     - paragraph:
       - link "View penalty calculator":
-        - /url: "#-35"
+        - /url: "#-33"

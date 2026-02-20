@@ -1,4 +1,5 @@
 - main:
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]
   - navigation "Menu":
     - list:
       - listitem:
@@ -30,18 +31,19 @@
       - link "Sign out":
         - /url: "#"
   - main:
-    - group: You are viewing records for 2 councils
     - heading "Filter property records" [level=1]
-    - paragraph: Select your filters and choose Apply filters to view the property records.
-    - text: Council Select the council you want to view records for
-    - combobox "Council":
+    - paragraph:
+      - text: Select your filters and choose
+      - strong: Apply filters
+      - text: to view the property records.
+    - text: Council (optional) Select the council you want to view records for
+    - group: You can view records for 2 councils
+    - combobox "Council (optional)":
       - option "Show all councils" [selected]
       - option "LONDON BOROUGH OF BARNET"
       - option "LONDON BOROUGH OF BEXLEY"
-    - group "Energy rating":
-      - text: ""
-      - checkbox "Show all" [checked]
-      - text: Show all Or select one or more energy ratings
+    - group "Energy rating (optinal)":
+      - text: Energy rating (optinal) Select one or more energy ratings. If you do not select any ratings,all ratings are included.
       - checkbox "A"
       - text: ""
       - checkbox "B"
@@ -58,12 +60,12 @@
       - text: ""
       - checkbox "Not rated"
       - text: ""
-    - text: Street
-    - textbox "Street"
-    - text: Town
-    - textbox "Town"
-    - text: Postcode
-    - textbox "Postcode"
+    - text: Street (optinal)
+    - textbox "Street (optinal)"
+    - text: Town (optinal)
+    - textbox "Town (optinal)"
+    - text: Postcode (optinal)
+    - textbox "Postcode (optinal)"
     - group "Landlord location":
       - text: Landlord location Filter properties by where the landlord is based
       - radio "All locations" [checked]

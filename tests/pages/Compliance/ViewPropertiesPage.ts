@@ -34,7 +34,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         this.previousPageButton = this.paginationContainer.getByRole('link', { name: 'Previous page' });
         this.lastPageButton = this.paginationContainer.locator('.govuk-pagination__list .govuk-pagination__item');
         this.totalRecordsField = this.page.getByText('results');
-        this.downloadButton = this.page.getByRole('button', { name: 'Downloading all (CSV)' });
+        this.downloadButton = this.page.getByRole('button', { name: 'Export filtered table (.csv)' });
         this.noRecordsFoundMessage = this.page.getByText('No records found');
     }
 
@@ -198,7 +198,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             const energyRating = await row.locator('td').nth(1).innerText();
             const epcExpiryDate = await row.locator('td').nth(2).innerText();
             const PRSExemptions = await row.locator('td').nth(3).innerText();
-            const PRSEExemptionsColourClassName = await row.locator('td').nth(3).locator('strong').getAttribute('class') || '';
+            const PRSEExemptionsColourClassName = await row.locator('td').nth(3).locator('span').getAttribute('class') || '';
             const PRSEExemptionsColour = await this.extractExemptionsColourFromClassName(PRSEExemptionsColourClassName);
             propertiesData.push(new PropertyData(address, energyRating, epcExpiryDate, PRSExemptions, PRSEExemptionsColour));
         }

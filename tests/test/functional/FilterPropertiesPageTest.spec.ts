@@ -48,8 +48,7 @@ test.describe('Filter Properties Page Functional Tests', () => {
 
         // Verify all filters have been reset
         expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
-        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter()).length).toBe(1);
-        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter())[0]).toBe('Show all');
+        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter()).length).toBe(0);
         expect(await filterPropertiesPage.getStreetFilterValue()).toBe('');
         expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
         expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');
@@ -141,8 +140,7 @@ test.describe('Filter Properties Page Functional Tests', () => {
 
         // Verify that the filter criteria have been reset when navigating back to Filter Properties page
         expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
-        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter()).length).toBe(1);
-        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter())[0]).toBe('Show all');
+        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter()).length).toBe(0);
         expect(await filterPropertiesPage.getStreetFilterValue()).toBe('');
         expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
         expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');

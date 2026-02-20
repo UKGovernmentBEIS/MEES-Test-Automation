@@ -224,7 +224,7 @@ test.describe('View Properties Page Tests', () => {
             'Expired': 'grey',
             'Needs update': 'yellow',
             'Draft': 'blue',
-            'Data not found': 'grey' 
+            'Data not found': '' 
         };
 
         const invalidExemptionsColors: string[] = [];
@@ -288,7 +288,7 @@ test.describe('View Properties Page Tests', () => {
             const address = addressParts.join(', ');
 
             // Concatenate energy rating. For example: C(55) - EPCEnergyRatingBand(EPCEnergyRating)
-            const energyRating = `${apiProperty.EPCEnergyRatingBand}(${apiProperty.EPCEnergyRating})`;
+            const energyRating = `${apiProperty.EPCEnergyRatingBand} (${apiProperty.EPCEnergyRating})`;
 
             // Find the corresponding property data from the UI based on the address and compare energy ratings
             const propertyData = propertiesData.find(p => p.address === address);

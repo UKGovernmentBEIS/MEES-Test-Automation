@@ -1,4 +1,5 @@
 - main:
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]
   - navigation "Menu":
     - list:
       - listitem:
@@ -36,22 +37,22 @@
     - heading "View property records" [level=1]
     - heading "Filters applied" [level=2]
     - term: Council
-    - definition: All
+    - definition: All councils
     - term: Energy rating
-    - definition: All ratings
-    - term: Town
-    - definition: None
+    - definition: All energy ratings
     - term: Street
     - definition: Invalid Street Name
+    - term: Town
+    - definition: None
     - term: Postcode
     - definition: None
     - term: Landlord location
     - definition: All locations
     - link "Change filters":
-      - /url: "#-80"
+      - /url: "#-78"
     - heading "Property records" [level=1]
     - paragraph: 0 results
-    - button "Downloading all (CSV)"
+    - button "Export filtered table (.csv)"
     - table:
       - rowgroup:
         - row "No records found":
