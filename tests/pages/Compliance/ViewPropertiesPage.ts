@@ -3,6 +3,7 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import { BaseCompliancePage } from './BaseCompliancePage';
 import { HomePage } from './HomePage';
 import { FilterPropertiesPage } from './FilterPropertiesPage';
+import { PropertyDetailsPage } from './PropertyDetailsPage';
 
 export class ViewPropertiesPage extends BaseCompliancePage {
     private pageContext: Locator;
@@ -224,6 +225,17 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             return 'yellow';
         }
         return '';
+    }
+
+    async ViewDetailsForPropertyWithAddress(address: string) {
+        const row = this.propertyTableRow.filter({ hasText: address }).first();
+        if (!await row.isVisible()) {
+            throw new Error(`Property with address '${address}' not found.`);
+        }
+        await row.getByRole('link', { name: 'View details' }).first().click();
+        const propertyDetailsPage = new PropertyDetailsPage(this.page);
+        await propertyDetailsPage.waitForPageToLoad();
+        return propertyDetailsPage;
     }
 }
 
