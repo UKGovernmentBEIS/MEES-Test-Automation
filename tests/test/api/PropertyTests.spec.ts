@@ -301,13 +301,13 @@ test.describe('Parameter Validation Tests', () => {
         expect(response.status()).toBe(200);
     });
 
-    test('UPRN too long returns 200 status', async ({ request }) => {
+    test('UPRN too long returns 400 status', async ({ request }) => {
         const response = await request.get(`${baseUrl}?uprn=1234567890123`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
             }
         });
-        expect(response.status()).toBe(200);
+        expect(response.status()).toBe(400);
     });
 
     test('UPRN with non-numeric characters returns 400 status', async ({ request }) => {
@@ -337,13 +337,13 @@ test.describe('Parameter Validation Tests', () => {
         expect(response.status()).toBe(200);
     });
 
-        test('Building Reference Number too long returns 200', async ({ request }) => {
+        test('Building Reference Number too long returns 400 status', async ({ request }) => {
         const response = await request.get(`${baseUrl}?buildingrefnum=1234567890123`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
             }
         });
-        expect(response.status()).toBe(200);
+        expect(response.status()).toBe(400);
     });
 
     test('Building Reference Number with non-numeric characters returns 400 status', async ({ request }) => {
