@@ -29,7 +29,7 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         super(page);
         this.pageContext = page.locator('#main-content');
         this.homeBreadcrumb = page.getByRole('link', { name: 'Home' })
-        this.councilStatement = page.getByText('You can view records for', { exact: false })
+        this.councilStatement = page.getByText('You can view records from', { exact: false })
         this.councilsList = page.locator('.govuk-details__text ul.govuk-list--bullet');
         this.councilsDropdown = page.getByLabel('Council')
         this.streetTextBox = page.getByRole('textbox', { name: 'Street' })
