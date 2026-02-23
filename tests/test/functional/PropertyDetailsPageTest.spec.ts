@@ -72,4 +72,17 @@ test.describe('View Properties Page Tests', () => {
         // Verify PRS exemption date
         expect(await propertyDetailsPage.getExemptionDetails("PRS exemption date")).toHaveText('2026-02-14T16:32:00.000Z');
     });
+
+    test('Verify EPC History data displayed in the Property Details page', async () => {
+
+        // Click on the EPC History tab
+        await propertyDetailsPage.DisplayEPCHistoryData();
+
+        // Verify that there is an EPC History section and it contains expected data
+        const epcHistoryData = await propertyDetailsPage.getEPCHistoryTableData();
+        expect(epcHistoryData.length).toBeGreaterThan(0);
+        expect(epcHistoryData[0].assetRatingBand).toBe('A');
+        expect(epcHistoryData[0].lodgementDate).toBe('13 August 2025');
+        expect(epcHistoryData[0].expiryDate).toBe('13 August 2035');
+    });
 });

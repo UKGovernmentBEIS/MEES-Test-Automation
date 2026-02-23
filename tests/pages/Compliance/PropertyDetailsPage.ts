@@ -5,6 +5,12 @@ import { FilterPropertiesPage } from './FilterPropertiesPage';
 import { ViewPropertiesPage } from './ViewPropertiesPage';
 import { HomePage } from './HomePage';
 
+interface EPCHistory {
+    assetRatingBand: string;
+    lodgementDate: string;
+    expiryDate: string;
+}
+
 export class PropertyDetailsPage extends BaseCompliancePage {
     private pageContext: Locator;
     private breadcrumbHome: Locator;
@@ -12,6 +18,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private breadcrumbFilterPropertiesRecords: Locator;
     private tabEnergyRatingsAndPRSExemptions: Locator;
     private tabEPCHistory: Locator;
+    private epcHistoryTable: Locator;
     private commentTextArea: Locator;
     private commentSaveButton: Locator;
     private commentCancelButton: Locator;
@@ -27,7 +34,8 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.breadcrumbViewPropertyRecords = page.getByRole('link', { name: 'View property records' });
         this.breadcrumbFilterPropertiesRecords = page.getByRole('link', { name: 'Filter property records' });
         this.tabEnergyRatingsAndPRSExemptions = page.locator('div').filter({ hasText: /^Energy ratings and PRS exemptions$/ })
-        this.tabEPCHistory = page.locator('div').filter({ hasText: /^EPC history$/ })
+        this.tabEPCHistory = page.locator("//li[@data-id='EPCTab']");
+        this.epcHistoryTable = page.locator("//div[@data-id='EPCTab']/table");
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
         this.commentCancelButton = page.getByRole('button', { name: 'Cancel' });
@@ -107,6 +115,33 @@ export class PropertyDetailsPage extends BaseCompliancePage {
             .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(detailName, { exact: true }) });
         let value = detailRow.locator('.govuk-summary-list__value');
         return value;
+    }
+
+    async DisplayEPCHistoryData(): Promise<void> {
+        await this.tabEPCHistory.click();
+
+        // Check if the EPC Tab is active
+        const classAttribute = await this.tabEPCHistory.getAttribute('class');
+        const hasSelectedClass = classAttribute?.includes('govuk-tabs__list-item--selected')
+
+        if (!hasSelectedClass) {
+            throw new Error('Failed to display EPC History data. The EPC History tab is not active after clicking on it.');
+        }
+    }
+
+    async getEPCHistoryTableData(): Promise<EPCHistory[]> {
+        let epcHistoryData: EPCHistory[] = [];
+
+        const rows = this.epcHistoryTable.locator('tbody tr');
+        const rowCount = await rows.count();
+        for (let i = 0; i < rowCount; i++) {
+            const row = rows.nth(i);
+            const assetRatingBand = await row.locator('td').nth(0).innerText();
+            const lodgementDate = await row.locator('td').nth(1).innerText();
+            const expiryDate = await row.locator('td').nth(2).innerText();
+            epcHistoryData.push({ assetRatingBand, lodgementDate, expiryDate });
+        }
+        return epcHistoryData;
     }
 
     //#region Comments Section Methods
