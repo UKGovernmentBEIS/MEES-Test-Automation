@@ -17,7 +17,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private commentCancelButton: Locator;
     private commentExpandButton: Locator;
     private previousCommentsSection: Locator;
-    
+    private propertyDetailsRows: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -32,6 +32,9 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.commentCancelButton = page.getByRole('button', { name: 'Cancel' });
         this.commentExpandButton = page.getByRole('button', { name: 'Previous comments' })
         this.previousCommentsSection = page.getByLabel('Previous comments content')
+        this.propertyDetailsRows = page.locator('c-mees-property-details')
+            .filter({ has: page.locator('text=View property and landlord details') })
+            .locator('.govuk-summary-list__row'); 
     }
 
     // Wait for the Property Details Page to load
@@ -87,6 +90,12 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         const viewPropertiesPage = new ViewPropertiesPage(this.page);
         await viewPropertiesPage.waitForPageToLoad();
         return viewPropertiesPage;
+    }
+
+    async getPropertyDetails(detailName: string): Promise<Locator> {
+        const detailRow = this.propertyDetailsRows
+            .filter({ has: this.page.locator('.govuk-summary-list__key', { hasText: detailName }) });
+        return detailRow.locator('.govuk-summary-list__value');
     }
 
     //#region Comments Section Methods

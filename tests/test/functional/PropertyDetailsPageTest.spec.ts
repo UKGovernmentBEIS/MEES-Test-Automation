@@ -27,8 +27,39 @@ test.describe('View Properties Page Tests', () => {
         propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
     });
 
-    test('The Property Details page is displayed', async () => {
+    test('Verify data displayed in the main section of the Property Details page', async () => {
         // Verify that we are on the Property Details page
         expect(await propertyDetailsPage.isDisplayed()).toBeTruthy();
+
+        // Verify Address (DMS)
+        expect(await propertyDetailsPage.getPropertyDetails("Property address")).toHaveText('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+
+        // Verify Address (DMS)
+        expect(await propertyDetailsPage.getPropertyDetails("Property address")).toHaveText('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+
+        // Verify UPRN (DMS)
+        expect(await propertyDetailsPage.getPropertyDetails("UPRN")).toHaveText('100022918361');
+
+        // Verify Exemption Reference (Salesforce)
+        expect(await propertyDetailsPage.getPropertyDetails("Exemption reference")).toHaveText('test');
+
+        // Verify Property Type (DMS)
+        expect(await propertyDetailsPage.getPropertyDetails("Property type")).toHaveText('General Industrial and Special Industrial Groups');
+
+        // Verify Rateable Value (DMS)
+        expect(await propertyDetailsPage.getPropertyDetails("Rateable value")).toHaveText('£25,500');
+
+        // Verify Landlord Name (DMS)
+        // Bug:664: The Landlord Name is currently not being displayed on the Property Details page, 
+        // even though it is present in the data returned from DMS. This needs to be investigated and fixed.
+        expect(await propertyDetailsPage.getPropertyDetails("Landlord name")).toHaveText('Not available');
+
+        // Verify Landlord Location (DMS)
+        expect(await propertyDetailsPage.getPropertyDetails("Landlord location")).toHaveText('Onshore');
+
+        // Verify Landlord Address (DMS)
+        // Bug:664: The Landlord Address is currently not being displayed on the Property Details page, 
+        // even though it is present in the data returned from DMS. This needs to be investigated and fixed.
+        expect(await propertyDetailsPage.getPropertyDetails("Landlord address")).toHaveText('Not available');
     });
 });
