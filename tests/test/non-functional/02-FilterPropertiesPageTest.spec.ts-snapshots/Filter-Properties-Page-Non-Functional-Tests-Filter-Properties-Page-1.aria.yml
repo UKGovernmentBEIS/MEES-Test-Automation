@@ -36,8 +36,8 @@
       - text: Select your filters and choose
       - strong: Apply filters
       - text: to view the property records.
+    - group: You can view records from 2 councils
     - text: Council (optional) Select the council you want to view records for
-    - group: You can view records for 2 councils
     - combobox "Council (optional)":
       - option "Show all councils" [selected]
       - option "LONDON BOROUGH OF BARNET"
