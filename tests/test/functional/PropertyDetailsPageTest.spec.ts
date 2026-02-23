@@ -50,7 +50,7 @@ test.describe('View Properties Page Tests', () => {
         expect(await propertyDetailsPage.getPropertyDetails("Landlord")).toHaveText('Not available');
 
         // Verify Landlord Location (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Landlord")).toHaveText('Onshore');
+        expect(await propertyDetailsPage.getPropertyDetails("Landlord location")).toHaveText('Onshore');
 
         // Verify Landlord Address (DMS)
         // Bug:664: The Landlord Address is currently not being displayed on the Property Details page, 
