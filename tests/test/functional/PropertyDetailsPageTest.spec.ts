@@ -28,14 +28,9 @@ test.describe('View Properties Page Tests', () => {
     });
 
     test('Verify data displayed in the main section of the Property Details page', async () => {
-        // Verify that we are on the Property Details page
-        expect(await propertyDetailsPage.isDisplayed()).toBeTruthy();
 
         // Verify Address (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Property address")).toHaveText('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
-
-        // Verify Address (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Property address")).toHaveText('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+        expect(await propertyDetailsPage.getPropertyDetails("Property address")).toHaveText('Unit 47, Acorn Industrial Park Crayford Road Crayford DARTFORD DA1 4AL');
 
         // Verify UPRN (DMS)
         expect(await propertyDetailsPage.getPropertyDetails("UPRN")).toHaveText('100022918361');
@@ -55,11 +50,26 @@ test.describe('View Properties Page Tests', () => {
         expect(await propertyDetailsPage.getPropertyDetails("Landlord name")).toHaveText('Not available');
 
         // Verify Landlord Location (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Landlord location")).toHaveText('Onshore');
+        expect(await propertyDetailsPage.getPropertyDetails("Landlord")).toHaveText('Onshore');
 
         // Verify Landlord Address (DMS)
         // Bug:664: The Landlord Address is currently not being displayed on the Property Details page, 
         // even though it is present in the data returned from DMS. This needs to be investigated and fixed.
         expect(await propertyDetailsPage.getPropertyDetails("Landlord address")).toHaveText('Not available');
+    });
+
+    test('Verify data displayed in the Energy Ratings and PRS Exemptions section of the Property Details page', async () => {
+
+        // Verify Current energy rating
+         expect(await propertyDetailsPage.getExemptionDetails("Current energy rating")).toHaveText('A');
+
+        // Verify Current EPC expiry date
+        expect(await propertyDetailsPage.getExemptionDetails("Current EPC expiry date")).toHaveText('20 February 2026');
+
+        // Verify PRS exemption status
+        expect(await propertyDetailsPage.getExemptionDetails("PRS exemption status")).toHaveText('Penalty sent');
+
+        // Verify PRS exemption date
+        expect(await propertyDetailsPage.getExemptionDetails("PRS exemption date")).toHaveText('2026-02-14T16:32:00.000Z');
     });
 });

@@ -18,6 +18,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private commentExpandButton: Locator;
     private previousCommentsSection: Locator;
     private propertyDetailsRows: Locator;
+    private propertyExemptionDetailsRows: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -35,6 +36,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.propertyDetailsRows = page.locator('c-mees-property-details')
             .filter({ has: page.locator('text=View property and landlord details') })
             .locator('.govuk-summary-list__row'); 
+        this.propertyExemptionDetailsRows = page.locator('.govuk-tabs__panel .govuk-summary-list__row');
     }
 
     // Wait for the Property Details Page to load
@@ -55,7 +57,9 @@ export class PropertyDetailsPage extends BaseCompliancePage {
                 commentTextArea: this.commentTextArea,
                 commentSaveButton: this.commentSaveButton,
                 commentCancelButton: this.commentCancelButton,
-                commentExpandButton: this.commentExpandButton
+                commentExpandButton: this.commentExpandButton,
+                propertyDetailsRows: this.propertyDetailsRows,
+                propertyExemptionDetailsRows: this.propertyExemptionDetailsRows
             },
             60000);
     }
@@ -93,9 +97,16 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     }
 
     async getPropertyDetails(detailName: string): Promise<Locator> {
-        const detailRow = this.propertyDetailsRows
-            .filter({ has: this.page.locator('.govuk-summary-list__key', { hasText: detailName }) });
+        const detailRow: Locator = this.propertyDetailsRows
+            .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(detailName, { exact: true }) });
         return detailRow.locator('.govuk-summary-list__value');
+    }
+
+    async getExemptionDetails(detailName: string): Promise<Locator> {
+        const detailRow: Locator = this.propertyExemptionDetailsRows
+            .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(detailName, { exact: true }) });
+        let value = detailRow.locator('.govuk-summary-list__value');
+        return value;
     }
 
     //#region Comments Section Methods

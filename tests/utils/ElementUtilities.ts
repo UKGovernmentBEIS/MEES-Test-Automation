@@ -86,15 +86,15 @@ export class ElementUtilities {
     
     // Phase 1: Retry until all locators exist in the DOM
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      const missingLocators: string[] = [];
+      const missingLocators: { locatorName: string; error: any }[] = [];
       
       // Create an array of promises to check the existence of each locator later on
       const existencePromises = Object.entries(locators).map(async ([locatorName, locator]) => {
         try {
-          await locator.waitFor({ state: 'attached', timeout: phaseTimeout / maxRetries });
-          return { locatorName, exists: true };
+          await locator.first().waitFor({ state: 'attached', timeout: phaseTimeout / maxRetries });
+          return { locatorName, exists: true, error: null };
         } catch (error) {
-          return { locatorName, exists: false };
+          return { locatorName, exists: false, error };
         }
       });
       
@@ -104,7 +104,7 @@ export class ElementUtilities {
       // Now, when all promises have completed, we can check which locators exist and which do not
       for (const result of existenceResults) {
         if (!result.exists) {
-          missingLocators.push(result.locatorName);
+          missingLocators.push({ locatorName: result.locatorName, error: result.error });
         }
       }
       
@@ -116,7 +116,7 @@ export class ElementUtilities {
       // If this was the last attempt for phase 1, throw error
       if (attempt === maxRetries) {
         throw new Error(
-          `Page '${pageName}' did not load correctly. The following elements are missing from the DOM after ${maxRetries} attempts: ${missingLocators.join(', ')}`
+          `Page '${pageName}' did not load correctly. The following elements are missing from the DOM after ${maxRetries} attempts: ${missingLocators.map(m => `${m.locatorName} (${m.error?.message || m.error})`).join(', ')}`
         );
       }
       
@@ -125,15 +125,15 @@ export class ElementUtilities {
     }
     
     // Phase 2: Now that all locators exist, wait for them to be in the desired state
-    const failedStateLocators: string[] = [];
+    const failedStateLocators: { locatorName: string; error: any }[] = [];
 
     // Create an array of promises to check the state of each locator
     const statePromises = Object.entries(locators).map(async ([locatorName, locator]) => {
       try {
-        await locator.waitFor({ state, timeout: phaseTimeout });
+        await locator.first().waitFor({ state, timeout: phaseTimeout });
         return { locatorName, success: true };
       } catch (error) {
-        return { locatorName, success: false };
+        return { locatorName, success: false, error };
       }
     });
     
@@ -143,14 +143,14 @@ export class ElementUtilities {
     // Collect locators that failed to reach the desired state
     for (const result of stateResults) {
       if (!result.success) {
-        failedStateLocators.push(result.locatorName);
+        failedStateLocators.push({ locatorName: result.locatorName, error: result.error });
       }
     }
     
     // If any locators failed to reach the desired state, throw error
     if (failedStateLocators.length > 0) {
       throw new Error(
-        `Page '${pageName}' elements exist but failed to reach '${state}' state: ${failedStateLocators.join(', ')}`
+        `Page '${pageName}' elements exist but failed to reach '${state}' state: ${failedStateLocators.map(f => `${f.locatorName} (${f.error?.message || f.error})`).join(', ')}`
       );
     }
   }
