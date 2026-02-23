@@ -47,7 +47,7 @@ test.describe('View Properties Page Tests', () => {
         // Verify Landlord Name (DMS)
         // Bug:664: The Landlord Name is currently not being displayed on the Property Details page, 
         // even though it is present in the data returned from DMS. This needs to be investigated and fixed.
-        expect(await propertyDetailsPage.getPropertyDetails("Landlord name")).toHaveText('Not available');
+        expect(await propertyDetailsPage.getPropertyDetails("Landlord")).toHaveText('Not available');
 
         // Verify Landlord Location (DMS)
         expect(await propertyDetailsPage.getPropertyDetails("Landlord")).toHaveText('Onshore');
