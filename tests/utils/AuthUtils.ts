@@ -79,3 +79,27 @@ export async function saveAuthState(page: Page, workerIndex: number): Promise<vo
     await page.context().storageState({ path: authFile });
     console.log(`[Auth Utils] Saved authentication state to: ${authFile}`);
 }
+
+/**
+ * Retrieves the email of the currently authenticated user based on the worker index.
+ * Uses the worker index to determine which account was used for authentication,
+ * then resolves the actual email from environment variables using the account configuration.
+ * This function is useful for validating that actions are performed under the correct user context during tests.
+ * 
+ * @param workerIndex - The worker index to get the email for (defaults to 0 if not provided)
+ * @returns The email address of the currently authenticated user
+ * @throws Error if the worker index is invalid or if the email cannot be resolved
+ */
+export function getCurrentUserEmail(workerIndex: number = 0): string {
+    // Get the account configuration for this worker
+    if (workerIndex >= accounts.length) {
+        throw new Error(`No account configured for worker index ${workerIndex}. Available accounts: ${accounts.length}`);
+    }
+    
+    const account = accounts[workerIndex];
+    
+    // Resolve the actual email from environment variables
+    const { email } = resolveCredentials(account);
+    
+    return email;
+}

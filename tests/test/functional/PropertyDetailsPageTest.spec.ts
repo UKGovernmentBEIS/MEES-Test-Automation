@@ -6,6 +6,7 @@ import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
 import { PropertyDetailsPage } from '../../pages/Compliance/PropertyDetailsPage';
 import { ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
+import { getCurrentUserEmail } from '../../utils/AuthUtils';
 
 test.describe('View Properties Page Data Validation Tests', () => {
     let propertyDetailsPage: PropertyDetailsPage;
@@ -102,19 +103,42 @@ test.describe('Property Details Comments Tests', () => {
     });
 
     // Validate add comment functionality, saving a comment and verifying that it is displayed in the Previous Comments section
-    test('Should add a comment and verify it appears in previous comments', async () => {
+    test('Should add a comment and verify it appears in previous comments with annotation', async ({ }, testInfo) => {
         const uniqueComment = `Test comment ${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
         // Add comment - directly using page methods
         await propertyDetailsPage.addComment(uniqueComment);
+        await propertyDetailsPage.saveComment();
 
         // Verify comment appears
         expect(await propertyDetailsPage.previousComments()).toHaveText(uniqueComment);
+
+        // verify comment has correct annotation (example: 'Added by testusertriad123+001@gmail.com on 24th February 2026')
+        const currentUserName = getCurrentUserEmail(testInfo.workerIndex);
+        const currentDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        const expectedAnnotation = `Added by ${currentUserName} on ${currentDate}`;
+        expect(await propertyDetailsPage.previousComments()).toHaveText(expectedAnnotation);
     });
 
-    // Validate that cancelling a comment does not save the comment and it is not displayed in the Previous Comments section
+    // Validate that cancel button clear the comment input and does not save the comment
+    test('Should not save comment when cancel is clicked', async () => {
+        const uniqueComment = `Test comment ${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
-    // Validate that the Previous Comments section displays existing comments and can be expanded to show all comments when there are multiple comments
+        // Enter comment and click cancel
+        await propertyDetailsPage.addComment(uniqueComment);
+        await propertyDetailsPage.cancelComment();
+
+        // Verify comment does not appear in previous comments
+        expect(await propertyDetailsPage.previousComments()).not.toHaveText(uniqueComment);
+    });
 
     // Validate comments must have the text entered before they can be saved, and an error message is displayed if trying to save an empty comment
+    test('Should display error when trying to save an empty comment', async () => {
+        // Attempt to save an empty comment
+        await propertyDetailsPage.addComment('');
+        await propertyDetailsPage.saveComment();
+
+        // Verify error message is displayed
+        expect(await propertyDetailsPage.isCommentTextAreaInErrorState()).toBe(true);
+    });
 });

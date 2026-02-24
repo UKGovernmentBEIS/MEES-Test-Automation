@@ -148,6 +148,9 @@ export class PropertyDetailsPage extends BaseCompliancePage {
 
     async addComment(comment: string): Promise<void> {
         await this.commentTextArea.fill(comment);
+    }
+
+    async saveComment(): Promise<void> {
         await this.commentSaveButton.click();
     }
 
@@ -162,6 +165,11 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     async previousComments(): Promise<Locator> {
         await this.expandPreviousComments();
         return this.previousCommentsSection;
+    }
+
+    async isCommentTextAreaInErrorState(): Promise<boolean> {
+        const classAttribute = await this.commentTextArea.getAttribute('class');
+        return classAttribute?.includes('govuk-textarea--error') || false;
     }
 
     //#endregion
