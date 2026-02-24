@@ -139,13 +139,30 @@ test.describe('Property Details Comments Tests', () => {
         await propertyDetailsPage.saveComment();
 
         // Verify comment appears
-        expect(await propertyDetailsPage.previousComments()).toHaveText(uniqueComment);
+        expect(await propertyDetailsPage.previousComments()).toContainText(uniqueComment);
 
         // verify comment has correct annotation (example: 'Added by testusertriad123+001@gmail.com on 24th February 2026')
         const currentUserName = getCurrentUserEmail(testInfo.parallelIndex);
-        const currentDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-        const expectedAnnotation = `Added by ${currentUserName} on ${currentDate}`;
-        expect(await propertyDetailsPage.previousComments()).toHaveText(expectedAnnotation);
+        const currentDate = new Date();
+        
+        // Create ordinal suffix for day
+        const day = currentDate.getDate();
+        const getOrdinalSuffix = (day: number) => {
+            if (day > 3 && day < 21) return 'th';
+            switch (day % 10) {
+                case 1: return 'st';
+                case 2: return 'nd';
+                case 3: return 'rd';
+                default: return 'th';
+            }
+        };
+        
+        const dayWithSuffix = `${day}${getOrdinalSuffix(day)}`;
+        const month = currentDate.toLocaleDateString('en-GB', { month: 'long' });
+        const year = currentDate.getFullYear();
+        
+        const expectedAnnotation = `Added by ${currentUserName} on ${dayWithSuffix} ${month} ${year}`;
+        expect(await propertyDetailsPage.previousComments()).toContainText(expectedAnnotation);
     });
 
     // Validate that cancel button clear the comment input and does not save the comment
