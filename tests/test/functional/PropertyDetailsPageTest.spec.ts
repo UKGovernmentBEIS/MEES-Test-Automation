@@ -4,14 +4,16 @@ import { FilterPropertiesPage } from '../../pages/Compliance/FilterPropertiesPag
 import { HomePage } from '../../pages/Compliance/HomePage';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
-import { PropertyDetailsPage } from '../../pages/Compliance/PropertyDetailsPage';
+import { PropertyDetailsPage, DMSPropertyDetails } from '../../pages/Compliance/PropertyDetailsPage';
 import { ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
 import { getCurrentUserEmail } from '../../utils/AuthUtils';
 
 test.describe('View Properties Page Data Validation Tests', () => {
     let propertyDetailsPage: PropertyDetailsPage;
+    let dmsPropertyDetails: DMSPropertyDetails;
+    
 
-    test.beforeEach(async ({ page }, testInfo) => {
+    test.beforeEach(async ({ page, request }, testInfo) => {
         testInfo.annotations.push(
             TestAnnotations.testType(TestType.FUNCTIONAL)
         );
@@ -25,33 +27,59 @@ test.describe('View Properties Page Data Validation Tests', () => {
         const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForTableContent();
         propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+        
+        // Get DMS property details for comparison
+        dmsPropertyDetails = await propertyDetailsPage.GetDMSPropertyDetailsValues(request, '100022918361');
     });
 
     test('Verify data displayed in the main section of the Property Details page', async () => {
+        // Helper function to construct address from DMS data
+        const constructAddress = (property: any) => {
+            const addressParts = [
+                property.line1,
+                property.line2,
+                property.line3,
+                property.town,
+                property.postcode
+            ].filter(part => part !== null && part !== '').join(' ');
+            return addressParts;
+        };
+
+        // Helper function to format currency
+        const formatCurrency = (value: number) => {
+            return new Intl.NumberFormat('en-GB', { 
+                style: 'currency', 
+                currency: 'GBP',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        };
 
         // Verify Address (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Property address")).toHaveText('Unit 47, Acorn Industrial Park Crayford Road Crayford DARTFORD DA1 4AL');
+        const expectedAddress = constructAddress(dmsPropertyDetails.property);
+        expect(await propertyDetailsPage.getPropertyDetails("Property address")).toHaveText(expectedAddress);
 
         // Verify UPRN (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("UPRN")).toHaveText('100022918361');
+        expect(await propertyDetailsPage.getPropertyDetails("UPRN")).toHaveText(dmsPropertyDetails.property.uprn.toString());
 
-        // Verify Exemption Reference (Salesforce)
+        // Verify Exemption Reference (Salesforce) - Keep as hardcoded since it's from Salesforce, not DMS
         expect(await propertyDetailsPage.getPropertyDetails("Exemption reference")).toHaveText('test');
 
         // Verify Property Type (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Property type")).toHaveText('General Industrial and Special Industrial Groups');
+        expect(await propertyDetailsPage.getPropertyDetails("Property type")).toHaveText(dmsPropertyDetails.property.propertyType);
 
         // Verify Rateable Value (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Rateable value")).toHaveText('£25,500');
+        const expectedRateableValue = formatCurrency(dmsPropertyDetails.property.rateableValue!);
+        expect(await propertyDetailsPage.getPropertyDetails("Rateable value")).toHaveText(expectedRateableValue);
 
-        // Verify Landlord Name (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Landlord")).toHaveText('BRITISH OVERSEAS BANK NOMINEES LIMITED');
+        // Verify Landlord Name (DMS) - Use first landlord
+        expect(await propertyDetailsPage.getPropertyDetails("Landlord")).toHaveText(dmsPropertyDetails.landlords[0].companyName);
 
         // Verify Landlord Location (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Landlord location")).toHaveText('Onshore');
+        expect(await propertyDetailsPage.getPropertyDetails("Landlord location")).toHaveText(dmsPropertyDetails.landlords[0].location);
 
         // Verify Landlord Address (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Landlord address")).toHaveText('250 Bishopsgate, London EC2M 4AA');
+        expect(await propertyDetailsPage.getPropertyDetails("Landlord address")).toHaveText(dmsPropertyDetails.landlords[0].address);
     });
 
     test('Verify data displayed in the Energy Ratings and PRS Exemptions section of the Property Details page', async () => {
@@ -114,7 +142,7 @@ test.describe('Property Details Comments Tests', () => {
         expect(await propertyDetailsPage.previousComments()).toHaveText(uniqueComment);
 
         // verify comment has correct annotation (example: 'Added by testusertriad123+001@gmail.com on 24th February 2026')
-        const currentUserName = getCurrentUserEmail(testInfo.workerIndex);
+        const currentUserName = getCurrentUserEmail(testInfo.parallelIndex);
         const currentDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
         const expectedAnnotation = `Added by ${currentUserName} on ${currentDate}`;
         expect(await propertyDetailsPage.previousComments()).toHaveText(expectedAnnotation);

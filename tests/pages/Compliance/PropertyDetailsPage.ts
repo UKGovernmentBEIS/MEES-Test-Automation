@@ -1,14 +1,52 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, APIRequestContext } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { BaseCompliancePage } from './BaseCompliancePage';
 import { FilterPropertiesPage } from './FilterPropertiesPage';
 import { ViewPropertiesPage } from './ViewPropertiesPage';
 import { HomePage } from './HomePage';
 
-interface EPCHistory {
+export interface EPCHistory {
     assetRatingBand: string;
     lodgementDate: string;
     expiryDate: string;
+}
+
+export interface DMSPropertyDetails {
+    property: {
+        uprn: number;
+        buildingReferenceNumber: number;
+        name: string | null;
+        number: string | null;
+        flatNameNumber: string | null;
+        line1: string | null;
+        line2: string | null;
+        line3: string | null;
+        town: string;
+        county: string | null;
+        postcode: string;
+        localAuthority: string;
+        epcEnergyRating: number;
+        epcEnergyRatingBand: string;
+        propertyType: string;
+        epcExpiryDate: string;
+        location: string | null;
+        rateableValue: number | null;
+        transactionType: string;
+        datasetCode: string;
+    };
+    epcCertificates: Array<{
+        assetRating: number;
+        assetRatingBand: string;
+        lodgementDate: string;
+        expiryDate: string;
+    }>;
+    landlords: Array<{
+        uprn: number;
+        companyName: string;
+        location: string;
+        address: string;
+        sicCodeSicText: string | null;
+    }>;
 }
 
 export class PropertyDetailsPage extends BaseCompliancePage {
@@ -142,6 +180,22 @@ export class PropertyDetailsPage extends BaseCompliancePage {
             epcHistoryData.push({ assetRatingBand, lodgementDate, expiryDate });
         }
         return epcHistoryData;
+    }
+
+    async GetDMSPropertyDetailsValues(request: APIRequestContext, uprn: string): Promise<DMSPropertyDetails> {
+        const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
+
+        const response = await request.get(`${baseUrl}?uprn=${uprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+
+        if (response.status() !== 200) {
+            throw new Error(`DMS API request failed with status: ${response.status()}`);
+        }
+
+        return await response.json() as DMSPropertyDetails;
     }
 
     //#region Comments Section Methods
