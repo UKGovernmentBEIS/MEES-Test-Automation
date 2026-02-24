@@ -146,47 +146,9 @@ export class PropertyDetailsPage extends BaseCompliancePage {
 
     //#region Comments Section Methods
 
-    async enterComment(comment: string): Promise<void> {
+    async addComment(comment: string): Promise<void> {
         await this.commentTextArea.fill(comment);
-
-        // Verify that the comment has been entered correctly
-        const enteredComment = await this.commentTextArea.inputValue();
-        if (enteredComment !== comment) {
-            throw new Error(`Failed to enter comment. Expected: '${comment}', but got: '${enteredComment}'`);
-        }
-    }
-
-    async saveComment(): Promise<void> {
-        // Get comment text before saving to compare later
-        const comment = await this.commentTextArea.inputValue();
-        const isCommentEmpty: boolean = comment.trim() === '';
-
         await this.commentSaveButton.click();
-
-        // Wait for the textarea to be cleared
-        await this.page.waitForFunction(
-            async (textarea) => {
-                return await textarea.textContent() === '';
-            },
-            this.commentTextArea,
-            { timeout: 10000 }
-        );
-
-        // Make sure that the previous comments section is visible otherwise click on the comment expand button to show it
-        if (!await this.previousCommentsSection.isVisible()) {
-            await this.expandPreviousComments();
-        }
-        if (!await this.previousCommentsSection.isVisible()) {
-            throw new Error('Previous comments section is not visible after saving a comment');
-        }
-
-        // If comment was provided, get all previous comments and verify that the newly added comment is present in the list
-        if (!isCommentEmpty) {
-            const previousCommentsText = await this.previousCommentsSection.innerText();
-            if (!previousCommentsText.includes(comment)) {
-                throw new Error(`Failed to save comment. Expected comment: '${comment}' not found in previous comments.`);
-            }
-        }
     }
 
     async cancelComment(): Promise<void> {
@@ -197,9 +159,9 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         await this.commentExpandButton.click();
     }
 
-    async getPreviousComments(): Promise<string> {
+    async previousComments(): Promise<Locator> {
         await this.expandPreviousComments();
-        return await this.previousCommentsSection.innerText();
+        return this.previousCommentsSection;
     }
 
     //#endregion

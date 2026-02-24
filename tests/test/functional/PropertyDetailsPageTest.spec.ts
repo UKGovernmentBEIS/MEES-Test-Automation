@@ -7,8 +7,7 @@ import { TestType, TestAnnotations } from '../../utils/TestTypes';
 import { PropertyDetailsPage } from '../../pages/Compliance/PropertyDetailsPage';
 import { ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
 
-test.describe('View Properties Page Tests', () => {
-    let viewPropertiesPage: ViewPropertiesPage;
+test.describe('View Properties Page Data Validation Tests', () => {
     let propertyDetailsPage: PropertyDetailsPage;
 
     test.beforeEach(async ({ page }, testInfo) => {
@@ -22,7 +21,7 @@ test.describe('View Properties Page Tests', () => {
         const filterPropertiesPage: FilterPropertiesPage = await homePage.clickViewProperties();
         await filterPropertiesPage.setEnergyRatingFilter('A');
         await filterPropertiesPage.selectOnshoreLALocations();
-        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForTableContent();
         propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
     });
@@ -81,4 +80,41 @@ test.describe('View Properties Page Tests', () => {
         expect(epcHistoryData[0].lodgementDate).toBe('13 August 2025');
         expect(epcHistoryData[0].expiryDate).toBe('13 August 2035');
     });
+});
+
+test.describe('Property Details Comments Tests', () => {
+    let propertyDetailsPage: PropertyDetailsPage;
+
+    test.beforeEach(async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.FUNCTIONAL)
+        );
+        
+        const landingPage: LandingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
+        const filterPropertiesPage: FilterPropertiesPage = await homePage.clickViewProperties();
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        await filterPropertiesPage.selectOnshoreLALocations();
+        const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+        propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+    });
+
+    // Validate add comment functionality, saving a comment and verifying that it is displayed in the Previous Comments section
+    test('Should add a comment and verify it appears in previous comments', async () => {
+        const uniqueComment = `Test comment ${Date.now()}_${Math.random().toString(36).substring(7)}`;
+
+        // Add comment - directly using page methods
+        await propertyDetailsPage.addComment(uniqueComment);
+
+        // Verify comment appears
+        expect(await propertyDetailsPage.previousComments()).toHaveText(uniqueComment);
+    });
+
+    // Validate that cancelling a comment does not save the comment and it is not displayed in the Previous Comments section
+
+    // Validate that the Previous Comments section displays existing comments and can be expanded to show all comments when there are multiple comments
+
+    // Validate comments must have the text entered before they can be saved, and an error message is displayed if trying to save an empty comment
 });
