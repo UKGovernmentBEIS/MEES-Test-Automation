@@ -45,17 +45,13 @@ test.describe('View Properties Page Tests', () => {
         expect(await propertyDetailsPage.getPropertyDetails("Rateable value")).toHaveText('£25,500');
 
         // Verify Landlord Name (DMS)
-        // Bug:664: The Landlord Name is currently not being displayed on the Property Details page, 
-        // even though it is present in the data returned from DMS. This needs to be investigated and fixed.
-        expect(await propertyDetailsPage.getPropertyDetails("Landlord")).toHaveText('Not available');
+        expect(await propertyDetailsPage.getPropertyDetails("Landlord")).toHaveText('BRITISH OVERSEAS BANK NOMINEES LIMITED');
 
         // Verify Landlord Location (DMS)
         expect(await propertyDetailsPage.getPropertyDetails("Landlord location")).toHaveText('Onshore');
 
         // Verify Landlord Address (DMS)
-        // Bug:664: The Landlord Address is currently not being displayed on the Property Details page, 
-        // even though it is present in the data returned from DMS. This needs to be investigated and fixed.
-        expect(await propertyDetailsPage.getPropertyDetails("Landlord address")).toHaveText('Not available');
+        expect(await propertyDetailsPage.getPropertyDetails("Landlord address")).toHaveText('250 Bishopsgate, London EC2M 4AA');
     });
 
     test('Verify data displayed in the Energy Ratings and PRS Exemptions section of the Property Details page', async () => {
