@@ -61,6 +61,11 @@
    ```
    
    **Note**: LandingPage-based recovery handles authentication issues during test execution automatically.
+
+5. **Setup test data** (for new environments):
+   Tests contain hardcoded values that must be verified/updated for new environments.
+   
+   📄 **See [TestDataSetup.md](Documentation/TestDataSetup.md) for complete test data configuration guide**
    
 ## Essential Commands
 
@@ -155,6 +160,7 @@ npx playwright show-report  # Open after test run
 - **[Accessibility.md](Documentation/Accessibility.md)**: WCAG 2.2 AA testing guide
 - **[CI-CD.md](Documentation/CI-CD.md)**: Pipeline configuration and secrets setup
 - **[ContextVerification.md](Documentation/ContextVerification.md)**: DOM structure and content validation
+- **[TestDataSetup.md](Documentation/TestDataSetup.md)**: Test data configuration for new environments
 
 ## Project Structure
 
