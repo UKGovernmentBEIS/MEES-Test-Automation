@@ -151,7 +151,19 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     }
 
     async saveComment(): Promise<void> {
+        // Get text area value before saving comment to verify that the comment is being saved correctly
+        const commentValueBeforeSave = await this.commentTextArea.getAttribute('value') || '';
+
+        // Click save button
         await this.commentSaveButton.click();
+
+        // Only wait for comment to appear in previous comments if it's not empty
+        if (commentValueBeforeSave.trim()) {
+            // Expand the previous comments section and get the locator
+            const previousCommentsLocator = await this.previousComments();
+            // Wait for the comment to appear in the Previous Comments section
+            await previousCommentsLocator.getByText(commentValueBeforeSave).waitFor({ timeout: 5000 });
+        }
     }
 
     async cancelComment(): Promise<void> {
