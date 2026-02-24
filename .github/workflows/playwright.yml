@@ -45,6 +45,7 @@ jobs:
         TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
         TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
         PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
+        PROPERTY_KEY: ${{ secrets.PROPERTY_KEY }}
         DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
         BASE_URL: ${{ secrets.BASE_URL }}
     - name: Upload Playwright HTML report
