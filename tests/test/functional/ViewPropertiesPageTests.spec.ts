@@ -303,18 +303,17 @@ test.describe('View Properties Page Tests', () => {
         expect(discrepancies, `Discrepancies found: ${discrepancies.join(', ')}`).toEqual([]);
     });
 
-    // Bug: 653 - Unrated properties are not showing energy rating as 'Unrated' in the UI
-    test.skip('The Energy Ratings for unrated property shows Unrated', async ({ page }) => {
-        // Set specific filter criteria to get unrated properties
+    test('The Energy Ratings for not rated properties shows \'Not Rated\'', async ({ page }) => {
+        // Set specific filter criteria to get Not Rated properties
         const filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
-        await filterPropertiesPage.setEnergyRatingFilter('Unrated');
+        await filterPropertiesPage.setEnergyRatingFilter('Not rated');
         viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForTableContent();
 
         // Get all property data from the table
         const propertiesData = await viewPropertiesPage.getPropertiesDataFromTable();
 
-        // Verify for the first row that the energy rating is displayed as 'Unrated'
+        // Verify for the first row that the energy rating is displayed as 'Unrated' when the property is not rated 
         const firstProperty = propertiesData[0];
         expect(firstProperty).toBeDefined();
         expect(firstProperty.energyRating).toBe('Unrated');
