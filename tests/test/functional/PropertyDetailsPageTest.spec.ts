@@ -186,3 +186,39 @@ test.describe('Property Details Comments Tests', () => {
         expect(await propertyDetailsPage.isCommentTextAreaInErrorState()).toBe(true);
     });
 });
+
+test.describe('Property Details Page Navigation Tests', () => {
+    let propertyDetailsPage: PropertyDetailsPage;
+    
+
+    test.beforeEach(async ({ page, request }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.FUNCTIONAL)
+        );
+        
+        const landingPage: LandingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
+        const filterPropertiesPage: FilterPropertiesPage = await homePage.clickViewProperties();
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        await filterPropertiesPage.selectOnshoreLALocations();
+        const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+        propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+    });
+
+    test('Should navigate to Home page when clicking Home breadcrumb link', async () => {
+        const homePage = await propertyDetailsPage.clickBreadcrumbHome();
+        expect(await homePage.isDisplayed()).toBe(true);
+    });
+
+    test('Should navigate to Filter Properties page when clicking Filter Properties breadcrumb link', async () => {
+        const filterPropertiesPage = await propertyDetailsPage.clickBreadcrumbFilterProperties();
+        expect(await filterPropertiesPage.isDisplayed()).toBe(true);
+    });
+
+    test('Should navigate to View Properties page when clicking View Properties breadcrumb link', async () => {
+        const viewPropertiesPage = await propertyDetailsPage.clickBreadcrumbViewProperties();
+        expect(await viewPropertiesPage.isDisplayed()).toBe(true);
+    });
+});
