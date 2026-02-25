@@ -7,7 +7,6 @@ import { HomePage } from './HomePage';
 
 export interface EPCHistory {
     assetRatingBand: string;
-    lodgementDate: string;
     expiryDate: string;
 }
 
@@ -175,9 +174,8 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         for (let i = 0; i < rowCount; i++) {
             const row = rows.nth(i);
             const assetRatingBand = await row.locator('td').nth(0).innerText();
-            const lodgementDate = await row.locator('td').nth(1).innerText();
-            const expiryDate = await row.locator('td').nth(2).innerText();
-            epcHistoryData.push({ assetRatingBand, lodgementDate, expiryDate });
+            const expiryDate = await row.locator('td').nth(1).innerText();
+            epcHistoryData.push({ assetRatingBand, expiryDate });
         }
         return epcHistoryData;
     }

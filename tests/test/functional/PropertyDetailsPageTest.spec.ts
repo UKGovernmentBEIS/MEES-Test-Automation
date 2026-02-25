@@ -105,8 +105,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
         // Verify that there is an EPC History section and it contains expected data
         const epcHistoryData = await propertyDetailsPage.getEPCHistoryTableData();
         expect(epcHistoryData.length).toBeGreaterThan(0);
-        expect(epcHistoryData[0].assetRatingBand).toBe('A');
-        expect(epcHistoryData[0].lodgementDate).toBe('13 August 2025');
+        expect(epcHistoryData[0].assetRatingBand).toBe('A (22)');
         expect(epcHistoryData[0].expiryDate).toBe('13 August 2035');
     });
 });
