@@ -73,21 +73,6 @@ test.describe('View Properties Page Tests', () => {
         await viewPropertiesPage.waitForPageToLoad();
         await expect(await viewPropertiesPage.getNoRecordsFoundMessage()).toBeVisible();
     });
-
-    test('Breadcrumb navigation works correctly', async ({ page }) => {
-        // Click on the Home breadcrumb link and verify navigation to Home Page
-        const homePage = await viewPropertiesPage.clickBreadcrumbHome();
-        await expect(homePage.isDisplayed()).resolves.toBeTruthy();
-
-        // Navigate back to View Properties Page
-        const filterPropertiesPage2 = await homePage.clickViewProperties();
-        const viewPropertiesPage2 = await filterPropertiesPage2.clickApplyFilters();
-
-        // Click on the Filter Properties breadcrumb link and verify navigation to Filter Properties Page
-        const filterPropertiesPage3 = await viewPropertiesPage2.clickBreadcrumbFilterProperties();
-        await expect(filterPropertiesPage3.isDisplayed()).resolves.toBeTruthy();
-        
-    });
     
     test('Pagination displays when data exceeds page limit', async ({ page }) => {
         
@@ -317,5 +302,37 @@ test.describe('View Properties Page Tests', () => {
         const firstProperty = propertiesData[0];
         expect(firstProperty).toBeDefined();
         expect(firstProperty.energyRating).toBe('Unrated');
+    });
+});
+
+test.describe('View Properties Page Navigation Tests', () => {
+    let viewPropertiesPage: ViewPropertiesPage;
+    
+    test.beforeEach(async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.FUNCTIONAL)
+        );
+        
+        const landingPage: LandingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
+        const filterPropertiesPage: FilterPropertiesPage = await homePage.clickViewProperties();
+        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+    });
+
+    test('Should navigate to Home page when clicking Home breadcrumb link', async () => {
+        const homePage = await viewPropertiesPage.clickBreadcrumbHome();
+        expect(await homePage.isDisplayed()).toBe(true);
+    });
+
+    test('Should navigate to Filter Properties page when clicking Filter Properties breadcrumb link', async () => {
+        const filterPropertiesPage = await viewPropertiesPage.clickBreadcrumbFilterProperties();
+        expect(await filterPropertiesPage.isDisplayed()).toBe(true);
+    });
+
+    test('Should navigate to Home page when clicking on Property Records tab in the header', async () => {
+        const homePage = await viewPropertiesPage.clickOnPropertyRecordsTab();
+        expect(await homePage.isDisplayed()).toBe(true);
     });
 });

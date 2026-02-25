@@ -1,6 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../BasePage';
 import { ElementUtilities } from '../../utils/ElementUtilities';
+import { HomePage } from './HomePage';
 
 export abstract class BaseCompliancePage extends BasePage {
     protected readonly page: Page;
@@ -34,5 +35,12 @@ export abstract class BaseCompliancePage extends BasePage {
                 tabTemplates: this.tabTemplates,
                 tabPenaltyCalculator: this.tabPenaltyCalculator
             });
+    }
+
+    async clickOnPropertyRecordsTab(): Promise<HomePage> {
+        await this.tabPropertyRecords.click();
+        const homePage = new HomePage(this.page);
+        await homePage.waitForPageToLoad();
+        return homePage;
     }
 }

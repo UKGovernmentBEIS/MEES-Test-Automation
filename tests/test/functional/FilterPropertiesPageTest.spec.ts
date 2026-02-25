@@ -157,13 +157,29 @@ test.describe('Filter Properties Page Functional Tests', () => {
         await expect(councilsList[0]).toContainText('LONDON BOROUGH OF BARNET');
         await expect(councilsList[1]).toContainText('LONDON BOROUGH OF BEXLEY');
     });
+});
 
-    test('Navigate to the Home page using the breadcrumb link', async ({ page }, testInfo) => {
-        // Click the Home breadcrumb link
-        const homePage: HomePage = await filterPropertiesPage.clickBreadcrumbHome();
+test.describe('Filter Page Navigation Tests', () => {
+    let filterPropertiesPage: FilterPropertiesPage;
+    
+    test.beforeEach(async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.FUNCTIONAL)
+        );
         
-        // Verify that the Home page loads successfully
-        await homePage.waitForPageToLoad();
-        await expect(homePage.isDisplayed()).resolves.toBeTruthy();
+        const landingPage: LandingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
+        filterPropertiesPage = await homePage.clickViewProperties();        
+    });
+
+    test('Should navigate to Home page when clicking Home breadcrumb link', async () => {
+        const homePage = await filterPropertiesPage.clickBreadcrumbHome();
+        expect(await homePage.isDisplayed()).toBe(true);
+    });
+
+    test('Should navigate to Home page when clicking on Property Records tab in the header', async () => {
+        const homePage = await filterPropertiesPage.clickOnPropertyRecordsTab();
+        expect(await homePage.isDisplayed()).toBe(true);
     });
 });

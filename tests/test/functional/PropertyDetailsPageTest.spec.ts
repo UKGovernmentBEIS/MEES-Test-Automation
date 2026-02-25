@@ -221,4 +221,9 @@ test.describe('Property Details Page Navigation Tests', () => {
         const viewPropertiesPage = await propertyDetailsPage.clickBreadcrumbViewProperties();
         expect(await viewPropertiesPage.isDisplayed()).toBe(true);
     });
+
+    test('Should navigate to Home page when clicking on Property Records tab in the header', async () => {
+        const homePage = await propertyDetailsPage.clickOnPropertyRecordsTab();
+        expect(await homePage.isDisplayed()).toBe(true);
+    });
 });
