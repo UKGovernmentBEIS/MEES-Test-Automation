@@ -58,7 +58,7 @@
       - text: ""
       - checkbox "G"
       - text: ""
-      - checkbox "Not rated"
+      - checkbox "Unrated"
       - text: ""
     - text: Street (optional)
     - textbox "Street (optional)"

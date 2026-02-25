@@ -4,7 +4,7 @@ import { ViewPropertiesPage } from './ViewPropertiesPage';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { HomePage } from './HomePage';
 
-type EnergyRatings = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'Not rated';
+type EnergyRatings = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'Unrated';
 
 export class FilterPropertiesPage extends BaseCompliancePage {
     private pageContext: Locator;

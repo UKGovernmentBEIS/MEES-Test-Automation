@@ -288,10 +288,10 @@ test.describe('View Properties Page Tests', () => {
         expect(discrepancies, `Discrepancies found: ${discrepancies.join(', ')}`).toEqual([]);
     });
 
-    test('The Energy Ratings for not rated properties shows \'Not Rated\'', async ({ page }) => {
-        // Set specific filter criteria to get Not Rated properties
+    test('The Energy Ratings for not rated properties shows \'Unrated\'', async ({ page }) => {
+        // Set specific filter criteria to get Unrated properties
         const filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
-        await filterPropertiesPage.setEnergyRatingFilter('Not rated');
+        await filterPropertiesPage.setEnergyRatingFilter('Unrated');
         viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForTableContent();
 
