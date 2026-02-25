@@ -35,7 +35,8 @@ export enum PageName {
   ONE_LOGIN_FORGOTTEN_PASSWORD = 'One Login Forgotten Password Page',
   VIEW_PROPERTIES = 'View Properties Page',
   FILTER_PROPERTIES_PAGE = "Filter Properties Page",
-  VIEW_PROPERTIES_PAGE = "View Properties Page"
+  VIEW_PROPERTIES_PAGE = "View Properties Page",
+  PROPERTY_DETAILS_PAGE = "Property Details Page"
 }
 
 /**

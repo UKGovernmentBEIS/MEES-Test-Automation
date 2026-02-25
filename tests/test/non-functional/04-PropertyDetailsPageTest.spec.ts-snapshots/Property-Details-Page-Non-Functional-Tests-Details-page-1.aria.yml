@@ -1,0 +1,85 @@
+- main:
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]
+  - navigation "Menu":
+    - list:
+      - listitem:
+        - link "Property records":
+          - /url: /landing-page
+          - strong: Property records
+      - listitem:
+        - link "Guidance":
+          - /url: /guidance
+      - listitem:
+        - link "Penalty calculator":
+          - /url: /penalty-calculator
+      - listitem:
+        - link "Templates":
+          - /url: /templates
+  - paragraph:
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback by email":
+      - /url: "#"
+    - text: .
+  - paragraph:
+    - strong: BETA
+    - text: This is a new service - your
+    - link "feedback":
+      - /url: mailto:PRSregisterfeedback@energysecurity.gov.uk
+    - text: will help us improve it.
+  - navigation "Breadcrumb":
+    - list:
+      - listitem:
+        - link "Home":
+          - /url: /compliance/landing-page
+      - listitem:
+        - link "Filter property records":
+          - /url: /compliance/filter-properties
+      - listitem:
+        - link "View property records":
+          - /url: /compliance/view-properties
+      - listitem: View Details
+  - list:
+    - listitem:
+      - link "Sign out":
+        - /url: "#"
+  - main:
+    - heading "View property and landlord details" [level=1]
+    - term: Property address
+    - definition: /Unit \d+, Acorn Industrial Park Crayford Road Crayford DARTFORD DA1 4AL/
+    - term: UPRN
+    - definition: /\d+/
+    - term: Exemption reference
+    - definition: test
+    - term: Property type
+    - definition: General Industrial and Special Industrial Groups
+    - term: Rateable value
+    - definition: /£\d+,\d+/
+    - term: Landlord
+    - definition: BRITISH OVERSEAS BANK NOMINEES LIMITED
+    - term: Landlord location
+    - definition: Onshore
+    - term: Landlord address
+    - definition: /\d+ Bishopsgate, London EC2M 4AA/
+    - heading "Energy efficiency details" [level=2]
+    - list:
+      - listitem: Energy ratings and PRS exemptions
+      - listitem: EPC history
+    - heading "Energy ratings and PRS exemptions" [level=2]
+    - term: Current energy rating
+    - definition: A
+    - term: Current EPC expiry date
+    - definition: /\d+ February \d+/
+    - term: PRS exemption status
+    - definition: Penalty sent
+    - term: PRS exemption date
+    - definition: /\d+ February \d+/
+    - heading "Comments" [level=2]
+    - text: Comments are visible to other enforcement officers.
+    - heading "Add a comment" [level=3]
+    - paragraph: Add a note about this property or landlord
+    - textbox
+    - text: /You have \d+ characters remaining/
+    - button "Save comment"
+    - button "Cancel"
+    - heading "Previous comments" [level=2]:
+      - button "Previous comments"
