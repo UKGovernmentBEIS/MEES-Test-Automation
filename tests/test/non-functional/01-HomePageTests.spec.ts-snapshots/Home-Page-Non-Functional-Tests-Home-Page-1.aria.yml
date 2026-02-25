@@ -40,14 +40,14 @@
     - paragraph: Read guidance on understanding the MEES Regulations, view enforcement activities, and learn where the data comes from.
     - paragraph:
       - link "View guidance":
-        - /url: "#-33"
+        - /url: /guidance
     - heading "Templates" [level=2]
     - paragraph: Download letter templates for issuing compliance notices and penalty notices to non-domestic landlords.
     - paragraph:
       - link "View templates":
-        - /url: "#-33"
+        - /url: /templates
     - heading "Penalty calculator" [level=2]
     - paragraph: Calculate a possible penalty amount for a non-domestic property in breach of the MEES Regulations.
     - paragraph:
       - link "View penalty calculator":
-        - /url: "#-33"
+        - /url: /penalty-calculator

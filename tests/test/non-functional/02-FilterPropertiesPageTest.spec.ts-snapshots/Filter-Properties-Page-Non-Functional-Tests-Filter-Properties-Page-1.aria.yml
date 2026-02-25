@@ -42,8 +42,8 @@
       - option "Show all councils" [selected]
       - option "LONDON BOROUGH OF BARNET"
       - option "LONDON BOROUGH OF BEXLEY"
-    - group "Energy rating (optinal)":
-      - text: Energy rating (optinal) Select one or more energy ratings. If you do not select any ratings,all ratings are included.
+    - group "Energy rating (optional)":
+      - text: Energy rating (optional) Select one or more energy ratings. If you do not select any ratings,all ratings are included.
       - checkbox "A"
       - text: ""
       - checkbox "B"
@@ -60,12 +60,12 @@
       - text: ""
       - checkbox "Not rated"
       - text: ""
-    - text: Street (optinal)
-    - textbox "Street (optinal)"
-    - text: Town (optinal)
-    - textbox "Town (optinal)"
-    - text: Postcode (optinal)
-    - textbox "Postcode (optinal)"
+    - text: Street (optional)
+    - textbox "Street (optional)"
+    - text: Town (optional)
+    - textbox "Town (optional)"
+    - text: Postcode (optional)
+    - textbox "Postcode (optional)"
     - group "Landlord location":
       - text: Landlord location Filter properties by where the landlord is based
       - radio "All locations" [checked]
