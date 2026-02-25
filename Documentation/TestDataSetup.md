@@ -21,7 +21,7 @@ Tests contain hardcoded values that must be verified/updated when setting up a n
 - Landlord name: `'BRITISH OVERSEAS BANK NOMINEES LIMITED'`
 - Landlord address: `'250 Bishopsgate, London EC2M 4AA'`
 - EPC expiry date: `'20 February 2026'`
-- PRS exemption date: `'2026-02-14T16:32:00.000Z'`
+- PRS exemption date: `'14 February 2026'`
 - EPC history dates: `'13 August 2025'`, `'13 August 2035'`
 
 ### PropertiesDmsBoundaryTests.spec.ts

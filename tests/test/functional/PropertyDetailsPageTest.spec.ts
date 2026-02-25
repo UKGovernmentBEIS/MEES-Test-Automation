@@ -94,7 +94,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
         expect(await propertyDetailsPage.getExemptionDetails("PRS exemption status")).toHaveText('Penalty sent');
 
         // Verify PRS exemption date
-        expect(await propertyDetailsPage.getExemptionDetails("PRS exemption date")).toHaveText('2026-02-14T16:32:00.000Z');
+        expect(await propertyDetailsPage.getExemptionDetails("PRS exemption date")).toHaveText('14 February 2026');
     });
 
     test('Verify EPC History data displayed in the Property Details page', async () => {
