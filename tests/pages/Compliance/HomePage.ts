@@ -2,6 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { BaseCompliancePage } from './BaseCompliancePage';
 import { FilterPropertiesPage } from './FilterPropertiesPage';
+import { PenaltyCalculatorPage } from './PenaltyCalculatorPage';
 
 export class HomePage extends BaseCompliancePage {
     private pageContext: Locator;
@@ -49,5 +50,12 @@ export class HomePage extends BaseCompliancePage {
         const filterPropertiesPage = new FilterPropertiesPage(this.page);
         await filterPropertiesPage.waitForPageToLoad();
         return filterPropertiesPage;
+    }
+
+    async clickViewPenaltyCalculator(): Promise<PenaltyCalculatorPage> {
+        await this.viewPenaltyCalculatorLink.click();
+        const penaltyCalculatorPage = new PenaltyCalculatorPage(this.page);
+        await penaltyCalculatorPage.waitForPageToLoad();
+        return penaltyCalculatorPage;
     }
 }

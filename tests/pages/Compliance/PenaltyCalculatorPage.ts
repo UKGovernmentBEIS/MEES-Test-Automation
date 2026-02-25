@@ -1,0 +1,58 @@
+import { Page, Locator } from '@playwright/test';
+import { BaseCompliancePage } from './BaseCompliancePage';
+import { ElementUtilities } from '../../utils/ElementUtilities';
+import { PenaltyCalculatorResultsPage } from './PenaltyCalculatorResultPage';
+
+type LengthOfBreach = 'Less than 3 months' | 'More than 3 months';
+
+export class PenaltyCalculatorPage extends BaseCompliancePage {
+    private pageContext: Locator;
+    private readonly rateableValueInput: Locator;
+    private readonly calculateMaximumPenaltyButton: Locator;
+    
+    private async LengthOfBreachRadioButton(lengthOfBreach: LengthOfBreach): Promise<Locator> {
+        return this.page.getByRole('radio', { name: lengthOfBreach });
+    }
+
+    constructor(page: Page) {
+        super(page);
+        this.pageContext = this.page.locator('#main-content');
+        this.rateableValueInput = this.page.getByRole('textbox', { name: 'What is the rateable value of' })
+        this.calculateMaximumPenaltyButton = this.page.getByRole('button', { name: 'Calculate maximum penalty' });
+    }
+
+    async waitForPageToLoad(): Promise<void> {
+        await super.waitForPageToLoad();
+
+        await ElementUtilities.waitForPageToLoad(
+            this.page,
+            'Penalty Calculator Page',
+            {
+                pageContext: this.pageContext,
+            },);
+    }
+
+    async isDisplayed(): Promise<boolean> {
+        return this.page.url().includes('penalty-calculator');
+    }
+
+    getPageContextLocator(): Locator {
+        return this.pageContext;
+    }
+
+    async calculateMaximumPenalty(lengthOfBreach: LengthOfBreach, rateableValue: number): Promise<PenaltyCalculatorResultsPage> {
+        // Select the length of breach radio button based on the input
+        const lengthOfBreachRadioButton = await this.LengthOfBreachRadioButton(lengthOfBreach);
+        await lengthOfBreachRadioButton.check();
+
+        // Enter the rateable value
+        await this.rateableValueInput.fill(rateableValue.toString());
+
+        // Click the calculate button and navigate to the results page
+        await this.calculateMaximumPenaltyButton.click();
+        const penaltyCalculatorResultsPage = new PenaltyCalculatorResultsPage(this.page);
+        await penaltyCalculatorResultsPage.waitForPageToLoad();
+        return penaltyCalculatorResultsPage;
+    }
+
+}
