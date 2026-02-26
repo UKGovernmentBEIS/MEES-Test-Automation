@@ -1,7 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../BasePage';
 import { ElementUtilities } from '../../utils/ElementUtilities';
-import { HomePage } from './HomePage';
+import type { FilterPropertiesPage } from './FilterPropertiesPage';
+import type { PenaltyCalculatorPage } from './PenaltyCalculatorPage';
 
 export abstract class BaseCompliancePage extends BasePage {
     protected readonly page: Page;
@@ -37,10 +38,19 @@ export abstract class BaseCompliancePage extends BasePage {
             });
     }
 
-    async clickOnPropertyRecordsTab(): Promise<HomePage> {
+    async clickOnPropertyRecordsTab(): Promise<FilterPropertiesPage> {
         await this.tabPropertyRecords.click();
-        const homePage = new HomePage(this.page);
-        await homePage.waitForPageToLoad();
-        return homePage;
+        const { FilterPropertiesPage } = await import('./FilterPropertiesPage');
+        const filterPropertiesPage = new FilterPropertiesPage(this.page);
+        await filterPropertiesPage.waitForPageToLoad();
+        return filterPropertiesPage;
+    }
+
+    async clickOnPenaltyCalculatorTab(): Promise<PenaltyCalculatorPage> {
+        await this.tabPenaltyCalculator.click();
+        const { PenaltyCalculatorPage } = await import('./PenaltyCalculatorPage');
+        const penaltyCalculatorPage = new PenaltyCalculatorPage(this.page);
+        await penaltyCalculatorPage.waitForPageToLoad();
+        return penaltyCalculatorPage;
     }
 }

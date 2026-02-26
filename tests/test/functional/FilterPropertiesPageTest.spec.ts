@@ -177,9 +177,4 @@ test.describe('Filter Page Navigation Tests', () => {
         const homePage = await filterPropertiesPage.clickBreadcrumbHome();
         expect(await homePage.isDisplayed()).toBe(true);
     });
-
-    test('Should navigate to Home page when clicking on Property Records tab in the header', async () => {
-        const homePage = await filterPropertiesPage.clickOnPropertyRecordsTab();
-        expect(await homePage.isDisplayed()).toBe(true);
-    });
 });

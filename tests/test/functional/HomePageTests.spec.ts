@@ -1,6 +1,8 @@
 import { test, expect } from '../../fixtures/authFixtures';
+import { HomePage } from '../../pages/Compliance/HomePage';
+import { FilterPropertiesPage } from '../../pages/Compliance/FilterPropertiesPage';
 import { LandingPage } from '../../pages/LandingPage';
-import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
+import { TestType, TestAnnotations } from '../../utils/TestTypes';
 
 test.describe('Home Page Functional Tests', () => {
     let landingPage: LandingPage;
@@ -33,5 +35,29 @@ test.describe('Home Page Functional Tests', () => {
         // Known Issue MEESCH-584 - Home Page title is incorrectly set to "Landing Page"
         // Expecting the title to be "Landing Page" due to the known issue
         await expect(page).toHaveTitle('Landing Page');
+    });
+});
+
+test.describe('Home Page Navigation Tests', () => {
+    let homePage: HomePage;
+
+    test.beforeEach(async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.FUNCTIONAL)
+        );
+
+        const landingPage = new LandingPage(page);
+        await landingPage.navigate();
+        homePage = await landingPage.clickSignIn_AuthenticatedUser();
+    });
+
+    test('Navigate to Filter Properties page from Home Page using the View Properties tab', async ({ page }) => {
+        const filterPropertiesPage: FilterPropertiesPage = await homePage.clickOnPropertyRecordsTab();
+        expect(await filterPropertiesPage.isDisplayed()).toBeTruthy();
+    });
+
+    test('Navigate to Penalty Calculator page from Home Page using the Penalty Calculator tab', async ({ page }) => {
+        const penaltyCalculatorPage = await homePage.clickOnPenaltyCalculatorTab();
+        expect(await penaltyCalculatorPage.isDisplayed()).toBeTruthy();
     });
 });
