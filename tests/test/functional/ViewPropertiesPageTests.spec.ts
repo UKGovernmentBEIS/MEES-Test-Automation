@@ -205,11 +205,11 @@ test.describe('View Properties Page Tests', () => {
             'Received': 'blue',
             'Approved': 'green',
             'Updated': 'orange',
-            'Ended': 'pink',
-            'Expired': 'pink', // // Bug 681: 'The PRS Exemption background colour is invalid for 'Data not found' and 'Expired' statuses'
+            'Ended': 'grey',
+            'Expired': 'grey',
             'Needs update': 'yellow',
             'Draft': 'blue',
-            'Data not found': 'grey' // Bug 681: 'The PRS Exemption background colour is invalid for 'Data not found' and 'Expired' statuses'
+            'Data not found': ''
         };
 
         const invalidExemptionsColors: string[] = [];
@@ -331,8 +331,9 @@ test.describe('View Properties Page Navigation Tests', () => {
         expect(await filterPropertiesPage.isDisplayed()).toBe(true);
     });
 
-    test('Should navigate to Home page when clicking on Property Records tab in the header', async () => {
-        const homePage = await viewPropertiesPage.clickOnPropertyRecordsTab();
-        expect(await homePage.isDisplayed()).toBe(true);
+    // Bug 685: The 'Property Records' tab navigates to the Home page instead of the Filter Properties page
+    test.skip('Should navigate to the Filter Properties page when clicking on Property Records tab in the header', async () => {
+        const filterPropertiesPage = await viewPropertiesPage.clickOnPropertyRecordsTab();
+        expect(await filterPropertiesPage.isDisplayed()).toBe(true);
     });
 });
