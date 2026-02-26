@@ -36,7 +36,9 @@ export enum PageName {
   VIEW_PROPERTIES = 'View Properties Page',
   FILTER_PROPERTIES_PAGE = "Filter Properties Page",
   VIEW_PROPERTIES_PAGE = "View Properties Page",
-  PROPERTY_DETAILS_PAGE = "Property Details Page"
+  PROPERTY_DETAILS_PAGE = "Property Details Page",
+  PENALTY_CALCULATOR_PAGE = "Penalty Calculator Page",
+  PENALTY_CALCULATOR_RESULTS_PAGE = "Penalty Calculator Results Page",
 }
 
 /**

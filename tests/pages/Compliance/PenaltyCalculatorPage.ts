@@ -55,4 +55,22 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
         return penaltyCalculatorResultsPage;
     }
 
+    async clearRateableValue(): Promise<void> {
+        await this.rateableValueInput.fill('');
+    }
+
+    async clickStartNewCalculation(): Promise<PenaltyCalculatorResultsPage | void> {
+        await this.calculateMaximumPenaltyButton.click();
+
+        // Check if the Penalty Calculator page is still displayed
+        // If it is, this means there were validation errors and we should return void.
+        // If not, it means we navigated to the results page and we should return a new instance of the PenaltyCalculatorResultsPage
+        if (await this.isDisplayed()) {
+            return;
+        } else {
+            const penaltyCalculatorResultsPage = new PenaltyCalculatorResultsPage(this.page);
+            await penaltyCalculatorResultsPage.waitForPageToLoad();
+            return penaltyCalculatorResultsPage;
+        }
+    }
 }

@@ -29,19 +29,19 @@ test.describe('Penalty Calculator Page Functional Tests', () => {
         penaltyCalculatorResultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('Less than 3 months', 1000);
         expect(await penaltyCalculatorResultsPage.getPanaltyMaximumValue()).toContain('£5,000');
 
-        // // Navigate back to the penalty calculator by clicking the 'Change' link for the length of breach
-        // penaltyCalculatorPage = await penaltyCalculatorResultsPage.clickChangeLengthOfBreach();
+        // Navigate back to the penalty calculator by clicking the 'Change' link for the length of breach
+        penaltyCalculatorPage = await penaltyCalculatorResultsPage.clickChangeLengthOfBreach();
 
-        // // Select length of breach as "More than 3 months"
-        // // Verify that the calculated maximum penalty is £10,000
-        // penaltyCalculatorResultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('More than 3 months', 1000);
-        // expect(await penaltyCalculatorResultsPage.getPanaltyMaximumValue()).toContain('£10,000');
+        // Select length of breach as "More than 3 months"
+        // Verify that the calculated maximum penalty is updated to £10,000 based on the previously entered rateable value of 1000
+        penaltyCalculatorResultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('More than 3 months', 1000);
+        expect(await penaltyCalculatorResultsPage.getPanaltyMaximumValue()).toContain('£10,000');
 
-        // // Navigate back to the penalty calculator by clicking the 'Change' link for the Rateable Value
-        // penaltyCalculatorPage = await penaltyCalculatorResultsPage.clickChangeRateableValue();
+        // Navigate back to the penalty calculator by clicking the 'Change' link for the Rateable Value
+        penaltyCalculatorPage = await penaltyCalculatorResultsPage.clickChangeRateableValue();
 
-        // // Select the rateable value as 10000
-        // penaltyCalculatorResultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('More than 3 months', 10000);
-        // expect(await penaltyCalculatorResultsPage.getPanaltyMaximumValue()).toContain('£100,000');
+        // Select the rateable value as 10000
+        penaltyCalculatorResultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('More than 3 months', 10000);
+        expect(await penaltyCalculatorResultsPage.getPanaltyMaximumValue()).toContain('£10,000');
     });
 });
