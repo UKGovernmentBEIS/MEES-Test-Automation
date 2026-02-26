@@ -41,8 +41,8 @@ export class HomePage extends BaseCompliancePage {
         return this.page.url().includes('landing-page');
     }
 
-    getPageContextLocator(): Locator {
-        return this.pageContext;
+    async getPageContextLocator(): Promise<Locator[]> {
+        return [this.pageContext];
     }
 
     async clickViewProperties(): Promise<FilterPropertiesPage> {

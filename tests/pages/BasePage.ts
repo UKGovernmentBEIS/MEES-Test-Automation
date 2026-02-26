@@ -59,7 +59,7 @@ export abstract class BasePage {
   /**
    * Get the main page context locator (to be implemented by subclasses)
    */
-  abstract getPageContextLocator(): Locator;
+  abstract getPageContextLocator(): Promise<Locator[]>;
 
   /**
    * Wait for the page to load (to be implemented by subclasses)

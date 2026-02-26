@@ -19,8 +19,8 @@ export class LandingPage extends BasePage {
    * Get the page context locator for visual regression testing
    * @returns Locator for the page context element
    */
-  getPageContextLocator(): Locator {
-    return this.pageContext;
+  async getPageContextLocator(): Promise<Locator[]> {
+    return [this.pageContext];
   }
 
   /**

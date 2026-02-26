@@ -23,6 +23,10 @@ test.describe('Filter Properties Page Non-Functional Tests', () => {
     expect(criticalViolations, `Filter Properties page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
 
     // Context Verification: Verify presence of key elements on the Filter Properties page
-    await expect(filterPropertiesPage.getPageContextLocator()).toMatchAriaSnapshot();
+    // Itterate through all locators returned by getPageContextLocator and check if they are visible
+    const contextLocators = await filterPropertiesPage.getPageContextLocator();
+    for (const locator of contextLocators) {
+        await expect(locator).toMatchAriaSnapshot();
+    }
   });
 });

@@ -66,8 +66,8 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         return await this.pageContext.isVisible();
     }
 
-    getPageContextLocator(): Locator {
-        return this.pageContext;
+    async getPageContextLocator(): Promise<Locator[]> {
+        return [this.pageContext];
     }
 
     async getFilterCriterionValueField(filterName: string): Promise<Locator> {

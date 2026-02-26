@@ -36,8 +36,8 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
         return this.page.url().includes('penalty-calculator');
     }
 
-    getPageContextLocator(): Locator {
-        return this.pageContext;
+    async getPageContextLocator(): Promise<Locator[]> {
+        return [this.pageContext];
     }
 
     async calculateMaximumPenalty(lengthOfBreach: LengthOfBreach, rateableValue: number): Promise<PenaltyCalculatorResultsPage> {

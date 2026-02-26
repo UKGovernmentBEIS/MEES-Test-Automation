@@ -54,7 +54,6 @@ interface Comment {
 }
 
 export class PropertyDetailsPage extends BaseCompliancePage {
-    private pageContext: Locator;
     private breadcrumbHome: Locator;
     private breadcrumbViewPropertyRecords: Locator;
     private breadcrumbFilterPropertiesRecords: Locator;
@@ -65,12 +64,14 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private commentTextArea: Locator;
     private commentSaveButton: Locator;
     private commentCancelButton: Locator;
+    private propertyDetails: Locator;
     private propertyDetailsRows: Locator;
+    private propertyExemptionDetails: Locator;
     private propertyExemptionDetailsRows: Locator;
+    // .govuk-main-wrapper .govuk-summary-list
 
     constructor(page: Page) {
         super(page);
-        this.pageContext = page.locator('#main-content');
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.breadcrumbViewPropertyRecords = page.getByRole('link', { name: 'View property records' });
         this.breadcrumbFilterPropertiesRecords = page.getByRole('link', { name: 'Filter property records' });
@@ -81,10 +82,10 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
         this.commentCancelButton = page.getByRole('link', { name: 'Cancel' });
-        this.propertyDetailsRows = page.locator('c-mees-property-details')
-            .filter({ has: page.locator('text=View property and landlord details') })
-            .locator('.govuk-summary-list__row'); 
-        this.propertyExemptionDetailsRows = page.locator('.govuk-tabs__panel .govuk-summary-list__row');
+        this.propertyDetails = page.locator('.govuk-summary-list').first();
+        this.propertyDetailsRows = this.propertyDetails.locator('.govuk-summary-list__row');
+        this.propertyExemptionDetails = page.locator('.govuk-summary-list').nth(1);
+        this.propertyExemptionDetailsRows = this.propertyExemptionDetails.locator('.govuk-summary-list__row');
     }
 
     // Wait for the Property Details Page to load
@@ -95,7 +96,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
             this.page,
             'Property Details Page',
             {
-                pageContext: this.pageContext,
                 breadcrumbHome: this.breadcrumbHome,
                 breadcrumbViewPropertyRecords: this.breadcrumbViewPropertyRecords,
                 breadcrumbFilterPropertiesRecords: this.breadcrumbFilterPropertiesRecords,
@@ -115,8 +115,8 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return this.page.url().includes('view-details');
     }
 
-    getPageContextLocator(): Locator {
-        return this.pageContext;
+    async getPageContextLocator(): Promise<Locator[]> {
+        return [this.propertyDetails, this.propertyExemptionDetails];
     }
 
     async clickBreadcrumbHome(): Promise<HomePage> {

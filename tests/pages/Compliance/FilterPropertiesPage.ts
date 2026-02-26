@@ -70,8 +70,8 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         return this.page.url().includes('filter-properties');
     }
 
-    getPageContextLocator(): Locator {
-        return this.pageContext;
+    async getPageContextLocator(): Promise<Locator[]> {
+        return [this.pageContext];
     }
 
     async setCouncilFilter(council: string): Promise<void> {

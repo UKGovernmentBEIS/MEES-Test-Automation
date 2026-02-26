@@ -21,6 +21,10 @@ test.describe('Landing Page Non-Functional Tests', () => {
     expect(criticalViolations, `Landing page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
 
     // Context Verification: Verify presence of key elements on the Landing page
-    await expect(landingPage.getPageContextLocator()).toMatchAriaSnapshot();
+    // Itterate through all locators returned by getPageContextLocator and check if they are visible
+    const contextLocators = await landingPage.getPageContextLocator();
+    for (const locator of contextLocators) {
+        await expect(locator).toMatchAriaSnapshot();
+    }
   });
 });

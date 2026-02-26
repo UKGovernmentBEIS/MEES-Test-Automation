@@ -32,6 +32,10 @@ test.describe('Property Details Page Non-Functional Tests', () => {
         expect(criticalViolations, `Property Details page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
 
         // Context Verification: Verify presence of key elements on the Property Details page
-        await expect(propertyDetailsPage.getPageContextLocator()).toMatchAriaSnapshot();
+        // Itterate through all locators returned by getPageContextLocator and check if they are visible
+        const contextLocators = await propertyDetailsPage.getPageContextLocator();
+        for (const locator of contextLocators) {
+            await expect(locator).toMatchAriaSnapshot();
+        }
     });
 });
