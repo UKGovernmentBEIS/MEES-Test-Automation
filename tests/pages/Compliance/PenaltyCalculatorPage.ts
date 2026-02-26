@@ -2,11 +2,13 @@ import { Page, Locator } from '@playwright/test';
 import { BaseCompliancePage } from './BaseCompliancePage';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { PenaltyCalculatorResultsPage } from './PenaltyCalculatorResultPage';
+import { HomePage } from './HomePage';
 
 type LengthOfBreach = 'Less than 3 months' | 'More than 3 months';
 
 export class PenaltyCalculatorPage extends BaseCompliancePage {
     private pageContext: Locator;
+    private readonly breadcrumbHome: Locator;
     private readonly rateableValueInput: Locator;
     private readonly calculateMaximumPenaltyButton: Locator;
     
@@ -16,6 +18,7 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
 
     constructor(page: Page) {
         super(page);
+        this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.pageContext = this.page.locator('#main-content');
         this.rateableValueInput = this.page.getByRole('textbox', { name: 'What is the rateable value of' })
         this.calculateMaximumPenaltyButton = this.page.getByRole('button', { name: 'Calculate maximum penalty' });
@@ -42,6 +45,14 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
 
     async getRateableValueErrorMessage(): Promise<Locator> {
         return this.page.locator('p.govuk-error-message');
+    }
+
+    async clickBreadcrumbHome(): Promise<HomePage> {
+        await this.breadcrumbHome.click();
+
+        const homePage = new HomePage(this.page);
+        await homePage.waitForPageToLoad();
+        return homePage;
     }
 
     async calculateMaximumPenalty(lengthOfBreach: LengthOfBreach, rateableValue: number): Promise<PenaltyCalculatorResultsPage> {
