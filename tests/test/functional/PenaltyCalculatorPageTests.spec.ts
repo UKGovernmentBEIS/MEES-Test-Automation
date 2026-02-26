@@ -2,7 +2,7 @@ import { expect, test } from '../../fixtures/authFixtures';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
 import { PenaltyCalculatorPage } from '../../pages/Compliance/PenaltyCalculatorPage';
-import { HomePage } from '../../pages/Compliance/HomePage';
+import { FilterPropertiesPage } from '../../pages/Compliance/FilterPropertiesPage';
 
 test.describe('Penalty Calculator Page Functional Tests', () => {
     let penaltyCalculatorPage: PenaltyCalculatorPage;
@@ -175,5 +175,10 @@ test.describe('Penalty Calculator Results Page Navigation Tests', () => {
         const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('Less than 3 months', 50000);
         const calculatorPage = await resultsPage.clickBreadcrumbPenaltyCalculator();
         expect(await calculatorPage.isDisplayed()).toBe(true);
+    });
+
+    test('Navigate to Filter Properties page from Penalty Calculator Page using the View Properties tab', async ({ page }) => {
+        const filterPropertiesPage: FilterPropertiesPage = await penaltyCalculatorPage.clickOnPropertyRecordsTab();
+        expect(await filterPropertiesPage.isDisplayed()).toBeTruthy();
     });
 });
