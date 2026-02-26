@@ -40,6 +40,10 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
         return [this.pageContext];
     }
 
+    async getRateableValueErrorMessage(): Promise<Locator> {
+        return this.page.locator('p.govuk-error-message');
+    }
+
     async calculateMaximumPenalty(lengthOfBreach: LengthOfBreach, rateableValue: number): Promise<PenaltyCalculatorResultsPage> {
         // Select the length of breach radio button based on the input
         const lengthOfBreachRadioButton = await this.LengthOfBreachRadioButton(lengthOfBreach);
