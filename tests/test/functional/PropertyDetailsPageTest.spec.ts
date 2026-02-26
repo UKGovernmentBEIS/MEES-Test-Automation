@@ -138,7 +138,7 @@ test.describe('Property Details Comments Tests', () => {
         await propertyDetailsPage.saveComment();
 
         // Verify comment appears
-        expect(await propertyDetailsPage.previousComments()).toContainText(uniqueComment);
+        expect((await propertyDetailsPage.getPreviousComments()).find(comment => comment.commentText === uniqueComment)).toBeDefined();
 
         // verify comment has correct annotation (example: 'Added by testusertriad123+001@gmail.com on 24th February 2026')
         const currentUserName = getCurrentUserEmail(testInfo.parallelIndex);
@@ -161,7 +161,7 @@ test.describe('Property Details Comments Tests', () => {
         const year = currentDate.getFullYear();
         
         const expectedAnnotation = `Added by ${currentUserName} on ${dayWithSuffix} ${month} ${year}`;
-        expect(await propertyDetailsPage.previousComments()).toContainText(expectedAnnotation);
+        expect((await propertyDetailsPage.getPreviousComments()).find(comment => comment.commentAnnotations === expectedAnnotation)).toBeDefined();
     });
 
     // Validate that cancel button clear the comment input and does not save the comment
@@ -173,7 +173,7 @@ test.describe('Property Details Comments Tests', () => {
         await propertyDetailsPage.cancelComment();
 
         // Verify comment does not appear in previous comments
-        expect(await propertyDetailsPage.previousComments()).not.toHaveText(uniqueComment);
+        expect((await propertyDetailsPage.getPreviousComments()).find(comment => comment.commentText === uniqueComment)).toBeUndefined();
     });
 
     // Validate comments must have the text entered before they can be saved, and an error message is displayed if trying to save an empty comment
