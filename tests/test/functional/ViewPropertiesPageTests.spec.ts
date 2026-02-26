@@ -206,10 +206,10 @@ test.describe('View Properties Page Tests', () => {
             'Approved': 'green',
             'Updated': 'orange',
             'Ended': 'pink',
-            'Expired': 'grey',
+            'Expired': 'pink', // // Bug 681: 'The PRS Exemption background colour is invalid for 'Data not found' and 'Expired' statuses'
             'Needs update': 'yellow',
             'Draft': 'blue',
-            'Data not found': '' 
+            'Data not found': 'grey' // Bug 681: 'The PRS Exemption background colour is invalid for 'Data not found' and 'Expired' statuses'
         };
 
         const invalidExemptionsColors: string[] = [];
