@@ -17,7 +17,7 @@
           - /url: /templates
   - paragraph:
     - text: Beta This is a new service. Help us improve it and
-    - link "give your feedback":
+    - link "give your feedback by email":
       - /url: "#"
     - text: .
   - navigation "Breadcrumb":

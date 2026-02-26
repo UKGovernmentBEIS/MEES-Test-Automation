@@ -1,0 +1,8 @@
+- term: Current energy rating
+- definition: A
+- term: Current EPC expiry date
+- definition: /\d+ February \d+/
+- term: PRS exemption status
+- definition: Penalty sent
+- term: PRS exemption date
+- definition: /\d+ February \d+/
