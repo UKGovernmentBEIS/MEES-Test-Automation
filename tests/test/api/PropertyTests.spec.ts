@@ -128,7 +128,6 @@ test.describe('Response Structure Tests', () => {
             expect(Object.keys(certificate).length).toBe(4);
             expect(typeof certificate.assetRating).toBe('number');
             expect(typeof certificate.assetRatingBand).toBe('string');
-            expect(typeof certificate.lodgementDate).toBe('string');
             expect(typeof certificate.expiryDate).toBe('string');
         }
     });

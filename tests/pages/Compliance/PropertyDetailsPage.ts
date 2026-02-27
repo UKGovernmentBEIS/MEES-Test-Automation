@@ -36,7 +36,6 @@ export interface DMSPropertyDetails {
     epcCertificates: Array<{
         assetRating: number;
         assetRatingBand: string;
-        lodgementDate: string;
         expiryDate: string;
     }>;
     landlords: Array<{
