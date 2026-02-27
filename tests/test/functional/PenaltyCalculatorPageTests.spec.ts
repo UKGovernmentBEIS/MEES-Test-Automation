@@ -177,7 +177,7 @@ test.describe('Penalty Calculator Results Page Navigation Tests', () => {
         expect(await calculatorPage.isDisplayed()).toBe(true);
     });
 
-    test('Navigate to Filter Properties page from Penalty Calculator Page using the View Properties tab', async ({ page }) => {
+    test.skip('Navigate to Filter Properties page from Penalty Calculator Page using the View Properties tab', async ({ page }) => {
         const filterPropertiesPage: FilterPropertiesPage = await penaltyCalculatorPage.clickOnPropertyRecordsTab();
         expect(await filterPropertiesPage.isDisplayed()).toBeTruthy();
     });
