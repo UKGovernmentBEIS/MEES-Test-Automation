@@ -4,7 +4,8 @@
     - list:
       - listitem:
         - link "Property records":
-          - /url: /filter-properties
+          - /url: /landing-page
+          - strong: Property records
       - listitem:
         - link "Guidance":
           - /url: /guidance
