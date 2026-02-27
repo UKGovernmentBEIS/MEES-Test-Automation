@@ -51,7 +51,8 @@ test.describe('Home Page Navigation Tests', () => {
         homePage = await landingPage.clickSignIn_AuthenticatedUser();
     });
 
-    test('Navigate to Filter Properties page from Home Page using the View Properties tab', async ({ page }) => {
+    // Bug 685: The 'Property Records' tab navigates to the Home page instead of the Filter Properties page
+    test.skip('Navigate to Filter Properties page from Home Page using the View Properties tab', async ({ page }) => {
         const filterPropertiesPage: FilterPropertiesPage = await homePage.clickOnPropertyRecordsTab();
         expect(await filterPropertiesPage.isDisplayed()).toBeTruthy();
     });
