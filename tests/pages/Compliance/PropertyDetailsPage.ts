@@ -60,7 +60,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private tabEnergyRatingsAndPRSExemptions: Locator;
     private tabEPCHistory: Locator;
     private epcHistoryTable: Locator;
-    private previousComments: Locator;
+    private commentsList: Locator;
     private commentTextArea: Locator;
     private commentSaveButton: Locator;
     private commentCancelButton: Locator;
@@ -78,7 +78,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.tabEnergyRatingsAndPRSExemptions = page.locator('div').filter({ hasText: /^Energy ratings and PRS exemptions$/ })
         this.tabEPCHistory = page.locator("//li[@data-id='EPCTab']");
         this.epcHistoryTable = page.locator("//div[@data-id='EPCTab']/table");
-        this.previousComments = page.locator('.comments-list .comment-item');
+        this.commentsList = page.locator('.comments-list');
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
         this.commentCancelButton = page.getByRole('link', { name: 'Cancel' });
@@ -214,7 +214,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         // Search for the text from the comment text area in the previous comments to confirm that the comment has been saved
         // Do it only if comment text area wasn't empty
         if (commentValueBeforeSave.trim() !== '') {
-            await this.previousComments.getByText(commentValueBeforeSave).waitFor({ timeout: 5000 });
+            await this.commentsList.getByText(commentValueBeforeSave).waitFor({ timeout: 5000 });
         }
     }
 
@@ -227,22 +227,26 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return classAttribute?.includes('govuk-textarea--error') || false;
     }
 
-    async getPreviousComments(): Promise<Comment[]> {
-        // Get all comment elements within the previous comments section
-        const commentElements = this.previousComments;
-        const commentCount = await commentElements.count();
-        const comments: Comment[] = [];
-
-        // Loop through each comment element and extract the comment text and annotations
-        for (let i = 0; i < commentCount; i++) {
-            const commentElement = commentElements.nth(i);
-            const commentText = await commentElement.locator('.comment-text').innerText();
-            const commentAnnotations = await commentElement.locator('.comment-meta').innerText();
-            comments.push({ commentText, commentAnnotations });
-        }
-
-        return comments;
+    async getComments(): Promise<Locator> {
+        return this.commentsList;
     }
+
+    // async getPreviousComments(): Promise<Comment[]> {
+    //     // Get all comment elements within the previous comments section
+    //     const commentElements = this. previousComments;
+    //     const commentCount = await commentElements.count();
+    //     const comments: Comment[] = [];
+
+    //     // Loop through each comment element and extract the comment text and annotations
+    //     for (let i = 0; i < commentCount; i++) {
+    //         const commentElement = commentElements.nth(i);
+    //         const commentText = await commentElement.locator('.comment-text').innerText();
+    //         const commentAnnotations = await commentElement.locator('.comment-meta').innerText();
+    //         comments.push({ commentText, commentAnnotations });
+    //     }
+
+    //     return comments;
+    // }
 
     //#endregion
 }

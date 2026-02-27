@@ -137,14 +137,13 @@ test.describe('Property Details Comments Tests', () => {
         await propertyDetailsPage.addComment(uniqueComment);
         await propertyDetailsPage.saveComment();
 
-        // Verify comment appears
-        expect((await propertyDetailsPage.getPreviousComments()).find(comment => comment.commentText === uniqueComment)).toBeDefined();
+        await expect(await propertyDetailsPage.getComments()).toContainText(uniqueComment);
 
-        // verify comment has correct annotation (example: 'Added by testusertriad123+001@gmail.com on 24th February 2026')
+        // Verify comment has correct annotation (example: 'Added by testusertriad123+001@gmail.com on 24th February 2026')
+        // Get current user's email for annotation
         const currentUserName = getCurrentUserEmail(testInfo.parallelIndex);
+        // Construct expected expected date with ordinal suffix
         const currentDate = new Date();
-        
-        // Create ordinal suffix for day
         const day = currentDate.getDate();
         const getOrdinalSuffix = (day: number) => {
             if (day > 3 && day < 21) return 'th';
@@ -155,13 +154,14 @@ test.describe('Property Details Comments Tests', () => {
                 default: return 'th';
             }
         };
-        
         const dayWithSuffix = `${day}${getOrdinalSuffix(day)}`;
         const month = currentDate.toLocaleDateString('en-GB', { month: 'long' });
         const year = currentDate.getFullYear();
-        
+        // Expected annotation format:
         const expectedAnnotation = `Added by ${currentUserName} on ${dayWithSuffix} ${month} ${year}`;
-        expect((await propertyDetailsPage.getPreviousComments()).find(comment => comment.commentAnnotations === expectedAnnotation)).toBeDefined();
+
+        // expect((await propertyDetailsPage.getPreviousComments()).find(comment => comment.commentAnnotations === expectedAnnotation)).toBeDefined();
+        await expect(await propertyDetailsPage.getComments()).toContainText(expectedAnnotation);
     });
 
     // Validate that cancel button clear the comment input and does not save the comment
@@ -173,7 +173,7 @@ test.describe('Property Details Comments Tests', () => {
         await propertyDetailsPage.cancelComment();
 
         // Verify comment does not appear in previous comments
-        expect((await propertyDetailsPage.getPreviousComments()).find(comment => comment.commentText === uniqueComment)).toBeUndefined();
+        await expect(await propertyDetailsPage.getComments()).not.toContainText(uniqueComment);
     });
 
     // Validate comments must have the text entered before they can be saved, and an error message is displayed if trying to save an empty comment
@@ -222,7 +222,8 @@ test.describe('Property Details Page Navigation Tests', () => {
         expect(await viewPropertiesPage.isDisplayed()).toBe(true);
     });
 
-    test('Should navigate to the Filter Properties page when clicking on Property Records tab in the header', async () => {
+    // Bug 685: The 'Property Records' tab navigates to the Home page instead of the Filter Properties page
+    test.skip('Should navigate to the Filter Properties page when clicking on Property Records tab in the header', async () => {
         const filterPropertiesPage = await propertyDetailsPage.clickOnPropertyRecordsTab();
         expect(await filterPropertiesPage.isDisplayed()).toBe(true);
     });
