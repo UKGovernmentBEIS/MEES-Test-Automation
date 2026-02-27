@@ -205,7 +205,7 @@ test.describe('View Properties Page Tests', () => {
             'Received': 'blue',
             'Approved': 'green',
             'Updated': 'orange',
-            'Ended': 'grey',
+            'Ended': 'pink',
             'Expired': 'grey',
             'Needs update': 'yellow',
             'Draft': 'blue',
