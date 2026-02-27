@@ -82,21 +82,53 @@ export async function saveAuthState(page: Page, workerIndex: number): Promise<vo
 
 /**
  * Retrieves the email of the currently authenticated user based on the worker index.
- * Uses the worker index to determine which account was used for authentication,
- * then resolves the actual email from environment variables using the account configuration.
- * This function is useful for validating that actions are performed under the correct user context during tests.
+ * Determines which authentication state file is actually being used by checking available auth files
+ * and mapping to the correct account, rather than assuming parallelIndex directly maps to account index.
  * 
  * @param workerIndex - The worker index to get the email for (defaults to 0 if not provided)
  * @returns The email address of the currently authenticated user
- * @throws Error if the worker index is invalid or if the email cannot be resolved
+ * @throws Error if no authentication state files are found or if the email cannot be resolved
  */
 export function getCurrentUserEmail(workerIndex: number = 0): string {
-    // Get the account configuration for this worker
-    if (workerIndex >= accounts.length) {
-        throw new Error(`No account configured for worker index ${workerIndex}. Available accounts: ${accounts.length}`);
+    const authDir = path.join(__dirname, '../../playwright/auth-states');
+    
+    // Check if auth directory exists
+    if (!fs.existsSync(authDir)) {
+        throw new Error(`Authentication states directory not found: ${authDir}`);
     }
     
-    const account = accounts[workerIndex];
+    // Get all available auth files
+    const authFiles = fs.readdirSync(authDir).filter(file => file.startsWith('user-') && file.endsWith('.json'));
+    if (authFiles.length === 0) {
+        throw new Error('No authentication state files found in the auth-states directory.');
+    }
+    
+    // Sort auth files to ensure consistent ordering
+    authFiles.sort();
+    
+    // Map the worker index to available auth files
+    // Since we have limited auth files (usually 2), cycle through them
+    const authFileIndex = workerIndex % authFiles.length;
+    const selectedAuthFile = authFiles[authFileIndex];
+    
+    // Extract the actual worker index from the auth file name
+    const workerMatch = selectedAuthFile.match(/user-(\d+)\.json/);
+    if (!workerMatch) {
+        throw new Error(`Invalid auth file format: ${selectedAuthFile}. Expected format: user-N.json`);
+    }
+    
+    const actualWorkerIndex = parseInt(workerMatch[1], 10);
+    
+    // Map the actual worker index to account configuration
+    const accountIndex = actualWorkerIndex % accounts.length;
+    
+    if (accountIndex >= accounts.length) {
+        throw new Error(`No account configured for account index ${accountIndex}. Available accounts: ${accounts.length}`);
+    }
+    
+    const account = accounts[accountIndex];
+    
+    console.log(`[Auth Utils] Worker ${workerIndex} -> Auth file ${selectedAuthFile} -> Account ${accountIndex} (${account.email})`);
     
     // Resolve the actual email from environment variables
     const { email } = resolveCredentials(account);
