@@ -19,7 +19,7 @@
   - heading "Register" [level=2]
   - paragraph: You must register for a personal account to access this service.
   - paragraph:
-    - link "Complete the local authority sign up form if you have not already done so.":
+    - link "You can register by completing this Microsoft Form (opens in a new tab).":
       - /url: "#"
   - paragraph: You will receive an email when your account has been successfully created.
   - heading "Sign in" [level=2]
@@ -32,19 +32,18 @@
     - list:
       - listitem:
         - link "Review exemptions for private rented sector energy standards":
-          - /url: "#"
+          - /url: https://prsregister.beis.gov.uk/NdsBeisUi/register-search-exemptions
       - listitem:
         - link "Find an energy certificate":
-          - /url: "#"
+          - /url: https://www.gov.uk/find-energy-certificate
   - button "Sign in"
   - heading "If you need help" [level=2]
-  - paragraph: "Contact our support team if your local authority:"
+  - paragraph: "Contact our support team if you :"
   - list:
-    - listitem: has not been given sign in information
-    - listitem: needs to give access to more people
+    - listitem: need to give access to more people in your local authority
     - listitem: needs access to property details in another local authority area
-    - listitem: needs technical support
+    - listitem: need technical support
   - paragraph:
-    - link "email@department.gov.uk":
+    - link "meesdigital@energysecurity.gov.uk":
       - /url: mailto:email@department.gov.uk
     - text: /Monday to Friday, 9am to \d+[hmsp]+/
