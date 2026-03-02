@@ -3,6 +3,7 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import { BaseCompliancePage } from './BaseCompliancePage';
 import { FilterPropertiesPage } from './FilterPropertiesPage';
 import { PenaltyCalculatorPage } from './PenaltyCalculatorPage';
+import { TemplatesPage } from './TemplatesPage';
 
 export class HomePage extends BaseCompliancePage {
     private pageContext: Locator;
@@ -57,5 +58,12 @@ export class HomePage extends BaseCompliancePage {
         const penaltyCalculatorPage = new PenaltyCalculatorPage(this.page);
         await penaltyCalculatorPage.waitForPageToLoad();
         return penaltyCalculatorPage;
+    }
+
+    async clickViewTemplates(): Promise<TemplatesPage> {
+        await this.viewTemplatesLink.click();
+        const templatesPage = new TemplatesPage(this.page);
+        await templatesPage.waitForPageToLoad();
+        return templatesPage;
     }
 }

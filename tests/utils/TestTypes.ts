@@ -39,6 +39,8 @@ export enum PageName {
   PROPERTY_DETAILS_PAGE = "Property Details Page",
   PENALTY_CALCULATOR_PAGE = "Penalty Calculator Page",
   PENALTY_CALCULATOR_RESULTS_PAGE = "Penalty Calculator Results Page",
+  TEMPLATES_PAGE = "Templates Page",
+  GUIDANCE_PAGE = "Guidance Page"
 }
 
 /**

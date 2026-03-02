@@ -1,5 +1,5 @@
 - term: Current energy rating
-- definition: A
+- definition: /A \(\d+\)/
 - term: Current EPC expiry date
 - definition: /\d+ February \d+/
 - term: PRS exemption status

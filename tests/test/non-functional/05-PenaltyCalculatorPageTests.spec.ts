@@ -1,7 +1,6 @@
 import { test, expect } from '../../fixtures/authFixtures';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
-import { HomePage } from '../../pages/Compliance/HomePage';
 import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
 
 test.describe('Penalty Calculator Page Non-Functional Tests', () => {
