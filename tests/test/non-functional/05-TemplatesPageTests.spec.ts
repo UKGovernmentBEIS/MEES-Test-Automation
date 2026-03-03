@@ -26,7 +26,7 @@ test.describe('Templates Page Non-Functional Tests', () => {
         // Itterate through all locators returned by getPageContextLocator and check if they are visible
         const contextLocators = await templatesPage.getPageContextLocator();
         for (const locator of contextLocators) {
-            await expect(locator).toBeVisible();
+            await expect(locator).toMatchAriaSnapshot();
         }
     });
 });
