@@ -85,8 +85,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
     test('Verify data displayed in the Energy Ratings and PRS Exemptions section of the Property Details page', async () => {
 
         // Verify Current energy rating
-        // Bug 666: Should be A (23) instead of just A, but keeping the expected value as 'A' for now to avoid test failure until the bug is fixed
-         expect(await propertyDetailsPage.getExemptionDetails("Current energy rating")).toHaveText('A');
+         expect(await propertyDetailsPage.getExemptionDetails("Current energy rating")).toHaveText('A (39)');
 
         // Verify Current EPC expiry date
         expect(await propertyDetailsPage.getExemptionDetails("Current EPC expiry date")).toHaveText('20 February 2026');
