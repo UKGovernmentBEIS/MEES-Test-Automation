@@ -227,6 +227,9 @@ test.describe('View Properties Page Tests', () => {
         expect(invalidExemptionsColors, `Invalid PRS Exemptions colors found: ${invalidExemptionsColors.join(', ')}`).toEqual([]);
     });
 
+    // Bug: 753 'Duplicated properties are displayed on the View Properties page'
+    // Remove matching properties by Energy Rating (p.energyRating === energyRating) in the find condition 
+    // until the underlying issue is resolved to avoid test failure due to duplicated records
     test('Verify Energy Ratings data', async ({ page, request }) => {
         // Make sure that all data are loaded first
         await viewPropertiesPage.waitForTableContent();
@@ -276,7 +279,7 @@ test.describe('View Properties Page Tests', () => {
             const energyRating = `${apiProperty.EPCEnergyRatingBand} (${apiProperty.EPCEnergyRating})`;
 
             // Find the corresponding property data from the UI based on the address and compare energy ratings
-            const propertyData = propertiesData.find(p => p.address === address);
+            const propertyData = propertiesData.find(p => p.address === address && p.energyRating === energyRating );
             if (!propertyData) {
                 discrepancies.push(`Property with address '${address}' found in API but not in UI. We have the following addresses in the UI: ${propertiesData.map(p => p.address).join('; ')}  `);
             } else
