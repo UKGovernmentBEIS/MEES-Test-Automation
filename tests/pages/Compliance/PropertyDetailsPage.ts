@@ -229,23 +229,5 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     async getComments(): Promise<Locator> {
         return this.commentsList;
     }
-
-    // async getPreviousComments(): Promise<Comment[]> {
-    //     // Get all comment elements within the previous comments section
-    //     const commentElements = this. previousComments;
-    //     const commentCount = await commentElements.count();
-    //     const comments: Comment[] = [];
-
-    //     // Loop through each comment element and extract the comment text and annotations
-    //     for (let i = 0; i < commentCount; i++) {
-    //         const commentElement = commentElements.nth(i);
-    //         const commentText = await commentElement.locator('.comment-text').innerText();
-    //         const commentAnnotations = await commentElement.locator('.comment-meta').innerText();
-    //         comments.push({ commentText, commentAnnotations });
-    //     }
-
-    //     return comments;
-    // }
-
     //#endregion
 }
