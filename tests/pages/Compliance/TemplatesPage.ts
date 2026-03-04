@@ -74,10 +74,4 @@ export class TemplatesPage extends BaseCompliancePage {
 
         return contextLocators;
     }
-
-    async getPublisherInformationLink(): Promise<string> {
-        const link: Locator = this.publisherInformation.locator('p>a');
-        const href = await link.getAttribute('href');
-        return href?.trim() || '';
-    }
 } 
