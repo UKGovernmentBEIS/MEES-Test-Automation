@@ -291,8 +291,7 @@ test.describe('View Properties Page Tests', () => {
         expect(discrepancies, `Discrepancies found: ${discrepancies.join(', ')}`).toEqual([]);
     });
 
-    // Bug: 745 'Filtering by Unrated Energy Rating Band does not work'
-    test.skip('The Energy Ratings for not rated properties shows \'Unrated\'', async ({ page }) => {
+    test('The Energy Ratings for not rated properties shows \'Unrated\'', async ({ page }) => {
         // Set specific filter criteria to get Unrated properties
         const filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
         await filterPropertiesPage.setEnergyRatingFilter('Unrated');
