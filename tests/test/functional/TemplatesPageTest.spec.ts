@@ -20,4 +20,23 @@ test.describe('Penalty Calculator Page', () => {
     test('Templates page should load successfully', async () => {
         expect(await templatesPage.isDisplayed()).toBe(true);
     });
+
+    test('Verify that the correct template file name is downloaded', async () => {
+        const expectedTemplateFileNames: string[] = [
+            'Penalty notice letter (publication) template.docx', 
+            'Penalty notice letter (finantial) template.docx',
+            'Compliance notice letter template.docx',
+            'Penalty notice letter (publication and publication) template.docx'
+        ];
+
+        const actualFileNames = await templatesPage.downloadFileNamesForTemplates();
+        
+        // Check that we have the expected number of files
+        expect(actualFileNames).toHaveLength(expectedTemplateFileNames.length);
+        
+        // Check each filename is in the expected list
+        actualFileNames.forEach(filename => {
+            expect(expectedTemplateFileNames).toContain(filename);
+        });
+    });
 });

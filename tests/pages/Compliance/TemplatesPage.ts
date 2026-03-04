@@ -9,7 +9,7 @@ export class TemplatesPage extends BaseCompliancePage {
     private readonly templateList: Promise<Locator[]>;
 
 
-    constructor(page: Page) {
+    constructor(page: Page) { 
         super(page);
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.paragraphList = page.locator('.govuk-grid-column-three-quarters>p').all();
@@ -75,5 +75,33 @@ export class TemplatesPage extends BaseCompliancePage {
         }
 
         return contextLocators;
+    }
+
+    async downloadFileNamesForTemplates(): Promise<string[]> {
+        const templates = await this.templateList;
+        const downloadPromises: Promise<string>[] = [];
+
+        // Create promises for all downloads
+        for (let i = 0; i < templates.length; i++) {
+            downloadPromises.push(this.downloadAndGetFilename(i));
+        }
+
+        return Promise.all(downloadPromises);
+    }
+
+    private async downloadAndGetFilename(templateIndex: number): Promise<string> {
+        const templates = await this.templateList;
+        if (templateIndex >= templates.length) {
+            throw new Error(`Template index ${templateIndex} is out of range`);
+        }
+        
+        const downloadLink = templates[templateIndex].locator('.template-details');
+        
+        // Wait for download event
+        const downloadPromise = this.page.waitForEvent('download');
+        await downloadLink.click();
+        
+        const download = await downloadPromise;
+        return download.suggestedFilename();
     }
 } 
