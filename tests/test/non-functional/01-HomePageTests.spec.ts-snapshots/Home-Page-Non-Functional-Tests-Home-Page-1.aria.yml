@@ -28,7 +28,7 @@
       - link "Sign out":
         - /url: "#"
   - main:
-    - heading "Tools and guidance for enforcing energy standards" [level=1]
+    - heading "Check if properties meet minimum energy efficiency standards" [level=1]
     - paragraph: Use this service to access information and tools to help you enforce the Minimum Energy Efficiency Standards (MEES) Regulations for non-domestic properties in the Private Rented Sector (PRS).
     - paragraph: You can view property and landlord details, get guidance on enforcement, download letter templates, and calculate financial penalties.
     - separator

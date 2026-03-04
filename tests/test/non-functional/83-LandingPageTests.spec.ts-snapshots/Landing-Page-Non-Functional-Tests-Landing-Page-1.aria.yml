@@ -45,5 +45,5 @@
     - listitem: need technical support
   - paragraph:
     - link "meesdigital@energysecurity.gov.uk":
-      - /url: mailto:email@department.gov.uk
+      - /url: mailto:meesdigital@energysecurity.gov.uk
     - text: /Monday to Friday, 9am to \d+[hmsp]+/

@@ -49,7 +49,7 @@
     - term: Landlord location
     - definition: All locations
     - link "Change filters":
-      - /url: "#-79"
+      - /url: "#-78"
     - heading "Property records" [level=1]
     - paragraph: 0 results
     - button "Export filtered table (.csv)"
