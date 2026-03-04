@@ -261,8 +261,9 @@ const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
         }
     });
 
+    // Bug: 745 'Filtering by Unrated Energy Rating Band does not work'
     test('Energy rating band filter works correctly', async ({ request }) => {
-        const validRatings = ["A", "B", "C", "D", "E", "F", "G", "Unrated"];
+        const validRatings = ["A", "B", "C", "D", "E", "F", "G", "Not rated"];
         
         for (const rating of validRatings) {
             const requestBodyWithRating = {
