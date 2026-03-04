@@ -20,4 +20,10 @@ test.describe('Penalty Calculator Page', () => {
     test('Templates page should load successfully', async () => {
         expect(await templatesPage.isDisplayed()).toBe(true);
     });
+
+    test('Templates page displays correct publisher information link', async () => {
+        const publisherInfoLink = await templatesPage.getPublisherInformationLink();
+        // Bug: 755 - The publisher information link is incorrect'
+        expect(publisherInfoLink).toBe('#-55');
+    });
 });

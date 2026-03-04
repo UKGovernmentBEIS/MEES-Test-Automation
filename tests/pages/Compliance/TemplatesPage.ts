@@ -5,6 +5,7 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 export class TemplatesPage extends BaseCompliancePage {
     private readonly breadcrumbHome: Locator;
     private readonly paragraphList: Promise<Locator[]>;
+    private readonly publisherInformation: Locator;
     private readonly templateList: Promise<Locator[]>;
 
 
@@ -12,6 +13,7 @@ export class TemplatesPage extends BaseCompliancePage {
         super(page);
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.paragraphList = page.locator('.govuk-grid-column-three-quarters>p').all();
+        this.publisherInformation = page.locator('.govuk-grid-column-three-quarters>.templates-metadata');
         this.templateList = page.locator('.template-list>div').all();
     }
 
@@ -28,6 +30,8 @@ export class TemplatesPage extends BaseCompliancePage {
                 locators[`paragraph${index}`] = paragraph;
             });
         }
+        // Add publisher information locator
+        locators['publisherInformation'] = this.publisherInformation;
         // Add template locators to the array
         const templates = await this.templateList;
         if (templates.length > 0) {
@@ -59,6 +63,9 @@ export class TemplatesPage extends BaseCompliancePage {
         if (paragraphs.length > 0) {
             contextLocators.push(...paragraphs);
         }
+
+        // Add publisher information locator
+        contextLocators.push(this.publisherInformation);
         
         // Add all template locators  
         if (templates.length > 0) {
@@ -66,5 +73,11 @@ export class TemplatesPage extends BaseCompliancePage {
         }
 
         return contextLocators;
+    }
+
+    async getPublisherInformationLink(): Promise<string> {
+        const link: Locator = this.publisherInformation.locator('p>a');
+        const href = await link.getAttribute('href');
+        return href?.trim() || '';
     }
 } 
