@@ -11,19 +11,36 @@ export class TemplatesPage extends BaseCompliancePage {
     constructor(page: Page) {
         super(page);
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
-        this.paragraphList = page.locator('.govuk-grid-column-two-thirds>p').all();
+        this.paragraphList = page.locator('.govuk-grid-column-three-quarters>p').all();
         this.templateList = page.locator('.template-list>div').all();
     }
 
     async waitForPageToLoad(): Promise<void> {
         await super.waitForPageToLoad();
 
+        // Create an object of locators to wait for, starting with the breadcrumb 
+        // and then adding the paragraph and template locators
+        let locators: Record<string, Locator> = { breadcrumbHome: this.breadcrumbHome };
+        // Add paragraph locators to the array
+        const paragraphs = await this.paragraphList;
+        if (paragraphs.length > 0) {
+            paragraphs.forEach((paragraph, index) => {
+                locators[`paragraph${index}`] = paragraph;
+            });
+        }
+        // Add template locators to the array
+        const templates = await this.templateList;
+        if (templates.length > 0) {
+            templates.forEach((template, index) => {
+                locators[`template${index}`] = template;
+            });
+        }
+
+        // Wait for all locators to be visible on the page
         await ElementUtilities.waitForPageToLoad(
             this.page,
             'Templates Page',
-            {
-                breadcrumbHome: this.breadcrumbHome
-            });
+            locators);
     }
 
     async isDisplayed(): Promise<boolean> {
