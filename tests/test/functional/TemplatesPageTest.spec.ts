@@ -24,7 +24,7 @@ test.describe('Penalty Calculator Page', () => {
     test('Verify that the correct template file name is downloaded', async () => {
         const expectedTemplateFileNames: string[] = [
             'Penalty notice letter (publication) template.docx', 
-            'Penalty notice letter (finantial) template.docx',
+            'Penalty notice letter (financial) template.docx',
             'Compliance notice letter template.docx',
             'Penalty notice letter (publication and publication) template.docx'
         ];

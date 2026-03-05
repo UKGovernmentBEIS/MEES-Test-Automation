@@ -12,8 +12,8 @@ export class TemplatesPage extends BaseCompliancePage {
     constructor(page: Page) { 
         super(page);
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
-        this.paragraphList = page.locator('.govuk-grid-column-three-quarters>p').all();
-        this.publisherInformation = page.locator('.govuk-grid-column-three-quarters>.templates-metadata');
+        this.paragraphList = page.locator('.govuk-grid-column-two-thirds>p').all();
+        this.publisherInformation = page.locator('.govuk-grid-column-two-thirds>.templates-metadata');
         // Wait for at least one template before getting all
         this.templateList = page.locator('.template-list>div').first().waitFor({ state: 'visible' }).then(() => 
             page.locator('.template-list>div').all());
