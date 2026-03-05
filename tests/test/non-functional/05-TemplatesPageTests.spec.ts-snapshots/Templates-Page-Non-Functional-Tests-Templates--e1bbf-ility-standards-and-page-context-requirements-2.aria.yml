@@ -1,1 +1,6 @@
-- paragraph: You may use these templates to send letters to landlords of non-compliant non-domestic properties, but you can also use templates your council has already created.
+- paragraph:
+  - text: "From:"
+  - link "Department for Energy Security and Net Zero":
+    - /url: "#-55"
+- paragraph: Published
+- paragraph: Last updated

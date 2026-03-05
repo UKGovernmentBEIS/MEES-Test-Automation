@@ -1,6 +1,4 @@
-- paragraph:
-  - text: "From:"
-  - link "Department for Energy Security and Net Zero":
-    - /url: "#-55"
-- paragraph: Published
-- paragraph: Last updated
+- img
+- link "Compliance notice letter template":
+  - /url: "#-55"
+- paragraph: /MS Word Document, \d+\.\d+ KB/
