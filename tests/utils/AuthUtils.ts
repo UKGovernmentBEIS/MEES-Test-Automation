@@ -81,12 +81,12 @@ export async function saveAuthState(page: Page, workerIndex: number): Promise<vo
 }
 
 /**
- * Retrieves the email of the currently authenticated user based on the worker index.
- * Determines which authentication state file is actually being used by checking available auth files
- * and mapping to the correct account, rather than assuming parallelIndex directly maps to account index.
+ * Retrieves the email of the currently authenticated user by reading the authentication state
+ * from the browser's stored state files and determining which user is actually authenticated.
+ * Returns the email format that matches what's stored in the application (without .prsela.co.uk suffix).
  * 
- * @param workerIndex - The worker index to get the email for (defaults to 0 if not provided)
- * @returns The email address of the currently authenticated user
+ * @param workerIndex - The worker index hint (used for fallback, defaults to 0 if not provided)
+ * @returns The email address of the currently authenticated user as stored in the application
  * @throws Error if no authentication state files are found or if the email cannot be resolved
  */
 export function getCurrentUserEmail(workerIndex: number = 0): string {
@@ -103,35 +103,59 @@ export function getCurrentUserEmail(workerIndex: number = 0): string {
         throw new Error('No authentication state files found in the auth-states directory.');
     }
     
-    // Sort auth files to ensure consistent ordering
-    authFiles.sort();
-    
-    // Map the worker index to available auth files
-    // Since we have limited auth files (usually 2), cycle through them
-    const authFileIndex = workerIndex % authFiles.length;
-    const selectedAuthFile = authFiles[authFileIndex];
-    
-    // Extract the actual worker index from the auth file name
-    const workerMatch = selectedAuthFile.match(/user-(\d+)\.json/);
-    if (!workerMatch) {
-        throw new Error(`Invalid auth file format: ${selectedAuthFile}. Expected format: user-N.json`);
+    // Try each auth file to find the authenticated user's email from the Salesforce identity data
+    for (const authFileName of authFiles) {
+        try {
+            const authFilePath = path.join(authDir, authFileName);
+            const authState = JSON.parse(fs.readFileSync(authFilePath, 'utf-8'));
+            
+            // Look for Salesforce authentication data in localStorage/origins
+            if (authState.origins) {
+                for (const origin of authState.origins) {
+                    if (origin.origin?.includes('salesforce.com') && origin.localStorage) {
+                        // Find localStorage entry containing identity information
+                        for (const item of origin.localStorage) {
+                            try {
+                                const data = JSON.parse(item.value);
+                                if (data.identity && data.identity.username) {
+                                    let authenticatedEmail = data.identity.username;
+                                    
+                                    // Remove .prsela.co.uk suffix if present to match application's stored format
+                                    if (authenticatedEmail.endsWith('.prsela.co.uk')) {
+                                        authenticatedEmail = authenticatedEmail.replace('.prsela.co.uk', '');
+                                    }
+                                    
+                                    console.log(`[Auth Utils] Found authenticated user: ${authenticatedEmail} from auth file: ${authFileName}`);
+                                    return authenticatedEmail;
+                                }
+                            } catch {
+                                // Skip invalid JSON entries
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn(`[Auth Utils] Could not read auth file ${authFileName}: ${error}`);
+            continue;
+        }
     }
     
-    const actualWorkerIndex = parseInt(workerMatch[1], 10);
+    // Fallback: If we can't extract from any auth state, use worker index mapping
+    console.warn(`[Auth Utils] Could not extract email from any auth state, falling back to worker index mapping`);
     
-    // Map the actual worker index to account configuration
-    const accountIndex = actualWorkerIndex % accounts.length;
-    
-    if (accountIndex >= accounts.length) {
-        throw new Error(`No account configured for account index ${accountIndex}. Available accounts: ${accounts.length}`);
+    if (workerIndex >= accounts.length) {
+        throw new Error(`No account configured for worker index ${workerIndex}. Available accounts: ${accounts.length}`);
     }
     
-    const account = accounts[accountIndex];
+    const account = accounts[workerIndex];
+    let { email } = resolveCredentials(account);
     
-    console.log(`[Auth Utils] Worker ${workerIndex} -> Auth file ${selectedAuthFile} -> Account ${accountIndex} (${account.email})`);
-    
-    // Resolve the actual email from environment variables
-    const { email } = resolveCredentials(account);
+    // Remove .prsela.co.uk suffix if present to match application's stored format
+    if (email.endsWith('.prsela.co.uk')) {
+        email = email.replace('.prsela.co.uk', '');
+    }
     
     return email;
 }

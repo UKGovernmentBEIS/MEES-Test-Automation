@@ -160,7 +160,6 @@ test.describe('Property Details Comments Tests', () => {
         // Expected annotation format:
         const expectedAnnotation = `Added by ${currentUserName} on ${dayWithSuffix} ${month} ${year}`;
 
-        // expect((await propertyDetailsPage.getPreviousComments()).find(comment => comment.commentAnnotations === expectedAnnotation)).toBeDefined();
         await expect(await propertyDetailsPage.getComments()).toContainText(expectedAnnotation);
     });
 
