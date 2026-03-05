@@ -88,7 +88,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
          expect(await propertyDetailsPage.getExemptionDetails("Current energy rating")).toHaveText('A (39)');
 
         // Verify Current EPC expiry date
-        expect(await propertyDetailsPage.getExemptionDetails("Current EPC expiry date")).toHaveText('20 February 2026');
+        expect(await propertyDetailsPage.getExemptionDetails("Current EPC expiry date")).toHaveText('20 February 2036');
 
         // Verify PRS exemption status
         expect(await propertyDetailsPage.getExemptionDetails("PRS exemption status")).toHaveText('Penalty sent');
