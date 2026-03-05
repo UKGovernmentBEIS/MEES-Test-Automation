@@ -8,7 +8,7 @@ export abstract class BasePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.pageFooter = this.page.locator('c-gds-footer').getByRole('contentinfo');
+    this.pageFooter = this.page.locator('.govuk-footer>div');
     
     // Set up global console error listener once
     this.setupGlobalConsoleErrorListener();
