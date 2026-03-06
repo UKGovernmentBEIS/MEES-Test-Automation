@@ -14,10 +14,11 @@
 ## How It Works
 
 1. **Setup project** authenticates each test account and saves session cookies to `playwright/auth-states/user-N.json`
-2. **Test workers** load their assigned session file (user-0.json, user-1.json, etc.)
-3. **Tests run** immediately with authenticated sessions - no login required
-4. **Authentication recovery** automatically detects and fixes broken sessions during test failures
-5. **Sessions expire** after ~30 minutes of inactivity
+2. **Worker correlation system** creates `worker-email-map.json` mapping workers to authenticated user emails
+3. **Test workers** load their assigned session file (user-0.json, user-1.json, etc.) with context-stored email info
+4. **Tests run** immediately with authenticated sessions - no login required
+5. **Authentication recovery** automatically detects and fixes broken sessions when LandingPage methods call `reAuthenticate()` utility
+6. **Sessions expire** after ~30 minutes of inactivity
 
 ## Authentication Lifecycle Management
 
@@ -170,9 +171,10 @@ When you run tests, the setup project creates separate authentication files for 
    - Worker 0 → loads `user-0.json`
    - Worker 1 → loads `user-1.json`
    - Worker N → loads `user-N.json`
-2. **Auth state** is loaded into a worker-scoped browser context
-3. **All tests** in that worker reuse the authenticated session
-4. **Each test** gets a new page but maintains authentication
+2. **Auth state** is loaded into a worker-scoped browser context with stored email and worker info
+3. **Context-based email retrieval** uses `getCurrentUserEmail(page)` to get authenticated user from browser context
+4. **All tests** in that worker reuse the authenticated session
+5. **Each test** gets a new page but maintains authentication
 
 ### Authentication Recovery (Automatic)
 
@@ -181,11 +183,12 @@ When you run tests, the setup project creates separate authentication files for 
 **Why it's needed**: When tests fail, Playwright sometimes closes the shared browser context, breaking authentication for retry attempts and subsequent tests.
 
 **How it works**:
-1. **Real-time detection** - LandingPage automatically detects authentication loss via URL inspection during critical navigation points
-2. **Immediate recovery** - Performs re-authentication using the same login flow when GOV.UK redirect is detected
-3. **Shared state management** - Uses AuthUtils.saveAuthState() to update session files for all workers
-4. **Streamlined fixtures** - Simple fixtures delegate authentication recovery to page-level detection
-5. **Recovery is transparent** - Tests continue normally without manual intervention
+1. **Real-time detection** - LandingPage methods (like `clickSignIn_AuthenticatedUser`) automatically detect authentication loss via URL inspection
+2. **Immediate recovery** - Calls `AuthUtils.reAuthenticate(page)` utility function to handle complete re-authentication flow
+3. **Context-based credentials** - Uses worker info stored in browser context to identify correct account for re-authentication
+4. **Shared state management** - Uses separate `saveWorkerIndexAndUserMapping()` and `saveAuthState()` functions for clean separation of concerns
+5. **Streamlined fixtures** - Simple fixtures delegate authentication recovery to LandingPage methods and AuthUtils functions
+6. **Recovery is transparent** - Tests continue normally without manual intervention
 
 **When it activates**: 
 - During test retries after failures
@@ -198,10 +201,10 @@ For CI/CD configuration details, see the **[CI/CD Configuration Guide](CI-CD.md)
 ## Troubleshooting
 
 **Authentication fails in tests:**
-- **LandingPage-based auto-recovery handles all issues** - Real-time detection and recovery at exact point of authentication loss
+- **LandingPage methods detect issues and call `AuthUtils.reAuthenticate()` automatically** - Dedicated utility function with context-based worker identification for reliable recovery
+- **Context-based email retrieval** - `getCurrentUserEmail(page)` provides efficient access to authenticated user info
+- **Separated authentication functions** - `saveWorkerIndexAndUserMapping()` and `saveAuthState()` ensure clean state management
 - **Zero manual intervention needed** - Streamlined architecture automatically fixes session issues during test execution
-- **Shared AuthUtils** - Consistent saveAuthState function ensures reliable session management across setup and recovery
-- **Simplified fixtures** - Clean page fixtures delegate authentication recovery to LandingPage for maximum reliability
 - Run `npx playwright test --project=setup` only if switching test environments or updating credentials
 - Verify all accounts in `tests/config/test-accounts.json` are registered and valid
 - Check if `playwright/auth-states/user-*.json` files exist for all workers

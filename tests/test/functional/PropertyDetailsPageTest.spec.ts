@@ -130,7 +130,7 @@ test.describe('Property Details Comments Tests', () => {
     });
 
     // Validate add comment functionality, saving a comment and verifying that it is displayed in the Previous Comments section
-    test('Should add a comment and verify it appears in previous comments with annotation', async ({ }, testInfo) => {
+    test('Should add a comment and verify it appears in previous comments with annotation', async ({ page }, testInfo) => {
         const uniqueComment = `Test comment ${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
         // Add comment - directly using page methods
@@ -140,8 +140,8 @@ test.describe('Property Details Comments Tests', () => {
         await expect(await propertyDetailsPage.getComments()).toContainText(uniqueComment);
 
         // Verify comment has correct annotation (example: 'Added by testusertriad123+001@gmail.com on 24th February 2026')
-        // Get current user's email for annotation
-        const currentUserName = getCurrentUserEmail(testInfo.parallelIndex);
+        // Get current user's email for annotation from browser context
+        const currentUserName = getCurrentUserEmail(page);
         // Construct expected expected date with ordinal suffix
         const currentDate = new Date();
         const day = currentDate.getDate();

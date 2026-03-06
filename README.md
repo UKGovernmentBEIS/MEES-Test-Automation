@@ -60,7 +60,7 @@
    npx playwright test --project=setup
    ```
    
-   **Note**: LandingPage-based recovery handles authentication issues during test execution automatically.
+   **Note**: LandingPage methods handle authentication detection and recovery during test execution automatically.
 
 5. **Setup test data** (for new environments):
    Tests contain hardcoded values that must be verified/updated for new environments.
@@ -103,14 +103,15 @@ npx playwright show-report                     # View test results
 
 **How it works**:
 1. Setup project logs into each test account and saves session cookies
-2. Test workers load their assigned session file (user-0.json, user-1.json, etc.) via streamlined fixtures
-3. Tests run immediately without login flow
-4. LandingPage-based recovery detects authentication loss in real-time and automatically re-authenticates
+2. Worker correlation system creates `worker-email-map.json` for efficient email lookup during test execution
+3. Test workers load their assigned session file (user-0.json, user-1.json, etc.) via streamlined fixtures
+4. Tests run immediately without login flow
+5. LandingPage methods detect authentication loss and call `AuthUtils.reAuthenticate()` to handle re-authentication using context-stored worker info
 
 **Authentication lifecycle**:
-- **Local development**: Run setup once, reuse for multiple test runs. LandingPage-based recovery handles all session issues automatically with zero manual intervention
-- **CI/CD**: Each test project runs setup with streamlined fixtures and real-time recovery to ensure maximum reliability
-- **Architecture**: Simplified fixtures delegate to LandingPage detection, shared AuthUtils for consistency
+- **Local development**: Run setup once, reuse for multiple test runs. LandingPage methods detect session issues and automatically call `AuthUtils.reAuthenticate()` with zero manual intervention
+- **CI/CD**: Each test project runs setup with streamlined fixtures and LandingPage-based detection to ensure maximum reliability
+- **Architecture**: Context-based email retrieval, separated auth functions, and dedicated reAuthenticate() utility called by LandingPage for robust session management
 
 **Test account requirements**: Each account must be a complete GOV.UK One Login with MFA enabled and registered in the application.
 
@@ -133,7 +134,7 @@ npx playwright show-report  # Open after test run
 **GitHub Actions**: Configured in `.github/workflows/playwright.yml`
 - **Triggers**: Push, PR, manual dispatch
 - **Jobs**: Functional tests and Non-functional tests (each with setup + recovery)
-- **Workflow**: setup → functional tests → setup → non-functional tests (with LandingPage-based real-time recovery)
+- **Workflow**: setup → functional tests → setup → non-functional tests (with LandingPage detection calling `AuthUtils.reAuthenticate()` for robust session recovery)
 - **Secrets needed**: Test account credentials, BASE_URL, API keys
 - **Reports**: Downloadable artifacts with test results and coverage
 
@@ -142,9 +143,9 @@ npx playwright show-report  # Open after test run
 ## Quick Troubleshooting
 
 **Authentication issues**:
-- **LandingPage-based recovery handles all authentication issues automatically** - zero manual intervention needed
-- **Streamlined architecture** - simplified fixtures with shared AuthUtils ensure maximum reliability
-- **Real-time detection** - authentication recovery happens exactly when needed during test execution
+- **LandingPage methods automatically detect and handle all authentication issues** - zero manual intervention needed
+- **Context-based architecture** - efficient email retrieval and worker correlation ensure maximum reliability
+- **Separated authentication functions** - clean state management with dedicated utilities for setup and recovery
 - Run `npx playwright test --project=setup` only when switching environments or updating credentials
 - Ensure test accounts have completed MFA setup in GOV.UK One Login
 - Check `.env` file has correct credentials

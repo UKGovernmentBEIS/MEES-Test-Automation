@@ -1,5 +1,5 @@
 import { test as setup } from '@playwright/test';
-import { accounts, resolveCredentials, performLogin, saveAuthState } from '../../utils/AuthUtils';
+import { accounts, resolveCredentials, performLogin, saveAuthState, saveWorkerIndexAndUserMapping } from '../../utils/AuthUtils';
 
 /**
  * Playwright setup function that authenticates test users and saves their session state.
@@ -19,6 +19,7 @@ accounts.forEach((account, index) => {
         const { email, password } = resolveCredentials(account);
         
         await performLogin(page, email, password);
+        saveWorkerIndexAndUserMapping(index, email);
         await saveAuthState(page, index);
     });
 });

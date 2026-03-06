@@ -3,7 +3,7 @@ import { ElementUtilities } from '../utils/ElementUtilities';
 import { SignInOrCreatePage } from './Login/SignInOrCreatePage';
 import { HomePage } from './Compliance/HomePage';
 import { BasePage } from './BasePage';
-import { accounts, resolveCredentials, performLogin, saveAuthState } from '../utils/AuthUtils';
+import { reAuthenticate } from '../utils/AuthUtils';
 
 export class LandingPage extends BasePage {
   private readonly signInButton: Locator;
@@ -68,37 +68,7 @@ export class LandingPage extends BasePage {
     
     // Check if we were redirected to GOV.UK login (authentication lost)
     if (currentUrl.includes('gov.uk') || currentUrl.includes('login') || currentUrl.includes('signin')) {
-      console.log(`[LandingPage] Authentication lost - redirected to login. Performing re-authentication...`);
-      
-      // Get worker index from test info if available, otherwise use 0
-      let workerIndex = 0;
-      try {
-        // Try to get worker index from Playwright's test info
-        const testInfo = (global as any).__playwright_test_info__;
-        if (testInfo) {
-          workerIndex = testInfo.parallelIndex;
-        }
-      } catch (e) {
-        // Fallback to worker 0 if we can't determine worker index
-      }
-      
-      console.log(`[LandingPage] Re-authenticating using Worker ${workerIndex} credentials...`);
-      
-      // Get the account for this worker
-      const account = accounts[workerIndex];
-      if (!account) {
-        throw new Error(`No account available for worker ${workerIndex}`);
-      }
-      
-      // Resolve credentials and perform login
-      const { email, password } = resolveCredentials(account);
-      await performLogin(this.page, email, password);
-      
-      // Save the new authentication state so subsequent tests can use it
-      console.log(`[LandingPage] Saving refreshed authentication state for Worker ${workerIndex}...`);
-      await saveAuthState(this.page, workerIndex);
-      
-      console.log(`[LandingPage] Re-authentication completed successfully`);
+      await reAuthenticate(this.page);
     }
     
     // Now create and wait for HomePage to load
