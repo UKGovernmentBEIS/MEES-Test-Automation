@@ -18,7 +18,7 @@
   - paragraph:
     - text: Beta This is a new service. Help us improve it and
     - link "give your feedback by email":
-      - /url: "#"
+      - /url: mailto:meesdigital@energysecurity.gov.uk?subject=Feedback
     - text: .
   - navigation "Breadcrumb":
     - list:
