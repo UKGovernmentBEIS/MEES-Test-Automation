@@ -1,5 +1,7 @@
 - main:
-  - heading "Check if properties meet minimum energy efficiency standards" [level=2]
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]:
+    - link "Check if properties meet minimum energy efficiency standards":
+      - /url: /landing-page
   - navigation "Menu":
     - list:
       - listitem:
@@ -36,13 +38,17 @@
     - strong: Warning This guidance is not legally binding and the Department for Energy Security and Net Zero (DESNZ) cannot provide legal advice nor can it provide a definitive interpretation of the law; as this is a matter for the courts.
     - list:
       - listitem:
-        - link "Understanding compliance notices":
-          - /url: /compliance/guidance-detail?contentKey=MCBFW4DPLN45EMFOEMAZ53W36AVU
-        - text: /5 March \d+/
+        - link "Where property information comes from":
+          - /url: /compliance/guidance-detail?contentKey=MC3SMZCU3HAZASLOEVEBOZNARVTM
+        - text: /6 March \d+/
       - listitem:
         - link "Understanding penalties":
           - /url: /compliance/guidance-detail?contentKey=MCM6RZ6JHKLRBOXNIRXKLHUYPNXM
-        - text: /4 March \d+/
+        - text: /6 March \d+/
+      - listitem:
+        - link "Understanding compliance notices":
+          - /url: /compliance/guidance-detail?contentKey=MCBFW4DPLN45EMFOEMAZ53W36AVU
+        - text: /5 March \d+/
       - listitem:
         - link "Enforcement timeline":
           - /url: /compliance/guidance-detail?contentKey=MC6MPUO6E7K5FBJDQOAA34AGC4NY
@@ -51,7 +57,3 @@
         - link "Understanding the MEES Regulations":
           - /url: /compliance/guidance-detail?contentKey=MCZZRQVEB2UZAPHHEFTCLBR7L5SI
         - text: /4 March \d+/
-      - listitem:
-        - link "Where property information comes from":
-          - /url: /compliance/guidance-detail?contentKey=MC3SMZCU3HAZASLOEVEBOZNARVTM
-        - text: /3 March \d+/

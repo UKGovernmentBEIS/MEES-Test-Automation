@@ -13,7 +13,7 @@ export abstract class BaseGuidancePage extends BaseCompliancePage {
     constructor(page: Page) {
         super(page);
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
-        this.breadcrumbGuidance = page.getByRole('link', { name: 'Guidance' });
+        this.breadcrumbGuidance = page.getByLabel('Breadcrumb').getByRole('link', { name: 'Guidance' });
         this.pageTitle = page.getByRole('heading', { name: 'Guidance' });
         this.pageContext = page.locator('#main-content');
     }

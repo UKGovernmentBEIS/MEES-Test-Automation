@@ -1,0 +1,169 @@
+- main:
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]:
+    - link "Check if properties meet minimum energy efficiency standards":
+      - /url: /landing-page
+  - navigation "Menu":
+    - list:
+      - listitem:
+        - link "Property records":
+          - /url: /filter-properties
+      - listitem:
+        - link "Guidance":
+          - /url: /guidance
+          - strong: Guidance
+      - listitem:
+        - link "Penalty calculator":
+          - /url: /penalty-calculator
+      - listitem:
+        - link "Templates":
+          - /url: /templates
+  - paragraph:
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback by email":
+      - /url: "#"
+    - text: .
+  - navigation "Breadcrumb":
+    - list:
+      - listitem:
+        - link "Home":
+          - /url: /compliance/landing-page
+      - listitem:
+        - link "Guidance":
+          - /url: /compliance/guidance
+      - listitem: Guidance article
+  - list:
+    - listitem:
+      - link "Sign out":
+        - /url: "#"
+  - main:
+    - paragraph: Guidance
+    - heading "Where property information comes from" [level=1]
+    - paragraph: Multiple datasets are combined in this service to create a single record for each property, including information from the PRS Exemptions Register. The data is collected, cleaned, and checked before it is shown in this service.
+    - term: "From:"
+    - definition:
+      - link "Department for Energy Security and Net Zero":
+        - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
+    - term: Published
+    - definition: /6 March \d+/
+    - term: Last updated
+    - definition: /6 March \d+/
+    - heading "Contents" [level=2]
+    - heading "─ Ministry of Housing, Communities & Local Government (MHCLG)" [level=3]:
+      - text: ""
+      - link "Ministry of Housing, Communities & Local Government (MHCLG)":
+        - /url: "#mhclg"
+    - heading "─ Ordnance Survey (OS)" [level=3]:
+      - text: ""
+      - link "Ordnance Survey (OS)":
+        - /url: "#os"
+    - heading "─ HM Land Registry (HMLR)" [level=3]:
+      - text: ""
+      - link "HM Land Registry (HMLR)":
+        - /url: "#hmlr"
+    - heading "─ Valuation Office Agency (VOA)" [level=3]:
+      - text: ""
+      - link "Valuation Office Agency (VOA)":
+        - /url: "#voa"
+    - heading "─ Companies House" [level=3]:
+      - text: ""
+      - link "Companies House":
+        - /url: "#companies-house"
+    - heading "─ PRS Exemptions Register" [level=3]:
+      - text: ""
+      - link "PRS Exemptions Register":
+        - /url: "#prs"
+    - heading "─ How property records are created" [level=3]:
+      - text: ""
+      - link "How property records are created":
+        - /url: "#records"
+    - heading "─ Why some information may not appear" [level=3]:
+      - text: ""
+      - link "Why some information may not appear":
+        - /url: "#missing"
+    - heading "Ministry of Housing, Communities & Local Government (MHCLG)" [level=2]
+    - paragraph: The Energy Performance Certificate (EPC) Non-Domestic dataset from MHCLG contains the EPCs for the non-domestic properties displayed in this service.
+    - paragraph:
+      - text: If an individual has
+      - link "opted out of having their EPC data disclosed publicly":
+        - /url: https://www.gov.uk/guidance/energy-performance-certificates-opt-out-of-public-disclosure#how-do-i-opt-out
+      - text: ", then this information is not displayed in this service."
+    - paragraph: "This dataset is used for:"
+    - list
+    - listitem: getting the energy rating of a property
+    - listitem: providing the transaction type - this is the reason the EPC was generated which can help to identify rented properties
+    - listitem: providing unique building reference numbers
+    - listitem: defining property type
+    - listitem: providing lodgement date
+    - listitem: providing address details
+    - paragraph: This data is refreshed monthly.
+    - heading "Ordnance Survey (OS)" [level=2]
+    - paragraph: The AddressBase Premium dataset from the Ordnance Survey (OS) provides the Unique Property Reference Number (UPRN) and standardised address details for each property.
+    - paragraph: "This dataset is used for:"
+    - list
+    - listitem: creating the base address record for a property
+    - listitem: adding the UPRN to property records where it is missing from the EPC
+    - listitem: ensuring datasets use the correct UPRN
+    - paragraph: This data is refreshed every 6 weeks.
+    - heading "HM Land Registry (HMLR)" [level=2]
+    - paragraph: From HMLR, there are three data sources that supply information to this service.
+    - paragraph: The HMLR Commercial and Corporate Ownership Data (CCOD) and HMLR Overseas Ownership Data (OCOD) provide information on property ownership.
+    - paragraph: "The HMLR CCOD and HMLR OCOD datasets are used for:"
+    - list
+    - listitem: identifying property owners
+    - listitem: determining whether a property owner is onshore or offshore
+    - paragraph: "The HMLR Polygon dataset is also used for:"
+    - list
+    - listitem: linking property owners to properties using title information and UPRN information
+    - listitem: linking property owners to EPC data
+    - paragraph: This data is refreshed monthly.
+    - heading "Valuation Office Agency (VOA)" [level=2]
+    - paragraph: The Business Rates dataset from the VOA provides the rateable value for the properties in the service.
+    - paragraph: "This dataset is used for:"
+    - list
+    - listitem: providing the rateable value of the property to be used in calculating financial penalties
+    - paragraph: This data is refreshed monthly.
+    - heading "Companies House" [level=2]
+    - paragraph: The Companies House dataset provides company registration details, addresses, and Standard Industrial Classification (SIC) codes.
+    - paragraph: "This dataset is used for:"
+    - list
+    - listitem: identifying a company as the owner of a property to determine the appropriate business address to contact
+    - listitem: identifying business activity of those companies using SIC codes - this can help to identify if the property is a non-domestic PRS property
+    - paragraph: This data is refreshed monthly.
+    - heading "PRS Exemptions Register" [level=2]
+    - paragraph: The PRS Exemptions Register provides the ‘PRS exemptions’ statuses that are displayed when viewing the property records table and property detail pages.
+    - paragraph: "To understand the PRS Exemptions Register statuses:"
+    - list
+    - listitem: ‘Received’ means that the landlord has submitted an exemption that has not been assessed yet
+    - listitem: ‘Needs update’ means that the exemption has been reviewed and the landlord has been asked to provide more information
+    - listitem: ‘Update’ means that the landlord has supplied more information and the exemption is awaiting review
+    - listitem: ‘Penalty sent’ means that a penalty has been issued to the landlord
+    - listitem: ‘Approved’ means that the exemption has been reviewed and approved
+    - listitem: ‘Ended’ means that the exemption has been ended by the landlord or a local authority
+    - listitem: ‘Expired’ means that the exemption has reached the end of its allowed time and is no longer valid
+    - paragraph: "If the status is:"
+    - list
+    - listitem: ‘Received’, ‘Needs update’, or ‘Updated’ then the exemption is pending review and approval
+    - listitem: ‘Penalty sent’ then enforcement action is in progress
+    - listitem: ‘Approved’ and the property is now compliant, then no enforcement action is needed
+    - listitem: ‘Ended’ or ‘Expired’ then the exemption is no longer active - check for a new exemption
+    - paragraph: If ‘Data not found’ is displayed against a property, this means that the property is not listed in the PRS Exemptions Register, or that a property is listed in the PRS Exemptions Register but that it has no associated UPRN. You may check the PRS Exemptions Register for that property to search for any missing information.
+    - paragraph: This data is refreshed daily.
+    - heading "How property records are created" [level=2]
+    - paragraph: "Multiple datasets are combined in this service to create a single record for each property:"
+    - list:
+      - listitem: If the EPC for a property has an associated UPRN, this is used as the starting point for creating a property record.
+      - listitem: If the UPRN is missing from the EPC, the service will attempt to use the OS Address Base Premium dataset to find the associated UPRN for that property.
+      - listitem: When a property record has an associated UPRN, the HMLR dataset enables the property to be connected to a property owner.
+      - listitem: The Companies House dataset is then used to add the company details to the property record for cases when the property is owned by a company - this is done using the company registration number on the HMLR CCOD or the HMLR OCOD dataset.
+      - listitem: The ‘PRS exemptions’ status is added from the PRS Exemptions Register data.
+    - paragraph: This data is then displayed in the service as a single property record.
+    - heading "Why some information may not appear" [level=2]
+    - paragraph: "Some fields in the property records table or the property details page may be missing if:"
+    - list
+    - listitem: an individual has opted out of having their EPC data disclosed publicly
+    - listitem: an EPC for a property has no associated UPRN
+    - listitem: no UPRN was found when attempting to match EPC register data with OS Address Base Premium data
+    - listitem: landlord data from the HMLR datasets is incomplete
+    - listitem: company details were not found in the Companies House data
+    - listitem: PRS Exemption Register records lack an associated UPRN
+    - listitem: there are no exemptions registered in the PRS Exemptions Register for that property

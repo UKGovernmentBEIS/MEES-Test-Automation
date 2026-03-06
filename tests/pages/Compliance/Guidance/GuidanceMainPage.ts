@@ -6,20 +6,24 @@ import { GuidanceUnderstandingTheMEESRegulationsPage } from './GuidanceUnderstan
 import { GuidanceUnderstandingComplianceNoticePage } from './GuidanceUnderstandComplianceNoticesPage';
 import { GuidanceUnderstandingPenaltiesPage } from './GuidanceUnderstandingPenaltiesPage';
 import { GuidanceEnforcementTimelinePage } from './GuidanceEnforcmentTimelinePage';
+import { PageName } from '../../../utils/TestTypes';
 
-type TemplateType = 
-    'Understanding compliance' | 
-    'Understanding penalties' | 
-    'Enforcement timeline' | 
-    'Understanding the MEES regulations' | 
-    'Where property information comes from';
+export const TemplateTypes = {
+    UNDERSTANDING_COMPLIANCE: 'Understanding compliance',
+    UNDERSTANDING_PENALTIES: 'Understanding penalties',
+    ENFORCEMENT_TIMELINE: 'Enforcement timeline',
+    UNDERSTANDING_MEES_REGULATIONS: 'Understanding the MEES regulations',
+    WHERE_PROPERTY_INFORMATION_COMES_FROM: 'Where property information comes from'
+} as const;
+
+export type TemplateTypes = typeof TemplateTypes[keyof typeof TemplateTypes];
 
 export class GuidanceMainPage extends BaseCompliancePage {
     private readonly pageContext: Locator;
     private readonly breadcrumbHome: Locator;
     private readonly pageTitle: Locator;
     
-    private async templateLink(templateType: TemplateType): Promise<Locator> {
+    private async templateLink(templateType: TemplateTypes): Promise<Locator> {
         return this.page.getByRole('link', { name: templateType });
     }
 
@@ -50,7 +54,7 @@ export class GuidanceMainPage extends BaseCompliancePage {
         return contextLocators;
     }
 
-    async clickTemplateLink(templateType: TemplateType): Promise<
+    async clickTemplateLink(templateType: TemplateTypes): Promise<
         GuidanceUnderstandingComplianceNoticePage | 
         GuidanceUnderstandingPenaltiesPage | 
         GuidanceEnforcementTimelinePage | 
@@ -70,6 +74,23 @@ export class GuidanceMainPage extends BaseCompliancePage {
                 return new GuidanceUnderstandingTheMEESRegulationsPage(this.page);
             case 'Where property information comes from':
                 return new GuidanceWherePropertyInformationComesFromPage(this.page);
+        }
+    }
+
+    getPageNameForTemplate(templateType: TemplateTypes): PageName {
+        switch (templateType) {
+            case TemplateTypes.UNDERSTANDING_COMPLIANCE:
+                return PageName.UNDERSTANDING_COMPLIANCE_PAGE;
+            case TemplateTypes.UNDERSTANDING_PENALTIES:
+                return PageName.UNDERSTANDING_PENALTIES_PAGE;
+            case TemplateTypes.ENFORCEMENT_TIMELINE:
+                return PageName.ENFORCEMENT_TIMELINE_PAGE;
+            case TemplateTypes.UNDERSTANDING_MEES_REGULATIONS:
+                return PageName.UNDERSTANDING_MEES_REGULATIONS_PAGE;
+            case TemplateTypes.WHERE_PROPERTY_INFORMATION_COMES_FROM:
+                return PageName.WHERE_PROPERTY_INFORMATION_COMES_FROM_PAGE;
+            default:
+                throw new Error(`No PageName mapping for template type: ${templateType}`);
         }
     }
 }

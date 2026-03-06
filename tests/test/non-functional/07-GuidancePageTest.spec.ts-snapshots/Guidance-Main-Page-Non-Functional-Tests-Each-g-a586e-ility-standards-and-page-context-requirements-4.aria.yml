@@ -1,0 +1,151 @@
+- main:
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]:
+    - link "Check if properties meet minimum energy efficiency standards":
+      - /url: /landing-page
+  - navigation "Menu":
+    - list:
+      - listitem:
+        - link "Property records":
+          - /url: /filter-properties
+      - listitem:
+        - link "Guidance":
+          - /url: /guidance
+          - strong: Guidance
+      - listitem:
+        - link "Penalty calculator":
+          - /url: /penalty-calculator
+      - listitem:
+        - link "Templates":
+          - /url: /templates
+  - paragraph:
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback by email":
+      - /url: "#"
+    - text: .
+  - navigation "Breadcrumb":
+    - list:
+      - listitem:
+        - link "Home":
+          - /url: /compliance/landing-page
+      - listitem:
+        - link "Guidance":
+          - /url: /compliance/guidance
+      - listitem: Guidance article
+  - list:
+    - listitem:
+      - link "Sign out":
+        - /url: "#"
+  - main:
+    - paragraph: Guidance
+    - heading "Understanding the MEES Regulations" [level=1]
+    - paragraph: This page provides guidance to help you use understand the Minimum Energy Efficiency Standards (MEES) Regulations and carry out your enforcement duties.
+    - term: "From:"
+    - definition:
+      - link "Department for Energy Security and Net Zero":
+        - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
+    - term: Published
+    - definition: /4 March \d+/
+    - term: Last updated
+    - definition: /4 March \d+/
+    - heading "Contents" [level=2]
+    - heading "─ The MEES Regulations" [level=3]:
+      - text: ""
+      - link "The MEES Regulations":
+        - /url: "#mees"
+    - heading "─ Current minimum energy rating" [level=3]:
+      - text: ""
+      - link "Current minimum energy rating":
+        - /url: "#rating"
+    - heading "─ Your responsibilities as an enforcement officer" [level=3]:
+      - text: ""
+      - link "Your responsibilities as an enforcement officer":
+        - /url: "#responsibilities"
+    - heading "─ Exemptions you may encounter" [level=3]:
+      - text: ""
+      - link "Exemptions you may encounter":
+        - /url: "#exemptions"
+    - heading "─ If you need more information" [level=3]:
+      - text: ""
+      - link "If you need more information":
+        - /url: "#moreinfo"
+    - heading "The MEES Regulations" [level=2]
+    - paragraph
+    - text: The Minimum Energy Efficiency Standards (MEES) Regulations set the lowest energy efficiency level that non-domestic privately rented properties in England and Wales must meet.
+    - paragraph
+    - paragraph
+    - text: The legal requirement for the MEES Regulations comes from the
+    - link /Energy Efficiency \(Private Rented Property\) \(England and Wales\) Regulations \d+\./:
+      - /url: https://www.legislation.gov.uk/uksi/2015/962/contents
+    - paragraph
+    - paragraph
+    - text: The MEES Regulations aim to reduce emissions and improve energy performance across the domestic and non-domestic Private Rented Sector (PRS).
+    - paragraph
+    - heading "Current minimum energy rating" [level=2]
+    - paragraph
+    - text: A non-domestic PRS property must have an Energy Performance Certificate (EPC) rating of E or above to be legally let to a new tenant, unless a valid exemption applies.
+    - paragraph
+    - paragraph
+    - text: /Since 1 April \d+, landlords cannot grant a new lease for a property rated F or G\./
+    - paragraph
+    - paragraph
+    - text: /Since 1 April \d+, the same requirement applies to all non-domestic rented properties, including those with existing tenants\./
+    - paragraph
+    - paragraph
+    - text: "If a landlord wants to continue letting a property with an F or G rating, they must either:"
+    - list
+    - listitem: improve the energy rating to at least E
+    - listitem: register a valid exemption on the PRS Exemptions Register
+    - paragraph
+    - heading "Your responsibilities as an enforcement officer" [level=2]
+    - paragraph
+    - text: You need to determine whether a property is in scope of the MEES Regulations, determine if it meets the minimum standard of energy efficiency, and check if a valid PRS exemption exists before you can assess non-compliance.
+    - paragraph
+    - paragraph
+    - link "An enforcement timeline is available in this service to assist you with this.":
+      - /url: https://desnz-gm--prseqa.sandbox.my.site.com/compliance/guidance-detail?contentKey=MC6MPUO6E7K5FBJDQOAA34AGC4NY
+    - paragraph
+    - paragraph
+    - text: "You must use your own judgement and carry out due diligence. Always verify information with external systems such as:"
+    - paragraph
+    - list
+    - listitem:
+      - text: the official
+      - link "EPC Register":
+        - /url: https://www.gov.uk/find-energy-certificate
+    - listitem:
+      - text: the
+      - link "PRS Exemptions Register":
+        - /url: https://prsregister.beis.gov.uk/NdsBeisUi/register-search-exemptions
+    - listitem: local authority tenancy records
+    - listitem: relevant legislation and guidance
+    - heading "Exemptions you may encounter" [level=2]
+    - paragraph
+    - text: "A landlord may legally let a sub-standard property if they register a valid exemption on the PRS Exemptions Register. The exemptions that apply to non-domestic properties are:"
+    - paragraph
+    - list
+    - listitem: ‘7 Year Payback’ Exemption
+    - listitem: ‘All Improvements Made’ Exemption
+    - listitem: ‘Wall Insulation’ Exemption
+    - listitem: ‘Consent’ Exemption
+    - listitem: ‘Devaluation’ Exemption
+    - listitem: ‘New Landlord’ Exemption
+    - paragraph
+    - text: "You should always confirm that:"
+    - paragraph
+    - list
+    - listitem: the exemption is correctly registered
+    - listitem: it applies to the specific property
+    - listitem: it is still valid within its time frame
+    - paragraph
+    - link "Guidance on these exemption types and the evidence that a landlord can submit with their exemption is available on GOV.UK.":
+      - /url: https://www.gov.uk/government/publications/private-rented-sector-minimum-energy-efficiency-standard-exemptions/guidance-on-prs-exemptions-and-exemptions-register-evidence-requirements
+    - paragraph
+    - heading "If you need more information" [level=2]
+    - paragraph: "You can:"
+    - list
+    - listitem:
+      - link "read the full non-domestic MEES landlord and enforcement guidance":
+        - /url: https://www.gov.uk/guidance/non-domestic-private-rented-property-minimum-energy-efficiency-standard-landlord-guidance
+    - listitem:
+      - link /refer to the Energy Efficiency \(Private Rented Property\) \(England and Wales\) Regulations \d+/:
+        - /url: https://www.legislation.gov.uk/uksi/2015/962/part/3

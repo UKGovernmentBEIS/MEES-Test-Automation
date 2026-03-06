@@ -1,0 +1,122 @@
+- main:
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]:
+    - link "Check if properties meet minimum energy efficiency standards":
+      - /url: /landing-page
+  - navigation "Menu":
+    - list:
+      - listitem:
+        - link "Property records":
+          - /url: /filter-properties
+      - listitem:
+        - link "Guidance":
+          - /url: /guidance
+          - strong: Guidance
+      - listitem:
+        - link "Penalty calculator":
+          - /url: /penalty-calculator
+      - listitem:
+        - link "Templates":
+          - /url: /templates
+  - paragraph:
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback by email":
+      - /url: "#"
+    - text: .
+  - navigation "Breadcrumb":
+    - list:
+      - listitem:
+        - link "Home":
+          - /url: /compliance/landing-page
+      - listitem:
+        - link "Guidance":
+          - /url: /compliance/guidance
+      - listitem: Guidance article
+  - list:
+    - listitem:
+      - link "Sign out":
+        - /url: "#"
+  - main:
+    - paragraph: Guidance
+    - heading "Understanding penalties" [level=1]
+    - paragraph: If you are satisfied that a property is not compliant with the MEES Regulations, you may choose to impose a penalty on the landlord. The types of penalties you can impose are a financial penalty and a publication penalty.
+    - term: "From:"
+    - definition:
+      - link "Department for Energy Security and Net Zero":
+        - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
+    - term: Published
+    - definition: /6 March \d+/
+    - term: Last updated
+    - definition: /6 March \d+/
+    - heading "Contents" [level=2]
+    - heading "─ Financial penalties" [level=3]:
+      - text: ""
+      - link "Financial penalties":
+        - /url: "#financial"
+    - heading "─ Publication penalties" [level=3]:
+      - text: ""
+      - link "Publication penalties":
+        - /url: "#"
+    - heading "─ Issuing a penalty notice" [level=3]:
+      - text: ""
+      - link "Issuing a penalty notice":
+        - /url: "#issuing"
+    - text: publication
+    - heading "Financial penalties" [level=2]
+    - paragraph: Financial penalties are calculated based on how long the property has been not compliant with the MEES Regulations and the rateable value of the property.
+    - paragraph
+    - text: When
+    - link "viewing a property record":
+      - /url: https://desnz-gm--prseqa.sandbox.my.site.com/compliance/filter-	properties
+    - text: in this service, the rateable value is displayed in the ‘View details’ section.
+    - link "You can also search for this value in the ‘Find a business rates valuation’ service.":
+      - /url: https://www.gov.uk/find-business-rates
+    - paragraph:
+      - text: A
+      - link "publication penalty":
+        - /url: "#publication"
+      - text: can be imposed alongside a financial penalty.
+    - paragraph: "The following situations can result in a financial penalty:"
+    - list:
+      - listitem: /If a landlord lets a sub-standard property and it has been in breach of the MEES Regulations for less than 3 months, the maximum penalty is £\d+,\d+, or \d+% of the property’s rateable value up to £\d+,\d+\. The higher amount applies\./
+      - listitem: /If the breach lasts more than 3 months, the maximum penalty is £\d+,\d+, or \d+% of the rateable value up to £\d+,\d+\. Again, the higher amount applies\./
+      - listitem: /Failing to comply with a compliance notice can lead to a penalty of up to £\d+,\d+\./
+    - paragraph
+    - link:
+      - /url: https://desnz-gm--prseqa.sandbox.my.site.com/compliance/penalty-calculator
+    - link "Use the penalty calculator to calculate a maximum financial penalty amount.":
+      - /url: https://desnz-gm--prseqa.sandbox.my.site.com/compliance/penalty-calculator
+    - paragraph
+    - heading "Publication penalties" [level=2]
+    - paragraph: A publication penalty enables you to publish some details of the landlord’s non-compliance on a publicly accessible part of the PRS Exemptions Register.
+    - paragraph: "The information that can be published is:"
+    - list
+    - listitem: the landlord’s name (except where the landlord is an individual)
+    - listitem: details of the breach
+    - listitem: the address of the property in relation to which the breach occurred
+    - listitem: the amount of any financial penalty imposed
+    - paragraph: /This information should be available for the public to view for at least \d+ months\./
+    - paragraph: This information cannot be published if you are reviewing the penalty notice or if the penalty notice is being appealed.
+    - paragraph
+    - text: If you have determined that a penalty is suitable, you can
+    - link "issue a penalty notice to the landlord.":
+      - /url: "#issuing"
+    - paragraph
+    - heading "Issuing a penalty notice" [level=2]
+    - paragraph: "A penalty notice must:"
+    - list
+    - listitem: explain which of the provisions of the MEES Regulations that you believe the landlord has breached
+    - listitem: give details of the breach
+    - listitem: tell the landlord whether they must take any action to remedy the breach and, if so, the date within which this action must be taken - the date must be at least a month after the penalty notice is issued
+    - listitem: explain the review and appeals processes, including the name and address of the person to whom a review request must be sent, and the date by which the request must be sent
+    - paragraph: "If a financial penalty has been imposed, the penalty notice must also:"
+    - list
+    - listitem: explain whether a financial penalty is imposed and if so, how much and, where applicable, how it has been calculated
+    - listitem: where a financial penalty is imposed, tell the landlord the date by which payment must be made, the name and address of the person to whom it must be paid and the method of payment - the date must be at least a month after the penalty notice is issued
+    - listitem: and explain that if the landlord does not pay any financial penalty within the specified period, the enforcement authority may bring court proceedings to recover the money from the landlord.
+    - paragraph: "If a publication penalty has been imposed, the penalty notice must also:"
+    - list
+    - listitem: explain whether a publication penalty has been imposed
+    - paragraph
+    - link "Check the templates section for penalty notice templates.":
+      - /url: https://desnz-gm--prseqa.sandbox.my.site.com/compliance/templates
+    - paragraph

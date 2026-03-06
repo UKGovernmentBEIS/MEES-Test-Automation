@@ -40,7 +40,12 @@ export enum PageName {
   PENALTY_CALCULATOR_PAGE = "Penalty Calculator Page",
   PENALTY_CALCULATOR_RESULTS_PAGE = "Penalty Calculator Results Page",
   TEMPLATES_PAGE = "Templates Page",
-  GUIDANCE_PAGE = "Guidance Page"
+  GUIDANCE_PAGE = "Guidance Page",
+  UNDERSTANDING_COMPLIANCE_PAGE = "Understanding Compliance Page",
+  UNDERSTANDING_PENALTIES_PAGE = "Understanding Penalties Page",
+  ENFORCEMENT_TIMELINE_PAGE = "Enforcement Timeline Page",
+  UNDERSTANDING_MEES_REGULATIONS_PAGE = "Understanding MEES Regulations Page",
+  WHERE_PROPERTY_INFORMATION_COMES_FROM_PAGE = "Where Property Information Comes From Page"
 }
 
 /**
