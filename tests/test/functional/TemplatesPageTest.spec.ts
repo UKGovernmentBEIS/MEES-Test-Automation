@@ -26,7 +26,7 @@ test.describe('Penalty Calculator Page', () => {
             'Penalty notice letter (publication) template.docx', 
             'Penalty notice letter (financial) template.docx',
             'Compliance notice letter template.docx',
-            'Penalty notice letter (publication and publication) template.docx'
+            'Penalty notice letter (financial and publication) template.docx'
         ];
 
         const actualFileNames = await templatesPage.downloadFileNamesForTemplates();
