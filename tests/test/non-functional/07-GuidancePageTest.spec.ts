@@ -32,7 +32,7 @@ test.describe('Guidance Main Page Non-Functional Tests', () => {
         const homePage = await landingPage.clickSignIn_AuthenticatedUser();
         const guidanceMainPage = await homePage.clickGuidanceLink();
 
-        for (const templateType of Object.values(TemplateTypes)) {
+        Object.values(TemplateTypes).forEach(async (templateType) => {
             // Click on the template link to navigate to the template page
             const templatePage = await guidanceMainPage.clickTemplateLink(templateType);
 
@@ -45,6 +45,6 @@ test.describe('Guidance Main Page Non-Functional Tests', () => {
 
             // Navigate back to the Guidance Main page for the next iteration
             await templatePage.clickGuidanceBreadcrumb();
-        }
+        });
     });
 });

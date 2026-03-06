@@ -7,6 +7,7 @@ import { GuidanceUnderstandingComplianceNoticePage } from './GuidanceUnderstandC
 import { GuidanceUnderstandingPenaltiesPage } from './GuidanceUnderstandingPenaltiesPage';
 import { GuidanceEnforcementTimelinePage } from './GuidanceEnforcmentTimelinePage';
 import { PageName } from '../../../utils/TestTypes';
+import { HomePage } from '../HomePage';
 
 export const TemplateTypes = {
     UNDERSTANDING_COMPLIANCE: 'Understanding compliance',
@@ -92,5 +93,12 @@ export class GuidanceMainPage extends BaseCompliancePage {
             default:
                 throw new Error(`No PageName mapping for template type: ${templateType}`);
         }
+    }
+
+    async clickHomeBreadcrumb(): Promise<HomePage> {
+        await this.breadcrumbHome.click();
+        const homePage = new HomePage(this.page);
+        await homePage.waitForPageToLoad();
+        return homePage;
     }
 }
