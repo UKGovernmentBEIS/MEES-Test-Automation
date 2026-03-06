@@ -1,16 +1,13 @@
-import { test, expect } from '../../fixtures/authFixtures';
+import { test } from '../../fixtures/authFixtures';
 import { LandingPage } from '../../pages/LandingPage';
-import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
-import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
+import { PageName } from '../../utils/TestTypes';
+import { BaseNonFunctionalTest } from '../../utils/BaseNonFunctionalTest';
 
 test.describe('Filter Properties Page Non-Functional Tests', () => {
 
-  test('Filter Properties Page', async ({ page }) => {
-    test.info().annotations.push(
-        TestAnnotations.page(PageName.FILTER_PROPERTIES_PAGE),
-        TestAnnotations.testType(TestType.ACCESSIBILITY),
-        TestAnnotations.testType(TestType.CONTEXT_VERIFICATION)
-    );
+  test('Filter Properties Page', async ({ page }, testInfo) => {
+    const baseTest = new BaseNonFunctionalTest(page, testInfo);
+    baseTest.addTestAnnotations(PageName.FILTER_PROPERTIES_PAGE);
 
     const landingPage = new LandingPage(page);
     await landingPage.navigate();
@@ -18,15 +15,10 @@ test.describe('Filter Properties Page Non-Functional Tests', () => {
     const filterPropertiesPage = await homePage.clickViewProperties();
 
     // Verify accessibility on the Filter Properties page
-    const results = await AccessibilityUtilities.analyzeAccessibility(page);
-    const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
-    expect(criticalViolations, `Filter Properties page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+    await baseTest.verifyAccessibility(PageName.FILTER_PROPERTIES_PAGE);
 
-    // Context Verification: Verify presence of key elements on the Filter Properties page
-    // Itterate through all locators returned by getPageContextLocator and check if they are visible
-    const contextLocators = await filterPropertiesPage.getPageContextLocator();
-    for (const locator of contextLocators) {
-        await expect(locator).toMatchAriaSnapshot();
-    }
+    // Verify page context on the Filter Properties page
+    const locators = await filterPropertiesPage.getPageContextLocator();
+    await baseTest.verifyContextWithLocators(locators);
   });
 });

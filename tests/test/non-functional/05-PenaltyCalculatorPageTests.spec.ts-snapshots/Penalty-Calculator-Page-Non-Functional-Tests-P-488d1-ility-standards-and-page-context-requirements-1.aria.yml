@@ -1,0 +1,44 @@
+- main:
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]
+  - navigation "Menu":
+    - list:
+      - listitem:
+        - link "Property records":
+          - /url: /filter-properties
+      - listitem:
+        - link "Guidance":
+          - /url: /guidance
+      - listitem:
+        - link "Penalty calculator":
+          - /url: /penalty-calculator
+          - strong: Penalty calculator
+      - listitem:
+        - link "Templates":
+          - /url: /templates
+  - paragraph:
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback by email":
+      - /url: mailto:meesdigital@energysecurity.gov.uk?subject=Feedback
+    - text: .
+  - navigation "Breadcrumb":
+    - list:
+      - listitem:
+        - link "Home":
+          - /url: /compliance/landing-page
+      - listitem: Penalty calculator
+  - list:
+    - listitem:
+      - link "Sign out":
+        - /url: "#"
+  - main:
+    - heading "Penalty calculator" [level=1]
+    - paragraph: If you have identified that a landlord is letting a sub-standard non-domestic property, use this service to calculate the maximum financial penalty for this MEES Regulations breach.
+    - group "How long has the property been in breach for?":
+      - heading "How long has the property been in breach for?" [level=2]
+      - radio "Less than 3 months"
+      - text: ""
+      - radio "More than 3 months"
+      - text: ""
+    - text: /What is the rateable value of the property\? For example, \d+/
+    - textbox "What is the rateable value of the property?"
+    - button "Calculate maximum penalty"

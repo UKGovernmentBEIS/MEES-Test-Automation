@@ -1,0 +1,52 @@
+- main:
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]
+  - navigation "Menu":
+    - list:
+      - listitem:
+        - link "Property records":
+          - /url: /filter-properties
+      - listitem:
+        - link "Guidance":
+          - /url: /guidance
+      - listitem:
+        - link "Penalty calculator":
+          - /url: /penalty-calculator
+          - strong: Penalty calculator
+      - listitem:
+        - link "Templates":
+          - /url: /templates
+  - paragraph:
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback by email":
+      - /url: mailto:meesdigital@energysecurity.gov.uk?subject=Feedback
+    - text: .
+  - navigation "Breadcrumb":
+    - list:
+      - listitem:
+        - link "Home":
+          - /url: /compliance/landing-page
+      - listitem:
+        - link "Penalty calculator":
+          - /url: /compliance/penalty-calculator
+      - listitem: Maximum financial penalty
+  - list:
+    - listitem:
+      - link "Sign out":
+        - /url: "#"
+  - main:
+    - paragraph: Penalty calculator
+    - heading "Maximum financial penalty" [level=1]
+    - paragraph: /£\d+,\d+/
+    - paragraph: This is the maximum financial penalty that may be issued for this non-domestic PR property MEES Regulations breach, based on the information provided.
+    - text: This estimate does not take account of mitigating factors or enforcement discretion.
+    - term: Length of breach
+    - definition: Less than 3 months
+    - term:
+      - link "Change length of breach":
+        - /url: "#"
+    - term: Rateable value
+    - definition: /\d+/
+    - term:
+      - link "Change rateable value":
+        - /url: "#"
+    - button "Start new calculation"

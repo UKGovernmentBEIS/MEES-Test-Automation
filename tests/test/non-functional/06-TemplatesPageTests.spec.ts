@@ -1,16 +1,13 @@
-import { test, expect } from '../../fixtures/authFixtures';
+import { test } from '../../fixtures/authFixtures';
 import { LandingPage } from '../../pages/LandingPage';
-import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
-import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
+import { PageName } from '../../utils/TestTypes';
+import { BaseNonFunctionalTest } from '../../utils/BaseNonFunctionalTest';
 
 test.describe('Templates Page Non-Functional Tests', () => {
 
-    test('Templates page should meet accessibility standards and page context requirements', async ({ page }) => {
-        test.info().annotations.push(
-        TestAnnotations.page(PageName.HOME_PAGE),
-        TestAnnotations.testType(TestType.ACCESSIBILITY),
-        TestAnnotations.page(PageName.TEMPLATES_PAGE)
-        );
+    test('Templates page should meet accessibility standards and page context requirements', async ({ page }, testInfo) => {
+        const baseTest = new BaseNonFunctionalTest(page, testInfo);
+        baseTest.addTestAnnotations(PageName.TEMPLATES_PAGE);
 
         const landingPage = new LandingPage(page);
         await landingPage.navigate();
@@ -18,15 +15,10 @@ test.describe('Templates Page Non-Functional Tests', () => {
         const templatesPage = await homePage.clickViewTemplates();
 
         // Verify accessibility on the Templates page
-        const results = await AccessibilityUtilities.analyzeAccessibility(page);
-        const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
-        expect(criticalViolations, `Templates page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+        await baseTest.verifyAccessibility(PageName.TEMPLATES_PAGE);
 
-        // Context Verification: Verify presence of key elements on the Templates page
-        // Itterate through all locators returned by getPageContextLocator and check if they are visible
-        const contextLocators = await templatesPage.getPageContextLocator();
-        for (const locator of contextLocators) {
-            await expect(locator).toMatchAriaSnapshot();
-        }
+        // Verify page context on the Templates page
+        const locators = await templatesPage.getPageContextLocator();
+        await baseTest.verifyContextWithLocators(locators);
     });
 });

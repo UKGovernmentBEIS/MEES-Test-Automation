@@ -1,16 +1,13 @@
 import { test, expect } from '../../fixtures/authFixtures';
 import { LandingPage } from '../../pages/LandingPage';
-import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
-import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
+import { PageName } from '../../utils/TestTypes';
+import { BaseNonFunctionalTest } from '../../utils/BaseNonFunctionalTest';
 
 test.describe('Penalty Calculator Page Non-Functional Tests', () => {
 
-    test('Penalty Calculator page should meet accessibility standards and page context requirements', async ({ page }) => {
-        test.info().annotations.push(
-        TestAnnotations.page(PageName.HOME_PAGE),
-        TestAnnotations.testType(TestType.ACCESSIBILITY),
-        TestAnnotations.page(PageName.PENALTY_CALCULATOR_PAGE)
-        );
+    test('Penalty Calculator page should meet accessibility standards and page context requirements', async ({ page }, testInfo) => {
+        const baseTest = new BaseNonFunctionalTest(page, testInfo);
+        baseTest.addTestAnnotations(PageName.PENALTY_CALCULATOR_PAGE);
 
         const landingPage = new LandingPage(page);
         await landingPage.navigate();
@@ -18,24 +15,16 @@ test.describe('Penalty Calculator Page Non-Functional Tests', () => {
         const penaltyCalculatorPage = await homePage.clickViewPenaltyCalculator();
 
         // Verify accessibility on the Penalty Calculator page
-        const results = await AccessibilityUtilities.analyzeAccessibility(page);
-        const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
-        expect(criticalViolations, `Penalty Calculator page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+        await baseTest.verifyAccessibility(PageName.PENALTY_CALCULATOR_PAGE);
 
-        // Context Verification: Verify presence of key elements on the Penalty Calculator page
-        // Itterate through all locators returned by getPageContextLocator and check if they are visible
-        const contextLocators = await penaltyCalculatorPage.getPageContextLocator();
-        for (const locator of contextLocators) {
-            await expect(locator).toBeVisible();
-        }
+        // Verify page context on the Penalty Calculator page
+        const locators = await penaltyCalculatorPage.getPageContextLocator();
+        await baseTest.verifyContextWithLocators(locators);
     });
 
-    test('Penalty Calculator Results page should meet accessibility standards and page context requirements', async ({ page }) => {
-        test.info().annotations.push(
-        TestAnnotations.page(PageName.HOME_PAGE),
-        TestAnnotations.testType(TestType.ACCESSIBILITY),
-        TestAnnotations.page(PageName.PENALTY_CALCULATOR_RESULTS_PAGE)
-        );
+    test('Penalty Calculator Results page should meet accessibility standards and page context requirements', async ({ page }, testInfo) => {
+        const baseTest = new BaseNonFunctionalTest(page, testInfo);
+        baseTest.addTestAnnotations(PageName.PENALTY_CALCULATOR_RESULTS_PAGE);
 
         const landingPage = new LandingPage(page);
         await landingPage.navigate();
@@ -44,24 +33,16 @@ test.describe('Penalty Calculator Page Non-Functional Tests', () => {
         const penaltyCalculatorResultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('Less than 3 months', 1000);
 
         // Verify accessibility on the Penalty Calculator Results page
-        const results = await AccessibilityUtilities.analyzeAccessibility(page);
-        const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
-        expect(criticalViolations, `Penalty Calculator Results page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+        await baseTest.verifyAccessibility(PageName.PENALTY_CALCULATOR_RESULTS_PAGE);
 
-        // Context Verification: Verify presence of key elements on the Penalty Calculator Results page
-        // Itterate through all locators returned by getPageContextLocator and check if they are visible
-        const contextLocators = await penaltyCalculatorResultsPage.getPageContextLocator();
-        for (const locator of contextLocators) {
-            await expect(locator).toBeVisible();
-        }
+        // Verify page context on the Penalty Calculator Results page
+        const locators = await penaltyCalculatorResultsPage.getPageContextLocator();
+        await baseTest.verifyContextWithLocators(locators);
     });
 
-    test('Penalty Calculator page with errors should meet accessibility standards and page context requirements', async ({ page }) => {
-        test.info().annotations.push(
-        TestAnnotations.page(PageName.HOME_PAGE),
-        TestAnnotations.testType(TestType.ACCESSIBILITY),
-        TestAnnotations.page(PageName.PENALTY_CALCULATOR_PAGE)
-        );
+    test('Penalty Calculator page with errors should meet accessibility standards and page context requirements', async ({ page }, testInfo) => {
+        const baseTest = new BaseNonFunctionalTest(page, testInfo);
+        baseTest.addTestAnnotations(PageName.PENALTY_CALCULATOR_PAGE);
 
         const landingPage = new LandingPage(page);
         await landingPage.navigate();
@@ -75,15 +56,10 @@ test.describe('Penalty Calculator Page Non-Functional Tests', () => {
         expect(await penaltyCalculatorPage.isDisplayed()).toBe(true);
 
         // Verify accessibility on the Penalty Calculator page with errors
-        const results = await AccessibilityUtilities.analyzeAccessibility(page);
-        const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
-        expect(criticalViolations, `Penalty Calculator page with errors has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+        await baseTest.verifyAccessibility(PageName.PENALTY_CALCULATOR_PAGE);
 
-        // Context Verification: Verify presence of key elements on the Penalty Calculator page with errors
-        // Itterate through all locators returned by getPageContextLocator and check if they are visible
-        const contextLocators = await penaltyCalculatorPage.getPageContextLocator();
-        for (const locator of contextLocators) {
-            await expect(locator).toBeVisible();
-        }
+        // Verify page context on the Penalty Calculator page with errors
+        const locators = await penaltyCalculatorPage.getPageContextLocator();
+        await baseTest.verifyContextWithLocators(locators);
     });
 });

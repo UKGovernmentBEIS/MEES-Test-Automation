@@ -1,30 +1,22 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { LandingPage } from '../../pages/LandingPage';
-import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
-import { TestType, PageName, TestAnnotations } from '../../utils/TestTypes';
+import { PageName } from '../../utils/TestTypes';
+import { BaseNonFunctionalTest } from '../../utils/BaseNonFunctionalTest';
 
 test.describe('Landing Page Non-Functional Tests', () => {
 
-  test('Landing Page', async ({ page }) => {
-    test.info().annotations.push(
-        TestAnnotations.page(PageName.LANDING_PAGE),
-        TestAnnotations.testType(TestType.ACCESSIBILITY),
-        TestAnnotations.testType(TestType.CONTEXT_VERIFICATION)
-    );
+  test('Landing Page', async ({ page }, testInfo) => {
+    const baseTest = new BaseNonFunctionalTest(page, testInfo);
+    baseTest.addTestAnnotations(PageName.LANDING_PAGE);
 
     const landingPage = new LandingPage(page);
     await landingPage.navigate();
 
     // Verify accessibility on the Landing page
-    const results = await AccessibilityUtilities.analyzeAccessibility(page);
-    const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
-    expect(criticalViolations, `Landing page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+    await baseTest.verifyAccessibility(PageName.LANDING_PAGE);
 
-    // Context Verification: Verify presence of key elements on the Landing page
-    // Itterate through all locators returned by getPageContextLocator and check if they are visible
-    const contextLocators = await landingPage.getPageContextLocator();
-    for (const locator of contextLocators) {
-        await expect(locator).toMatchAriaSnapshot();
-    }
+    // Verify page context on the Landing page
+    const locators = await landingPage.getPageContextLocator();
+    await baseTest.verifyContextWithLocators(locators);
   });
 });

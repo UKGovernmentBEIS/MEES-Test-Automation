@@ -1,24 +1,20 @@
-import { test, expect } from '@playwright/test';
-import { TestAnnotations, PageName, TestType } from '../../utils/TestTypes.ts';
+import { test } from '@playwright/test';
+import { PageName } from '../../utils/TestTypes';
 import { LandingPage } from '../../pages/LandingPage';
-import { AccessibilityUtilities } from '../../utils/AccessibilityUtilities';
+import { BaseNonFunctionalTest } from '../../utils/BaseNonFunctionalTest';
 import fs from 'fs';
 import path from 'path';
 
 test.describe('No Access Page Non-Functional Tests', () => {
     let landingPage: LandingPage;
-    test.beforeEach(async ({ page }, testInfo) => {
-        testInfo.annotations.push(
-            TestAnnotations.testType(TestType.ACCESSIBILITY),
-            TestAnnotations.testType(TestType.CONTEXT_VERIFICATION)
-        );
-
+    test.beforeEach(async ({ page }) => {
         landingPage = new LandingPage(page);
         await landingPage.navigate();
     });
 
     test('No Access Page', async ({ page }, testInfo) => {
-        testInfo.annotations.push(TestAnnotations.page(PageName.NO_ACCESS_PAGE));
+        const baseTest = new BaseNonFunctionalTest(page, testInfo);
+        baseTest.addTestAnnotations(PageName.NO_ACCESS_PAGE);
 
         const accountsPath = path.join(__dirname, '../../config/test-accounts.json');
         const accountsConfig = JSON.parse(fs.readFileSync(accountsPath, 'utf-8'));
@@ -39,12 +35,10 @@ test.describe('No Access Page Non-Functional Tests', () => {
         const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
         const noAccessPage = await loginPasswordPage.enterPasswordAndContinueToNoAccessPage(password);
 
-        // Verify accessibility on the One Login enter password page
-        const results = await AccessibilityUtilities.analyzeAccessibility(page);
-        const criticalViolations = AccessibilityUtilities.hasCriticalViolations(results.violations);
-        expect(criticalViolations, `One Login enter password page has critical accessibility violations:\n${AccessibilityUtilities.formatViolations(results.violations)}`).toBe(false);
+        // Verify accessibility on the No Access page
+        await baseTest.verifyAccessibility(PageName.NO_ACCESS_PAGE);
 
-        // Context Verification: Verify presence of key elements on the One Login enter password page
-        await expect(noAccessPage.pageContext).toMatchAriaSnapshot();
+        // Verify page context on the No Access page
+        await baseTest.verifyContextWithLocators([noAccessPage.pageContext]);
     });
 });
