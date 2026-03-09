@@ -10,35 +10,34 @@ export const accounts = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).accou
 /**
  * Resolves actual credentials from environment variables using the account configuration.
  * 
- * @param account - Account configuration object with env var names for email, password, firstName, and lastName
- * @returns Object containing the resolved email, password, firstName, and lastName strings
+ * @param account - Account configuration object with env var names for email, password, accountName
+ * @returns Object containing the resolved email, password and accountName strings
  * @throws Error if any required environment variables are undefined
  */
-export function resolveCredentials(account: any): { email: string; password: string; firstName: string; lastName: string } {
+export function resolveCredentials(account: any): { email: string; password: string; accountName: string } {
     const email = process.env[account.email];
     const password = process.env[account.password];
-    const firstName = process.env[account.firstName];
-    const lastName = process.env[account.lastName];
-    
-    if (!email || !password || !firstName || !lastName) {
+    const accountName = process.env[account.accountName];
+
+    if (!email || !password || !accountName) {
         // Add debugging information to help identify the issue
         const availableTestAccounts = Object.keys(process.env)
-            .filter(key => key.includes('TEST_ACCOUNT') || key.includes('EMAIL') || key.includes('PASSWORD') || key.includes('FIRST_NAME') || key.includes('LAST_NAME'))
+            .filter(key => key.includes('TEST_ACCOUNT') || key.includes('EMAIL') || key.includes('PASSWORD') || key.includes('NAME'))
             .map(key => `${key}=${process.env[key] ? '[SET]' : '[UNSET]'}`)
             .join(', ');
             
-        console.error(`[Auth Debug] Looking for: ${account.email}, ${account.password}, ${account.firstName}, ${account.lastName}`);
+        console.error(`[Auth Debug] Looking for: ${account.email}, ${account.password}, ${account.accountName}`);
         console.error(`[Auth Debug] Available test-related env vars: ${availableTestAccounts}`);
         console.error(`[Auth Debug] All env var keys containing 'TEST': ${Object.keys(process.env).filter(k => k.includes('TEST')).join(', ')}`);
         
         throw new Error(
-            `Required account fields not resolved for ${account.email}, ${account.password}, ${account.firstName}, and/or ${account.lastName}. ` +
-            `Environment variables resolve to: email="${email}", password="${password}", firstName="${firstName}", lastName="${lastName}". ` +
+            `Required account fields not resolved for ${account.email}, ${account.password}, ${account.accountName}. ` +
+            `Environment variables resolve to: email="${email}", password="${password}", accountName="${accountName}". ` +
             `Available test-related env vars: ${availableTestAccounts}`
         );
     }
     
-    return { email, password, firstName, lastName };
+    return { email, password, accountName };
 }
 
 /**
@@ -115,40 +114,15 @@ export async function saveAuthState(page: Page, workerIndex: number): Promise<vo
 }
 
 /**
- * Retrieves the email of the currently authenticated user from the browser context.
- * This uses the email mapping stored when the authentication context was created,
- * eliminating the need for file I/O and ensuring consistency with the loaded auth state.
- * 
- * @param page - The Playwright page object to get the context from
- * @returns The email address of the currently authenticated user
- * @throws Error if the email mapping is not found in the context
- */
-export function getCurrentUserEmail(page: Page): string {
-    const context = page.context();
-    const userEmail = (context as any)._authenticatedUserEmail;
-    const workerIndex = (context as any)._workerIndex;
-    
-    if (!userEmail) {
-        throw new Error(
-            'No authenticated user email found in browser context. ' +
-            'This might indicate an issue with the authentication fixture setup.'
-        );
-    }
-    
-    console.log(`[Auth Utils] Retrieved user email from context: Worker ${workerIndex} → ${userEmail}`);
-    return userEmail;
-}
-
-/**
- * Retrieves the display name (firstName + lastName) of the currently authenticated user.
+ * Retrieves the account name of the currently authenticated user.
  * This uses the worker index from the browser context to look up the account info
- * and resolve the firstName/lastName from environment variables.
+ * and resolve the accountName from environment variables.
  * 
  * @param page - The Playwright page object to get the context from
- * @returns The display name in "firstName lastName" format
+ * @returns The account name of the currently authenticated user
  * @throws Error if the worker index is not found in the context or account not found
  */
-export function getCurrentUserDisplayName(page: Page): string {
+export function getCurrentUserAccountName(page: Page): string {
     const context = page.context();
     const workerIndex = (context as any)._workerIndex;
     
@@ -160,22 +134,19 @@ export function getCurrentUserDisplayName(page: Page): string {
     }
     
     const account = accounts[workerIndex];
-    if (!account || !account.firstName || !account.lastName) {
+    if (!account || !account.accountName) {
         throw new Error(
-            `Account not found or missing firstName/lastName for worker ${workerIndex}. ` +
-            'Please ensure test-accounts.json has firstName and lastName fields for all accounts.'
+            `Account not found or missing accountName for worker ${workerIndex}. ` +
+            'Please ensure test-accounts.json has accountName fields for all accounts.'
         );
     }
     
-    // Resolve firstName and lastName from environment variables
-    const { firstName, lastName } = resolveCredentials(account);
-    const displayName = `${firstName} ${lastName}`;
+    // Resolve accountName from environment variables
+    const { accountName } = resolveCredentials(account);
     
-    console.log(`[Auth Utils] Retrieved user display name from context: Worker ${workerIndex} → ${displayName}`);
-    return displayName;
+    console.log(`[Auth Utils] Retrieved user account name from context: Worker ${workerIndex} → ${accountName}`);
+    return accountName;
 }
-
-
 
 /**
  * Re-authenticates the current user when authentication has been lost.

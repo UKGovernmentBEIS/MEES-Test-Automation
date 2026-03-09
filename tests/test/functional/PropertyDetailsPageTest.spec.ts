@@ -6,7 +6,7 @@ import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
 import { PropertyDetailsPage, DMSPropertyDetails } from '../../pages/Compliance/PropertyDetailsPage';
 import { ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
-import { getCurrentUserEmail, getCurrentUserDisplayName } from '../../utils/AuthUtils';
+import { getCurrentUserAccountName } from '../../utils/AuthUtils';
 
 test.describe('View Properties Page Data Validation Tests', () => {
     let propertyDetailsPage: PropertyDetailsPage;
@@ -140,8 +140,8 @@ test.describe('Property Details Comments Tests', () => {
         await expect(await propertyDetailsPage.getComments()).toContainText(uniqueComment);
 
         // Verify comment has correct annotation (example: 'Added by Test User2 on 9th March 2026')
-        // Get current user's display name for annotation from browser context
-        const currentUserName = getCurrentUserDisplayName(page);
+        // Get current user's account name for annotation from browser context
+        const currentUserName = getCurrentUserAccountName(page);
         // Construct expected expected date with ordinal suffix
         const currentDate = new Date();
         const day = currentDate.getDate();
