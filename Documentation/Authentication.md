@@ -51,11 +51,15 @@ Each test account must:
     {
       "email": "TEST_ACCOUNT_1_EMAIL",
       "password": "TEST_ACCOUNT_1_PASSWORD",
+      "firstName": "Test",
+      "lastName": "User1",
       "description": "Primary test account - Worker 0"
     },
     {
       "email": "TEST_ACCOUNT_2_EMAIL", 
       "password": "TEST_ACCOUNT_2_PASSWORD",
+      "firstName": "Test",
+      "lastName": "User2",
       "description": "Secondary test account - Worker 1"
     }
   ]
@@ -172,7 +176,7 @@ When you run tests, the setup project creates separate authentication files for 
    - Worker 1 → loads `user-1.json`
    - Worker N → loads `user-N.json`
 2. **Auth state** is loaded into a worker-scoped browser context with stored email and worker info
-3. **Context-based email retrieval** uses `getCurrentUserEmail(page)` to get authenticated user from browser context
+3. **Context-based email retrieval** uses `getCurrentUserEmail(page)` to get authenticated user from browser context and `getCurrentUserDisplayName(page)` for display name validation
 4. **All tests** in that worker reuse the authenticated session
 5. **Each test** gets a new page but maintains authentication
 
@@ -202,7 +206,7 @@ For CI/CD configuration details, see the **[CI/CD Configuration Guide](CI-CD.md)
 
 **Authentication fails in tests:**
 - **LandingPage methods detect issues and call `AuthUtils.reAuthenticate()` automatically** - Dedicated utility function with context-based worker identification for reliable recovery
-- **Context-based email retrieval** - `getCurrentUserEmail(page)` provides efficient access to authenticated user info
+- **Context-based email retrieval** - `getCurrentUserEmail(page)` provides efficient access to authenticated user info and `getCurrentUserDisplayName(page)` for UI display name validation
 - **Separated authentication functions** - `saveWorkerIndexAndUserMapping()` and `saveAuthState()` ensure clean state management
 - **Zero manual intervention needed** - Streamlined architecture automatically fixes session issues during test execution
 - Run `npx playwright test --project=setup` only if switching test environments or updating credentials

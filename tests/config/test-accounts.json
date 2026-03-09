@@ -4,17 +4,23 @@
     {
       "email": "TEST_ACCOUNT_1_EMAIL",
       "password": "TEST_ACCOUNT_1_PASSWORD",
+      "firstName": "TEST_ACCOUNT_1_FIRST_NAME",
+      "lastName": "TEST_ACCOUNT_1_LAST_NAME",
       "description": "Primary test account - Worker 0"
     },
     {
       "email": "TEST_ACCOUNT_2_EMAIL",
       "password": "TEST_ACCOUNT_2_PASSWORD",
+      "firstName": "TEST_ACCOUNT_2_FIRST_NAME",
+      "lastName": "TEST_ACCOUNT_2_LAST_NAME",
       "description": "Secondary test account - Worker 1"
     }
   ],
   "noAccessAccount": {
     "email": "TEST_NO_ACCESS_EMAIL",
     "password": "TEST_NO_ACCESS_PASSWORD",
+    "firstName": "TEST_NO_ACCESS_FIRST_NAME",
+    "lastName": "TEST_NO_ACCESS_LAST_NAME",
     "description": "Test account that has no access to the Compliance Hub"
   }
 }

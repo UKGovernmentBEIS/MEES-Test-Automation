@@ -10,34 +10,35 @@ export const accounts = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).accou
 /**
  * Resolves actual credentials from environment variables using the account configuration.
  * 
- * @param account - Account configuration object with env var names for email and password
- * @returns Object containing the resolved email and password strings
- * @throws Error if either email or password environment variables are undefined
+ * @param account - Account configuration object with env var names for email, password, firstName, and lastName
+ * @returns Object containing the resolved email, password, firstName, and lastName strings
+ * @throws Error if any required environment variables are undefined
  */
-export function resolveCredentials(account: any): { email: string; password: string } {
+export function resolveCredentials(account: any): { email: string; password: string; firstName: string; lastName: string } {
     const email = process.env[account.email];
     const password = process.env[account.password];
+    const firstName = process.env[account.firstName];
+    const lastName = process.env[account.lastName];
     
-    if (!email || !password) {
+    if (!email || !password || !firstName || !lastName) {
         // Add debugging information to help identify the issue
         const availableTestAccounts = Object.keys(process.env)
-            .filter(key => key.includes('TEST_ACCOUNT') || key.includes('EMAIL') || key.includes('PASSWORD'))
+            .filter(key => key.includes('TEST_ACCOUNT') || key.includes('EMAIL') || key.includes('PASSWORD') || key.includes('FIRST_NAME') || key.includes('LAST_NAME'))
             .map(key => `${key}=${process.env[key] ? '[SET]' : '[UNSET]'}`)
             .join(', ');
             
-        console.error(`[Auth Debug] Looking for: ${account.email}, ${account.password}`);
+        console.error(`[Auth Debug] Looking for: ${account.email}, ${account.password}, ${account.firstName}, ${account.lastName}`);
         console.error(`[Auth Debug] Available test-related env vars: ${availableTestAccounts}`);
         console.error(`[Auth Debug] All env var keys containing 'TEST': ${Object.keys(process.env).filter(k => k.includes('TEST')).join(', ')}`);
         
         throw new Error(
-            `Email or password not resolved for ${account.email} and/or ${account.password}. ` +
-            `Environment variable for "${account.email}" resolves to "${email}". ` +
-            `Environment variable for "${account.password}" resolves to "${password}". ` +
+            `Required account fields not resolved for ${account.email}, ${account.password}, ${account.firstName}, and/or ${account.lastName}. ` +
+            `Environment variables resolve to: email="${email}", password="${password}", firstName="${firstName}", lastName="${lastName}". ` +
             `Available test-related env vars: ${availableTestAccounts}`
         );
     }
     
-    return { email, password };
+    return { email, password, firstName, lastName };
 }
 
 /**
@@ -136,6 +137,42 @@ export function getCurrentUserEmail(page: Page): string {
     
     console.log(`[Auth Utils] Retrieved user email from context: Worker ${workerIndex} → ${userEmail}`);
     return userEmail;
+}
+
+/**
+ * Retrieves the display name (firstName + lastName) of the currently authenticated user.
+ * This uses the worker index from the browser context to look up the account info
+ * and resolve the firstName/lastName from environment variables.
+ * 
+ * @param page - The Playwright page object to get the context from
+ * @returns The display name in "firstName lastName" format
+ * @throws Error if the worker index is not found in the context or account not found
+ */
+export function getCurrentUserDisplayName(page: Page): string {
+    const context = page.context();
+    const workerIndex = (context as any)._workerIndex;
+    
+    if (workerIndex === undefined) {
+        throw new Error(
+            'No worker index found in browser context. ' +
+            'This might indicate an issue with the authentication fixture setup.'
+        );
+    }
+    
+    const account = accounts[workerIndex];
+    if (!account || !account.firstName || !account.lastName) {
+        throw new Error(
+            `Account not found or missing firstName/lastName for worker ${workerIndex}. ` +
+            'Please ensure test-accounts.json has firstName and lastName fields for all accounts.'
+        );
+    }
+    
+    // Resolve firstName and lastName from environment variables
+    const { firstName, lastName } = resolveCredentials(account);
+    const displayName = `${firstName} ${lastName}`;
+    
+    console.log(`[Auth Utils] Retrieved user display name from context: Worker ${workerIndex} → ${displayName}`);
+    return displayName;
 }
 
 
