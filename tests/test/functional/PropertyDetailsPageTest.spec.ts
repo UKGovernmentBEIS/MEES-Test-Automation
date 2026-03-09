@@ -225,4 +225,9 @@ test.describe('Property Details Page Navigation Tests', () => {
         const filterPropertiesPage = await propertyDetailsPage.clickOnPropertyRecordsTab();
         expect(await filterPropertiesPage.isDisplayed()).toBe(true);
     });
+
+    test('Should navigate to Home page when clicking page header link', async () => {
+        const homePage = await propertyDetailsPage.clickPageHeaderLink();
+        expect(await homePage.isDisplayed()).toBe(true);
+    });
 });

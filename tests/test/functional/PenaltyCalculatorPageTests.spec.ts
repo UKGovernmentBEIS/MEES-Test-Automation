@@ -149,6 +149,11 @@ test.describe('Penalty Calculator Page Navigation Tests', () => {
         const homePage = await penaltyCalculatorPage.clickBreadcrumbHome();
         expect(await homePage.isDisplayed()).toBe(true);
     });
+
+    test('Should navigate to Home page when clicking page header link', async () => {
+        const homePage = await penaltyCalculatorPage.clickPageHeaderLink();
+        expect(await homePage.isDisplayed()).toBe(true);
+    });
 });
 
 test.describe('Penalty Calculator Results Page Navigation Tests', () => {

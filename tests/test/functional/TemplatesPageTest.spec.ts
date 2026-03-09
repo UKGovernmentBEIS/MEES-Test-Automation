@@ -39,4 +39,9 @@ test.describe('Penalty Calculator Page', () => {
             expect(expectedTemplateFileNames).toContain(filename);
         });
     });
+
+    test('Should navigate to Home page when clicking page header link', async () => {
+        const homePage = await templatesPage.clickPageHeaderLink();
+        expect(await homePage.isDisplayed()).toBe(true);
+    });
 });

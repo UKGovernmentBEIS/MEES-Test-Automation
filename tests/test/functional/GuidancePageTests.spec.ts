@@ -42,6 +42,11 @@ test.describe('Guidance Main Page', () => {
         await penaltyCalculatorPage.waitForPageToLoad();
         expect(await penaltyCalculatorPage.isDisplayed()).toBeTruthy();
     });
+
+    test('Should navigate to Home page when clicking page header link', async () => {
+        const homePage = await guidanceMainPage.clickPageHeaderLink();
+        expect(await homePage.isDisplayed()).toBe(true);
+    });
 });
 
 test.describe('Guidance sub-pages', () => {
