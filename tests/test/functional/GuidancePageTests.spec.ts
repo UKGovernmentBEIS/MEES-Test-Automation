@@ -3,6 +3,7 @@ import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
 import { GuidanceMainPage, TemplateTypes } from '../../pages/Compliance/Guidance/GuidanceMainPage';
 import { PenaltyCalculatorPage } from '../../pages/Compliance/PenaltyCalculatorPage';
+import { HomePage } from '../../pages/Compliance/HomePage';
 
 test.describe('Guidance Main Page', () => {
     let guidanceMainPage: GuidanceMainPage;
@@ -59,37 +60,41 @@ test.describe('Guidance sub-pages', () => {
     });
 
     test('Should navigate correctly to the Home page using breadcrumb', async () => {
-        Object.values(TemplateTypes).forEach(async (templateType) => {
+        for (const templateType of Object.values(TemplateTypes)) {
             // Click on the template link to navigate to the template page
             const templatePage = await guidanceMainPage.clickTemplateLink(templateType);
             await templatePage.waitForPageToLoad();
 
-            // Click on the breadcrumb to navigate back to the Guidance Main page
-            const homePage = await templatePage.clickGuidanceBreadcrumb();
+            // Click on the breadcrumb to navigate to the Home page
+            const homePage: HomePage = await templatePage.clickHomeBreadcrumb();
             await homePage.waitForPageToLoad();
 
             // Verify that the Home page is displayed
             expect(await homePage.isDisplayed()).toBeTruthy();
-        });
+
+            // Navigate back to guidance page for next iteration
+            guidanceMainPage = await homePage.clickGuidanceLink();
+            await guidanceMainPage.waitForPageToLoad();
+        }
     });
 
     test('Should navigate correctly to the Guidance Main page using breadcrumb', async () => {
-        Object.values(TemplateTypes).forEach(async (templateType) => {
+        for (const templateType of Object.values(TemplateTypes)) {
             // Click on the template link to navigate to the template page
             const templatePage = await guidanceMainPage.clickTemplateLink(templateType);
             await templatePage.waitForPageToLoad();
 
             // Click on the breadcrumb to navigate back to the Guidance Main page
-            const guidancePage = await templatePage.clickGuidanceBreadcrumb();
-            await guidancePage.waitForPageToLoad();
+            guidanceMainPage = await templatePage.clickGuidanceBreadcrumb();
+            await guidanceMainPage.waitForPageToLoad();
 
             // Verify that the Guidance Main page is displayed
-            expect(await guidancePage.isDisplayed()).toBeTruthy();
-        });
+            expect(await guidanceMainPage.isDisplayed()).toBeTruthy();
+        }
      });
 
      test('Should navigate correctly to the View Properties page using tab', async () => {
-        Object.values(TemplateTypes).forEach(async (templateType) => {
+        for (const templateType of Object.values(TemplateTypes)) {
             // Click on the template link to navigate to the template page
             const templatePage = await guidanceMainPage.clickTemplateLink(templateType);
             await templatePage.waitForPageToLoad();
@@ -100,6 +105,12 @@ test.describe('Guidance sub-pages', () => {
 
             // Verify that the View Properties page is displayed
             expect(await viewPropertiesPage.isDisplayed()).toBeTruthy();
-        });
+
+            // Navigate back to guidance page for next iteration (ViewProperties -> Home -> Guidance)
+            const homePage = await viewPropertiesPage.clickBreadcrumbHome();
+            await homePage.waitForPageToLoad();
+            guidanceMainPage = await homePage.clickGuidanceLink();
+            await guidanceMainPage.waitForPageToLoad();
+        }
      });
 });

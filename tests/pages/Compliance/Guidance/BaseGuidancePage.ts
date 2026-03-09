@@ -20,14 +20,18 @@ export abstract class BaseGuidancePage extends BaseCompliancePage {
 
     async waitForPageToLoad(): Promise<void> {
         await super.waitForPageToLoad();
+        // Only wait for breadcrumbs since individual template pages have different titles
         await ElementUtilities.waitForPageToLoad(
             this.page,
             'Base Guidance Page',
-            { breadcrumbHome: this.breadcrumbHome, breadcrumbGuidance: this.breadcrumbGuidance, pageTitle: this.pageTitle });
+            { breadcrumbHome: this.breadcrumbHome, breadcrumbGuidance: this.breadcrumbGuidance });
     }
 
     async isDisplayed(): Promise<boolean> {
-        return this.page.url().includes('guidance') && await this.pageTitle.isVisible();
+        // Check URL contains guidance and breadcrumbs are visible
+        return this.page.url().includes('guidance') && 
+               await this.breadcrumbHome.isVisible() &&
+               await this.breadcrumbGuidance.isVisible();
     }
 
     async getPageContextLocator(): Promise<Locator[]> {

@@ -10,7 +10,7 @@ import { PageName } from '../../../utils/TestTypes';
 import { HomePage } from '../HomePage';
 
 export const TemplateTypes = {
-    UNDERSTANDING_COMPLIANCE: 'Understanding compliance',
+    UNDERSTANDING_COMPLIANCE: 'Understanding compliance notices',
     UNDERSTANDING_PENALTIES: 'Understanding penalties',
     ENFORCEMENT_TIMELINE: 'Enforcement timeline',
     UNDERSTANDING_MEES_REGULATIONS: 'Understanding the MEES regulations',
@@ -65,7 +65,7 @@ export class GuidanceMainPage extends BaseCompliancePage {
         const templateLink = await this.templateLink(templateType);
          await templateLink.click();
         switch (templateType) {
-            case 'Understanding compliance':
+            case 'Understanding compliance notices':
                 return new GuidanceUnderstandingComplianceNoticePage(this.page);
             case 'Understanding penalties':
                 return new GuidanceUnderstandingPenaltiesPage(this.page);
