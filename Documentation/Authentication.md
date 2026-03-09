@@ -51,15 +51,13 @@ Each test account must:
     {
       "email": "TEST_ACCOUNT_1_EMAIL",
       "password": "TEST_ACCOUNT_1_PASSWORD",
-      "firstName": "Test",
-      "lastName": "User1",
+      "accountName": "TEST_ACCOUNT_1_NAME",
       "description": "Primary test account - Worker 0"
     },
     {
       "email": "TEST_ACCOUNT_2_EMAIL", 
       "password": "TEST_ACCOUNT_2_PASSWORD",
-      "firstName": "Test",
-      "lastName": "User2",
+      "accountName": "TEST_ACCOUNT_2_NAME",
       "description": "Secondary test account - Worker 1"
     }
   ]
@@ -74,8 +72,10 @@ Council configuration for LA users can be done in Salesforce.
 
 **File**: `.env` (create in project root)
 ```env
+TEST_ACCOUNT_1_NAME=test user 1
 TEST_ACCOUNT_1_EMAIL=user1@example.com
 TEST_ACCOUNT_1_PASSWORD=Password123!
+TEST_ACCOUNT_2_NAME=test user 2
 TEST_ACCOUNT_2_EMAIL=user2@example.com
 TEST_ACCOUNT_2_PASSWORD=Password456!
 ```
@@ -123,6 +123,7 @@ Remove-Item "playwright\auth-states\user-*.json"
 
 3. **Add the credentials to `.env` locally:**
    ```env
+   TEST_ACCOUNT_3_NAME=test user3
    TEST_ACCOUNT_3_EMAIL=test3@example.com
    TEST_ACCOUNT_3_PASSWORD=YourActualPassword3!
    ```

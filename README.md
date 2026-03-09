@@ -33,6 +33,7 @@
 3. **Create `.env` file** with test credentials:
    ```env
    # Test Accounts (each needs separate GOV.UK One Login with MFA)
+   TEST_ACCOUNT_1_NAME=test user1
    TEST_ACCOUNT_1_EMAIL=user1@example.com
    TEST_ACCOUNT_1_PASSWORD=Password123!
    TEST_ACCOUNT_2_EMAIL=user2@example.com
