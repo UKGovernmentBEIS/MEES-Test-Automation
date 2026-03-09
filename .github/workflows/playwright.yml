@@ -34,24 +34,20 @@ jobs:
       env:
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-        TEST_ACCOUNT_1_FIRST_NAME: ${{ secrets.TEST_ACCOUNT_1_FIRST_NAME }}
-        TEST_ACCOUNT_1_LAST_NAME: ${{ secrets.TEST_ACCOUNT_1_LAST_NAME }}
+        TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
         TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
         TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-        TEST_ACCOUNT_2_FIRST_NAME: ${{ secrets.TEST_ACCOUNT_2_FIRST_NAME }}
-        TEST_ACCOUNT_2_LAST_NAME: ${{ secrets.TEST_ACCOUNT_2_LAST_NAME }}
+        TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
         BASE_URL: ${{ secrets.BASE_URL }}
     - name: Run functional tests
       run: npx playwright test --project=functional
       env:
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-        TEST_ACCOUNT_1_FIRST_NAME: ${{ secrets.TEST_ACCOUNT_1_FIRST_NAME }}
-        TEST_ACCOUNT_1_LAST_NAME: ${{ secrets.TEST_ACCOUNT_1_LAST_NAME }}
+        TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
         TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
         TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-        TEST_ACCOUNT_2_FIRST_NAME: ${{ secrets.TEST_ACCOUNT_2_FIRST_NAME }}
-        TEST_ACCOUNT_2_LAST_NAME: ${{ secrets.TEST_ACCOUNT_2_LAST_NAME }}
+        TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
         PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
         PROPERTY_KEY: ${{ secrets.PROPERTY_KEY }}
         DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
@@ -84,28 +80,23 @@ jobs:
       env:
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-        TEST_ACCOUNT_1_FIRST_NAME: ${{ secrets.TEST_ACCOUNT_1_FIRST_NAME }}
-        TEST_ACCOUNT_1_LAST_NAME: ${{ secrets.TEST_ACCOUNT_1_LAST_NAME }}
+        TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
         TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
         TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-        TEST_ACCOUNT_2_FIRST_NAME: ${{ secrets.TEST_ACCOUNT_2_FIRST_NAME }}
-        TEST_ACCOUNT_2_LAST_NAME: ${{ secrets.TEST_ACCOUNT_2_LAST_NAME }}
+        TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
         BASE_URL: ${{ secrets.BASE_URL }}
     - name: Run non-functional tests
       run: npx playwright test --project=non-functional
       env:
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-        TEST_ACCOUNT_1_FIRST_NAME: ${{ secrets.TEST_ACCOUNT_1_FIRST_NAME }}
-        TEST_ACCOUNT_1_LAST_NAME: ${{ secrets.TEST_ACCOUNT_1_LAST_NAME }}
+        TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
         TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
         TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-        TEST_ACCOUNT_2_FIRST_NAME: ${{ secrets.TEST_ACCOUNT_2_FIRST_NAME }}
-        TEST_ACCOUNT_2_LAST_NAME: ${{ secrets.TEST_ACCOUNT_2_LAST_NAME }}
+        TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
         TEST_NO_ACCESS_EMAIL: ${{ secrets.TEST_NO_ACCESS_EMAIL }}
         TEST_NO_ACCESS_PASSWORD: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
-        TEST_NO_ACCESS_FIRST_NAME: ${{ secrets.TEST_NO_ACCESS_FIRST_NAME }}
-        TEST_NO_ACCESS_LAST_NAME: ${{ secrets.TEST_NO_ACCESS_LAST_NAME }}
+        TEST_NO_ACCESS_NAME: ${{ secrets.TEST_NO_ACCESS_NAME }}
         BASE_URL: ${{ secrets.BASE_URL }}
     - name: Upload Playwright HTML report
       uses: actions/upload-artifact@v4
