@@ -1,5 +1,7 @@
 - main:
-  - heading "Check if properties meet minimum energy efficiency standards" [level=2]
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]:
+    - link "Check if properties meet minimum energy efficiency standards":
+      - /url: /landing-page
   - navigation "Menu":
     - list:
       - listitem:
@@ -32,7 +34,7 @@
         - /url: "#"
   - main:
     - heading "Penalty calculator" [level=1]
-    - paragraph: If you have identified that a landlord is letting a sub-standard non-domestic property, use this service to calculate the maximum financial penalty for this MEES Regulations breach.
+    - text: If you have identified that a landlord is letting a sub-standard non-domestic property, use this service to calculate the maximum financial penalty for this MEES Regulations breach.
     - group "How long has the property been in breach for?":
       - heading "How long has the property been in breach for?" [level=2]
       - paragraph: "Error: Select how long the property has been in breach for"

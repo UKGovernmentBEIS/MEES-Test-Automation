@@ -1,5 +1,7 @@
 - main:
-  - heading "Check if properties meet minimum energy efficiency standards" [level=2]
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]:
+    - link "Check if properties meet minimum energy efficiency standards":
+      - /url: /landing-page
   - navigation "Menu":
     - list:
       - listitem:
