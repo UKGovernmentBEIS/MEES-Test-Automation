@@ -4,6 +4,8 @@ import { BaseCompliancePage } from './BaseCompliancePage';
 import { HomePage } from './HomePage';
 import { FilterPropertiesPage } from './FilterPropertiesPage';
 import { PropertyDetailsPage } from './PropertyDetailsPage';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export class ViewPropertiesPage extends BaseCompliancePage {
     private pageContext: Locator;
@@ -20,6 +22,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
     private totalRecordsField: Locator;
     private downloadButton: Locator;
     private noRecordsFoundMessage: Locator;
+    private readonly exportButton: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -37,6 +40,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         this.totalRecordsField = this.page.getByText('results');
         this.downloadButton = this.page.getByRole('button', { name: 'Export filtered table (.csv)' });
         this.noRecordsFoundMessage = this.page.getByText('No records found');
+        this.exportButton = this.page.getByRole('button', { name: 'Export filtered table (.csv)' });
     }
 
     async waitForPageToLoad(additionalLocators?: Record<string, Locator>): Promise<void> {
@@ -48,7 +52,8 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             breadcrumbHomeLink: this.breadcrumbHomeLink,
             breadcrumbFilterPropertiesLink: this.breadcrumbFilterPropertiesLink,
             changeFiltersLink: this.changeFiltersLink,
-            downloadButton: this.downloadButton
+            downloadButton: this.downloadButton,
+            exportButton: this.exportButton
         };
 
         const locatorsToWaitFor = additionalLocators 
@@ -237,6 +242,51 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         await propertyDetailsPage.waitForPageToLoad();
         return propertyDetailsPage;
     }
+
+    async exportFilteredData(): Promise<ViewPropertiesExportRecord[]> {
+        // Setup download event listener
+        const downloadPromise = this.page.waitForEvent('download');
+        
+        // Click the export button
+        await this.exportButton.click();
+        
+        // Wait for download to complete
+        const download = await downloadPromise;
+        
+        // Get download path
+        const downloadPath = path.join(__dirname, '../../../test-results', `export-${Date.now()}.csv`);
+        await download.saveAs(downloadPath);
+        
+        // Read and parse the CSV file
+        const csvContent = fs.readFileSync(downloadPath, 'utf-8');
+        const lines: string[] = csvContent.split('\n').filter(line => line.trim() !== '');
+        
+        if (lines.length === 0) {
+            throw new Error('Downloaded CSV file is empty');
+        }
+        
+        // Parse header row
+        const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+        
+        // Parse data rows
+        const exportedData: ViewPropertiesExportRecord[] = [];
+        for (let i = 1; i < lines.length; i++) {
+            const values = lines[i].split(',').map(v => v.replace(/"/g, '').trim());
+            if (values.length >= 4) {
+                exportedData.push(new ViewPropertiesExportRecord(
+                    values[0], // Property address
+                    values[1], // Energy rating
+                    values[2], // EPC expiry date
+                    values[3]  // PRS Exemptions
+                ));
+            }
+        }
+        
+        // Clean up the downloaded file
+        fs.unlinkSync(downloadPath);
+        
+        return exportedData;
+    }
 }
 
 export class PropertyData {
@@ -258,5 +308,24 @@ export class PropertyData {
         this.epcExpiryDate = epcExpiryDate;
         this.PRSExemptions = PRSExemptions;
         this.PRSEExemptionsColour = PRSEExemptionsColour;
+    }
+}
+
+export class ViewPropertiesExportRecord {
+    readonly propertyAddress: string;
+    readonly energyRating: string;
+    readonly epcExpiryDate: string;
+    readonly prsExemptions: string;
+
+    constructor(
+        propertyAddress: string,
+        energyRating: string,
+        epcExpiryDate: string,
+        prsExemptions: string
+    ) {
+        this.propertyAddress = propertyAddress;
+        this.energyRating = energyRating;
+        this.epcExpiryDate = epcExpiryDate;
+        this.prsExemptions = prsExemptions;
     }
 }

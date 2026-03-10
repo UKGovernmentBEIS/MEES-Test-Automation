@@ -344,3 +344,45 @@ test.describe('View Properties Page Navigation Tests', () => {
         expect(await homePage.isDisplayed()).toBe(true);
     });
 });
+
+test.describe('View Properties export fucntionality', () => {
+    let filterPropertiesPage: FilterPropertiesPage;
+    
+    test.beforeEach(async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.FUNCTIONAL)
+        );
+        
+        const landingPage: LandingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
+        filterPropertiesPage = await homePage.clickViewProperties();
+    });
+
+    test('Validate export count on the View Properties page', async ({ page }) => {       
+        // Set Energy Rating filter to 'A'
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        
+        // Set Council filter to 'LONDON BOROUGH OF BEXLEY'
+        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
+        
+        // Apply the filters
+        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await viewPropertiesPage.waitForTableContent();
+
+        // Get the display count of records before export
+        const propertiesCountField = await viewPropertiesPage.getPropertiesCountField();
+        const displayedCountText = await propertiesCountField.innerText();
+        const displayedCount = parseInt(displayedCountText.match(/(\d+)/)?.[1] || '0', 10);
+
+        // Ensure we have records to export
+        expect(displayedCount).toBeGreaterThan(0);
+        
+        // Export the filtered data
+        const exportedRecords = await viewPropertiesPage.exportFilteredData();
+        
+        // Validate the exported data
+        expect(exportedRecords.length).toEqual(displayedCount);
+    });
+});
