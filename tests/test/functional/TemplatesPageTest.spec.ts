@@ -3,7 +3,7 @@ import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
 import { TemplatesPage } from '../../pages/Compliance/TemplatesPage';
 
-test.describe('Penalty Calculator Page', () => {
+test.describe('Templates Page', () => {
     let templatesPage: TemplatesPage;
 
     test.beforeEach(async ({ page }, testInfo) => {
