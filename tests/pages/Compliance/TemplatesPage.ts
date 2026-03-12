@@ -95,7 +95,7 @@ export class TemplatesPage extends BaseCompliancePage {
             throw new Error(`Template index ${templateIndex} is out of range`);
         }
         
-        const downloadLink = templates[templateIndex].locator('.template-details');
+        const downloadLink = templates[templateIndex].locator('a.template-link');
         
         // Wait for download event
         const downloadPromise = this.page.waitForEvent('download');
