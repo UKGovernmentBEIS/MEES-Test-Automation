@@ -44,9 +44,9 @@
       - link "Department for Energy Security and Net Zero":
         - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
     - term: Published
-    - definition: /5 March \d+/
+    - definition: /\d+ March \d+/
     - term: Last updated
-    - definition: /5 March \d+/
+    - definition: /\d+ March \d+/
     - heading "Contents" [level=2]
     - heading "─ Contacting a landlord before issuing a compliance notice" [level=3]:
       - text: ""
@@ -69,7 +69,7 @@
       - /url: https://www.gov.uk/guidance/non-domestic-private-rented-property-minimum-energy-efficiency-standard-landlord-guidance
     - text: and the
     - link "PRS Exemptions Register":
-      - /url: https://prsregister.beis.gov.uk/NdsBeisUi/register-search-exemptions
+      - /url: https://www.gov.uk/government/publications/private-rented-sector-minimum-energy-efficiency-standard-exemptions/guidance-on-prs-exemptions-and-exemptions-register-evidence-requirements
     - text: publicly available to them which you may wish to share.
     - paragraph
     - heading "Issuing a compliance notice" [level=2]
