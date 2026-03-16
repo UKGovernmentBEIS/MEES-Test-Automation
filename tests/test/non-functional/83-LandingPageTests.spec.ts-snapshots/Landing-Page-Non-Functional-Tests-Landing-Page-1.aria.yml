@@ -20,7 +20,7 @@
   - paragraph: You must register for a personal account to access this service.
   - paragraph:
     - link "You can register by completing this Microsoft Form (opens in a new tab).":
-      - /url: "#"
+      - /url: https://forms.office.com/e/1e9mQDGXvH
   - paragraph: You will receive an email when your account has been successfully created.
   - heading "Sign in" [level=2]
   - paragraph: "You will need:"
