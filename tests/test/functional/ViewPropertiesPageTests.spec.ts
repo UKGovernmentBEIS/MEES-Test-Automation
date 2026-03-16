@@ -453,4 +453,165 @@ test.describe('View Properties export functionality', () => {
                 .toBe(matchingExportRecord!['exemptionStatus']);
         });
     });
+
+    test('All DMS fields are available in export and populated with data', async ({ request }) => {
+        // Set Energy Rating filter to 'A'
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        
+        // Set Council filter to 'LONDON BOROUGH OF BEXLEY'
+        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
+        
+        // Apply the filters
+        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await viewPropertiesPage.waitForTableContent();
+
+        // Get sample property from DMS API first
+        const dmsApiUrl = `${process.env.DMS_BASE_URL}/mees/properties?page=1&size=10`;
+        const dmsApiResponse = await request.post(dmsApiUrl, {
+            data: {
+                "lacodes": ["E09000003","E09000004"],
+                "energyratingband": "A"  // Match the filter applied in UI
+            },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.PROPERTIES_KEY!
+            }
+        });
+        
+        expect(dmsApiResponse.status()).toBe(200);
+        const dmsResponseBody = await dmsApiResponse.json();
+        const parsedDmsResponse = JSON.parse(dmsResponseBody);
+        
+        expect(parsedDmsResponse.data.length).toBeGreaterThan(0);
+        
+        // Select the first property from DMS as our reference
+        const referenceProperty = parsedDmsResponse.data[0];
+        const expectedFieldNames = Object.keys(referenceProperty);
+        
+        // Export filtered data from UI
+        const exportedData: Record<string, any>[] = await viewPropertiesPage.exportFilteredData();
+        expect(exportedData.length).toBeGreaterThan(0);
+
+        // Find matching property in export by UPRN (unique identifier)
+        // Use string comparison to handle potential type mismatches between number/string
+        const matchingExportedProperty = exportedData.find(record => 
+            String(record['Uprn']) === String(referenceProperty['Uprn'])
+        );
+        
+        expect(matchingExportedProperty, 
+            `Property with UPRN ${referenceProperty['Uprn']} from DMS not found in export. Available UPRNs: ${exportedData.map(r => r['Uprn']).slice(0, 5).join(', ')}... DMS UPRN type: ${typeof referenceProperty['Uprn']}, Export UPRN types: ${exportedData.slice(0, 3).map(r => typeof r['Uprn']).join(', ')}`)
+            .toBeDefined();
+
+        // Verify all DMS fields are present in export
+        const missingFields: string[] = [];
+        expectedFieldNames.forEach(fieldName => {
+            if (!(fieldName in matchingExportedProperty!)) {
+                missingFields.push(fieldName);
+            }
+        });
+        expect(missingFields, `Fields present in DMS but missing in export: ${missingFields.join(', ')}`).toEqual([]);
+
+        // Compare field values between DMS and export for the same property
+        const valueMismatches: string[] = [];
+        expectedFieldNames.forEach(fieldName => {
+            const dmsValue = referenceProperty[fieldName];
+            const exportValue = matchingExportedProperty![fieldName];
+            
+            // Handle null/undefined/empty string equivalence
+            const normalizedDmsValue = (dmsValue === null || dmsValue === undefined) ? '' : String(dmsValue);
+            const normalizedExportValue = (exportValue === null || exportValue === undefined) ? '' : String(exportValue);
+            
+            if (normalizedDmsValue !== normalizedExportValue) {
+                valueMismatches.push(`${fieldName}: DMS='${dmsValue}' (${typeof dmsValue}) vs Export='${exportValue}' (${typeof exportValue})`);
+            }
+        });
+        
+        expect(valueMismatches, `Value mismatches between DMS and export for UPRN ${referenceProperty['Uprn']}: ${valueMismatches.join('; ')}`).toEqual([]);
+
+    
+    }); 
+
+    test('Export contains only UI and DMS fields - no additional fields', async ({ request }) => {
+        // Set Energy Rating filter to 'A'
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        
+        // Set Council filter to 'LONDON BOROUGH OF BEXLEY'
+        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
+        
+        // Apply the filters
+        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await viewPropertiesPage.waitForTableContent();
+
+        // Get UI table data to identify UI field names
+        const uiTableData: PropertyData[] = await viewPropertiesPage.getPropertiesDataFromTable();
+        expect(uiTableData.length).toBeGreaterThan(0);
+        
+        // Extract UI field names from PropertyData class structure
+        const uiFieldNames = [
+            'address',
+            'energyRating', 
+            'epcExpiryDate',
+            'PRSExemptions',
+            'PRSEExemptionsColour'
+        ];
+
+        // Get DMS API data to identify DMS field names
+        const dmsApiUrl = `${process.env.DMS_BASE_URL}/mees/properties?page=1&size=10`;
+        const dmsApiResponse = await request.post(dmsApiUrl, {
+            data: {
+                "lacodes": ["E09000003","E09000004"],
+                "energyratingband": "A"
+            },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.PROPERTIES_KEY!
+            }
+        });
+        
+        expect(dmsApiResponse.status()).toBe(200);
+        const dmsResponseBody = await dmsApiResponse.json();
+        const parsedDmsResponse = JSON.parse(dmsResponseBody);
+        expect(parsedDmsResponse.data.length).toBeGreaterThan(0);
+        
+        // Extract DMS field names from API response
+        const dmsFieldNames = Object.keys(parsedDmsResponse.data[0]);
+        
+        // Define exception fields that are allowed in export but not in UI/DMS
+        const exceptionFields = ['SalesforceComments', 'exemptionStatus'];
+        
+        // Get export data
+        const exportedData: Record<string, any>[] = await viewPropertiesPage.exportFilteredData();
+        expect(exportedData.length).toBeGreaterThan(0);
+        
+        // Extract export field names
+        const exportFieldNames = Object.keys(exportedData[0]);
+        
+        // Create combined set of allowed field names (UI + DMS + exceptions)
+        const allowedFieldNames = new Set([...uiFieldNames, ...dmsFieldNames, ...exceptionFields]);
+        
+        // Find export fields that are NOT in UI or DMS
+        const unauthorizedFields: string[] = [];
+        exportFieldNames.forEach(exportField => {
+            if (!allowedFieldNames.has(exportField)) {
+                unauthorizedFields.push(exportField);
+            }
+        });
+        
+        // Test should fail if there are unauthorized fields
+        expect(unauthorizedFields, 
+            `Unauthorized fields found in export: ${unauthorizedFields.join('; ')}. UI fields: [${uiFieldNames.join(', ')}]. DMS fields: [${dmsFieldNames.join(', ')}]. Exception fields: [${exceptionFields.join(', ')}]. Export fields: [${exportFieldNames.join(', ')}]`)
+            .toEqual([]);
+        
+        // Log summary for debugging
+        console.log(`✅ Field validation summary:
+        - UI fields (${uiFieldNames.length}): ${uiFieldNames.join(', ')}
+        - DMS fields (${dmsFieldNames.length}): ${dmsFieldNames.join(', ')}
+        - Exception fields (${exceptionFields.length}): ${exceptionFields.join(', ')}
+        - Export fields (${exportFieldNames.length}): ${exportFieldNames.join(', ')}
+        - Unauthorized fields: ${unauthorizedFields.length === 0 ? 'None' : unauthorizedFields.join(', ')}`);
+    });
 });
