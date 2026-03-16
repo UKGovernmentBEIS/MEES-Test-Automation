@@ -548,15 +548,6 @@ test.describe('View Properties export functionality', () => {
         // Get UI table data to identify UI field names
         const uiTableData: PropertyData[] = await viewPropertiesPage.getPropertiesDataFromTable();
         expect(uiTableData.length).toBeGreaterThan(0);
-        
-        // Extract UI field names from PropertyData class structure
-        const uiFieldNames = [
-            'address',
-            'energyRating', 
-            'epcExpiryDate',
-            'PRSExemptions',
-            'PRSEExemptionsColour'
-        ];
 
         // Get DMS API data to identify DMS field names
         const dmsApiUrl = `${process.env.DMS_BASE_URL}/mees/properties?page=1&size=10`;
@@ -590,10 +581,10 @@ test.describe('View Properties export functionality', () => {
         // Extract export field names
         const exportFieldNames = Object.keys(exportedData[0]);
         
-        // Create combined set of allowed field names (UI + DMS + exceptions)
-        const allowedFieldNames = new Set([...uiFieldNames, ...dmsFieldNames, ...exceptionFields]);
+        // Create combined set of allowed field names (DMS + exceptions)
+        const allowedFieldNames = new Set([...dmsFieldNames, ...exceptionFields]);
         
-        // Find export fields that are NOT in UI or DMS
+        // Find export fields that are NOT in DMS or exceptions
         const unauthorizedFields: string[] = [];
         exportFieldNames.forEach(exportField => {
             if (!allowedFieldNames.has(exportField)) {
@@ -603,15 +594,7 @@ test.describe('View Properties export functionality', () => {
         
         // Test should fail if there are unauthorized fields
         expect(unauthorizedFields, 
-            `Unauthorized fields found in export: ${unauthorizedFields.join('; ')}. UI fields: [${uiFieldNames.join(', ')}]. DMS fields: [${dmsFieldNames.join(', ')}]. Exception fields: [${exceptionFields.join(', ')}]. Export fields: [${exportFieldNames.join(', ')}]`)
+            `Unauthorized fields found in export: ${unauthorizedFields.join('; ')}. DMS fields: [${dmsFieldNames.join(', ')}]. Exception fields: [${exceptionFields.join(', ')}]. Export fields: [${exportFieldNames.join(', ')}]`)
             .toEqual([]);
-        
-        // Log summary for debugging
-        console.log(`✅ Field validation summary:
-        - UI fields (${uiFieldNames.length}): ${uiFieldNames.join(', ')}
-        - DMS fields (${dmsFieldNames.length}): ${dmsFieldNames.join(', ')}
-        - Exception fields (${exceptionFields.length}): ${exceptionFields.join(', ')}
-        - Export fields (${exportFieldNames.length}): ${exportFieldNames.join(', ')}
-        - Unauthorized fields: ${unauthorizedFields.length === 0 ? 'None' : unauthorizedFields.join(', ')}`);
     });
 });
