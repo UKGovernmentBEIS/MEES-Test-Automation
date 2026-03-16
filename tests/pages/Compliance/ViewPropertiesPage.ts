@@ -232,6 +232,37 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         return '';
     }
 
+    private parseCSVLine(line: string): string[] {
+        const result: string[] = [];
+        let current = '';
+        let inQuotes = false;
+        let i = 0;
+
+        while (i < line.length) {
+            const char = line[i];
+            
+            if (char === '"') {
+                // Toggle quote state
+                inQuotes = !inQuotes;
+                i++;
+            } else if (char === ',' && !inQuotes) {
+                // End of field - only split on commas outside quotes
+                result.push(current.trim());
+                current = '';
+                i++;
+            } else {
+                // Regular character (including commas inside quotes)
+                current += char;
+                i++;
+            }
+        }
+        
+        // Add the last field
+        result.push(current.trim());
+        
+        return result;
+    }
+
     async ViewDetailsForPropertyWithAddress(address: string) {
         const row = this.propertyTableRow.filter({ hasText: address }).first();
         if (!await row.isVisible()) {
@@ -243,15 +274,12 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         return propertyDetailsPage;
     }
 
-    async exportFilteredData(): Promise<ViewPropertiesExportRecord[]> {
-        // Setup download event listener
-        const downloadPromise = this.page.waitForEvent('download');
-        
+    async exportFilteredData(): Promise<Record<string, string>[]> { 
         // Click the export button
         await this.exportButton.click();
         
         // Wait for download to complete
-        const download = await downloadPromise;
+        const download = await this.page.waitForEvent('download');
         
         // Get download path
         const downloadPath = path.join(__dirname, '../../../test-results', `export-${Date.now()}.csv`);
@@ -266,20 +294,19 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         }
         
         // Parse header row
-        const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+        const headers = this.parseCSVLine(lines[0]);
         
         // Parse data rows
-        const exportedData: ViewPropertiesExportRecord[] = [];
+        const exportedData: Record<string, string>[] = [];
+        // Iterate through each data row
         for (let i = 1; i < lines.length; i++) {
-            const values = lines[i].split(',').map(v => v.replace(/"/g, '').trim());
-            if (values.length >= 4) {
-                exportedData.push(new ViewPropertiesExportRecord(
-                    values[0], // Property address
-                    values[1], // Energy rating
-                    values[2], // EPC expiry date
-                    values[3]  // PRS Exemptions
-                ));
-            }
+            // Parse the CSV line properly to handle quoted fields with commas
+            const values = this.parseCSVLine(lines[i]);
+            const record: Record<string, string> = {};
+            headers.forEach((header, index) => {
+                record[header] = values[index] || '';
+            });
+            exportedData.push(record);
         }
         
         // Clean up the downloaded file
@@ -308,24 +335,5 @@ export class PropertyData {
         this.epcExpiryDate = epcExpiryDate;
         this.PRSExemptions = PRSExemptions;
         this.PRSEExemptionsColour = PRSEExemptionsColour;
-    }
-}
-
-export class ViewPropertiesExportRecord {
-    readonly propertyAddress: string;
-    readonly energyRating: string;
-    readonly epcExpiryDate: string;
-    readonly prsExemptions: string;
-
-    constructor(
-        propertyAddress: string,
-        energyRating: string,
-        epcExpiryDate: string,
-        prsExemptions: string
-    ) {
-        this.propertyAddress = propertyAddress;
-        this.energyRating = energyRating;
-        this.epcExpiryDate = epcExpiryDate;
-        this.prsExemptions = prsExemptions;
     }
 }

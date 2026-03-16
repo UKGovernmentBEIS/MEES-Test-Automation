@@ -2,7 +2,7 @@ import { test } from '../../fixtures/authFixtures';
 import { expect } from '@playwright/test';
 import { FilterPropertiesPage } from '../../pages/Compliance/FilterPropertiesPage';
 import { HomePage } from '../../pages/Compliance/HomePage';
-import { ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
+import { PropertyData, ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
 
@@ -345,8 +345,19 @@ test.describe('View Properties Page Navigation Tests', () => {
     });
 });
 
-test.describe('View Properties export fucntionality', () => {
+test.describe('View Properties export functionality', () => {
     let filterPropertiesPage: FilterPropertiesPage;
+    
+    // Helper function to convert ISO date to UI format
+    const convertISODateToUIFormat = (isoDate: string): string => {
+        if (!isoDate) return '';
+        const date = new Date(isoDate);
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = months[date.getMonth()];
+        const year = date.getFullYear();
+        return `${day} ${month} ${year}`;
+    };
     
     test.beforeEach(async ({ page }, testInfo) => {
         testInfo.annotations.push(
@@ -384,5 +395,62 @@ test.describe('View Properties export fucntionality', () => {
         
         // Validate the exported data
         expect(exportedRecords.length).toEqual(displayedCount);
+    });
+
+    test('Exported data should match UI table data', async () => {
+        // Set Energy Rating filter to 'A'
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        
+        // Set Council filter to 'LONDON BOROUGH OF BEXLEY'
+        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
+        
+        // Apply the filters
+        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await viewPropertiesPage.waitForTableContent();
+
+        // Get data from the table on the page
+        const uiTableData: PropertyData[] = await viewPropertiesPage.getPropertiesDataFromTable();
+        expect(uiTableData.length).toBeGreaterThan(0);
+        
+        // Export filtered data
+        const exportedData: Record<string, any>[] = await viewPropertiesPage.exportFilteredData();
+        expect(exportedData.length).toBeGreaterThan(0);
+
+        // For each UI record
+        uiTableData.forEach(uiRecord => {
+            // Find matching record in exported data based on property address displayed on the page
+            const matchingExportRecord = exportedData.find(record => {
+                const recordAddress = 
+                    (record['FlatNameNumber'] ? `${record['FlatNameNumber']}, ` : '') +
+                    (record['Number'] ? `${record['Number']}, ` : '') +
+                    (record['Line1'] ? `${record['Line1']}, ` : '') +
+                    (record['Line2'] ? `${record['Line2']}, ` : '') +
+                    (record['Line3'] ? `${record['Line3']}, ` : '') +
+                    (record['Town'] ? `${record['Town']}, ` : '') +
+                    (record['Postcode'] ? `${record['Postcode']}` : '');
+                return recordAddress === uiRecord.address;
+            });
+            expect(matchingExportRecord, `No matching exported record found for UI record with address: ${uiRecord.address}`).toBeDefined();
+
+            // Verify Energy Rating matches between exported record and UI record
+            //   Construct energy rating in the same format as in the UI for accurate comparison
+            //   Example: "A (10)"
+            const exportedEnergyRating = `${matchingExportRecord!['EPCEnergyRatingBand']} (${matchingExportRecord!['EPCEnergyRating']})`;
+            expect(uiRecord?.energyRating, 
+                `Energy rating mismatch for address '${uiRecord.address}': expected '${uiRecord?.energyRating}', got '${exportedEnergyRating}'`)
+                .toBe(exportedEnergyRating);
+
+            // Verify EPC Expiry Date matches between exported record and UI record
+            const exportedEPCExpiryDate = convertISODateToUIFormat(matchingExportRecord!['EPCExpiryDate']);
+            expect(uiRecord?.epcExpiryDate, 
+                `EPC Expiry Date mismatch for address '${uiRecord.address}': expected '${uiRecord?.epcExpiryDate}', got '${exportedEPCExpiryDate}'`)
+                .toBe(exportedEPCExpiryDate);
+
+            // Verify PRS Exemptions matches between exported record and UI record
+            expect(uiRecord?.PRSExemptions, 
+                `The 'PRS Exemptions' mismatch for address '${uiRecord.address}': expected '${uiRecord?.PRSExemptions}', got '${matchingExportRecord!['exemptionStatus']}'`)
+                .toBe(matchingExportRecord!['exemptionStatus']);
+        });
     });
 });
