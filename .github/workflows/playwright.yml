@@ -98,19 +98,22 @@ jobs:
         TEST_NO_ACCESS_PASSWORD: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
         TEST_NO_ACCESS_NAME: ${{ secrets.TEST_NO_ACCESS_NAME }}
         BASE_URL: ${{ secrets.BASE_URL }}
+    # Upload Playwright report when non-functional tests fail
     - name: Upload Playwright HTML report
       uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
+      if: ${{ failure() }}
       with:
         name: non-functional-test-report-${{ inputs.environment || 'qa' }}
         path: playwright-report/
-        retention-days: 30
-    - name: Upload Non-Functional Test Coverage Report
-      uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: non-functional-coverage-report-${{ inputs.environment || 'qa' }}
-        path: test-results/non-functional-test-coverage.*
+        retention-days: 2
+    # Temporarily disabled uploading non-functional test coverage report due to issues with artifact upload and storage limits. 
+    #Will re-enable once we have a solution in place to manage artifact storage more effectively.
+    # - name: Upload Non-Functional Test Coverage Report
+    #   uses: actions/upload-artifact@v4
+    #   if: ${{ !cancelled() }}
+    #   with:
+    #     name: non-functional-coverage-report-${{ inputs.environment || 'qa' }}
+    #     path: test-results/non-functional-test-coverage.*
         retention-days: 30
 
   api-tests: 
