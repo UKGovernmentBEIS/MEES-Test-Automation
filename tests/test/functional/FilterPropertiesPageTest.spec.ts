@@ -117,7 +117,7 @@ test.describe('Filter Properties Page Functional Tests', () => {
         expect(await returnedFilterPropertiesPage.getPostcodeFilterValue()).toBe(postcodeFilter);
     });
 
-    test('Ensure filter criteria are NOT persistent when navigating back to Filter Properties page using breadcrumb link', async ({ page }, testInfo) => {
+    test('Ensure filter criteria are persistent when navigating back to Filter Properties page using breadcrumb link', async ({ page }, testInfo) => {
         // Set up test data for filter criteria
         const councilFilter = 'LONDON BOROUGH OF BARNET';
         const energyRatingFilter = 'A';
@@ -138,12 +138,13 @@ test.describe('Filter Properties Page Functional Tests', () => {
         // Navigate back to the Filter Properties page using the breadcrumb link
         filterPropertiesPage = await viewPropertiesPage.clickBreadcrumbFilterProperties();
 
-        // Verify that the filter criteria have been reset when navigating back to Filter Properties page
-        expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe('Show all councils');
-        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter()).length).toBe(0);
-        expect(await filterPropertiesPage.getStreetFilterValue()).toBe('');
-        expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
-        expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');
+        // Verify that the filter criteria are persistent when navigating back to Filter Properties page
+        expect(await filterPropertiesPage.getSelectedCouncilFilter()).toBe(councilFilter);
+        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter()).length).toBe(1);
+        expect((await filterPropertiesPage.getSelectedEnergyRatingFilter())[0]).toBe(energyRatingFilter);
+        expect(await filterPropertiesPage.getStreetFilterValue()).toBe(streetFilter);
+        expect(await filterPropertiesPage.getTownFilterValue()).toBe(townFilter);
+        expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe(postcodeFilter);
     });
 
     // This test requires explicit selection of LA users with council associations.
