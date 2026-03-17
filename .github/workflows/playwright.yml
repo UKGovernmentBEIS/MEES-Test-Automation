@@ -15,11 +15,30 @@ on:
           - qa
 
 jobs:
+  # Run only on Gov UK repository to prevent from duplicating test execution
+  check-client-repo:
+    name: Check if Client Repository
+    runs-on: ubuntu-latest
+    outputs:
+      is-client-repo: ${{ steps.check.outputs.is-client-repo }}
+    steps:
+    - id: check
+      run: |
+        if [ -n "${{ secrets.PERSONAL_REPO_TOKEN }}" ]; then
+          echo "is-client-repo=true" >> $GITHUB_OUTPUT
+          echo "✅ Running in client repository"
+        else
+          echo "is-client-repo=false" >> $GITHUB_OUTPUT  
+          echo "⏭️ Skipping - not client repository"
+        fi
+
   functional-tests:
     name: Functional Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment || 'qa' }}
+    needs: check-client-repo
+    if: needs.check-client-repo.outputs.is-client-repo == 'true'
     steps: 
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
@@ -65,7 +84,8 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment || 'qa' }}
-    needs: functional-tests
+    needs: [check-client-repo, functional-tests]
+    if: needs.check-client-repo.outputs.is-client-repo == 'true'
     steps:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
@@ -119,6 +139,8 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment || 'qa' }}
+    needs: check-client-repo
+    if: needs.check-client-repo.outputs.is-client-repo == 'true'
     steps:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
@@ -140,3 +162,20 @@ jobs:
         name: api-test-report-${{ inputs.environment || 'qa' }}
         path: playwright-report/
         retention-days: 2
+
+  # Sync to personal repository only if running in client repository and all tests have completed
+  #  (regardless of pass/fail) to ensure the latest test results are always available in the personal repository for review
+  sync-to-personal:
+    name: Sync to Personal Repository
+    runs-on: ubuntu-latest
+    needs: [check-client-repo, functional-tests, non-functional-tests, api-tests]
+    if: always() && needs.check-client-repo.outputs.is-client-repo == 'true'
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+    
+    - name: Sync to personal repository
+      run: |
+        git remote add personal https://x-access-token:${{ secrets.PERSONAL_REPO_TOKEN }}@github.com/Mikos24/MEES-Test-Automation.git
+        git push personal main --force-with-lease
