@@ -29,7 +29,7 @@
           - /url: /compliance/landing-page
       - listitem:
         - link "Filter property records":
-          - /url: /compliance/filter-properties
+          - /url: /compliance/filter-properties?street=Invalid%20Street%20Name&page=1
       - listitem: View property records
   - list:
     - listitem:
