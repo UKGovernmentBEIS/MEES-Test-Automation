@@ -352,8 +352,8 @@ test.describe('View Properties export functionality', () => {
     const convertISODateToUIFormat = (isoDate: string): string => {
         if (!isoDate) return '';
         const date = new Date(isoDate);
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-        const day = String(date.getDate()).padStart(2, '0');
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const day = String(date.getDate());
         const month = months[date.getMonth()];
         const year = date.getFullYear();
         return `${day} ${month} ${year}`;
