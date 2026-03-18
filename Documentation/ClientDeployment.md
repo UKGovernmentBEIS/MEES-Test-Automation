@@ -24,8 +24,45 @@
 
 ## Development Workflow
 
-- **Primary development**: Work locally as usual
-- **Push to client**: `git push origin main` (goes to client repository)
-- **Push to personal**: `git push personal main` (goes to personal repository)  
-- **Convenience command**: `git push origin main && git push personal main` (push to both)
-- **Independent testing**: Both repositories run their own CI/CD pipelines
+### Daily Development Process
+
+1. **Primary development**: Work locally as usual
+   - Make changes, commits, and test locally
+   - Ensure all tests pass before pushing
+
+2. **Pre-push verification**:
+   ```bash
+   # Check current status
+   git status
+   
+   # Verify remotes are configured
+   git remote -v
+   
+   # Check what commits will be pushed to each remote
+   git log origin/main..main --oneline  # commits for client repo
+   git log personal/main..main --oneline # commits for personal repo
+   ```
+
+### Pushing Changes to Both Repositories
+
+#### Option 1: Push to Both at Once
+```bash
+# Push to both repositories simultaneously
+git push origin main && git push personal main
+```
+
+#### Option 2: Push Individually
+```bash
+# Push to client repository first
+git push origin main
+
+# Then push to personal repository
+git push personal main
+```
+
+#### Option 3: Force Push (if needed)
+```bash
+# If repositories are out of sync, you may need force push
+git push personal main --force-with-lease
+```
+
