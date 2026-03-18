@@ -15,134 +15,109 @@ on:
           - qa
 
 jobs:
-  # Run only on Gov UK repository to prevent from duplicating test execution
-  check-client-repo:
-    name: Check if Client Repository
+  functional-tests:
+    name: Functional Tests
+    timeout-minutes: 60
     runs-on: ubuntu-latest
-    outputs:
-      is-client-repo: ${{ steps.check.outputs.is-client-repo }}
+    environment: ${{ inputs.environment || 'qa' }}
+    steps: 
+    - uses: actions/checkout@v5
+    - uses: actions/setup-node@v5
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run authentication setup
+      run: npx playwright test --project=setup
+      env:
+        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+        TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
+        TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
+        TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+        TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
+        BASE_URL: ${{ secrets.BASE_URL }}
+    - name: Run functional tests
+      run: npx playwright test --project=functional
+      env:
+        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+        TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
+        TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
+        TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+        TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
+        PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
+        PROPERTY_KEY: ${{ secrets.PROPERTY_KEY }}
+        DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
+        BASE_URL: ${{ secrets.BASE_URL }}
+    - name: Upload Playwright HTML report
+      uses: actions/upload-artifact@v4
+      if: ${{ failure() }}
+      with:
+        name: functional-test-report-${{ inputs.environment || 'qa' }}
+        path: playwright-report/
+        retention-days: 2
+
+  non-functional-tests: 
+    name: Non-Functional Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'qa' }}
+    needs: functional-tests
     steps:
-    - id: check
-      run: |
-        if [ -n "${{ secrets.PERSONAL_REPO_TOKEN }}" ]; then
-          echo "is-client-repo=true" >> $GITHUB_OUTPUT
-          echo "✅ Running in client repository"
-        else
-          echo "is-client-repo=false" >> $GITHUB_OUTPUT  
-          echo "⏭️ Skipping - not client repository"
-        fi
-
-  # Temporarily commented out for PAT debugging
-  # functional-tests:
-  #   name: Functional Tests
-  #   timeout-minutes: 60
-  #   runs-on: ubuntu-latest
-  #   environment: ${{ inputs.environment || 'qa' }}
-  #   needs: check-client-repo
-  #   if: needs.check-client-repo.outputs.is-client-repo == 'true'
-    # steps: 
-    # - uses: actions/checkout@v5
-    # - uses: actions/setup-node@v5
-    #   with:
-    #     node-version: lts/*
-    # - name: Install dependencies
-    #   run: npm ci
-    # - name: Install Playwright Browsers
-    #   run: npx playwright install --with-deps
-    # - name: Run authentication setup
-    #   run: npx playwright test --project=setup
-    #   env:
-    #     TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
-    #     TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-    #     TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
-    #     TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
-    #     TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-    #     TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
-    #     BASE_URL: ${{ secrets.BASE_URL }}
-    # - name: Run functional tests
-    #   run: npx playwright test --project=functional
-    #   env:
-    #     TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
-    #     TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-    #     TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
-    #     TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
-    #     TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-    #     TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
-    #     PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
-    #     PROPERTY_KEY: ${{ secrets.PROPERTY_KEY }}
-    #     DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
-    #     BASE_URL: ${{ secrets.BASE_URL }}
-    # - name: Upload Playwright HTML report
-    #   uses: actions/upload-artifact@v4
-    #   if: ${{ failure() }}
-    #   with:
-    #     name: functional-test-report-${{ inputs.environment || 'qa' }}
-    #     path: playwright-report/
-    #     retention-days: 2
-
-  # Temporarily commented out for PAT debugging
-  # non-functional-tests: 
-  #   name: Non-Functional Tests
-  #   timeout-minutes: 60
-  #   runs-on: ubuntu-latest
-  #   environment: ${{ inputs.environment || 'qa' }}
-  #   needs: [check-client-repo, functional-tests]
-  #   if: needs.check-client-repo.outputs.is-client-repo == 'true'
-    # steps:
-    # - uses: actions/checkout@v5
-    # - uses: actions/setup-node@v5
-    #   with:
-    #     node-version: lts/*
-    # - name: Install dependencies
-    #   run: npm ci
-    # - name: Install Playwright Browsers
-    #   run: npx playwright install --with-deps
-    # - name: Run authentication setup
-    #   run: npx playwright test --project=setup
-    #   env:
-    #     TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
-    #     TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-    #     TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
-    #     TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
-    #     TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-    #     TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
-    #     BASE_URL: ${{ secrets.BASE_URL }}
-    # - name: Run non-functional tests
-    #   run: npx playwright test --project=non-functional
-    #   env:
-    #     TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
-    #     TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
-    #     TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
-    #     TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
-    #     TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
-    #     TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
-    #     TEST_NO_ACCESS_EMAIL: ${{ secrets.TEST_NO_ACCESS_EMAIL }}
-    #     TEST_NO_ACCESS_PASSWORD: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
-    #     TEST_NO_ACCESS_NAME: ${{ secrets.TEST_NO_ACCESS_NAME }}
-    #     BASE_URL: ${{ secrets.BASE_URL }}
-    # # Upload Playwright report when non-functional tests fail
-    # - name: Upload Playwright HTML report
-    #   uses: actions/upload-artifact@v4
-    #   if: ${{ failure() }}
-    #   with:
-    #     name: non-functional-test-report-${{ inputs.environment || 'qa' }}
-    #     path: playwright-report/
-    #     retention-days: 2
-    # - name: Upload Non-Functional Test Coverage Report
-    #   uses: actions/upload-artifact@v4
-    #   if: ${{ failure() }}
-    #   with:
-    #     name: non-functional-coverage-report-${{ inputs.environment || 'qa' }}
-    #     path: test-results/non-functional-test-coverage.*
-    #     retention-days: 2
+    - uses: actions/checkout@v5
+    - uses: actions/setup-node@v5
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run authentication setup
+      run: npx playwright test --project=setup
+      env:
+        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+        TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
+        TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
+        TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+        TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
+        BASE_URL: ${{ secrets.BASE_URL }}
+    - name: Run non-functional tests
+      run: npx playwright test --project=non-functional
+      env:
+        TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+        TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+        TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
+        TEST_ACCOUNT_2_EMAIL: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
+        TEST_ACCOUNT_2_PASSWORD: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+        TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
+        TEST_NO_ACCESS_EMAIL: ${{ secrets.TEST_NO_ACCESS_EMAIL }}
+        TEST_NO_ACCESS_PASSWORD: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
+        TEST_NO_ACCESS_NAME: ${{ secrets.TEST_NO_ACCESS_NAME }}
+        BASE_URL: ${{ secrets.BASE_URL }}
+    - name: Upload Playwright HTML report
+      uses: actions/upload-artifact@v4
+      if: ${{ failure() }}
+      with:
+        name: non-functional-test-report-${{ inputs.environment || 'qa' }}
+        path: playwright-report/
+        retention-days: 2
+    - name: Upload Non-Functional Test Coverage Report
+      uses: actions/upload-artifact@v4
+      if: ${{ failure() }}
+      with:
+        name: non-functional-coverage-report-${{ inputs.environment || 'qa' }}
+        path: test-results/non-functional-test-coverage.*
+        retention-days: 2
 
   api-tests: 
     name: API Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment || 'qa' }}
-    needs: check-client-repo
-    if: needs.check-client-repo.outputs.is-client-repo == 'true'
     steps:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
@@ -164,40 +139,3 @@ jobs:
         name: api-test-report-${{ inputs.environment || 'qa' }}
         path: playwright-report/
         retention-days: 2
-
-  # Sync to personal repository only if running in client repository and all tests have completed
-  #  (regardless of pass/fail) to ensure the latest test results are always available in the personal repository for review
-  sync-to-personal:
-    name: Sync to Personal Repository
-    runs-on: ubuntu-latest
-    needs: [check-client-repo, api-tests]
-    if: always() && needs.check-client-repo.outputs.is-client-repo == 'true'
-    steps:
-    - uses: actions/checkout@v5
-      with:
-        fetch-depth: 0
-    
-    - name: Debug PAT (temporary)
-      run: |
-        echo "PAT starts with: $(echo "${{ secrets.PERSONAL_REPO_TOKEN }}" | cut -c1-8)..."
-        echo "PAT length: $(echo "${{ secrets.PERSONAL_REPO_TOKEN }}" | wc -c)"
-    
-    - name: Test repository access
-      run: |
-        curl -H "Authorization: token ${{ secrets.PERSONAL_REPO_TOKEN }}" \
-             https://api.github.com/repos/Mikos24/MEES-Test-Automation
-    
-    - name: Sync to personal repository
-      run: |
-        # Try different PAT formats for git URL
-        echo "Attempting sync with username:token format..."
-        git remote add personal https://Mikos24:${{ secrets.PERSONAL_REPO_TOKEN }}@github.com/Mikos24/MEES-Test-Automation.git || true
-        
-        if git push personal main --force-with-lease 2>/dev/null; then
-          echo "✅ Sync successful with username:token format"
-        else
-          echo "❌ Username:token format failed, trying token-only format..."
-          git remote remove personal || true
-          git remote add personal https://${{ secrets.PERSONAL_REPO_TOKEN }}@github.com/Mikos24/MEES-Test-Automation.git
-          git push personal main --force-with-lease
-        fi

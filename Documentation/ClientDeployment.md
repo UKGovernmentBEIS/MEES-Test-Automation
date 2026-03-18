@@ -1,30 +1,31 @@
  # Client Deployment Guide
 
-## Deployment Approach: Dual Repository Sync
+## Deployment Approach: Manual Dual Repository
 
-**Chosen Solution**: Client's repository is primary, with automated sync to personal repository after test completion.
+**Chosen Solution**: Maintain both repositories manually with independent CI/CD pipelines.
 
 ## How It Works
 
-- **Client's repository**: Primary source of truth for automation tests
-- **Personal repository**: Receives automatic updates when tests complete (regardless of results)
-- **Conditional execution**: Workflow only runs in client repository using PERSONAL_REPO_TOKEN detection
+- **Client's repository**: Primary development repository for client use
+- **Personal repository**: Independent backup with same codebase
+- **Manual sync**: Push changes to both repositories when ready
+- **Independent CI/CD**: Both repositories can run tests independently
 
 ## Setup
 
 1. **Repository imported**: Client imported automation repository
-2. **Personal Access Token**: Create PAT with `repo` scope in personal GitHub
-3. **Client repository secret**: Add `PERSONAL_REPO_TOKEN` secret to client repository
-4. **Local configuration**:
+2. **Local configuration**:
    ```bash
    git remote set-url origin https://github.com/UKGovernmentBEIS/MEES-Test-Automation.git
    git remote add personal https://github.com/Mikos24/MEES-Test-Automation.git
    ```
-5. **Conditional workflow**: Same workflow file exists in both repositories but only executes where PERSONAL_REPO_TOKEN exists
+3. **Independent workflows**: Both repositories have complete CI/CD pipelines
+4. **Manual coordination**: Push to both repositories when changes are ready
 
 ## Development Workflow
 
-- Work normally: `git push origin main` (goes to client repository)
-- Client's workflow runs tests and syncs to personal repository afterward
-- Personal repository workflow remains dormant (skipped due to missing PERSONAL_REPO_TOKEN)
-- No manual sync or coordination required
+- **Primary development**: Work locally as usual
+- **Push to client**: `git push origin main` (goes to client repository)
+- **Push to personal**: `git push personal main` (goes to personal repository)  
+- **Convenience command**: `git push origin main && git push personal main` (push to both)
+- **Independent testing**: Both repositories run their own CI/CD pipelines
