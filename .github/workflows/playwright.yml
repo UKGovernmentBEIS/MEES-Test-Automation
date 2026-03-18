@@ -189,5 +189,15 @@ jobs:
     
     - name: Sync to personal repository
       run: |
-        git remote add personal https://${{ secrets.PERSONAL_REPO_TOKEN }}@github.com/Mikos24/MEES-Test-Automation.git
-        git push personal main --force-with-lease
+        # Try different PAT formats for git URL
+        echo "Attempting sync with username:token format..."
+        git remote add personal https://Mikos24:${{ secrets.PERSONAL_REPO_TOKEN }}@github.com/Mikos24/MEES-Test-Automation.git || true
+        
+        if git push personal main --force-with-lease 2>/dev/null; then
+          echo "✅ Sync successful with username:token format"
+        else
+          echo "❌ Username:token format failed, trying token-only format..."
+          git remote remove personal || true
+          git remote add personal https://${{ secrets.PERSONAL_REPO_TOKEN }}@github.com/Mikos24/MEES-Test-Automation.git
+          git push personal main --force-with-lease
+        fi
