@@ -17,7 +17,7 @@
 3. **Client repository secret**: Add `PERSONAL_REPO_TOKEN` secret to client repository
 4. **Local configuration**:
    ```bash
-   git remote set-url origin https://github.com/client-org/mees-test-automation.git
+   git remote set-url origin https://github.com/UKGovernmentBEIS/MEES-Test-Automation.git
    git remote add personal https://github.com/Mikos24/MEES-Test-Automation.git
    ```
 5. **Conditional workflow**: Same workflow file exists in both repositories but only executes where PERSONAL_REPO_TOKEN exists
