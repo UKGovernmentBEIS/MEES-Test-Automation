@@ -3,16 +3,16 @@
     - /url: /
   - list
   - heading "You do not have access to this service" [level=1]
-  - paragraph: To use this service, you must first register for an account
+  - paragraph: To use this service, you must first register for an account.
   - paragraph:
-    - link "You can register by completing this Microsoft Form":
+    - link "You can register by completing this Microsoft Form (opens in a new tab).":
       - /url: https://google.co.uk
-  - paragraph: After you submit the form, a system administrator will review your request
+  - paragraph: After you submit the form, a system administrator will review your request.
   - paragraph: You will receive an email when your account has been created and you can then access the service.
   - paragraph: If you have already submitted the form, wait until you receive the confirmation email before attempting to sign in.
-  - paragraph: Contact our support team if this issue persists
+  - paragraph: Contact our support team if this issue persists.
   - paragraph:
     - text: "Email:"
     - link "meesdigital@energysecurity.gov.uk":
       - /url: mailto:meesdigital@energysecurity.gov.uk
-  - paragraph: "/Opening times Monday to Friday: 9am to \\d+[hmsp]+>/"
+  - paragraph: "/Opening times Monday to Friday: 9am to \\d+[hmsp]+/"
