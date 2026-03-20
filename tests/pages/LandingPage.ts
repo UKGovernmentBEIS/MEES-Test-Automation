@@ -12,7 +12,7 @@ export class LandingPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.signInButton = this.page.getByRole('button', { name: 'Sign in' });
-    this.pageContext = page.locator('#main-content');
+    this.pageContext = page.locator('#main-content.govuk-width-container');
   }
 
   /**
