@@ -8,11 +8,13 @@ import { reAuthenticate } from '../utils/AuthUtils';
 export class LandingPage extends BasePage {
   private readonly signInButton: Locator;
   private readonly pageContext: Locator;
+  private readonly pageSecondaryContext: Locator;
 
   constructor(page: Page) {
     super(page);
     this.signInButton = this.page.getByRole('button', { name: 'Sign in' });
     this.pageContext = page.locator('#main-content.govuk-width-container');
+    this.pageSecondaryContext = page.getByText('If you need help Contact our');
   }
 
   /**
@@ -20,7 +22,7 @@ export class LandingPage extends BasePage {
    * @returns Locator for the page context element
    */
   async getPageContextLocator(): Promise<Locator[]> {
-    return [this.pageContext];
+    return [this.pageContext, this.signInButton];
   }
 
   /**
