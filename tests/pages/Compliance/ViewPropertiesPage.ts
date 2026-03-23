@@ -304,7 +304,11 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             const values = this.parseCSVLine(lines[i]);
             const record: Record<string, string> = {};
             headers.forEach((header, index) => {
-                record[header] = values[index] || '';
+                if(header === 'Line1') {
+                    record[header] = this.reverseDateConversion(values[index] || '');
+                } else {
+                    record[header] = values[index] || '';
+                }
             });
             exportedData.push(record);
         }
@@ -314,6 +318,43 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         
         return exportedData;
     }
+
+    private reverseDateConversion(dateStr: string): string
+    {
+            const monthMapping: Record<string, string> = {
+                'Jan': '1',
+                'Feb': '2',
+                'Mar': '3',
+                'Apr': '4',
+                'May': '5',
+                'Jun': '6',
+                'Jul': '7',
+                'Aug': '8',
+                'Sep': '9',
+                'Oct': '10',
+                'Nov': '11',
+                'Dec': '12'
+            };
+            // Implementation for date conversion
+            const regex = /(\d{1,2})-([A-Za-z]{3})/;
+            const match = dateStr.match(regex);
+    
+            // If the date string matches the expected format, perform the conversion
+            if (match) {
+                const day = match[1];
+                const monthAbbr = match[2];
+                const month = monthMapping[monthAbbr];
+                if (month) {
+                    return `${day}-${month}`;
+                } else {
+                    // If month abbreviation is not recognized, return the original string
+                    return dateStr;
+                }
+            } else {
+                // If the string does not match the date format, return it as is (assuming it's already in the correct format)
+                return dateStr;
+            }
+        }
 }
 
 export class PropertyData {

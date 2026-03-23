@@ -398,11 +398,11 @@ test.describe('View Properties export functionality', () => {
     });
 
     test('Exported data should match UI table data', async () => {
-        // Set Energy Rating filter to 'A'
-        await filterPropertiesPage.setEnergyRatingFilter('A');
-        
         // Set Council filter to 'LONDON BOROUGH OF BEXLEY'
         await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
+        
+        // Set Energy Rating filter to 'A'
+        await filterPropertiesPage.setEnergyRatingFilter('A');
         
         // Apply the filters
         const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
@@ -427,8 +427,6 @@ test.describe('View Properties export functionality', () => {
             const matchingExportRecord = exportedData.find(record => {
                 // Construct address from exported fields to match address format displayed on the page
                 const exportedAddress = 
-                    (record['FlatNameNumber'] ? `${record['FlatNameNumber']}, ` : '') +
-                    (record['Number'] ? `${record['Number']}, ` : '') +
                     (record['Line1'] ? `${record['Line1']}, ` : '') +
                     (record['Line2'] ? `${record['Line2']}, ` : '') +
                     (record['Line3'] ? `${record['Line3']}, ` : '') +
