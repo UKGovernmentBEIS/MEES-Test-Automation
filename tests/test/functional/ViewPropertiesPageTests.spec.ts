@@ -419,9 +419,14 @@ test.describe('View Properties export functionality', () => {
 
         // For each UI record
         uiTableData.forEach(uiRecord => {
-            // Find matching record in exported data based on property address displayed on the page
+            // Find matching record in exported data based on the following data displayed on the page:
+            // - property address
+            // - energy rating
+            // - EPC expiry date
+            // - PRS Exemption
             const matchingExportRecord = exportedData.find(record => {
-                const recordAddress = 
+                // Construct address from exported fields to match address format displayed on the page
+                const exportedAddress = 
                     (record['FlatNameNumber'] ? `${record['FlatNameNumber']}, ` : '') +
                     (record['Number'] ? `${record['Number']}, ` : '') +
                     (record['Line1'] ? `${record['Line1']}, ` : '') +
@@ -429,28 +434,27 @@ test.describe('View Properties export functionality', () => {
                     (record['Line3'] ? `${record['Line3']}, ` : '') +
                     (record['Town'] ? `${record['Town']}, ` : '') +
                     (record['Postcode'] ? `${record['Postcode']}` : '');
-                return recordAddress === uiRecord.address;
+
+                // Construct Energy Rating from exported fields to match address format displayed on the page
+                const exportedEnergyRating = 
+                    (record['EPCEnergyRatingBand'] ? `${record['EPCEnergyRatingBand']} ` : '') +
+                    (record['EPCEnergyRating'] ? `(${record['EPCEnergyRating']})` : '');
+
+                // Contruct EPC Expiry Date from the export to match EPC Expiry Date format displayed on the page
+                const exportedEPCExpiryDate = 
+                    (record!['EPCExpiryDate'] ? convertISODateToUIFormat(record!['EPCExpiryDate']) : '');
+
+
+                // Check if exported record match record displayed on the page
+                return exportedAddress === uiRecord.address && 
+                    exportedEnergyRating === uiRecord.energyRating &&
+                    exportedEPCExpiryDate === uiRecord.epcExpiryDate &&
+                    record['exemptionStatus'] === uiRecord.PRSExemptions;
             });
-            expect(matchingExportRecord, `No matching exported record found for UI record with address: ${uiRecord.address}`).toBeDefined();
-
-            // Verify Energy Rating matches between exported record and UI record
-            //   Construct energy rating in the same format as in the UI for accurate comparison
-            //   Example: "A (10)"
-            const exportedEnergyRating = `${matchingExportRecord!['EPCEnergyRatingBand']} (${matchingExportRecord!['EPCEnergyRating']})`;
-            expect(uiRecord?.energyRating, 
-                `Energy rating mismatch for address '${uiRecord.address}': expected '${uiRecord?.energyRating}', got '${exportedEnergyRating}'`)
-                .toBe(exportedEnergyRating);
-
-            // Verify EPC Expiry Date matches between exported record and UI record
-            const exportedEPCExpiryDate = convertISODateToUIFormat(matchingExportRecord!['EPCExpiryDate']);
-            expect(uiRecord?.epcExpiryDate, 
-                `EPC Expiry Date mismatch for address '${uiRecord.address}': expected '${uiRecord?.epcExpiryDate}', got '${exportedEPCExpiryDate}'`)
-                .toBe(exportedEPCExpiryDate);
-
-            // Verify PRS Exemptions matches between exported record and UI record
-            expect(uiRecord?.PRSExemptions, 
-                `The 'PRS Exemptions' mismatch for address '${uiRecord.address}': expected '${uiRecord?.PRSExemptions}', got '${matchingExportRecord!['exemptionStatus']}'`)
-                .toBe(matchingExportRecord!['exemptionStatus']);
+            expect(matchingExportRecord, 
+                `No matching exported record found for UI record with address: 
+                    ${uiRecord.address}, ${uiRecord.energyRating}, ${uiRecord.epcExpiryDate} and ${uiRecord.PRSExemptions}`)
+                .toBeDefined();
         });
     });
 
