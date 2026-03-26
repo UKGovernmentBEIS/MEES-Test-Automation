@@ -50,6 +50,7 @@ jobs:
         TEST_ACCOUNT_2_NAME: ${{ secrets.TEST_ACCOUNT_2_NAME }}
         PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
         PROPERTY_KEY: ${{ secrets.PROPERTY_KEY }}
+        EXPORT_KEY: ${{ secrets.EXPORT_KEY }}
         DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
         BASE_URL: ${{ secrets.BASE_URL }}
     - name: Upload Playwright HTML report

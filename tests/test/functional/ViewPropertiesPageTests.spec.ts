@@ -536,7 +536,7 @@ test.describe('View Properties export functionality', () => {
     }); 
 
     test('Export contains only UI and DMS fields - no additional fields', async ({ request }) => {
-        // Set Energy Rating filter to 'A'
+            // Set Energy Rating filter to 'A'
         await filterPropertiesPage.setEnergyRatingFilter('A');
         
         // Set Council filter to 'LONDON BOROUGH OF BEXLEY'
@@ -552,7 +552,7 @@ test.describe('View Properties export functionality', () => {
         expect(uiTableData.length).toBeGreaterThan(0);
 
         // Get DMS API data to identify DMS field names
-        const dmsApiUrl = `${process.env.DMS_BASE_URL}/mees/properties?page=1&size=10`;
+        const dmsApiUrl = `${process.env.DMS_BASE_URL}/mees/export?page=1&size=10`;
         const dmsApiResponse = await request.post(dmsApiUrl, {
             data: {
                 "lacodes": ["E09000003","E09000004"],
@@ -561,30 +561,30 @@ test.describe('View Properties export functionality', () => {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'x-functions-key': process.env.PROPERTIES_KEY!
+                'x-functions-key': process.env.EXPORT_KEY!
             }
         });
-        
         expect(dmsApiResponse.status()).toBe(200);
         const dmsResponseBody = await dmsApiResponse.json();
         const parsedDmsResponse = JSON.parse(dmsResponseBody);
-        expect(parsedDmsResponse.data.length).toBeGreaterThan(0);
+        expect(parsedDmsResponse.data.length, 'No properties returned from DMS API').toBeGreaterThan(0);
+        const flattenedDmsData = parsedDmsResponse.data.map((item: any) => viewPropertiesPage.FlattenDMSItem(item));
+        expect(flattenedDmsData.length, 'No properties returned from DMS API after flattening').toBeGreaterThan(0);
         
-        // Extract DMS field names from API response
-        const dmsFieldNames = Object.keys(parsedDmsResponse.data[0]);
-        
-        // Define exception fields that are allowed in export but not in UI/DMS
+        // Prepare expected field names from UI and DMS
+        //  Extract DMS field names from API response
+        const dmsFieldNames = Object.keys(flattenedDmsData[0]);
+        //  Define exception fields that are allowed in export but not in UI/DMS
         const exceptionFields = ['SalesforceComments', 'exemptionStatus'];
+        //  Create combined set of allowed field names (DMS + exceptions)
+        const allowedFieldNames = new Set([...dmsFieldNames, ...exceptionFields]);
         
-        // Get export data
+        // Prepare actual export field names from the exported data
+        //  Get exported data
         const exportedData: Record<string, any>[] = await viewPropertiesPage.exportFilteredData();
         expect(exportedData.length).toBeGreaterThan(0);
-        
-        // Extract export field names
+        //  Extract export field names
         const exportFieldNames = Object.keys(exportedData[0]);
-        
-        // Create combined set of allowed field names (DMS + exceptions)
-        const allowedFieldNames = new Set([...dmsFieldNames, ...exceptionFields]);
         
         // Find export fields that are NOT in DMS or exceptions
         const unauthorizedFields: string[] = [];

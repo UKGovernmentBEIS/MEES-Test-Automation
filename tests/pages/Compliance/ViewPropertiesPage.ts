@@ -319,6 +319,32 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         return exportedData;
     }
 
+    FlattenDMSItem(item: any): Record<string, any> {
+        const { property, EPCCertificates, Landlords } = item;
+
+        const firstEPC = Array.isArray(EPCCertificates) && EPCCertificates.length > 0 
+            ? EPCCertificates[0] : { EpcCertificates: '' };
+        const firstLandlord = Array.isArray(Landlords) && Landlords.length > 0 
+            ? this.mapLandlordFields(Landlords[0]) : {};
+        return {
+            ...property,
+            ...firstEPC,
+            ...firstLandlord
+        };
+    }
+
+    private mapLandlordFields(landlord: Record<string, any>): Record<string, any> {
+    const fieldMap: Record<string, string> = {
+        'Address':       'LandlordAddress',
+        'CompanyName':   'LandlordCompanyName',
+        'Location':      'LandlordLocation',
+        'SicCodeSicText':'LandlordSicCode'
+    };
+    return Object.fromEntries(
+        Object.entries(landlord).map(([k, v]) => [fieldMap[k] ?? k, v])
+    );
+}
+
     private reverseDateConversion(dateStr: string): string
     {
             const monthMapping: Record<string, string> = {
@@ -354,7 +380,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
                 // If the string does not match the date format, return it as is (assuming it's already in the correct format)
                 return dateStr;
             }
-        }
+    }
 }
 
 export class PropertyData {
