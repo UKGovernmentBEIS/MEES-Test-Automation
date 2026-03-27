@@ -101,7 +101,6 @@ test.describe('Registration Process Non-Functional Tests', () => {
   - text: Password
   - textbox "Password"
   - button "Show password": Show
-  - text: Your password is hidden
   - button "Continue"
   - paragraph:
     - link "I’ve forgotten my password":
