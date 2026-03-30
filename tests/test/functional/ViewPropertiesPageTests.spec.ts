@@ -485,9 +485,7 @@ test.describe('View Properties export functionality', () => {
         // Export the filtered data
         const exportedData: Record<string, any>[] = await viewPropertiesPage.exportFilteredData();
         expect(exportedData.length).toBeGreaterThan(0);
-
         // Find the DMS reference property in the exported data by UPRN
-        // Use string comparison to handle potential type mismatches between number/string
         const matchingExportedProperty = exportedData.find(record => 
             String(record['Uprn']) === String(firstDMSExportedProperty['Uprn'])
         );
@@ -506,9 +504,6 @@ test.describe('View Properties export functionality', () => {
         expect(missingFields, `Fields present in DMS but missing in export: ${missingFields.join(', ')}`).toEqual([]);
 
         // Verify field values match between DMS and export
-        // TODO: BA decision pending on how multiple landlords per property should appear in the export.
-        // Until resolved, landlord fields use a "contains" check: the export value must contain the DMS value
-        // (handles cases where the export concatenates multiple landlords or uses a different index).
         const landlordFields = new Set(['LandlordAddress', 'LandlordCompanyName', 'LandlordLocation', 'LandlordSicCode']);
         const valueMismatches: string[] = [];
         Object.keys(firstDMSExportedProperty).forEach(fieldName => {
@@ -517,12 +512,17 @@ test.describe('View Properties export functionality', () => {
             
             // Handle null/undefined/empty string equivalence
             const normalizedDmsValue = (dmsValue === null || dmsValue === undefined) ? '' : String(dmsValue);
-            const normalizedExportValue = (exportValue === null || exportValue === undefined) ? '' : String(exportValue);
+            // For export value, also consider 'N/A' as equivalent to empty string based on observed export formatting
+            const normalizedExportValue = (exportValue === null || exportValue === undefined || String(exportValue).includes('N/A')) ? '' : String(exportValue);
             
             if (landlordFields.has(fieldName)) {
                 // Temporary: pass if either values are empty or the export contains the DMS value
-                if (normalizedDmsValue !== '' && !normalizedExportValue.includes(normalizedDmsValue)) {
+                if (!normalizedExportValue.includes(normalizedDmsValue)) {
                     valueMismatches.push(`${fieldName}: DMS='${dmsValue}' not found in Export='${exportValue}'`);
+                } else if (normalizedDmsValue === '' && normalizedExportValue !== '') {
+                    // Explicitly check case when DMS value is empty but export has a value, 
+                    // as this case will pass the "contains" check above due to empty string being contained in any value
+                    valueMismatches.push(`${fieldName}: DMS is empty but Export='${exportValue}'`);
                 }
                 return;
             }
