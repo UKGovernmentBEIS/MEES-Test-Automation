@@ -7,7 +7,56 @@ import { PropertyDetailsPage } from './PropertyDetailsPage';
 import * as fs from 'fs';
 import * as path from 'path';
 
+export interface ExportFieldMapping {
+    /** Column header as it appears in the downloaded CSV */
+    exportColumn: string;
+    /** Key in DMSExportApiClient.flattenItem() output — used for property and EPC fields */
+    dmsField?: string;
+    /** Raw key inside DMSRawItem.Landlords[0] — used for landlord-specific fields to avoid field name collisions (e.g. Location exists on both property and landlord) */
+    dmsLandlordField?: string;
+    /** Optional normalisation applied to both sides before comparing */
+    normalize?: (value: string) => string;
+}
+
 export class ViewPropertiesPage extends BaseCompliancePage {
+    /**
+     * Authoritative schema contract for the CSV export.
+     * Maps every expected CSV column to its DMS API field equivalent.
+     * Update this list when BA confirms the agreed export fields.
+     */
+    static readonly EXPORT_FIELD_MAPPINGS: ExportFieldMapping[] = [
+        // --- Property fields (from DMSRawItem.property) ---
+        { exportColumn: 'Uprn',                    dmsField: 'Uprn' },
+        { exportColumn: 'BuildingReferenceNumber', dmsField: 'BuildingReferenceNumber' },
+        { exportColumn: 'Number',                  dmsField: 'Number' },
+        { exportColumn: 'FlatNameNumber',          dmsField: 'FlatNameNumber' },
+        { exportColumn: 'Line1',                   dmsField: 'Line1' },
+        { exportColumn: 'Line2',                   dmsField: 'Line2' },
+        { exportColumn: 'Line3',                   dmsField: 'Line3' },
+        { exportColumn: 'Town',                    dmsField: 'Town' },
+        { exportColumn: 'County',                  dmsField: 'County' },
+        { exportColumn: 'Postcode',                dmsField: 'Postcode' },
+        { exportColumn: 'LocalAuthority',          dmsField: 'LocalAuthority' },
+        { exportColumn: 'PropertyType',            dmsField: 'PropertyType' },
+        { exportColumn: 'RateableValue',           dmsField: 'RateableValue' },
+        { exportColumn: 'DatasetCode',             dmsField: 'DatasetCode' },
+        { exportColumn: 'TransactionType',         dmsField: 'TransactionType' },
+        { exportColumn: 'Location',                dmsField: 'Location' },
+        { exportColumn: 'Name',                    dmsField: 'Name' },
+        // --- EPC fields (from DMSRawItem.EpcCertificates[0]) ---
+        { exportColumn: 'EPCEnergyRatingBand',     dmsField: 'EPCEnergyRatingBand' },
+        { exportColumn: 'EPCEnergyRating',         dmsField: 'EPCEnergyRating' },
+        { exportColumn: 'EPCExpiryDate',           dmsField: 'EPCExpiryDate',
+          normalize: (v) => v.split('T')[0] },
+        // --- Landlord fields (looked up directly from DMSRawItem.Landlords[0] using the raw DMS field name) ---
+        { exportColumn: 'LandlordAddress',         dmsLandlordField: 'Address' },
+        { exportColumn: 'LandlordCompanyName',     dmsLandlordField: 'CompanyName' },
+        { exportColumn: 'LandlordLocation',        dmsLandlordField: 'Location' },
+        { exportColumn: 'LandlordSicCode',         dmsLandlordField: 'SicCodeSicText' }
+    ];
+
+    static readonly EXTRA_EXPORT_COLUMNS = ['exemptionStatus', 'SalesforceComments', 'EpcCertificates'];
+
     private pageContext: Locator;
     private propertyFilterRow: Locator;
     private propertyFilterRowKey: Locator;

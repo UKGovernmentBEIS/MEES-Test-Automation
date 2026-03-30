@@ -31,6 +31,20 @@ export class DMSExportApiClient {
         return parsedResponse.data as DMSRawItem[];
     }
 
+    async findFirstFullyPopulatedItem(filters: Record<string, any>): Promise<DMSRawItem> {
+        const items = await this.getExportedData(filters);
+        if (items.length === 0) {
+            throw new Error('No properties returned from DMS export for filters: ' + JSON.stringify(filters));
+        }
+        const countNonEmpty = (item: DMSRawItem): number => {
+            const flat = this.flattenItem(item);
+            return Object.values(flat).filter(v => v !== null && v !== undefined && v !== '').length;
+        };
+        return items.reduce((best, current) =>
+            countNonEmpty(current) > countNonEmpty(best) ? current : best
+        );
+    }
+
     flattenItem(item: DMSRawItem): Record<string, any> {
         const { property, EpcCertificates, Landlords } = item;
 

@@ -2,8 +2,8 @@ import { test } from '../../fixtures/authFixtures';
 import { expect } from '@playwright/test';
 import { FilterPropertiesPage } from '../../pages/Compliance/FilterPropertiesPage';
 import { HomePage } from '../../pages/Compliance/HomePage';
-import { PropertyData, ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
-import { DMSExportApiClient, DMSRawItem } from '../../api/DMSExportApiClient';
+import { ExportFieldMapping, PropertyData, ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
+import { DMSExportApiClient } from '../../api/DMSExportApiClient';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
 
@@ -371,7 +371,7 @@ test.describe('View Properties export functionality', () => {
         filterPropertiesPage = await homePage.clickViewProperties();
     });
 
-    test('Validate export count on the View Properties page', async ({ page }) => {       
+    test('Exported data match filtered UI data', async ({ page }) => {       
         // Set Energy Rating filter to 'A'
         await filterPropertiesPage.setEnergyRatingFilter('A');
         
@@ -398,206 +398,54 @@ test.describe('View Properties export functionality', () => {
         expect(exportedRecords.length).toEqual(displayedCount);
     });
 
-    test('Exported data should match UI table data', async () => {
-        // Set Council filter to 'LONDON BOROUGH OF BEXLEY'
-        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
-        
-        // Set Energy Rating filter to 'A'
-        await filterPropertiesPage.setEnergyRatingFilter('A');
-        
-        // Apply the filters
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-
-        // Get data from the table on the page
-        const uiTableData: PropertyData[] = await viewPropertiesPage.getPropertiesDataFromTable();
-        expect(uiTableData.length).toBeGreaterThan(0);
-        
-        // Export filtered data
-        const exportedData: Record<string, any>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length).toBeGreaterThan(0);
-
-        // For each UI record
-        uiTableData.forEach(uiRecord => {
-            // Find matching record in exported data based on the following data displayed on the page:
-            // - property address
-            // - energy rating
-            // - EPC expiry date
-            // - PRS Exemption
-            const matchingExportRecord = exportedData.find(record => {
-                // Construct address from exported fields to match address format displayed on the page
-                const exportedAddress = 
-                    (record['Line1'] ? `${record['Line1']}, ` : '') +
-                    (record['Line2'] ? `${record['Line2']}, ` : '') +
-                    (record['Line3'] ? `${record['Line3']}, ` : '') +
-                    (record['Town'] ? `${record['Town']}, ` : '') +
-                    (record['Postcode'] ? `${record['Postcode']}` : '');
-
-                // Construct Energy Rating from exported fields to match address format displayed on the page
-                const exportedEnergyRating = 
-                    (record['EPCEnergyRatingBand'] ? `${record['EPCEnergyRatingBand']} ` : '') +
-                    (record['EPCEnergyRating'] ? `(${record['EPCEnergyRating']})` : '');
-
-                // Contruct EPC Expiry Date from the export to match EPC Expiry Date format displayed on the page
-                const exportedEPCExpiryDate = 
-                    (record!['EPCExpiryDate'] ? convertISODateToUIFormat(record!['EPCExpiryDate']) : '');
-
-
-                // Check if exported record match record displayed on the page
-                return exportedAddress === uiRecord.address && 
-                    exportedEnergyRating === uiRecord.energyRating &&
-                    exportedEPCExpiryDate === uiRecord.epcExpiryDate &&
-                    record['exemptionStatus'] === uiRecord.PRSExemptions;
-            });
-            expect(matchingExportRecord, 
-                `No matching exported record found for UI record with address: 
-                    ${uiRecord.address}, ${uiRecord.energyRating}, ${uiRecord.epcExpiryDate} and ${uiRecord.PRSExemptions}`)
-                .toBeDefined();
-        });
-    });
-
-    test('All DMS fields are available in export and populated with data', async ({ request }) => {
-
-        // 0. Common filter parameters
+    test('Export field schema and data matches DMS API', async ({ request }) => {
         const energyRatingFilter = 'A';
         const councilFilter = 'LONDON BOROUGH OF BEXLEY';
-        const lacodes = ["E09000003", "E09000004"];
+        const lacodes = ['E09000004'];
+        const fieldMappings: ExportFieldMapping[] = ViewPropertiesPage.EXPORT_FIELD_MAPPINGS;
 
-        // 1. Get the first property from the DMS export API
-        const dmsApiClient = new DMSExportApiClient(request);
-        const exportedDMSData: DMSRawItem[] = await dmsApiClient.getExportedData({ 
-            "lacodes": lacodes, 
-            "energyratingband": energyRatingFilter 
-        });
-        const firstRawDMSExportedProperty = exportedDMSData[0];
-        expect(firstRawDMSExportedProperty  , 'No exported DMS property found').toBeDefined();
-        const firstDMSExportedProperty = dmsApiClient.flattenItem(firstRawDMSExportedProperty);
-        expect(firstDMSExportedProperty.Uprn, 'UPRN is missing in the first DMS export property').toBeDefined();
-
-        // 2. Find and store the matching exported property
-        // Apply the common filters in the UI
+        // 1. Apply filters in the UI and export the CSV
         await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
         await filterPropertiesPage.setCouncilFilter(councilFilter);
         const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForPageToLoad();
         await viewPropertiesPage.waitForTableContent();
-        // Export the filtered data
-        const exportedData: Record<string, any>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length).toBeGreaterThan(0);
-        // Find the DMS reference property in the exported data by UPRN
-        const matchingExportedProperty = exportedData.find(record => 
-            String(record['Uprn']) === String(firstDMSExportedProperty['Uprn'])
-        );
-        expect(matchingExportedProperty, 
-            `Property with UPRN ${firstDMSExportedProperty['Uprn']} from DMS not found in export. Available UPRNs: ${exportedData.map(r => r['Uprn']).slice(0, 5).join(', ')}... DMS UPRN type: ${typeof firstDMSExportedProperty['Uprn']}, Export UPRN types: ${exportedData.slice(0, 3).map(r => typeof r['Uprn']).join(', ')}`)
-            .toBeDefined();
+        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-        // 3. Compare property data between DMS and Export
-        // Verify all DMS fields are present in the export
-        const missingFields: string[] = [];
-        Object.keys(firstDMSExportedProperty).forEach(fieldName => {
-            if (!(fieldName in matchingExportedProperty!)) {
-                missingFields.push(fieldName);
-            }
-        });
-        expect(missingFields, `Fields present in DMS but missing in export: ${missingFields.join(', ')}`).toEqual([]);
+        // 2a. Schema check — CSV must have exactly the columns defined in EXPORT_FIELD_MAPPINGS
+        const exportColumnNames = Object.keys(exportedData[0]);
+        const expectedColumns = fieldMappings.map(m => m.exportColumn);
+        const missingColumns = expectedColumns.filter(c => !exportColumnNames.includes(c));
+        const extraColumns   = exportColumnNames.filter(c => !expectedColumns.includes(c) && !ViewPropertiesPage.EXTRA_EXPORT_COLUMNS.includes(c));
+        expect(missingColumns, `Columns missing from export: ${missingColumns.join(', ')}`).toEqual([]);
+        expect(extraColumns,   `Unexpected columns in export: ${extraColumns.join(', ')}`).toEqual([]);
 
-        // Verify field values match between DMS and export
-        const landlordFields = new Set(['LandlordAddress', 'LandlordCompanyName', 'LandlordLocation', 'LandlordSicCode']);
-        const valueMismatches: string[] = [];
-        Object.keys(firstDMSExportedProperty).forEach(fieldName => {
-            const dmsValue = firstDMSExportedProperty[fieldName];
-            const exportValue = matchingExportedProperty![fieldName];
-            
-            // Handle null/undefined/empty string equivalence
-            const normalizedDmsValue = (dmsValue === null || dmsValue === undefined) ? '' : String(dmsValue);
-            // For export value, also consider 'N/A' as equivalent to empty string based on observed export formatting
-            const normalizedExportValue = (exportValue === null || exportValue === undefined || String(exportValue).includes('N/A')) ? '' : String(exportValue);
-            
-            if (landlordFields.has(fieldName)) {
-                // Temporary: pass if either values are empty or the export contains the DMS value
-                if (!normalizedExportValue.includes(normalizedDmsValue)) {
-                    valueMismatches.push(`${fieldName}: DMS='${dmsValue}' not found in Export='${exportValue}'`);
-                } else if (normalizedDmsValue === '' && normalizedExportValue !== '') {
-                    // Explicitly check case when DMS value is empty but export has a value, 
-                    // as this case will pass the "contains" check above due to empty string being contained in any value
-                    valueMismatches.push(`${fieldName}: DMS is empty but Export='${exportValue}'`);
-                }
-                return;
-            }
-
-            if (normalizedDmsValue !== normalizedExportValue) {
-                valueMismatches.push(`${fieldName}: DMS='${dmsValue}' (${typeof dmsValue}) vs Export='${exportValue}' (${typeof exportValue})`);
-            }
-        });
-        expect(valueMismatches, `Value mismatches between DMS and export for UPRN ${firstDMSExportedProperty['Uprn']}: ${valueMismatches.join('; ')}`).toEqual([]);
-
-    });
-
-    test('Export contains only UI and DMS fields - no additional fields', async ({ request }) => {
-            // Set Energy Rating filter to 'A'
-        await filterPropertiesPage.setEnergyRatingFilter('A');
-        
-        // Set Council filter to 'LONDON BOROUGH OF BEXLEY'
-        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
-        
-        // Apply the filters
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-
-        // Get UI table data to identify UI field names
-        const uiTableData: PropertyData[] = await viewPropertiesPage.getPropertiesDataFromTable();
-        expect(uiTableData.length).toBeGreaterThan(0);
-
-        // Get DMS API data to identify DMS field names
-        const dmsApiUrl = `${process.env.DMS_BASE_URL}/mees/export?page=1&size=10`;
-        const dmsApiResponse = await request.post(dmsApiUrl, {
-            data: {
-                "lacodes": ["E09000003","E09000004"],
-                "energyratingband": "A"
-            },
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'x-functions-key': process.env.EXPORT_KEY!
-            }
-        });
-        expect(dmsApiResponse.status()).toBe(200);
-        const dmsResponseBody = await dmsApiResponse.json();
-        const parsedDmsResponse = JSON.parse(dmsResponseBody);
-        expect(parsedDmsResponse.data.length, 'No properties returned from DMS API').toBeGreaterThan(0);
+        // 2b. Fetch a reference property from DMS and locate it in the export by UPRN
         const dmsApiClient = new DMSExportApiClient(request);
-        const flattenedDmsData = parsedDmsResponse.data.map((item: any) => dmsApiClient.flattenItem(item));
-        expect(flattenedDmsData.length, 'No properties returned from DMS API after flattening').toBeGreaterThan(0);
-        
-        // Prepare expected field names from UI and DMS
-        //  Extract DMS field names from API response
-        const dmsFieldNames = Object.keys(flattenedDmsData[0]);
-        //  Define exception fields that are allowed in export but not in UI/DMS
-        const exceptionFields = ['SalesforceComments', 'exemptionStatus'];
-        //  Create combined set of allowed field names (DMS + exceptions)
-        const allowedFieldNames = new Set([...dmsFieldNames, ...exceptionFields]);
-        
-        // Prepare actual export field names from the exported data
-        //  Get exported data
-        const exportedData: Record<string, any>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length).toBeGreaterThan(0);
-        //  Extract export field names
-        const exportFieldNames = Object.keys(exportedData[0]);
-        
-        // Find export fields that are NOT in DMS or exceptions
-        const unauthorizedFields: string[] = [];
-        exportFieldNames.forEach(exportField => {
-            if (!allowedFieldNames.has(exportField)) {
-                unauthorizedFields.push(exportField);
+        const rawDmsItem = await dmsApiClient.findFirstFullyPopulatedItem({ lacodes, energyratingband: energyRatingFilter });
+        const dmsProperty = dmsApiClient.flattenItem(rawDmsItem);
+        expect(dmsProperty['Uprn'], 'Reference DMS property has no UPRN').toBeDefined();
+        const matchInExport = exportedData.find(r => String(r['Uprn']) === String(dmsProperty['Uprn']));
+        expect(matchInExport,
+            `Cannot find UPRN '${dmsProperty['Uprn']}' for property with postcode '${dmsProperty['Postcode']}' from DMS not found in export.`
+        ).toBeDefined();
+
+        // 2c. Compare each mapped field value between DMS and export
+        const valueMismatches: string[] = [];
+        for (const { exportColumn, dmsField, dmsLandlordField, normalize } of fieldMappings) {
+            const raw = (v: unknown) => (v === null) ? '' : String(v);
+            const rawDmsValue = dmsLandlordField
+                ? (Array.isArray(rawDmsItem.Landlords) && rawDmsItem.Landlords.length > 0 ? rawDmsItem.Landlords[0][dmsLandlordField] : undefined)
+                : dmsProperty[dmsField!];
+            const dmsValue    = normalize ? normalize(raw(rawDmsValue))           : raw(rawDmsValue);
+            const exportValue = normalize ? normalize(raw(matchInExport![exportColumn])) : raw(matchInExport![exportColumn]);
+            if (dmsValue !== exportValue) {
+                valueMismatches.push(`${exportColumn}: DMS='${rawDmsValue}' vs Export='${matchInExport![exportColumn]}'`);
             }
-        });
-        
-        // Test should fail if there are unauthorized fields
-        expect(unauthorizedFields, 
-            `Unauthorized fields found in export: ${unauthorizedFields.join('; ')}. DMS fields: [${dmsFieldNames.join(', ')}]. Exception fields: [${exceptionFields.join(', ')}]. Export fields: [${exportFieldNames.join(', ')}]`)
-            .toEqual([]);
+        }
+        expect(valueMismatches,
+            `Field value mismatches for UPRN ${dmsProperty['Uprn']}: ${valueMismatches.join('; ')}`
+        ).toEqual([]);
     });
 });

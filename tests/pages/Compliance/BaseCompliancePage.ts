@@ -3,7 +3,7 @@ import { BasePage } from '../BasePage';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import type { FilterPropertiesPage } from './FilterPropertiesPage';
 import type { PenaltyCalculatorPage } from './PenaltyCalculatorPage';
-import { HomePage } from './HomePage';
+import type { HomePage } from './HomePage';
 
 export abstract class BaseCompliancePage extends BasePage {
     protected readonly page: Page;
@@ -59,6 +59,7 @@ export abstract class BaseCompliancePage extends BasePage {
 
     async clickPageHeaderLink(): Promise<HomePage> {
         await this.pageHeaderLink.click();
+        const { HomePage } = await import('./HomePage');
         const homePage = new HomePage(this.page);
         await homePage.waitForPageToLoad();
         return homePage;
