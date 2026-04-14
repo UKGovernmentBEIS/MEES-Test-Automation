@@ -57,18 +57,9 @@ test.describe('View Properties Page Tests', () => {
         await expect(filteredDataRow).toContainText('DARTFORD');
         await expect(filteredDataRow).toContainText('DA1 4AL');
 
-        // Change the Landrold Location filter to Offshore and verify that no records are found
-        const filterPropertiesPage2 = await viewPropertiesPage.clickChangeFilters();
-        await filterPropertiesPage2.waitForPageToLoad();
-        await filterPropertiesPage2.selectOffshoreLALocations();
-        viewPropertiesPage = await filterPropertiesPage2.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await expect(await viewPropertiesPage.getNoRecordsFoundMessage()).toBeVisible();
-
-        // Change the Landrold Location filter to All and set the council filter to 'LONDON BOROUGH OF BARNET' and verify that no records are found
+        // Set the council filter to 'LONDON BOROUGH OF BARNET' and verify that no records are found
         const filterPropertiesPage3 = await viewPropertiesPage.clickChangeFilters();
         await filterPropertiesPage3.waitForPageToLoad();
-        await filterPropertiesPage3.selectAllLALocations();
         await filterPropertiesPage3.setCouncilFilter('LONDON BOROUGH OF BARNET');
         viewPropertiesPage = await filterPropertiesPage3.clickApplyFilters();
         await viewPropertiesPage.waitForPageToLoad();
@@ -433,11 +424,21 @@ test.describe('View Properties export functionality', () => {
 
         // 2c. Compare each mapped field value between DMS and export
         const valueMismatches: string[] = [];
-        for (const { exportColumn, dmsField, dmsLandlordField, normalize } of fieldMappings) {
+        for (const { exportColumn, dmsField, dmsFields, dmsLandlordField, normalize } of fieldMappings) {
             const raw = (v: unknown) => (v === null) ? '' : String(v);
-            const rawDmsValue = dmsLandlordField
-                ? (Array.isArray(rawDmsItem.Landlords) && rawDmsItem.Landlords.length > 0 ? rawDmsItem.Landlords[0][dmsLandlordField] : undefined)
-                : dmsProperty[dmsField!];
+            let rawDmsValue: unknown;
+            if (dmsLandlordField) {
+                // Landlord-specific field — read directly from the first landlord in the raw DMS item
+                rawDmsValue = (Array.isArray(rawDmsItem.Landlords) && rawDmsItem.Landlords.length > 0)
+                    ? rawDmsItem.Landlords[0][dmsLandlordField]
+                    : undefined;
+            } else if (dmsFields) {
+                // Multi-field column — concatenate multiple DMS fields into a single string
+                rawDmsValue = dmsFields.map(f => dmsProperty[f] ?? '').filter(p => String(p).trim() !== '').join(', ');
+            } else {
+                // Single field — direct lookup from the flattened DMS property
+                rawDmsValue = dmsProperty[dmsField!];
+            }
             const dmsValue    = normalize ? normalize(raw(rawDmsValue))           : raw(rawDmsValue);
             const exportValue = normalize ? normalize(raw(matchInExport![exportColumn])) : raw(matchInExport![exportColumn]);
             if (dmsValue !== exportValue) {

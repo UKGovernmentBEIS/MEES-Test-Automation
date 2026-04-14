@@ -203,33 +203,6 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         }
     }
 
-    async selectAllLALocations(): Promise<void> {
-        await this.allLALocationsRadioButton.check();
-
-        // Confirm the radio button is selected
-        if (!await this.allLALocationsRadioButton.isChecked()) {
-            throw new Error('Failed to select "All locations" radio button.');
-        }
-    }
-
-    async selectOnshoreLALocations(): Promise<void> {
-        await this.onshoreLALocationsRadioButton.check();
-
-        // Confirm the radio button is selected
-        if (!await this.onshoreLALocationsRadioButton.isChecked()) {
-            throw new Error('Failed to select "Onshore (England and Wales)" radio button.');
-        }
-    }
-
-    async selectOffshoreLALocations(): Promise<void> {
-        await this.offshoreLALocationsRadioButton.check();
-
-        // Confirm the radio button is selected
-        if (!await this.offshoreLALocationsRadioButton.isChecked()) {
-            throw new Error('Failed to select "Offshore" radio button.');
-        }
-    }
-
     async getLACouncilsList(): Promise<Locator[]> {
         // Check if the councils list is already visible, if not click to expand it
         const isVisible: boolean = await this.councilsList.isVisible();
