@@ -12,6 +12,8 @@ export interface ExportFieldMapping {
     exportColumn: string;
     /** Key in DMSExportApiClient.flattenItem() output — used for property and EPC fields */
     dmsField?: string;
+    /** Multiple keys from DMSExportApiClient.flattenItem() output — concatenated with ', ' for columns that combine several DMS fields (e.g. a full address column) */
+    dmsFields?: string[];
     /** Raw key inside DMSRawItem.Landlords[0] — used for landlord-specific fields to avoid field name collisions (e.g. Location exists on both property and landlord) */
     dmsLandlordField?: string;
     /** Optional normalisation applied to both sides before comparing */

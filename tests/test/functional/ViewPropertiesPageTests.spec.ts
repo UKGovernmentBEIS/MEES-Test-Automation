@@ -220,9 +220,6 @@ test.describe('View Properties Page Tests', () => {
         expect(invalidExemptionsColors, `Invalid PRS Exemptions colors found: ${invalidExemptionsColors.join(', ')}`).toEqual([]);
     });
 
-    // Bug: 753 'Duplicated properties are displayed on the View Properties page'
-    // Remove matching properties by Energy Rating (p.energyRating === energyRating) in the find condition 
-    // until the underlying issue is resolved to avoid test failure due to duplicated records
     test('Verify Energy Ratings data', async ({ page, request }) => {
         // Make sure that all data are loaded first
         await viewPropertiesPage.waitForTableContent();
