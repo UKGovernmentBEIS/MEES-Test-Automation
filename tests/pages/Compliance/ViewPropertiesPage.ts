@@ -243,6 +243,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         return this.totalRecordsField;
     }
 
+    // Method to extract property data from the table on the current page
     async getPropertiesDataFromTable(): Promise<PropertyData[]> {
         const propertiesData: PropertyData[] = [];
         const rowsCount = await this.propertyTableRow.count();
@@ -258,6 +259,27 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             propertiesData.push(new PropertyData(address, energyRating, epcExpiryDate, PRSExemptions, PRSEExemptionsColour));
         }
         return propertiesData;
+    }
+
+    // Method to extract property data from the table on all pages by navigating through pagination
+    async getAllPropertiesDataFromTable(): Promise<PropertyData[]> {
+        let allPropertiesData: PropertyData[] = [];
+
+        // Get properties data from the current page, 
+        // then click on the next page button if it is visible 
+        // and repeat until there are no more pages
+        let hasNextPage = true;
+        while (hasNextPage) {
+            const propertiesData = await this.getPropertiesDataFromTable();
+            allPropertiesData = allPropertiesData.concat(propertiesData);
+            if (await this.nextPageButton.isVisible()) {
+                await this.clickNextPage();
+                await this.waitForTableContent();
+            } else {
+                hasNextPage = false;
+            }
+        }
+        return allPropertiesData;
     }
 
     private async extractExemptionsColourFromClassName(className: string): Promise<string> {

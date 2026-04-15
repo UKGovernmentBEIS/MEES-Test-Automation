@@ -189,7 +189,8 @@ test.describe('View Properties Page Tests', () => {
         await viewPropertiesPage.waitForTableContent();
 
         // Get all property data from the table
-        const propertiesData = await viewPropertiesPage.getPropertiesDataFromTable();
+        const propertiesData = await viewPropertiesPage.getAllPropertiesDataFromTable();
+        expect(propertiesData.length, 'No properties found in the table').toBeGreaterThan(0);
 
         // Search for a properties with below PRSE Exemption and verify the exemption and color are displayed correctly
         const exemptionToColorMapping: Record<string, string> = {
