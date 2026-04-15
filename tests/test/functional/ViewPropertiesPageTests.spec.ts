@@ -257,8 +257,6 @@ test.describe('View Properties Page Tests', () => {
         apiProperties.forEach((apiProperty: any) => {
             // Build address string in the same format as displayed in the UI
             const addressParts = [
-                apiProperty.Number ? apiProperty.Number : '',
-                apiProperty.FlatNameNumber ? apiProperty.FlatNameNumber : '',
                 apiProperty.Line1 ? apiProperty.Line1 : '',
                 apiProperty.Line2 ? apiProperty.Line2 : '',
                 apiProperty.Line3 ? apiProperty.Line3 : '',
@@ -266,7 +264,7 @@ test.describe('View Properties Page Tests', () => {
                 apiProperty.County ? apiProperty.County : '',
                 apiProperty.Postcode ? apiProperty.Postcode : ''
             ].filter(part => part.trim() !== '');
-            const address = addressParts.join(', ');
+            const address = addressParts.join(', ').replace(/  +/g, ' '); // Replace multiple spaces with single space
 
             // Concatenate energy rating. For example: C(55) - EPCEnergyRatingBand(EPCEnergyRating)
             const energyRating = 
