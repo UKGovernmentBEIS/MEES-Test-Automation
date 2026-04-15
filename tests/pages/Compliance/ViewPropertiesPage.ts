@@ -36,6 +36,8 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'Town',                    dmsField: 'Town' },
         { exportColumn: 'County',                  dmsField: 'County' },
         { exportColumn: 'Postcode',                dmsField: 'Postcode' },
+        { exportColumn: 'Property Address',        dmsFields: ['Number', 'FlatNameNumber', 'Line1', 'Line2', 'Line3', 'Town', 'County', 'Postcode'],
+          normalize: (v) => v.trim() },
         { exportColumn: 'LocalAuthority',          dmsField: 'LocalAuthority' },
         { exportColumn: 'PropertyType',            dmsField: 'PropertyType' },
         { exportColumn: 'RateableValue',           dmsField: 'RateableValue' },
