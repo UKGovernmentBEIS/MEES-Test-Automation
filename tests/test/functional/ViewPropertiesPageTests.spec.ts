@@ -254,6 +254,9 @@ test.describe('View Properties Page Tests', () => {
         apiProperties.forEach((apiProperty: any) => {
             // Build address string in the same format as displayed in the UI
             const addressParts = [
+                apiProperty.Name ? apiProperty.Name : '',
+                apiProperty.Number ? apiProperty.Number : '',
+                apiProperty.FlatNameNumber ? apiProperty.FlatNameNumber : '',
                 apiProperty.Line1 ? apiProperty.Line1 : '',
                 apiProperty.Line2 ? apiProperty.Line2 : '',
                 apiProperty.Line3 ? apiProperty.Line3 : '',
