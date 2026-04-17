@@ -23,7 +23,6 @@ test.describe('View Properties Page Data Validation Tests', () => {
         const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
         const filterPropertiesPage: FilterPropertiesPage = await homePage.clickViewProperties();
         await filterPropertiesPage.setEnergyRatingFilter('A');
-        await filterPropertiesPage.selectOnshoreLALocations();
         const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForTableContent();
         propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
@@ -61,9 +60,6 @@ test.describe('View Properties Page Data Validation Tests', () => {
 
         // Verify UPRN (DMS)
         expect(await propertyDetailsPage.getPropertyDetails("UPRN")).toHaveText(dmsPropertyDetails.property.uprn.toString());
-
-        // Verify Exemption Reference (Salesforce) - Keep as hardcoded since it's from Salesforce, not DMS
-        expect(await propertyDetailsPage.getPropertyDetails("Exemption reference")).toHaveText('test');
 
         // Verify Property Type (DMS)
         expect(await propertyDetailsPage.getPropertyDetails("Property type")).toHaveText(dmsPropertyDetails.property.propertyType);

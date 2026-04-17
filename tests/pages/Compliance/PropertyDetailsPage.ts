@@ -28,22 +28,30 @@ export interface DMSPropertyDetails {
         epcEnergyRatingBand: string;
         propertyType: string;
         epcExpiryDate: string;
-        location: string | null;
         rateableValue: number | null;
         transactionType: string;
-        datasetCode: string;
+        datasetCode: string | null;
+        possibleEvidenceEpcTransactionType: boolean;
+        possibleEvidenceSiccode: boolean;
+        certificateLink: string | null;
     };
     epcCertificates: Array<{
+        uprn: number;
         assetRating: number;
         assetRatingBand: string;
+        lodgementDate: string;
         expiryDate: string;
+        certificateLink: string | null;
     }>;
     landlords: Array<{
         uprn: number;
         companyName: string;
         location: string;
         address: string;
-        sicCodeSicText: string | null;
+        sicCodeSicText1: string | null;
+        sicCodeSicText2: string | null;
+        sicCodeSicText3: string | null;
+        sicCodeSicText4: string | null;
     }>;
 }
 
