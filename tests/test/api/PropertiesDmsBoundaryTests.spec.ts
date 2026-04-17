@@ -4,7 +4,7 @@ test.describe('Properties DMS API Tests', () => {
     const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
     const requestBody = {
         "lacodes": ["E09000003","E09000004"],
-        "street": "23 Acorn Industrial Park"
+        "street": "Acorn Industrial Park"
     };
     
     test('Valid x-functions-key returns 200 status', async ({ request }) => {
@@ -88,7 +88,7 @@ test.describe('Properties DMS API Tests', () => {
         const property = parsedBody.data[0];
         
         // Verify all expected property fields are present
-        expect(Object.keys(property).length).toBe(20);
+        expect(Object.keys(property).length).toBe(22);
         expect(property).toHaveProperty('Uprn');
         expect(property).toHaveProperty('BuildingReferenceNumber');
         expect(property).toHaveProperty('Name');
@@ -104,11 +104,13 @@ test.describe('Properties DMS API Tests', () => {
         expect(property).toHaveProperty('EPCEnergyRating');
         expect(property).toHaveProperty('EPCEnergyRatingBand');
         expect(property).toHaveProperty('EPCExpiryDate');
-        expect(property).toHaveProperty('Location');
         expect(property).toHaveProperty('RateableValue');
         expect(property).toHaveProperty('TransactionType');
         expect(property).toHaveProperty('DatasetCode');
         expect(property).toHaveProperty('PropertyType');
+        expect(property).toHaveProperty('PossibleEvidenceEpcTransactionType');
+        expect(property).toHaveProperty('PossibleEvidenceSiccode');
+        expect(property).toHaveProperty('CertificateLink');
     });
 
     test('Missing x-functions-key returns 401 or 403', async ({ request }) => {
@@ -323,88 +325,6 @@ const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
         expect(parsedBody.data.length).toBe(0);
     });
 
-    test('Valid location filters work correctly', async ({ request }) => {
-        // Test without location filter (should return all records)
-        const requestWithoutFilter = {
-            "lacodes": ["E06000009", "E06000011"]
-        };
-
-        const responseWithoutFilter = await request.post(`${baseUrl}?page=1&size=10`, {
-            data: requestWithoutFilter,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'x-functions-key': process.env.PROPERTIES_KEY!
-            }
-        });
-
-        expect(responseWithoutFilter.status()).toBe(200);
-        const bodyWithoutFilter = await responseWithoutFilter.json();
-        const parsedWithoutFilter = JSON.parse(bodyWithoutFilter);
-        const totalRecordsAll = parsedWithoutFilter.total_records;
-
-        const validLocations = ["Onshore", "Offshore"];
-        
-        for (const location of validLocations) {
-            const requestBodyWithLocation = {
-                "lacodes": ["E06000009", "E06000011"],
-                "location": location
-            };
-
-            const response = await request.post(`${baseUrl}?page=1&size=10`, {
-                data: requestBodyWithLocation,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'x-functions-key': process.env.PROPERTIES_KEY!
-                }
-            });
-
-            expect(response.status()).toBe(200);
-            
-            const responseBody = await response.json();
-            const parsedBody = JSON.parse(responseBody);
-            
-            // Verify location filter reduces the total number of records
-            expect(parsedBody.total_records).toBeLessThan(totalRecordsAll);
-            
-            // If data exists, verify all properties match the location filter
-            // NOTE: It's unclear exactly which properties are filtered out by location filter
-            if (parsedBody.data.length > 0) {
-                for (const property of parsedBody.data) {
-                    expect(property.Location).toBe(location);
-                }
-            }
-        }
-    });
-
-    test('Invalid location returns empty results', async ({ request }) => {
-        const requestBodyWithInvalidLocation = {
-            "lacodes": ["E06000009"],
-            "location": "InvalidLocation"
-        };
-
-        const response = await request.post(`${baseUrl}?page=1&size=10`, {
-            data: requestBodyWithInvalidLocation,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'x-functions-key': process.env.PROPERTIES_KEY!
-            }
-        });
-
-        expect(response.status()).toBe(200);
-        
-        const responseBody = await response.json();
-        const parsedBody = JSON.parse(responseBody);
-        
-        // Invalid location returns no data
-        expect(parsedBody).toHaveProperty('data');
-        expect(Array.isArray(parsedBody.data)).toBe(true);
-        expect(parsedBody.data.length).toBe(0);
-        expect(parsedBody.total_records).toBe(0);
-    });
-
     test('Street filter works correctly', async ({ request }) => {
         const requestBodyWithStreet = {
             "lacodes": ["E06000009", "E06000011"],
@@ -466,8 +386,7 @@ const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
         // Use filter criteria matching known property data with location
         const requestBodyWithMultipleFilters = {
             "lacodes": ["E09000003","E09000004"],
-            "street": "23 Acorn Industrial Park",
-            "location": "Onshore",
+            "street": "Acorn Industrial Park",
             "town": "DARTFORD",
             "postcode": "DA1 4AL",
             "energyratingband": "C"
@@ -500,12 +419,11 @@ const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
             expect(property.Town.toLowerCase()).toBe('DARTFORD'.toLowerCase());
             expect(property.Postcode).toBe('DA1 4AL');
             expect(property.LocalAuthority).toBe('E09000004');
-            expect(property.Location).toBe('Onshore');
             expect(property.EPCEnergyRatingBand).toBe('C');
             
             // Check street appears in one of the address lines
             const addressFields = [property.Line1, property.Line2, property.Line3].join(' ').toLowerCase();
-            expect(addressFields).toContain('23 acorn industrial park');
+            expect(addressFields).toContain('acorn industrial park');
         }
     });
 
