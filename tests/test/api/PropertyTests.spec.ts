@@ -34,8 +34,8 @@ test.describe('Authentication Tests', () => {
 
 test.describe('Response Structure Tests', () => {
     const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
-    const parambuildingrefnum = '829378510001';
-    const paramUprn = '10002418410';
+    const parambuildingrefnum = '226143';
+    const paramUprn = '100022917842';
 
     test('Response returns valid JSON with correct top-level structure', async ({ request }) => {
         const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingrefnum=${parambuildingrefnum}`, {
@@ -68,7 +68,7 @@ test.describe('Response Structure Tests', () => {
         const property = responseBody.property;
 
         // Verify all expected property fields are present and have correct types
-        expect(Object.keys(property).length).toBe(20);
+        expect(Object.keys(property).length).toBe(22);
         expect(property).toHaveProperty('uprn');
         expect(property).toHaveProperty('buildingReferenceNumber');
         expect(property).toHaveProperty('name');
@@ -84,11 +84,13 @@ test.describe('Response Structure Tests', () => {
         expect(property).toHaveProperty('epcEnergyRating');
         expect(property).toHaveProperty('epcEnergyRatingBand');
         expect(property).toHaveProperty('epcExpiryDate');
-        expect(property).toHaveProperty('location');
         expect(property).toHaveProperty('rateableValue');
         expect(property).toHaveProperty('transactionType');
         expect(property).toHaveProperty('datasetCode');
         expect(property).toHaveProperty('propertyType');
+        expect(property).toHaveProperty('possibleEvidenceEpcTransactionType');
+        expect(property).toHaveProperty('possibleEvidenceSiccode');
+        expect(property).toHaveProperty('certificateLink');
         expect(['number', 'object']).toContain(typeof property.uprn); // can be number or null
         expect(typeof property.buildingReferenceNumber).toBe('number');
         expect(['string', 'object']).toContain(typeof property.name); // can be string or null
@@ -104,11 +106,13 @@ test.describe('Response Structure Tests', () => {
         expect(typeof property.epcEnergyRating).toBe('number');
         expect(typeof property.epcEnergyRatingBand).toBe('string');
         expect(typeof property.propertyType).toBe('string');
-        expect(typeof property.epcExpiryDate).toBe('string');
-        expect(['string', 'object']).toContain(typeof property.location); // can be string or null
+        expect(typeof property.epcExpiryDate).toBe('string');// can be string or null
         expect(['number', 'object']).toContain(typeof property.rateableValue); // can be number or null
         expect(typeof property.transactionType).toBe('string');
-        expect(typeof property.datasetCode).toBe('string');
+        expect(['string', 'object']).toContain(typeof property.datasetCode); // can be string or null
+        expect(typeof property.possibleEvidenceEpcTransactionType).toBe('boolean');
+        expect(typeof property.possibleEvidenceSiccode).toBe('boolean');
+        expect(typeof property.certificateLink).toBe('string');
     });
 
     test('EPC certificates array has correct structure', async ({ request }) => {
@@ -125,10 +129,12 @@ test.describe('Response Structure Tests', () => {
         expect(Array.isArray(epcCertificates)).toBe(true);
         if (epcCertificates.length > 0) {
             const certificate = epcCertificates[0];
-            expect(Object.keys(certificate).length).toBe(4);
+            expect(Object.keys(certificate).length).toBe(6);
             expect(typeof certificate.assetRating).toBe('number');
             expect(typeof certificate.assetRatingBand).toBe('string');
+            expect(typeof certificate.lodgementDate).toBe('string');
             expect(typeof certificate.expiryDate).toBe('string');
+            expect(['string', 'object']).toContain(typeof certificate.certificateLink);
         }
     });
 
@@ -147,12 +153,15 @@ test.describe('Response Structure Tests', () => {
         expect(Array.isArray(landlords)).toBe(true);
         expect(landlords.length).toBeGreaterThan(0);
         const landlord = landlords[0];
-        expect(Object.keys(landlord).length).toBe(5);
+        expect(Object.keys(landlord).length).toBe(8);
         expect(typeof landlord.uprn).toBe('number');
         expect(typeof landlord.companyName).toBe('string');
         expect(typeof landlord.location).toBe('string');
         expect(typeof landlord.address).toBe('string');
-        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText); // can be string or null
+        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText1);
+        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText2);
+        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText3);
+        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText4);
     });
 
     test('Landlords array has correct structure using Building Reference Number', async ({ request }) => {
@@ -170,12 +179,15 @@ test.describe('Response Structure Tests', () => {
         expect(Array.isArray(landlords)).toBe(true);
         expect(landlords.length).toBeGreaterThan(0);
         const landlord = landlords[0];
-        expect(Object.keys(landlord).length).toBe(5);
+        expect(Object.keys(landlord).length).toBe(8);
         expect(typeof landlord.uprn).toBe('number');
         expect(typeof landlord.companyName).toBe('string');
         expect(typeof landlord.location).toBe('string');
         expect(typeof landlord.address).toBe('string');
-        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText); // can be string or null
+        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText1);
+        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText2);
+        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText3);
+        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText4);
     });
 });
 
