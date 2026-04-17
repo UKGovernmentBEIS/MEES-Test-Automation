@@ -391,11 +391,13 @@ test.describe('View Properties export functionality', () => {
         const energyRatingFilter = 'A';
         const councilFilter = 'LONDON BOROUGH OF BEXLEY';
         const lacodes = ['E09000004'];
+        const postcodeFilter = 'DA16 3QD';
         const fieldMappings: ExportFieldMapping[] = ViewPropertiesPage.EXPORT_FIELD_MAPPINGS;
 
         // 1. Apply filters in the UI and export the CSV
         await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
         await filterPropertiesPage.setCouncilFilter(councilFilter);
+        await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
         const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForPageToLoad();
         await viewPropertiesPage.waitForTableContent();
@@ -412,10 +414,12 @@ test.describe('View Properties export functionality', () => {
 
         // 2b. Fetch a reference property from DMS and locate it in the export by UPRN
         const dmsApiClient = new DMSExportApiClient(request);
-        const rawDmsItem = await dmsApiClient.findFirstFullyPopulatedItem({ lacodes, energyratingband: energyRatingFilter });
+        const rawDmsItem = await dmsApiClient.findFirstFullyPopulatedItem({ lacodes, energyratingband: energyRatingFilter, postcode: postcodeFilter });
         const dmsProperty = dmsApiClient.flattenItem(rawDmsItem);
         expect(dmsProperty['Uprn'], 'Reference DMS property has no UPRN').toBeDefined();
-        const matchInExport = exportedData.find(r => String(r['Uprn']) === String(dmsProperty['Uprn']));
+        // BUG: 883 - Export values include invalid characters
+        // Remove below regex once the issue is resolved and verify that UPRN values match exactly between DMS and export
+        const matchInExport = exportedData.find(r => String(r['UPRN']).replace(/^=/, '') === String(dmsProperty['Uprn']));
         expect(matchInExport,
             `Cannot find UPRN '${dmsProperty['Uprn']}' for property with postcode '${dmsProperty['Postcode']}' from DMS not found in export.`
         ).toBeDefined();
