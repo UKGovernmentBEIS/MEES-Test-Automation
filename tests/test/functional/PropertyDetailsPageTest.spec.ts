@@ -119,7 +119,6 @@ test.describe('Property Details Comments Tests', () => {
         const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
         const filterPropertiesPage: FilterPropertiesPage = await homePage.clickViewProperties();
         await filterPropertiesPage.setEnergyRatingFilter('A');
-        await filterPropertiesPage.selectOnshoreLALocations();
         const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForTableContent();
         propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
