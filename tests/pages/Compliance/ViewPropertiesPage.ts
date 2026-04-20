@@ -40,12 +40,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'EPC expiry date',         dmsField: 'EPCExpiryDate', 
             normalize: (v) => {
                 const stripped = v.replace(/^=/, ''); // BUG: 883 - Export values include invalid characters. Remove the regex once the issue is resolved.
-                const isoMatch = stripped.match(/^(\d{4})-(\d{2})-(\d{2})/); // Check if already in ISO format
-                if (isoMatch) {
-                    return `${isoMatch[3]}/${isoMatch[2]}/${isoMatch[1]}`; // Convert ISO to D/M/YYYY
-                } else {
-                    return stripped; // Return as-is (e.g. D/M/YYYY) if not in ISO format
-                }
+                return stripped;
             }
         },
         { exportColumn: 'Reason for inclusion',    dmsField: 'DatasetCode'},
