@@ -265,10 +265,11 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             const address = await row.locator('td').nth(0).innerText();
             const energyRating = await row.locator('td').nth(1).innerText();
             const epcExpiryDate = await row.locator('td').nth(2).innerText();
-            const PRSExemptions = await row.locator('td').nth(3).innerText();
-            const PRSEExemptionsColourClassName = await row.locator('td').nth(3).locator('span').getAttribute('class') || '';
+            const Rentalevidence = await row.locator('td').nth(3).innerText();
+            const PRSExemptions = await row.locator('td').nth(4).innerText();
+            const PRSEExemptionsColourClassName = await row.locator('td').nth(4).locator('span').getAttribute('class') || '';
             const PRSEExemptionsColour = await this.extractExemptionsColourFromClassName(PRSEExemptionsColourClassName);
-            propertiesData.push(new PropertyData(address, energyRating, epcExpiryDate, PRSExemptions, PRSEExemptionsColour));
+            propertiesData.push(new PropertyData(address, energyRating, epcExpiryDate, Rentalevidence, PRSExemptions, PRSEExemptionsColour));
         }
         return propertiesData;
     }
@@ -444,6 +445,7 @@ export class PropertyData {
     readonly address: string;
     readonly energyRating: string;
     readonly epcExpiryDate: string;
+    readonly rentalEvidence: string;
     readonly PRSExemptions: string;
     readonly PRSEExemptionsColour: string;
 
@@ -451,12 +453,14 @@ export class PropertyData {
         address: string,
         energyRating: string,
         epcExpiryDate: string,
+        rentalEvidence: string,
         PRSExemptions: string,
         PRSEExemptionsColour: string
     ) {
         this.address = address;
         this.energyRating = energyRating;
         this.epcExpiryDate = epcExpiryDate;
+        this.rentalEvidence = rentalEvidence;
         this.PRSExemptions = PRSExemptions;
         this.PRSEExemptionsColour = PRSEExemptionsColour;
     }
