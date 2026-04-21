@@ -17,9 +17,6 @@ export class FilterPropertiesPage extends BaseCompliancePage {
     private readonly postcodeTextBox: Locator;
     private readonly applyFiltersButton: Locator;
     private readonly clearFiltersButton: Locator;
-    private readonly allLALocationsRadioButton: Locator;
-    private readonly onshoreLALocationsRadioButton: Locator;
-    private readonly offshoreLALocationsRadioButton: Locator;
 
     private energyRatingCheckboxes(letter: EnergyRatings): Locator {
         return this.page.getByRole('checkbox', { name: letter, exact: true });
@@ -36,11 +33,7 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         this.townTextBox = page.getByRole('textbox', { name: 'Town' })
         this.postcodeTextBox = page.getByRole('textbox', { name: 'Postcode' })
         this.applyFiltersButton = page.getByRole('button', { name: 'Apply filters' })
-        this.clearFiltersButton = page.getByRole('link', { name: 'Reset filters' })
-        this.allLALocationsRadioButton = page.getByRole('radio', { name: 'All locations' })
-        this.onshoreLALocationsRadioButton = page.getByRole('radio', { name: 'Onshore (England and Wales)' })
-        this.offshoreLALocationsRadioButton = page.getByRole('radio', { name: 'Offshore' })
-        
+        this.clearFiltersButton = page.getByRole('link', { name: 'Reset filters' })        
     }
 
     // Wait for the Filter Properties Page to load
@@ -59,10 +52,7 @@ export class FilterPropertiesPage extends BaseCompliancePage {
                 townTextBox: this.townTextBox,
                 postcodeTextBox: this.postcodeTextBox,
                 applyFiltersButton: this.applyFiltersButton,
-                clearFiltersButton: this.clearFiltersButton,
-                allLALocationsRadioButton: this.allLALocationsRadioButton,
-                onshoreLALocationsRadioButton: this.onshoreLALocationsRadioButton,
-                offshoreLALocationsRadioButton: this.offshoreLALocationsRadioButton
+                clearFiltersButton: this.clearFiltersButton
             });
     }
 

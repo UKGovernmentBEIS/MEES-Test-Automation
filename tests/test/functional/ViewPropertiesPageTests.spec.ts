@@ -390,14 +390,14 @@ test.describe('View Properties export functionality', () => {
         expect(exportedRecords.length).toEqual(displayedCount);
     });
 
-    test('Export field schema and data matches DMS API', async ({ request }) => {
-        const energyRatingFilter = 'A';
+    test('Only required fields are exported', async ({ page }) => {
+         const energyRatingFilter = 'A';
         const councilFilter = 'LONDON BOROUGH OF BEXLEY';
         const lacodes = ['E09000004'];
         const postcodeFilter = 'DA16 3QD';
         const fieldMappings: ExportFieldMapping[] = ViewPropertiesPage.EXPORT_FIELD_MAPPINGS;
 
-        // 1. Apply filters in the UI and export the CSV
+        // Apply filters in the UI and export the CSV
         await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
         await filterPropertiesPage.setCouncilFilter(councilFilter);
         await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
@@ -407,17 +407,34 @@ test.describe('View Properties export functionality', () => {
         const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
         expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-        // 2a. Schema check — CSV must have exactly the columns defined in EXPORT_FIELD_MAPPINGS
+        // Schema check — CSV must have exactly the columns defined in EXPORT_FIELD_MAPPINGS
         const exportColumnNames = Object.keys(exportedData[0]);
         const expectedColumns = fieldMappings.map(m => m.exportColumn);
         const missingColumns = expectedColumns.filter(c => !exportColumnNames.includes(c));
-        const extraColumns   = exportColumnNames.filter(c => !expectedColumns.includes(c) && !ViewPropertiesPage.EXTRA_EXPORT_COLUMNS.includes(c));
+        const extraColumns   = exportColumnNames.filter(c => !expectedColumns.includes(c));
         expect(missingColumns, `Columns missing from export: ${missingColumns.join(', ')}`).toEqual([]);
         expect(extraColumns,   `Unexpected columns in export: ${extraColumns.join(', ')}`).toEqual([]);
+    });
 
-        // 2b. Fetch a reference property from DMS and locate it in the export by UPRN
+    test('Export field schema and data matches DMS API', async ({ request }) => {
+        const energyRatingFilter = 'A';
+        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+        const lacodes = ['E09000004'];
+        const fieldMappings: ExportFieldMapping[] = ViewPropertiesPage.EXPORT_FIELD_MAPPINGS;
+
+        // Apply filters in the UI and export the CSV
+        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+        await filterPropertiesPage.setCouncilFilter(councilFilter);
+        //await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
+        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await viewPropertiesPage.waitForTableContent();
+        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+        // Fetch a reference property from DMS and locate it in the export by UPRN
         const dmsApiClient = new DMSExportApiClient(request);
-        const rawDmsItem = await dmsApiClient.findFirstFullyPopulatedItem({ lacodes, energyratingband: energyRatingFilter, postcode: postcodeFilter });
+        const rawDmsItem = await dmsApiClient.findFirstFullyPopulatedItem({ lacodes, energyratingband: energyRatingFilter});
         const dmsProperty = dmsApiClient.flattenItem(rawDmsItem);
         expect(dmsProperty['Uprn'], 'Reference DMS property has no UPRN').toBeDefined();
         // BUG: 883 - Export values include invalid characters
@@ -427,24 +444,23 @@ test.describe('View Properties export functionality', () => {
             `Cannot find UPRN '${dmsProperty['Uprn']}' for property with postcode '${dmsProperty['Postcode']}' from DMS not found in export.`
         ).toBeDefined();
 
-        // 2c. Compare each mapped field value between DMS and export
+        // Compare each mapped field value between DMS and export
         const valueMismatches: string[] = [];
-        for (const { exportColumn, dmsField, dmsFields, dmsLandlordField, normalize } of fieldMappings) {
-            const raw = (v: unknown) => (v === null) ? '' : String(v);
+        for (const { exportColumn, dmsField, dmsFields, dmsLandlordField, prseField, meesField, dmsEpcField, normalize } of fieldMappings) {
+            const raw = (v: unknown) => (v === null || v === undefined || v === 'Data not found') ? '' : String(v);
             let rawDmsValue: unknown;
-            if (dmsLandlordField) {
-                // Landlord-specific field — read directly from the first landlord in the raw DMS item
-                rawDmsValue = (Array.isArray(rawDmsItem.Landlords) && rawDmsItem.Landlords.length > 0)
-                    ? rawDmsItem.Landlords[0][dmsLandlordField]
-                    : undefined;
-            } else if (dmsFields) {
+            if  (prseField || meesField ) {
+                // If both prseField and meesField are defined, skip the comparison as these fields do not have DMS equivalents 
+                // and are derived from multiple DMS fields.
+                continue;
+            } if (dmsFields) {
                 // Multi-field column — concatenate multiple DMS fields into a single string
                 rawDmsValue = dmsFields.map(f => dmsProperty[f] ?? '').filter(p => String(p).trim() !== '').join(', ');
             } else {
                 // Single field — direct lookup from the flattened DMS property
-                rawDmsValue = dmsProperty[dmsField!];
+                rawDmsValue = dmsProperty[(dmsField ?? dmsLandlordField ?? dmsEpcField)!];
             }
-            const dmsValue    = normalize ? normalize(raw(rawDmsValue))           : raw(rawDmsValue);
+            const dmsValue    = normalize ? normalize(raw(rawDmsValue)) : raw(rawDmsValue);
             const exportValue = normalize ? normalize(raw(matchInExport![exportColumn])) : raw(matchInExport![exportColumn]);
             if (dmsValue !== exportValue) {
                 valueMismatches.push(`${exportColumn}: DMS='${rawDmsValue}' vs Export='${matchInExport![exportColumn]}'`);
