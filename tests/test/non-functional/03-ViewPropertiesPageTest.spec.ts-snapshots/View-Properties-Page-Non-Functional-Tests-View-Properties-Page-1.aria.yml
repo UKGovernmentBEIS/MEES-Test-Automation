@@ -48,8 +48,8 @@
     - definition: None
     - term: Postcode
     - definition: None
-    - term: Landlord location
-    - definition: All locations
+    - term: Possible rental evidence
+    - definition: Show all
     - link "Change filters":
       - /url: "#-74"
     - heading "Property records" [level=1]

@@ -1,5 +1,7 @@
 - main:
-  - heading "Check if properties meet minimum energy efficiency standards" [level=2]
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]:
+    - link "Check if properties meet minimum energy efficiency standards":
+      - /url: /landing-page
   - navigation "Menu":
     - list:
       - listitem:
@@ -39,7 +41,7 @@
     - group: You can view records from 2 councils
     - text: Council (optional) Select the council you want to view records for
     - combobox "Council (optional)":
-      - option "Show all councils" [selected]
+      - option "Show all 2 councils" [selected]
       - option "LONDON BOROUGH OF BARNET"
       - option "LONDON BOROUGH OF BEXLEY"
     - group "Energy rating (optional)":
@@ -66,13 +68,13 @@
     - textbox "Town (optional)"
     - text: Postcode (optional)
     - textbox "Postcode (optional)"
-    - group "Landlord location":
-      - text: Landlord location Filter properties by where the landlord is based
-      - radio "All locations" [checked]
+    - group "Possible rental evidence":
+      - text: Possible rental evidence Filter properties by whether there is evidence that they may be rented
+      - radio "Show all" [checked]
       - text: ""
-      - radio "Onshore (England and Wales)"
-      - text: Onshore (England and Wales)
-      - radio "Offshore"
+      - radio "Evidence found"
+      - text: ""
+      - radio "Not found"
       - text: ""
     - button "Apply filters"
     - link "Reset filters":
