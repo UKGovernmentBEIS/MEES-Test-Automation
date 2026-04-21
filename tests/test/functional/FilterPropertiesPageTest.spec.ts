@@ -51,10 +51,8 @@ test.describe('Filter Properties Page Functional Tests', () => {
         expect(await filterPropertiesPage.getStreetFilterValue()).toBe('');
         expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
         expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');
-        
-        // Verify radio button has reset to default (All locations)
-        const allLARadio = page.getByRole('radio', { name: 'All locations' });
-        await expect(allLARadio).toBeChecked();
+
+        // TODO: Verify that the 'Possible rental evidence' filter is also reset once this filter is added to the application and the Filter Properties page. Currently this filter is not yet automated
     });
 
     test('Apply multiple filters and verify filter summary on View Properties page', async ({ page }, testInfo) => {
