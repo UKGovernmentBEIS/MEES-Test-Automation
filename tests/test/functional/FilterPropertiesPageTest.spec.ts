@@ -141,6 +141,15 @@ test.describe('Filter Properties Page Functional Tests', () => {
         expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe(postcodeFilter);
     });
 
+    test('Location filter (Onshore / Offshore / All) is not present on the Filter Properties page', async ({ page }) => {
+        // Verify that no Location filter radio buttons exist on the page
+        await expect(page.getByRole('radio', { name: 'Onshore' })).toHaveCount(0);
+        await expect(page.getByRole('radio', { name: 'Offshore' })).toHaveCount(0);
+
+        // Verify that no fieldset or group labelled 'Location' exists
+        await expect(page.getByRole('group', { name: 'Location' })).toHaveCount(0);
+    });
+
     // This test requires explicit selection of LA users with council associations.
     // Please go to the '/Documentation/Authentication.md' document for instructions on how to set up and run this test.
     test('Verify councils list', async ({ page }, testInfo) => {

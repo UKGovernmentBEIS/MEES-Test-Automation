@@ -38,6 +38,13 @@ test.describe('View Properties Page Tests', () => {
         await expect(page).toHaveTitle('View Properties');
     });
 
+    test('Filter summary does not display Landlord location filter', async ({ page }) => {
+
+        // Verify that 'Landlord location' does not appear as a filter row in the 'Filters applied' summary
+        const landlordLocationFilterRow = await viewPropertiesPage.getFilterCriterionValueField('Landlord location');
+        await expect(landlordLocationFilterRow).toHaveCount(0);
+    });
+
     test('Page provides filtered data based on selected criteria', async ({ page }) => {
         const filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
         await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
@@ -468,6 +475,21 @@ test.describe('View Properties export functionality', () => {
         expect(valueMismatches,
             `Field value mismatches for UPRN ${dmsProperty['Uprn']}: ${valueMismatches.join('; ')}`
         ).toEqual([]);
+    });
+
+    test('Exported data does not contain Landlord location column', async ({ page }) => {
+        // Apply filters and export the CSV
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
+        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await viewPropertiesPage.waitForTableContent();
+        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+        // Verify 'Landlord location' column is not present in the exported CSV
+        const exportColumnNames = Object.keys(exportedData[0]);
+        expect(exportColumnNames, "'Landlord location' column should not be present in the export").not.toContain('Landlord location');
     });
 
     test('Exported EPC Certificates (Link) field is valid and matches the property address', async ({ page }) => {
