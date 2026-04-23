@@ -130,6 +130,7 @@ test.describe('Response Structure Tests', () => {
         if (epcCertificates.length > 0) {
             const certificate = epcCertificates[0];
             expect(Object.keys(certificate).length).toBe(6);
+            expect(typeof certificate.uprn).toBe('number');
             expect(typeof certificate.assetRating).toBe('number');
             expect(typeof certificate.assetRatingBand).toBe('string');
             expect(typeof certificate.lodgementDate).toBe('string');
@@ -348,7 +349,7 @@ test.describe('Parameter Validation Tests', () => {
         expect(response.status()).toBe(200);
     });
 
-        test('Building Reference Number too long returns 400 status', async ({ request }) => {
+    test('Building Reference Number too long returns 400 status', async ({ request }) => {
         const response = await request.get(`${baseUrl}?buildingrefnum=1234567890123`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!

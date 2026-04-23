@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { request } from 'https';
 
 test.describe('Properties DMS API Tests', () => {
     const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
@@ -471,5 +472,52 @@ const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
         });
 
         expect(response.status()).toBe(400);
+    });
+
+    test('Location filter is no longer supported and does not filter results', async ({ request }) => {
+        // Test without location filter (should return all records)
+        const requestWithoutFilter = {
+            "lacodes": ["E06000009", "E06000011"]
+        };
+
+        const responseWithoutFilter = await request.post(`${baseUrl}?page=1&size=10`, {
+            data: requestWithoutFilter,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.PROPERTIES_KEY!
+            }
+        });
+
+        expect(responseWithoutFilter.status()).toBe(200);
+        const bodyWithoutFilter = await responseWithoutFilter.json();
+        const parsedWithoutFilter = JSON.parse(bodyWithoutFilter);
+        const totalRecordsAll = parsedWithoutFilter.total_records;
+
+        const validLocations = ["Onshore", "Offshore"];
+        
+        for (const location of validLocations) {
+            const requestBodyWithLocation = {
+                "lacodes": ["E06000009", "E06000011"],
+                "location": location
+            };
+
+            const response = await request.post(`${baseUrl}?page=1&size=10`, {
+                data: requestBodyWithLocation,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'x-functions-key': process.env.PROPERTIES_KEY!
+                }
+            });
+
+            expect(response.status()).toBe(200);
+            
+            const responseBody = await response.json();
+            const parsedBody = JSON.parse(responseBody);
+            
+            // Verify location filter does not reduce the total number of records
+            expect(parsedBody.total_records).toBe(totalRecordsAll);
+        }
     });
 });
