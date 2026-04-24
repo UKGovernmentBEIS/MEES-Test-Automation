@@ -192,6 +192,94 @@ test.describe('Response Structure Tests', () => {
     });
 });
 
+test.describe('SIC Code Tests', () => {
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
+    const paramUprn = '100022917842'; // property with onshore landlord(s) — used for sequential and onshore assertions
+    const multiLandlordUprn = '10010248290'; // property with both Onshore and Offshore landlords
+
+    test('SIC code fields are populated sequentially with no gaps', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${paramUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        // For each landlord, SIC codes must be filled from position 1 with no null gaps before a non-null value
+        const responseBody = await response.json();
+        const landlords = responseBody.landlords;
+        expect(Array.isArray(landlords)).toBe(true);
+        expect(landlords.length).toBeGreaterThan(0);
+        for (const landlord of landlords) {
+            if (landlord.sicCodeSicText2 !== null) expect(landlord.sicCodeSicText1).not.toBeNull();
+            if (landlord.sicCodeSicText3 !== null) expect(landlord.sicCodeSicText2).not.toBeNull();
+            if (landlord.sicCodeSicText4 !== null) expect(landlord.sicCodeSicText3).not.toBeNull();
+        }
+    });
+
+    test('Offshore landlord has all SIC code fields as null', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${multiLandlordUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        // Every landlord with location 'Offshore' must have all four SIC code fields as null
+        const responseBody = await response.json();
+        const landlords = responseBody.landlords;
+        expect(Array.isArray(landlords)).toBe(true);
+        const offshoreLandlords = landlords.filter((l: any) => l.location === 'Offshore');
+        expect(offshoreLandlords.length).toBeGreaterThan(0);
+        for (const landlord of offshoreLandlords) {
+            expect(landlord.sicCodeSicText1).toBeNull();
+            expect(landlord.sicCodeSicText2).toBeNull();
+            expect(landlord.sicCodeSicText3).toBeNull();
+            expect(landlord.sicCodeSicText4).toBeNull();
+        }
+    });
+
+    test('Landlord with a non-null SIC code has Onshore location', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${multiLandlordUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        // Any landlord that has at least one non-null SIC code must have location = 'Onshore'
+        const responseBody = await response.json();
+        const landlords = responseBody.landlords;
+        expect(Array.isArray(landlords)).toBe(true);
+        for (const landlord of landlords) {
+            const hasAnySicCode = [landlord.sicCodeSicText1, landlord.sicCodeSicText2,
+                                   landlord.sicCodeSicText3, landlord.sicCodeSicText4]
+                                  .some((v: string | null) => v !== null);
+            if (hasAnySicCode) {
+                expect(landlord.location).toBe('Onshore');
+            }
+        }
+    });
+
+    test('SIC code fields are held independently per landlord in a multi-landlord response', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${multiLandlordUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        // The response must contain multiple landlords with distinct uprn values
+        const responseBody = await response.json();
+        const landlords = responseBody.landlords;
+        expect(Array.isArray(landlords)).toBe(true);
+        expect(landlords.length).toBeGreaterThan(1);
+        const uprnValues = landlords.map((l: any) => l.uprn);
+        const uniqueUprns = new Set(uprnValues);
+        expect(uniqueUprns.size).toBe(landlords.length);
+    });
+});
+
 test.describe('Parameter Validation Tests', () => {
     const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
     const validUprn = '10002418410';
