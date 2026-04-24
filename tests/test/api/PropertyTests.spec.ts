@@ -124,18 +124,19 @@ test.describe('Response Structure Tests', () => {
         expect(response.status()).toBe(200);    
 
         // Verify EPC certificates structure and field types
+        // Note: certificateLink was moved from epcCertificates to the root property object
         const responseBody = await response.json();
         const epcCertificates = responseBody.epcCertificates;
-        expect(Array.isArray(epcCertificates)).toBe(true);
+        expect(Array.isArray(epcCertificates), 'epcCertificates should be an array').toBe(true);
         if (epcCertificates.length > 0) {
             const certificate = epcCertificates[0];
-            expect(Object.keys(certificate).length).toBe(6);
-            expect(typeof certificate.uprn).toBe('number');
-            expect(typeof certificate.assetRating).toBe('number');
-            expect(typeof certificate.assetRatingBand).toBe('string');
-            expect(typeof certificate.lodgementDate).toBe('string');
-            expect(typeof certificate.expiryDate).toBe('string');
-            expect(['string', 'object']).toContain(typeof certificate.certificateLink);
+            const certKeys = Object.keys(certificate);
+            expect(certKeys, `EPC certificate has unexpected fields. Expected [uprn, assetRating, assetRatingBand, lodgementDate, expiryDate], got [${certKeys.join(', ')}]`).toHaveLength(5);
+            expect(typeof certificate.uprn, `Expected 'uprn' to be type 'number', got '${typeof certificate.uprn}'`).toBe('number');
+            expect(typeof certificate.assetRating, `Expected 'assetRating' to be type 'number', got '${typeof certificate.assetRating}'`).toBe('number');
+            expect(typeof certificate.assetRatingBand, `Expected 'assetRatingBand' to be type 'string', got '${typeof certificate.assetRatingBand}'`).toBe('string');
+            expect(typeof certificate.lodgementDate, `Expected 'lodgementDate' to be type 'string', got '${typeof certificate.lodgementDate}'`).toBe('string');
+            expect(typeof certificate.expiryDate, `Expected 'expiryDate' to be type 'string', got '${typeof certificate.expiryDate}'`).toBe('string');
         }
     });
 
