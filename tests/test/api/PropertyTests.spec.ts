@@ -269,14 +269,22 @@ test.describe('SIC Code Tests', () => {
         });
         expect(response.status()).toBe(200);
 
-        // The response must contain multiple landlords with distinct uprn values
+        // The response must contain multiple landlords — all sharing the same UPRN (property identifier)
+        // but representing distinct companies.
         const responseBody = await response.json();
         const landlords = responseBody.landlords;
         expect(Array.isArray(landlords)).toBe(true);
         expect(landlords.length).toBeGreaterThan(1);
-        const uprnValues = landlords.map((l: any) => l.uprn);
-        const uniqueUprns = new Set(uprnValues);
-        expect(uniqueUprns.size).toBe(landlords.length);
+
+        // All landlords share the property UPRN — this is expected and correct
+        for (const landlord of landlords) {
+            expect(landlord.uprn).toBe(landlords[0].uprn);
+        }
+
+        // Landlords are distinct companies
+        const companyNames = landlords.map((l: any) => l.companyName);
+        const uniqueCompanyNames = new Set(companyNames);
+        expect(uniqueCompanyNames.size).toBe(landlords.length);
     });
 });
 
