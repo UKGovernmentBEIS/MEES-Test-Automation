@@ -131,12 +131,13 @@ test.describe('Response Structure Tests', () => {
         if (epcCertificates.length > 0) {
             const certificate = epcCertificates[0];
             const certKeys = Object.keys(certificate);
-            expect(certKeys, `EPC certificate has unexpected fields. Expected [uprn, assetRating, assetRatingBand, lodgementDate, expiryDate], got [${certKeys.join(', ')}]`).toHaveLength(5);
+            expect(certKeys, `EPC certificate has unexpected fields. Expected [uprn, assetRating, assetRatingBand, lodgementDate, expiryDate, transactionTypeHistory], got [${certKeys.join(', ')}]`).toHaveLength(6);
             expect(typeof certificate.uprn, `Expected 'uprn' to be type 'number', got '${typeof certificate.uprn}'`).toBe('number');
             expect(typeof certificate.assetRating, `Expected 'assetRating' to be type 'number', got '${typeof certificate.assetRating}'`).toBe('number');
             expect(typeof certificate.assetRatingBand, `Expected 'assetRatingBand' to be type 'string', got '${typeof certificate.assetRatingBand}'`).toBe('string');
             expect(typeof certificate.lodgementDate, `Expected 'lodgementDate' to be type 'string', got '${typeof certificate.lodgementDate}'`).toBe('string');
             expect(typeof certificate.expiryDate, `Expected 'expiryDate' to be type 'string', got '${typeof certificate.expiryDate}'`).toBe('string');
+            expect(typeof certificate.transactionTypeHistory, `Expected 'transactionTypeHistory' to be type 'string', got '${typeof certificate.transactionTypeHistory}'`).toBe('string');
         }
     });
 
