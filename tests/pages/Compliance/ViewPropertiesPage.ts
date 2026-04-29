@@ -24,6 +24,8 @@ export interface ExportFieldMapping {
     meesField?: string;
     /** EPC Certificate fields, requires manual check due to missing API to Salesforce */
     dmsEpcField?: string;
+    /** Field whose value is derived from multiple DMS booleans — skip in the generic loop and validate in a dedicated test */
+    computedField?: true;
     /** Optional normalisation applied to both sides before comparing */
     normalize?: (value: string) => string;
 }
@@ -40,7 +42,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'UPRN',                    dmsField: 'Uprn', normalize: (v) => v.replace(/^=/, '') }, // BUG: 883 - Export values include invalid characters. Remove the regex once the issue is resolved.
         { exportColumn: 'Property type',           dmsField: 'EPCPropertyType' },
         { exportColumn: 'Rateable value (£)',      dmsField: 'RateableValue' },
-        { exportColumn: 'Possible rental evidence', dmsField: 'PossibleEvidenceEpcTransactionType' },
+        { exportColumn: 'Possible rental evidence', computedField: true },
         // Property owner fields are dynamic based on the maximum number of landlords associated with a property in exported data.
         { exportColumn: 'Property owner 1 name',      dmsLandlordField: 'LandlordCompanyName' },
         { exportColumn: 'Property owner 1 location',  dmsLandlordField: 'LandlordLocation' },

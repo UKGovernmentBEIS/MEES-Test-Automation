@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 import { FilterPropertiesPage } from '../../pages/Compliance/FilterPropertiesPage';
 import { HomePage } from '../../pages/Compliance/HomePage';
 import { ExportFieldMapping, PropertyData, ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
-import { DMSExportApiClient } from '../../api/DMSExportApiClient';
+import { DMSExportApiClient, DMSRawItem } from '../../api/DMSExportApiClient';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
 
@@ -454,10 +454,10 @@ test.describe('View Properties export functionality', () => {
 
         // Compare each mapped field value between DMS and export
         const valueMismatches: string[] = [];
-        for (const { exportColumn, dmsField, dmsFields, dmsLandlordField, dmsLandlordFields, prseField, meesField, dmsEpcField, normalize } of fieldMappings) {
+        for (const { exportColumn, dmsField, dmsFields, dmsLandlordField, dmsLandlordFields, prseField, meesField, dmsEpcField, computedField, normalize } of fieldMappings) {
             const raw = (v: unknown) => (v === null || v === undefined || v === 'Data not found') ? '' : String(v);
             let rawDmsValue: unknown;
-            if  (prseField || meesField ) {
+            if  (prseField || meesField || computedField) {
                 // If both prseField and meesField are defined, skip the comparison as these fields do not have DMS equivalents 
                 // and are derived from multiple DMS fields.
                 continue;
@@ -479,6 +479,75 @@ test.describe('View Properties export functionality', () => {
         }
         expect(valueMismatches,
             `Field value mismatches for UPRN ${dmsProperty['Uprn']}: ${valueMismatches.join('; ')}`
+        ).toEqual([]);
+    });
+
+    test('Exported Possible rental evidence field value is correct', async ({ request }) => {
+        const energyRatingFilter = 'A';
+        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+        const lacodes = ['E09000004'];
+
+        // Apply filters in the UI and export the CSV
+        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+        await filterPropertiesPage.setCouncilFilter(councilFilter);
+        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await viewPropertiesPage.waitForTableContent();
+        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+        // Fetch raw DMS items so we can derive the expected computed value for each row
+        const dmsApiClient = new DMSExportApiClient(request);
+        const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, energyratingband: energyRatingFilter });
+        expect(rawDmsItems.length, 'DMS export returned no items').toBeGreaterThan(0);
+
+        // Build UPRN → raw DMS item lookup map
+        const dmsItemByUprn = new Map<string, DMSRawItem>();
+        for (const item of rawDmsItems) {
+            dmsItemByUprn.set(String(item.property.Uprn), item);
+        }
+
+        // 'Found' when at least one of the two booleans is true;
+        // 'Not found' only when both are false.
+
+        // Guard: verify both branches are present in the dataset so neither goes untested
+        const hasFoundCase = rawDmsItems.some(item =>
+            item.property.PossibleEvidenceEpcTransactionType === true ||
+            item.property.PossibleEvidenceSiccode === true
+        );
+        const hasNotFoundCase = rawDmsItems.some(item =>
+            item.property.PossibleEvidenceEpcTransactionType !== true &&
+            item.property.PossibleEvidenceSiccode !== true
+        );
+        expect(hasFoundCase,    'Test data gap: no DMS item where at least one boolean is true — cannot verify "Found" branch').toBe(true);
+        expect(hasNotFoundCase, 'Test data gap: no DMS item where both booleans are false — cannot verify "Not found" branch').toBe(true);
+
+        // Compare each exported row against the derived expected value
+        const valueMismatches: string[] = [];
+        for (const row of exportedData) {
+            // BUG 883: UPRN in export may be prefixed with '='
+            const uprn = String(row['UPRN']).replace(/^=/, '');
+            const dmsItem = dmsItemByUprn.get(uprn);
+            if (!dmsItem) continue; // Row is outside the DMS page returned — skip
+
+            // 'Not found' only when both booleans are false
+            const isFound =
+                dmsItem.property.PossibleEvidenceEpcTransactionType === true ||
+                dmsItem.property.PossibleEvidenceSiccode === true;
+            const expectedValue = isFound ? 'Found' : 'Not found';
+            const actualValue = row['Possible rental evidence'];
+
+            if (actualValue !== expectedValue) {
+                valueMismatches.push(
+                    `UPRN ${uprn}: expected '${expectedValue}' ` +
+                    `(PossibleEvidenceEpcTransactionType=${dmsItem.property.PossibleEvidenceEpcTransactionType}, ` +
+                    `PossibleEvidenceSiccode=${dmsItem.property.PossibleEvidenceSiccode}), ` +
+                    `got '${actualValue}'`
+                );
+            }
+        }
+        expect(valueMismatches,
+            `Possible rental evidence mismatches: ${valueMismatches.join('; ')}`
         ).toEqual([]);
     });
 
