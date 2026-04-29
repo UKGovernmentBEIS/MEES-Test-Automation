@@ -399,7 +399,8 @@ test.describe('View Properties export functionality', () => {
     });
 
     test('Only required fields are exported', async ({ page }) => {
-         const energyRatingFilter = 'A';
+        // Set specific filter criteria to get one property owner/landlord filed set in the export
+        const energyRatingFilter = 'A';
         const councilFilter = 'LONDON BOROUGH OF BEXLEY';
         const postcodeFilter = 'DA16 3QD';
         const fieldMappings: ExportFieldMapping[] = ViewPropertiesPage.EXPORT_FIELD_MAPPINGS;
@@ -418,7 +419,7 @@ test.describe('View Properties export functionality', () => {
         const exportColumnNames = Object.keys(exportedData[0]);
         const expectedColumns = fieldMappings.map(m => m.exportColumn);
         const missingColumns = expectedColumns.filter(c => !exportColumnNames.includes(c));
-        const extraColumns   = exportColumnNames.filter(c => !expectedColumns.includes(c) && c !== 'EpcCertificates (Link)'); // Temporary exception for the 'EPC Certificates (Link)' column until the underlying issue is resolved. See MEESALPHA-817.
+        const extraColumns   = exportColumnNames.filter(c => !expectedColumns.includes(c));
         expect(missingColumns, `Columns missing from export: ${missingColumns.join(', ')}`).toEqual([]);
         expect(extraColumns,   `Unexpected columns in export: ${extraColumns.join(', ')}`).toEqual([]);
     });
@@ -453,7 +454,7 @@ test.describe('View Properties export functionality', () => {
 
         // Compare each mapped field value between DMS and export
         const valueMismatches: string[] = [];
-        for (const { exportColumn, dmsField, dmsFields, dmsLandlordField, prseField, meesField, dmsEpcField, normalize } of fieldMappings) {
+        for (const { exportColumn, dmsField, dmsFields, dmsLandlordField, dmsLandlordFields, prseField, meesField, dmsEpcField, normalize } of fieldMappings) {
             const raw = (v: unknown) => (v === null || v === undefined || v === 'Data not found') ? '' : String(v);
             let rawDmsValue: unknown;
             if  (prseField || meesField ) {
@@ -463,6 +464,9 @@ test.describe('View Properties export functionality', () => {
             } if (dmsFields) {
                 // Multi-field column — concatenate multiple DMS fields into a single string
                 rawDmsValue = dmsFields.map(f => dmsProperty[f] ?? '').filter(p => String(p).trim() !== '').join(', ');
+            } else if (dmsLandlordFields) {
+                // Multi-field landlord column — concatenate multiple DMS landlord fields into a single string
+                rawDmsValue = dmsLandlordFields.map(f => dmsProperty[f] ?? '').filter(p => String(p).trim() !== '').join(' | ');
             } else {
                 // Single field — direct lookup from the flattened DMS property
                 rawDmsValue = dmsProperty[(dmsField ?? dmsLandlordField ?? dmsEpcField)!];
@@ -479,10 +483,6 @@ test.describe('View Properties export functionality', () => {
     });
 
     test('Exported data does not contain Landlord location column', async ({ page }) => {
-        // BUG 902: 'Landlord location' column is still present in the export after deprecation.
-        // Assertion is temporarily inverted to expect the column IS present so this test passes
-        // while the bug is open. Revert to .not.toContain once bug 902 is resolved.
-
         // Apply filters and export the CSV
         await filterPropertiesPage.setEnergyRatingFilter('A');
         await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
@@ -492,9 +492,8 @@ test.describe('View Properties export functionality', () => {
         const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
         expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-        // TODO (Bug 902): Change .toContain back to .not.toContain when bug is fixed
         const exportColumnNames = Object.keys(exportedData[0]);
-        expect(exportColumnNames, "BUG 902: 'Landlord location' column is present in the export and should be removed").toContain('Landlord location');
+        expect(exportColumnNames, "'Landlord location' column should not be present in the export").not.toContain('Landlord location');
     });
 
     test.skip('Exported EPC Certificates (Link) field is valid and matches the property address', async ({ page }) => {
@@ -511,11 +510,12 @@ test.describe('View Properties export functionality', () => {
         expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
         // Find a property with a non-empty 'EPC Certificates (Link)'
+        // BUG 912: Column key uses camelCase 'EpcCertificates (Link)' — update to correct name when bug is fixed
         const propertyWithEpcLink = exportedData.find(r => r['EpcCertificates (Link)'] && r['EpcCertificates (Link)'].trim() !== '');
         expect(propertyWithEpcLink, 'No property with a non-empty EPC Certificates (Link) field was found in the export').toBeDefined();
 
         // Copy the URL from the export
-        const rawValue = propertyWithEpcLink!['EpcCertificates (Link)'];
+        const rawValue = propertyWithEpcLink!['EpcCertificates (Link)']; // BUG 912: update key when column is renamed
 
         // BUG: 899 - The 'EPCCertificates (Link)' field shows invalid value
         // Extract CertificateLink value using regex as JSON.parse() cannot handle unquoted keys
@@ -557,10 +557,13 @@ test.describe('View Properties export functionality', () => {
         expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
         // Find a property with 'EPC energy rating' = '0'
-        const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === '0');
+        // BUG 913 WORKAROUND: Column is currently named 'Current EPC energy rating' instead of 'EPC energy rating'.
+        // Change key back to 'EPC energy rating' when bug 913 is fixed.
+        const propertyWithoutEpcEnergyData = exportedData.find(r => r['Current EPC energy rating'] === '0');
         expect(propertyWithoutEpcEnergyData, 'No property with an EPC energy rating of "0" was found in the export').toBeDefined();
 
         // Verify that the 'EPC Certificates (Link)' field is empty for this property
+        // BUG 912: Column key uses camelCase 'EpcCertificates (Link)' — update to correct name when bug is fixed
         const rawEpcLink = propertyWithoutEpcEnergyData!['EpcCertificates (Link)']?.trim() ?? '';
         // BUG 899 WORKAROUND: empty EPC links are exported as '[]' instead of ''
         // The assertion below will fail when BUG 899 is fixed — remove this workaround at that point
