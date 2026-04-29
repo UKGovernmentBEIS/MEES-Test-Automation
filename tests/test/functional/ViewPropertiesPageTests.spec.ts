@@ -424,7 +424,7 @@ test.describe('View Properties export functionality', () => {
         expect(extraColumns,   `Unexpected columns in export: ${extraColumns.join(', ')}`).toEqual([]);
     });
 
-    test('Export field schema and data matches DMS API', async ({ request }) => {
+    test('Exported directly-mapped field values match DMS API', async ({ request }) => {
         const energyRatingFilter = 'A';
         const councilFilter = 'LONDON BOROUGH OF BEXLEY';
         const lacodes = ['E09000004'];
