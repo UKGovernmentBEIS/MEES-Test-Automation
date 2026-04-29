@@ -69,6 +69,7 @@ test.describe('Response Structure Tests', () => {
 
         // Verify all expected property fields are present and have correct types
         expect(Object.keys(property).length).toBe(22);
+        // Verify fields presents
         expect(property).toHaveProperty('uprn');
         expect(property).toHaveProperty('buildingReferenceNumber');
         expect(property).toHaveProperty('name');
@@ -83,14 +84,15 @@ test.describe('Response Structure Tests', () => {
         expect(property).toHaveProperty('localAuthority');
         expect(property).toHaveProperty('epcEnergyRating');
         expect(property).toHaveProperty('epcEnergyRatingBand');
+        expect(property).toHaveProperty('epcPropertyType');
         expect(property).toHaveProperty('epcExpiryDate');
         expect(property).toHaveProperty('rateableValue');
-        expect(property).toHaveProperty('transactionType');
+        expect(property).toHaveProperty('epcTransactionType');
         expect(property).toHaveProperty('datasetCode');
-        expect(property).toHaveProperty('propertyType');
         expect(property).toHaveProperty('possibleEvidenceEpcTransactionType');
         expect(property).toHaveProperty('possibleEvidenceSiccode');
         expect(property).toHaveProperty('certificateLink');
+        // Verify field types
         expect(['number', 'object']).toContain(typeof property.uprn); // can be number or null
         expect(typeof property.buildingReferenceNumber).toBe('number');
         expect(['string', 'object']).toContain(typeof property.name); // can be string or null
@@ -105,10 +107,10 @@ test.describe('Response Structure Tests', () => {
         expect(typeof property.localAuthority).toBe('string');
         expect(typeof property.epcEnergyRating).toBe('number');
         expect(typeof property.epcEnergyRatingBand).toBe('string');
-        expect(typeof property.propertyType).toBe('string');
+        expect(typeof property.epcPropertyType).toBe('string');
         expect(typeof property.epcExpiryDate).toBe('string');// can be string or null
         expect(['number', 'object']).toContain(typeof property.rateableValue); // can be number or null
-        expect(typeof property.transactionType).toBe('string');
+        expect(typeof property.epcTransactionType).toBe('string');
         expect(['string', 'object']).toContain(typeof property.datasetCode); // can be string or null
         expect(typeof property.possibleEvidenceEpcTransactionType).toBe('boolean');
         expect(typeof property.possibleEvidenceSiccode).toBe('boolean');
@@ -137,7 +139,7 @@ test.describe('Response Structure Tests', () => {
             expect(typeof certificate.assetRatingBand, `Expected 'assetRatingBand' to be type 'string', got '${typeof certificate.assetRatingBand}'`).toBe('string');
             expect(typeof certificate.lodgementDate, `Expected 'lodgementDate' to be type 'string', got '${typeof certificate.lodgementDate}'`).toBe('string');
             expect(typeof certificate.expiryDate, `Expected 'expiryDate' to be type 'string', got '${typeof certificate.expiryDate}'`).toBe('string');
-            expect(typeof certificate.transactionTypeHistory, `Expected 'transactionTypeHistory' to be type 'string', got '${typeof certificate.transactionTypeHistory}'`).toBe('string');
+            expect(typeof certificate.transactionType, `Expected 'transactionType' to be type 'string', got '${typeof certificate.transactionType}'`).toBe('string');
         }
     });
 
