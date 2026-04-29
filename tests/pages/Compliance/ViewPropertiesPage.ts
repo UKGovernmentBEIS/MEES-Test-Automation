@@ -19,9 +19,9 @@ export interface ExportFieldMapping {
     /** Multiple raw keys inside DMSRawItem.Landlords[0] — used for landlord-specific fields that combine several DMS fields (e.g. SicCodeSicText1, SicCodeSicText2, etc.) */
     dmsLandlordFields?: string[];
     /** PRSE fields, requires manual check due to missing API to Salesforce */
-    prseField?: string;
+    prseField?: true;
     /** MEES Exemptions fields, requires manual check due to missing API to Salesforce */
-    meesField?: string;
+    meesField?: true;
     /** EPC Certificate fields, requires manual check due to missing API to Salesforce */
     dmsEpcField?: string;
     /** Field that requires a dedicated test — skipped in the generic loop because its export value is derived from multiple DMS booleans or aggregated from an array rather than a direct field lookup */
@@ -69,9 +69,9 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         // flattenItem() only reads the first EPC certificate, so a direct loop comparison would miss subsequent entries.
         // Validated in the dedicated 'Exported EPC history field value is correct' test.
         { exportColumn: 'EPC history', dedicatedTest: true },
-        { exportColumn: 'PRS exemption status',    prseField: ''},
-        { exportColumn: 'PRS exemption date',      prseField: '' },
-        { exportColumn: 'Comments',                meesField: '' },
+        { exportColumn: 'PRS exemption status',    prseField: true },
+        { exportColumn: 'PRS exemption date',      prseField: true },
+        { exportColumn: 'Comments',                meesField: true },
         { exportColumn: 'EPC certificates (Link)',  dmsEpcField: 'CertificateLink' },
         { exportColumn: 'EPC transaction type',    dmsField: 'EPCTransactionType' },
     ];
