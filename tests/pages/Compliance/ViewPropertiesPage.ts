@@ -24,8 +24,8 @@ export interface ExportFieldMapping {
     meesField?: string;
     /** EPC Certificate fields, requires manual check due to missing API to Salesforce */
     dmsEpcField?: string;
-    /** Field whose value is derived from multiple DMS booleans — skip in the generic loop and validate in a dedicated test */
-    computedField?: true;
+    /** Field that requires a dedicated test — skipped in the generic loop because its export value is derived from multiple DMS booleans or aggregated from an array rather than a direct field lookup */
+    dedicatedTest?: true;
     /** Optional normalisation applied to both sides before comparing */
     normalize?: (value: string) => string;
 }
@@ -42,7 +42,10 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'UPRN',                    dmsField: 'Uprn', normalize: (v) => v.replace(/^=/, '') }, // BUG: 883 - Export values include invalid characters. Remove the regex once the issue is resolved.
         { exportColumn: 'Property type',           dmsField: 'EPCPropertyType' },
         { exportColumn: 'Rateable value (£)',      dmsField: 'RateableValue' },
-        { exportColumn: 'Possible rental evidence', computedField: true },
+        // Possible rental evidence is computed: 'Found' when at least one of PossibleEvidenceEpcTransactionType or PossibleEvidenceSiccode is true;
+        // 'Not found' only when both are false.
+        // Validated in the dedicated 'Exported Possible rental evidence field value is correct' test.
+        { exportColumn: 'Possible rental evidence', dedicatedTest: true },
         // Property owner fields are dynamic based on the maximum number of landlords associated with a property in exported data.
         { exportColumn: 'Property owner 1 name',      dmsLandlordField: 'LandlordCompanyName' },
         { exportColumn: 'Property owner 1 location',  dmsLandlordField: 'LandlordLocation' },
@@ -62,7 +65,10 @@ export class ViewPropertiesPage extends BaseCompliancePage {
                 return stripped;
             }
         },
-        { exportColumn: 'EPC history',   dmsField: 'EPCTransactionType' },
+        // EPC history aggregates TransactionType from every element in the EpcCertificates array joined with ' | '.
+        // flattenItem() only reads the first EPC certificate, so a direct loop comparison would miss subsequent entries.
+        // Validated in the dedicated 'Exported EPC history field value is correct' test.
+        { exportColumn: 'EPC history', dedicatedTest: true },
         { exportColumn: 'PRS exemption status',    prseField: ''},
         { exportColumn: 'PRS exemption date',      prseField: '' },
         { exportColumn: 'Comments',                meesField: '' },
