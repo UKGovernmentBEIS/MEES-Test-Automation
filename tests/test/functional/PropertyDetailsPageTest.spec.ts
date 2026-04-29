@@ -62,7 +62,8 @@ test.describe('View Properties Page Data Validation Tests', () => {
         expect(await propertyDetailsPage.getPropertyDetails("UPRN")).toHaveText(dmsPropertyDetails.property.uprn.toString());
 
         // Verify Property Type (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Property type")).toHaveText(dmsPropertyDetails.property.propertyType);
+        // ToDo. We are expecting changes to the property type data in DMS which will allow us to verify this field. Once those changes are in place we can update the test to verify the property type as well.
+        //expect(await propertyDetailsPage.getPropertyDetails("Property type")).toHaveText(dmsPropertyDetails.property.epcPropertyType);
 
         // Verify Rateable Value (DMS)
         const expectedRateableValue = formatCurrency(dmsPropertyDetails.property.rateableValue!);

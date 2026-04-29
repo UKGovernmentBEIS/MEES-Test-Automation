@@ -26,10 +26,10 @@ export interface DMSPropertyDetails {
         localAuthority: string;
         epcEnergyRating: number;
         epcEnergyRatingBand: string;
-        propertyType: string;
+        epcPropertyType: string;
         epcExpiryDate: string;
         rateableValue: number | null;
-        transactionType: string;
+        epcTransactionType: string;
         datasetCode: string | null;
         possibleEvidenceEpcTransactionType: boolean;
         possibleEvidenceSiccode: boolean;
@@ -41,7 +41,7 @@ export interface DMSPropertyDetails {
         assetRatingBand: string;
         lodgementDate: string;
         expiryDate: string;
-        certificateLink: string | null;
+        transactionType: string;
     }>;
     landlords: Array<{
         uprn: number;
