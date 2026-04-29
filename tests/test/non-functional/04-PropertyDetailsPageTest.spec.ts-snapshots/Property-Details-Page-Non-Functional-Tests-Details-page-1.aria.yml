@@ -3,9 +3,11 @@
 - term: UPRN
 - definition: /\d+/
 - term: Property type
-- definition: General Industrial and Special Industrial Groups
+- definition: Not available
 - term: Rateable value
 - definition: /£\d+,\d+/
+- term: Possible rental evidence
+- definition: Mandatory issue (Property to let) EPC transaction type
 - term: Landlord
 - definition: BRITISH OVERSEAS BANK NOMINEES LIMITED
 - term: Landlord location
