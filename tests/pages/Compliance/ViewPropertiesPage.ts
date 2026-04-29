@@ -72,7 +72,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'PRS exemption status',    prseField: ''},
         { exportColumn: 'PRS exemption date',      prseField: '' },
         { exportColumn: 'Comments',                meesField: '' },
-        { exportColumn: 'EpcCertificates (Link)',  dmsEpcField: 'CertificateLink' }, // BUG 912: Column name uses camelCase 'EpcCertificates (Link)' instead of 'EPC certificates (Link)'. Update exportColumn and all field lookups in ViewPropertiesPageTests.spec.ts when fixed.
+        { exportColumn: 'EPC certificates (Link)',  dmsEpcField: 'CertificateLink' },
         { exportColumn: 'EPC transaction type',    dmsField: 'EPCTransactionType' },
     ];
 
