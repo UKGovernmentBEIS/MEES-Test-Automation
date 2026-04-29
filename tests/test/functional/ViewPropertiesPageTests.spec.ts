@@ -609,12 +609,7 @@ test.describe('View Properties export functionality', () => {
         expect(exportColumnNames, "'Landlord location' column should not be present in the export").not.toContain('Landlord location');
     });
 
-    test.skip('Exported EPC Certificates (Link) field is valid and matches the property address', async ({ page }) => {
-        // BUG 899: certificateLink has been moved from the epcCertificates array to the root property object as part of the fix.
-        // The export has not yet been updated to read from the new location.
-        // Update this test to read certificateLink from the 'Property' export column and remove the CertificateLink regex workaround once the export fix is deployed.
-        test.skip(true, 'BUG 899 — export not yet updated to use certificateLink from root property object');
-
+    test('Exported EPC Certificates (Link) field is valid and matches the property address', async ({ page }) => {
         // Apply filters in the UI and export the CSV
         const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForPageToLoad();
@@ -627,12 +622,7 @@ test.describe('View Properties export functionality', () => {
         expect(propertyWithEpcLink, 'No property with a non-empty EPC Certificates (Link) field was found in the export').toBeDefined();
 
         // Copy the URL from the export
-        const rawValue = propertyWithEpcLink!['EPC certificates (Link)'];
-
-        // BUG: 899 - The 'EPC certificates (Link)' field shows invalid value
-        // Extract CertificateLink value using regex as JSON.parse() cannot handle unquoted keys
-        const urlMatch = rawValue.match(/CertificateLink:([^,}]+)/);
-        const url = urlMatch ? urlMatch[1].trim() : rawValue;
+        const url = propertyWithEpcLink!['EPC certificates (Link)'];
 
         // Verify that the resulting string is a valid URL
         const isValidUrl = (str: string): boolean => {
@@ -668,7 +658,12 @@ test.describe('View Properties export functionality', () => {
         const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
         expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-        // Find a property with 'EPC energy rating' = '0'
+        // BUG 900 WORKAROUND: For properties with no EPC data, the export currently outputs the base URL
+        // 'https://find-energy-certificate.service.gov.uk/energy-certificate/' instead of an empty string.
+        // Update the find predicate to check for an empty link once BUG 900 is fixed.
+        const EPC_BASE_URL = 'https://find-energy-certificate.service.gov.uk/energy-certificate/';
+
+        // Find a property with 'EPC energy rating' = '0'.
         // BUG 913 WORKAROUND: Column is currently named 'Current EPC energy rating' instead of 'EPC energy rating'.
         // Change key back to 'EPC energy rating' when bug 913 is fixed.
         const propertyWithoutEpcEnergyData = exportedData.find(r => r['Current EPC energy rating'] === '0');
@@ -676,10 +671,7 @@ test.describe('View Properties export functionality', () => {
 
         // Verify that the 'EPC certificates (Link)' field is empty for this property
         const rawEpcLink = propertyWithoutEpcEnergyData!['EPC certificates (Link)']?.trim() ?? '';
-        // BUG 899 WORKAROUND: empty EPC links are exported as '[]' instead of ''
-        // The assertion below will fail when BUG 899 is fixed — remove this workaround at that point
-        expect(rawEpcLink, 'BUG 899 appears to be fixed — remove the [] workaround below').toBe('[]');
-        const hasEpcLink = rawEpcLink !== '' && rawEpcLink !== '[]'; // '[]' treated as empty due to BUG 899
+        const hasEpcLink = rawEpcLink !== '' && rawEpcLink !== EPC_BASE_URL;
         expect(hasEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of "0" but has an EPC link '${rawEpcLink}' in the export`).toBe(false);
     });
 });
