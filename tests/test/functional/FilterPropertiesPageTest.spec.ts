@@ -41,6 +41,7 @@ test.describe('Filter Properties Page Functional Tests', () => {
         await filterPropertiesPage.setStreetFilter('Acorn Industrial Park');
         await filterPropertiesPage.setTownFilter('Brighton');
         await filterPropertiesPage.setPostcodeFilter('BN1 1AA');
+        await filterPropertiesPage.selectEvidenceFoundRentalEvidence();
 
         // Click the Reset filters button
         await filterPropertiesPage.clickClearFilters();
@@ -52,6 +53,9 @@ test.describe('Filter Properties Page Functional Tests', () => {
         expect(await filterPropertiesPage.getTownFilterValue()).toBe('');
         expect(await filterPropertiesPage.getPostcodeFilterValue()).toBe('');
 
+        const showAllRadio = page.getByRole('radio', { name: 'Show all' });
+        await expect(showAllRadio).toBeChecked();
+
         // TODO: Verify that the 'Possible rental evidence' filter is also reset once this filter is added to the application and the Filter Properties page. Currently this filter is not yet automated
     });
 
@@ -62,6 +66,7 @@ test.describe('Filter Properties Page Functional Tests', () => {
         const streetFilter = 'Acorn Industrial Park';
         const townFilter = 'Brighton';
         const postcodeFilter = 'BN1 1AA';
+        const landlordLocation = 'Evidence found';
 
         // Populate filter criteria on the Filter Properties page
         await filterPropertiesPage.setCouncilFilter(councilFilter);
@@ -69,6 +74,7 @@ test.describe('Filter Properties Page Functional Tests', () => {
         await filterPropertiesPage.setStreetFilter(streetFilter);
         await filterPropertiesPage.setTownFilter(townFilter);
         await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
+        await filterPropertiesPage.selectEvidenceFoundRentalEvidence();
 
         // Apply the filters using clickApplyFilters method
         const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
@@ -79,6 +85,7 @@ test.describe('Filter Properties Page Functional Tests', () => {
         await expect(await viewPropertiesPage.getFilterCriterionValueField('Street')).toContainText(streetFilter);
         await expect(await viewPropertiesPage.getFilterCriterionValueField('Town')).toContainText(townFilter);
         await expect(await viewPropertiesPage.getFilterCriterionValueField('Postcode')).toContainText(postcodeFilter);
+        await expect(await viewPropertiesPage.getFilterCriterionValueField('Possible rental evidence')).toContainText(landlordLocation);
     });
 
     test('Ensure filter criteria are persistent when navigating back to Filter Properties page', async ({ page }, testInfo) => {
