@@ -16,12 +16,16 @@ export interface ExportFieldMapping {
     dmsFields?: string[];
     /** Raw key inside DMSRawItem.Landlords[0] — used for landlord-specific fields to avoid field name collisions (e.g. Location exists on both property and landlord) */
     dmsLandlordField?: string;
+    /** Multiple raw keys inside DMSRawItem.Landlords[0] — used for landlord-specific fields that combine several DMS fields (e.g. SicCodeSicText1, SicCodeSicText2, etc.) */
+    dmsLandlordFields?: string[];
     /** PRSE fields, requires manual check due to missing API to Salesforce */
-    prseField?: string;
+    prseField?: true;
     /** MEES Exemptions fields, requires manual check due to missing API to Salesforce */
-    meesField?: string;
+    meesField?: true;
     /** EPC Certificate fields, requires manual check due to missing API to Salesforce */
     dmsEpcField?: string;
+    /** Field that requires a dedicated test — skipped in the generic loop because its export value is derived from multiple DMS booleans or aggregated from an array rather than a direct field lookup */
+    dedicatedTest?: true;
     /** Optional normalisation applied to both sides before comparing */
     normalize?: (value: string) => string;
 }
@@ -36,14 +40,20 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         // --- Property fields (from DMSRawItem.property) ---
         { exportColumn: 'Property address',        dmsFields: ['Name', 'Number', 'Line1', 'Line2', 'Line3', 'Town', 'County', 'Postcode'], normalize: (v) => v.trim() },
         { exportColumn: 'UPRN',                    dmsField: 'Uprn', normalize: (v) => v.replace(/^=/, '') }, // BUG: 883 - Export values include invalid characters. Remove the regex once the issue is resolved.
-        { exportColumn: 'Property type',           dmsField: 'PropertyType' },
-        { exportColumn: 'Rateable value',          dmsField: 'RateableValue' },
-        { exportColumn: 'Landlord',                dmsLandlordField: 'LandlordCompanyName' },
-        { exportColumn: 'Landlord location',       dmsLandlordField: 'LandlordLocation' },
-        { exportColumn: 'Landlord address',        dmsLandlordField: 'LandlordAddress' },
-        { exportColumn: 'EPC energy rating band',  dmsField: 'EPCEnergyRatingBand' },
-        { exportColumn: 'EPC energy rating',       dmsField: 'EPCEnergyRating' },
-        { exportColumn: 'EPC expiry date',         dmsField: 'EPCExpiryDate', 
+        { exportColumn: 'Property type',           dmsField: 'EPCPropertyType' },
+        { exportColumn: 'Rateable value (£)',      dmsField: 'RateableValue' },
+        // Possible rental evidence is computed: 'Found' when at least one of PossibleEvidenceEpcTransactionType or PossibleEvidenceSiccode is true;
+        // 'Not found' only when both are false.
+        // Validated in the dedicated 'Exported Possible rental evidence field value is correct' test.
+        { exportColumn: 'Possible rental evidence', dedicatedTest: true },
+        // Property owner fields are dynamic based on the maximum number of landlords associated with a property in exported data.
+        { exportColumn: 'Property owner 1 name',      dmsLandlordField: 'LandlordCompanyName' },
+        { exportColumn: 'Property owner 1 location',  dmsLandlordField: 'LandlordLocation' },
+        { exportColumn: 'Property owner 1 address',   dmsLandlordField: 'LandlordAddress' },
+        { exportColumn: 'Property owner 1 SIC code(s)', dmsLandlordFields: ['SicCodeSicText1', 'SicCodeSicText2', 'SicCodeSicText3', 'SicCodeSicText4'], normalize: (v) => v.split(',').map(s => s.trim()).filter(s => s !== 'null').join(' | ') },
+        { exportColumn: 'Current EPC energy rating band',  dmsField: 'EPCEnergyRatingBand' }, // BUG 913: Should be 'EPC energy rating band' — remove 'Current' prefix when fixed.
+        { exportColumn: 'Current EPC energy rating',       dmsField: 'EPCEnergyRating' },       // BUG 913: Should be 'EPC energy rating' — remove 'Current' prefix when fixed.
+        { exportColumn: 'Current EPC expiry date',         dmsField: 'EPCExpiryDate',            // BUG 913: Should be 'EPC expiry date' — remove 'Current' prefix when fixed.
             normalize: (v) => {
                 const stripped = v.replace(/^=/, ''); // BUG: 883 - Export values include invalid characters. Remove the regex once the issue is resolved.
                 // DMS format: 2032-09-15T00:00:00 → extract YYYY-MM-DD
@@ -55,18 +65,15 @@ export class ViewPropertiesPage extends BaseCompliancePage {
                 return stripped;
             }
         },
-        { exportColumn: 'PRS exemption status',    prseField: ''},
-        { exportColumn: 'PRS exemption date',      prseField: '' },
-        { exportColumn: 'Comments',                meesField: '' },
-        //{ exportColumn: 'EpcCertificates (Link)',  dmsEpcField: 'CertificateLink' }, Bug: 817 'The 'EPCCertificates (Link)' field shows invalid value'
-        { exportColumn: 'Reason for inclusion',    dmsField: 'DatasetCode'},
-        { exportColumn: 'Sic code 1',              dmsLandlordField: 'SicCodeSicText1', normalize: (v) => v === 'null' ? '' : v && v === 'N/A' ? '' : v }, // Trim 'null' value from DMS and 'N/A' value from export to avoid test failures due to invalid characters until the underlying issue is resolved.
-        { exportColumn: 'Sic code 2',              dmsLandlordField: 'SicCodeSicText2', normalize: (v) => v === 'null' ? '' : v && v === 'N/A' ? '' : v }, // Trim 'null' value from DMS and 'N/A' value from export to avoid test failures due to invalid characters until the underlying issue is resolved.
-        { exportColumn: 'Sic code 3',              dmsLandlordField: 'SicCodeSicText3', normalize: (v) => v === 'null' ? '' : v && v === 'N/A' ? '' : v }, // Trim 'null' value from DMS and 'N/A' value from export to avoid test failures due to invalid characters until the underlying issue is resolved.
-        { exportColumn: 'Sic code 4',              dmsLandlordField: 'SicCodeSicText4', normalize: (v) => v === 'null' ? '' : v && v === 'N/A' ? '' : v }, // Trim 'null' value from DMS and 'N/A' value from export to avoid test failures due to invalid characters until the underlying issue is resolved.
-        { exportColumn: 'EPC transaction type',    dmsField: 'TransactionType' },
-        { exportColumn: 'Local authority (code/name)', dmsField: 'LocalAuthority' },
-        { exportColumn: 'Building reference number', dmsField: 'BuildingReferenceNumber', normalize: (v) => v.replace(/^=/, '') }, // BUG: 883 - Export values include invalid characters. Remove the regex once the issue is resolved.
+        // EPC history aggregates TransactionType from every element in the EpcCertificates array joined with ' | '.
+        // flattenItem() only reads the first EPC certificate, so a direct loop comparison would miss subsequent entries.
+        // Validated in the dedicated 'Exported EPC history field value is correct' test.
+        { exportColumn: 'EPC history', dedicatedTest: true },
+        { exportColumn: 'PRS exemption status',    prseField: true },
+        { exportColumn: 'PRS exemption date',      prseField: true },
+        { exportColumn: 'Comments',                meesField: true },
+        { exportColumn: 'EPC certificates (Link)',  dmsEpcField: 'CertificateLink' },
+        { exportColumn: 'EPC transaction type',    dmsField: 'EPCTransactionType' },
     ];
 
     private pageContext: Locator;

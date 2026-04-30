@@ -1,13 +1,14 @@
 - main:
   - heading "Check if properties meet minimum energy efficiency standards" [level=1]
-  - paragraph: This service is for non-domestic Private Rented Sector (PRS) properties only.
+  - paragraph: This service is for non-domestic properties only.
   - paragraph: The Minimum Energy Efficiency Standards (MEES) apply to all properties that are legally required to have an energy performance certificate (EPC).
   - paragraph: The minimum level of energy efficiency is currently an energy rating of E.
   - paragraph: "You can use this service to:"
   - list:
     - listitem: search for non-domestic properties with a sub-standard energy rating
+    - listitem: check whether there is evidence a property may be rented
     - listitem: check non-domestic property PRS exemption status
-    - listitem: find landlord details
+    - listitem: find property owner details
     - listitem: view enforcement guidance
     - listitem: calculate penalties for non-compliance
   - text: This service is for local authorities only.
@@ -16,18 +17,9 @@
   - paragraph:
     - link "You can register by completing this Microsoft Form (opens in a new tab).":
       - /url: https://forms.office.com/e/1e9mQDGXvH
-  - paragraph: You will receive an email when your account has been successfully created.
+  - paragraph: /You will receive an email when your account has been successfully created\. We aim to create new accounts within \d+ working days\./
   - heading "Sign in" [level=2]
   - paragraph: "You will need:"
   - list:
     - listitem: to use the email you used in the sign up form
     - listitem: to log in to your GOV.UK One Login account via the invitation that was emailed to you
-  - complementary:
-    - heading "Related" [level=2]
-    - list:
-      - listitem:
-        - link "Review exemptions for private rented sector energy standards":
-          - /url: https://prsregister.beis.gov.uk/NdsBeisUi/register-search-exemptions
-      - listitem:
-        - link "Find an energy certificate":
-          - /url: https://www.gov.uk/find-energy-certificate

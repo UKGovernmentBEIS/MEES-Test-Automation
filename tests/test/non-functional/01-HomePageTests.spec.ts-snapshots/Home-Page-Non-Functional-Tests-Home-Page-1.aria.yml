@@ -1,5 +1,7 @@
 - main:
-  - heading "Check if properties meet minimum energy efficiency standards" [level=2]
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]:
+    - link "Check if properties meet minimum energy efficiency standards":
+      - /url: /landing-page
   - navigation "Menu":
     - list:
       - listitem:
@@ -29,11 +31,11 @@
         - /url: "#"
   - main:
     - heading "Check if properties meet minimum energy efficiency standards" [level=1]
-    - paragraph: Use this service to access information and tools to help you enforce the Minimum Energy Efficiency Standards (MEES) Regulations for non-domestic properties in the Private Rented Sector (PRS).
-    - paragraph: You can view property and landlord details, get guidance on enforcement, download letter templates, and calculate financial penalties.
+    - paragraph: Use this service to access information and tools to help you enforce the Minimum Energy Efficiency Standards (MEES) Regulations for non- domestic properties in the Private Rented Sector (PRS).
+    - paragraph: You can view property details, get guidance on enforcement, download letter templates, and calculate financial penalties.
     - separator
     - heading "Property records" [level=2]
-    - paragraph: This includes non-domestic property details, landlord details, energy rating, and PRS exemption status.
+    - paragraph: This includes non-domestic property details, property owner details, energy rating, and PRS exemption status.
     - paragraph:
       - link "View property records":
         - /url: /filter-properties

@@ -106,9 +106,9 @@ test.describe('Properties DMS API Tests', () => {
         expect(property).toHaveProperty('EPCEnergyRatingBand');
         expect(property).toHaveProperty('EPCExpiryDate');
         expect(property).toHaveProperty('RateableValue');
-        expect(property).toHaveProperty('TransactionType');
+        expect(property).toHaveProperty('EPCTransactionType');
         expect(property).toHaveProperty('DatasetCode');
-        expect(property).toHaveProperty('PropertyType');
+        expect(property).toHaveProperty('EPCPropertyType');
         expect(property).toHaveProperty('PossibleEvidenceEpcTransactionType');
         expect(property).toHaveProperty('PossibleEvidenceSiccode');
         expect(property).toHaveProperty('CertificateLink');
