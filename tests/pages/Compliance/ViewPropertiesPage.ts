@@ -39,7 +39,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
     static readonly EXPORT_FIELD_MAPPINGS: ExportFieldMapping[] = [
         // --- Property fields (from DMSRawItem.property) ---
         { exportColumn: 'Property address',        dmsFields: ['Name', 'Number', 'Line1', 'Line2', 'Line3', 'Town', 'County', 'Postcode'], normalize: (v) => v.trim() },
-        { exportColumn: 'UPRN',                    dmsField: 'Uprn', normalize: (v) => v.replace(/^=/, '') }, // BUG: 883 - Export values include invalid characters. Remove the regex once the issue is resolved.
+        { exportColumn: 'UPRN',                    dmsField: 'Uprn' },
         { exportColumn: 'Property type',           dmsField: 'EPCPropertyType' },
         { exportColumn: 'Rateable value (£)',      dmsField: 'RateableValue' },
         // Possible rental evidence is computed: 'Found' when at least one of PossibleEvidenceEpcTransactionType or PossibleEvidenceSiccode is true;
@@ -55,14 +55,13 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'Current EPC energy rating',       dmsField: 'EPCEnergyRating' },       // BUG 913: Should be 'EPC energy rating' — remove 'Current' prefix when fixed.
         { exportColumn: 'Current EPC expiry date',         dmsField: 'EPCExpiryDate',            // BUG 913: Should be 'EPC expiry date' — remove 'Current' prefix when fixed.
             normalize: (v) => {
-                const stripped = v.replace(/^=/, ''); // BUG: 883 - Export values include invalid characters. Remove the regex once the issue is resolved.
                 // DMS format: 2032-09-15T00:00:00 → extract YYYY-MM-DD
-                const isoMatch = stripped.match(/^(\d{4}-\d{2}-\d{2})T/);
+                const isoMatch = v.match(/^(\d{4}-\d{2}-\d{2})T/);
                 if (isoMatch) return isoMatch[1];
                 // Export format: 15/09/2032 → convert to YYYY-MM-DD
-                const ddmmyyyy = stripped.match(/^(\d{1,2})\/(\d{2})\/(\d{4})$/);
+                const ddmmyyyy = v.match(/^(\d{1,2})\/(\d{2})\/(\d{4})$/);
                 if (ddmmyyyy) return `${ddmmyyyy[3]}-${ddmmyyyy[2]}-${ddmmyyyy[1].padStart(2, '0')}`;
-                return stripped;
+                return v;
             }
         },
         // EPC history aggregates TransactionType from every element in the EpcCertificates array joined with ' | '.
