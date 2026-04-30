@@ -445,9 +445,7 @@ test.describe('View Properties export functionality', () => {
         const rawDmsItem = await dmsApiClient.findFirstFullyPopulatedItem({ lacodes, energyratingband: energyRatingFilter});
         const dmsProperty = dmsApiClient.flattenItem(rawDmsItem);
         expect(dmsProperty['Uprn'], 'Reference DMS property has no UPRN').toBeDefined();
-        // BUG: 883 - Export values include invalid characters
-        // Remove below regex once the issue is resolved and verify that UPRN values match exactly between DMS and export
-        const matchInExport = exportedData.find(r => String(r['UPRN']).replace(/^=/, '') === String(dmsProperty['Uprn']));
+        const matchInExport = exportedData.find(r => String(r['UPRN']) === String(dmsProperty['Uprn']));
         expect(matchInExport,
             `Cannot find UPRN '${dmsProperty['Uprn']}' for property with postcode '${dmsProperty['Postcode']}' from DMS not found in export.`
         ).toBeDefined();
@@ -524,8 +522,7 @@ test.describe('View Properties export functionality', () => {
         // Compare each exported row against the derived expected value
         const valueMismatches: string[] = [];
         for (const row of exportedData) {
-            // BUG 883: UPRN in export may be prefixed with '='
-            const uprn = String(row['UPRN']).replace(/^=/, '');
+            const uprn = String(row['UPRN']);
             const dmsItem = dmsItemByUprn.get(uprn);
             if (!dmsItem) continue; // Row is outside the DMS page returned — skip
 
@@ -575,9 +572,8 @@ test.describe('View Properties export functionality', () => {
         expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
         // Locate the reference property in the export by UPRN
-        // BUG 883: UPRN in export may be prefixed with '='
         const uprnDMSPropertyWithMultiEPCCertificates = String(dmsPropertyWithMultiEPCCertificates!.property.Uprn);
-        const propertyMatchInExport = exportedData.find(r => String(r['UPRN']).replace(/^=/, '') === uprnDMSPropertyWithMultiEPCCertificates);
+        const propertyMatchInExport = exportedData.find(r => String(r['UPRN']) === uprnDMSPropertyWithMultiEPCCertificates);
         expect(propertyMatchInExport, `Cannot find UPRN '${uprnDMSPropertyWithMultiEPCCertificates}' in the export`).toBeDefined();
 
         // Derive expected value from all EPC certificates for the reference property
