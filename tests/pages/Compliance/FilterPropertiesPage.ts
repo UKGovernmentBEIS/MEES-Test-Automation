@@ -181,6 +181,7 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         const streetValue = await this.getStreetFilterValue();
         const townValue = await this.getTownFilterValue();
         const postcodeValue = await this.getPostcodeFilterValue();
+        const rentalEvidence = await this.getSelectedRentalEvidenceFilter();
 
         if (selectedCouncil !== 'Show all councils') {
             throw new Error(`Failed to clear council filter. Expected: Show all councils, but got: ${selectedCouncil}`);
@@ -197,6 +198,21 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         if (postcodeValue !== '') {
             throw new Error(`Failed to clear postcode filter. Expected: empty string, but got: ${postcodeValue}`);
         }
+        if (rentalEvidence !== 'Show all') {
+            throw new Error(`Failed to clear rental evidence filter. Expected: Show all, but got: ${rentalEvidence}`);
+        }
+    }
+
+    async getSelectedRentalEvidenceFilter(): Promise<string> {
+        if (await this.showAllRentalEvidenceRadioButton.isChecked()) return 'Show all';
+        if (await this.evidenceFoundRadioButton.isChecked()) return 'Evidence found';
+        if (await this.notFoundRadioButton.isChecked()) return 'Not found';
+        return '';
+    }
+
+    async getCouncilDropdownDefaultOptionText(): Promise<string> {
+        const defaultOption = this.councilsDropdown.locator('option[value=""]');
+        return (await defaultOption.textContent() ?? '').trim();
     }
 
     async getLACouncilsList(): Promise<Locator[]> {
