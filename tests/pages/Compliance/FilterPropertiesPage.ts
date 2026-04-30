@@ -70,32 +70,18 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         return [this.pageContext];
     }
 
-    async setCouncilFilter(councilLabel: string): Promise<void> {
-        // Wait for the dropdown itself, then wait for the specific option to load asynchronously.
-        await this.councilsDropdown.waitFor({ state: 'visible' });
-        if (!councilLabel.includes('Show all')) {
-            await this.councilsDropdown.locator('option').filter({ hasText: councilLabel }).waitFor({ state: 'attached' });
+    async setCouncilFilter(council: string): Promise<void> {
+        if (council === 'Show all councils') {
+            await this.councilsDropdown.selectOption('');
+        } else {
+            // Select by label (text content)
+            await this.councilsDropdown.selectOption({ label: council });
         }
-        
-        // Use locator.evaluate() to run code inside the browser context and set the value
-        // directly on the element. This avoids Playwright's selectOption() which triggers a
-        // focus event that causes LWC to re-render and detach the element mid-action.
-        // locator.evaluate() also correctly pierces Shadow DOM, unlike page.evaluate().
-        await this.councilsDropdown.evaluate((select: HTMLSelectElement, label: string) => {
-            const option = Array.from(select.options).find(
-                opt => opt.text.trim() === label || opt.value === label
-            );
-            if (!option) throw new Error(`Option not found: ${label}`);
-            select.value = option.value;
-            select.dispatchEvent(new Event('change', { bubbles: true }));
-            select.dispatchEvent(new Event('input', { bubbles: true }));
-        }, councilLabel);
 
         //Confirm the dropdown value has been set
         const selectedValue = await this.getSelectedCouncilFilter();
-        const expectedValue = councilLabel.includes('Show all') ? 'Show all councils' : councilLabel;
-        if (selectedValue !== expectedValue) {
-            throw new Error(`Failed to set council filter. Expected: ${expectedValue}, but got: ${selectedValue}`);
+        if (selectedValue !== council) {
+            throw new Error(`Failed to set council filter. Expected: ${council}, but got: ${selectedValue}`);
         }
     }
 
