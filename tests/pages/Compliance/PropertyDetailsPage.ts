@@ -64,7 +64,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private breadcrumbHome: Locator;
     private breadcrumbViewPropertyRecords: Locator;
     private breadcrumbFilterPropertiesRecords: Locator;
-    private tabEnergyRatingsAndPRSExemptions: Locator;
     private tabEPCHistory: Locator;
     private epcHistoryTable: Locator;
     private commentsList: Locator;
@@ -82,7 +81,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.breadcrumbViewPropertyRecords = page.getByRole('link', { name: 'View property records' });
         this.breadcrumbFilterPropertiesRecords = page.getByRole('link', { name: 'Filter property records' });
-        this.tabEnergyRatingsAndPRSExemptions = page.locator('div').filter({ hasText: /^Energy ratings and PRS exemptions$/ })
         this.tabEPCHistory = page.locator("//li[@data-id='EPCTab']");
         this.epcHistoryTable = page.locator("//div[@data-id='EPCTab']/table");
         this.commentsList = page.locator('.comments-list');
@@ -107,7 +105,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
                 breadcrumbViewPropertyRecords: this.breadcrumbViewPropertyRecords,
                 breadcrumbFilterPropertiesRecords: this.breadcrumbFilterPropertiesRecords,
                 signOutButton: this.signOutButton,
-                tabEnergyRatingsAndPRSExemptions: this.tabEnergyRatingsAndPRSExemptions,
                 tabEPCHistory: this.tabEPCHistory,
                 commentTextArea: this.commentTextArea,
                 commentSaveButton: this.commentSaveButton,
