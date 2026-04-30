@@ -238,4 +238,4 @@ export class FilterPropertiesPage extends BaseCompliancePage {
             throw new Error('Failed to select "Not found" radio button.');
         }
     }
-}
+} 
