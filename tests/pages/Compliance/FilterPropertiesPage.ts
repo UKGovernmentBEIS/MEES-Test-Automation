@@ -17,6 +17,9 @@ export class FilterPropertiesPage extends BaseCompliancePage {
     private readonly postcodeTextBox: Locator;
     private readonly applyFiltersButton: Locator;
     private readonly clearFiltersButton: Locator;
+    private readonly showAllRentalEvidenceRadioButton: Locator;
+    private readonly evidenceFoundRadioButton: Locator;
+    private readonly notFoundRadioButton: Locator;
 
     private energyRatingCheckboxes(letter: EnergyRatings): Locator {
         return this.page.getByRole('checkbox', { name: letter, exact: true });
@@ -33,7 +36,10 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         this.townTextBox = page.getByRole('textbox', { name: 'Town' })
         this.postcodeTextBox = page.getByRole('textbox', { name: 'Postcode' })
         this.applyFiltersButton = page.getByRole('button', { name: 'Apply filters' })
-        this.clearFiltersButton = page.getByRole('link', { name: 'Reset filters' })        
+        this.clearFiltersButton = page.getByRole('link', { name: 'Reset filters' })
+        this.showAllRentalEvidenceRadioButton = page.getByRole('radio', { name: 'Show all' })
+        this.evidenceFoundRadioButton = page.getByRole('radio', { name: 'Evidence found' })
+        this.notFoundRadioButton = page.getByRole('radio', { name: 'Not found' })
     }
 
     // Wait for the Filter Properties Page to load
@@ -211,4 +217,25 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         await homePage.waitForPageToLoad();
         return homePage;
     }
-}
+
+    async selectShowAllRentalEvidence(): Promise<void> {
+        await this.showAllRentalEvidenceRadioButton.check();
+        if (!await this.showAllRentalEvidenceRadioButton.isChecked()) {
+            throw new Error('Failed to select "Show all" radio button.');
+        }
+    }
+
+    async selectEvidenceFoundRentalEvidence(): Promise<void> {
+        await this.evidenceFoundRadioButton.check();
+        if (!await this.evidenceFoundRadioButton.isChecked()) {
+            throw new Error('Failed to select "Evidence found" radio button.');
+        }
+    }
+
+    async selectNotFoundRentalEvidence(): Promise<void> {
+        await this.notFoundRadioButton.check();
+        if (!await this.notFoundRadioButton.isChecked()) {
+            throw new Error('Failed to select "Not found" radio button.');
+        }
+    }
+} 
