@@ -527,3 +527,100 @@ test.describe('Edge Case Tests', () => {
         expect(response.status()).toBe(200);
     });
 });
+
+test.describe('Data Verification Tests', () => {
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
+    // Reference property: Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL
+    const refUprn = '100022918361';
+    const refBuildingRefNum = '1172671'; // same physical property as refUprn
+
+    test('Property fields return expected values for known UPRN', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${refUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        const { property } = await response.json();
+        expect(property.uprn).toBe(100022918361);
+        expect(property.buildingReferenceNumber).toBe(1172671);
+        expect(property.postcode).toBe('DA1 4AL');
+        expect(property.town).toBe('DARTFORD');
+        expect(property.epcEnergyRating).toBe(22);
+        expect(property.epcEnergyRatingBand).toBe('A');
+        expect(property.rateableValue).toBe(25500);
+        // epcExpiryDate is returned as a raw ISO 8601 string — see BUG 922
+        expect(property.epcExpiryDate).toContain('2035-08-13');
+    });
+
+    test('epcCertificates contains two entries with expected data for known UPRN', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${refUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        const { epcCertificates } = await response.json();
+        expect(epcCertificates).toHaveLength(2);
+
+        // Most recent certificate (lodged Aug 2025, expiring Aug 2035)
+        const cert0 = epcCertificates[0];
+        expect(cert0.uprn).toBe(100022918361);
+        expect(cert0.assetRating).toBe(22);
+        expect(cert0.assetRatingBand).toBe('A');
+        expect(cert0.lodgementDate).toContain('2025-08-13');
+        expect(cert0.expiryDate).toContain('2035-08-13');
+
+        // Older certificate (lodged Mar 2015, expired Mar 2025)
+        const cert1 = epcCertificates[1];
+        expect(cert1.uprn).toBe(100022918361);
+        expect(cert1.assetRating).toBe(93);
+        expect(cert1.assetRatingBand).toBe('D');
+        expect(cert1.lodgementDate).toContain('2015-03-06');
+        expect(cert1.expiryDate).toContain('2025-03-06');
+    });
+
+    test('epcCertificates contains two entries with expected data for known buildingrefnum', async ({ request }) => {
+        // BUG 925: querying by buildingrefnum=1172671 returns only 1 epcCertificate instead of 2.
+        // The same property queried by uprn=100022918361 correctly returns 2.
+        // Asserting the current invalid behaviour (length 1) so the test passes until the bug is fixed.
+        const response = await request.get(`${baseUrl}?buildingrefnum=${refBuildingRefNum}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        const { epcCertificates } = await response.json();
+        expect(epcCertificates).toHaveLength(1); // BUG 925: should be 2
+
+        // Most recent certificate (lodged Aug 2025, expiring Aug 2035)
+        const cert0 = epcCertificates[0];
+        expect(cert0.uprn).toBe(100022918361);
+        expect(cert0.assetRating).toBe(22);
+        expect(cert0.assetRatingBand).toBe('A');
+        expect(cert0.lodgementDate).toContain('2025-08-13');
+        expect(cert0.expiryDate).toContain('2035-08-13');
+
+        // BUG 925: cert1 (assetRating: 93, assetRatingBand: D, lodgementDate: 2015-03-06, expiryDate: 2025-03-06) is missing
+    });
+
+    test('Landlord returns expected data values for known UPRN', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?uprn=${refUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        const { landlords } = await response.json();
+        expect(landlords).toHaveLength(1);
+        const landlord = landlords[0];
+        expect(landlord.uprn).toBe(100022918361);
+        expect(landlord.companyName).toBe('BRITISH OVERSEAS BANK NOMINEES LIMITED');
+        expect(landlord.address).toBe('250 Bishopsgate, London EC2M 4AA');
+        expect(landlord.location).toBe('Onshore');
+    });
+});

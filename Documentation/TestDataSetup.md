@@ -24,6 +24,33 @@ Tests contain hardcoded values that must be verified/updated when setting up a n
 - PRS exemption date: `'14 February 2026'`
 - EPC history dates: `'13 August 2025'`, `'13 August 2035'`
 
+### PropertyTests.spec.ts (Data Verification Tests)
+**Location**: [tests/test/api/PropertyTests.spec.ts](../tests/test/api/PropertyTests.spec.ts)
+
+**Hardcoded values to verify** (used in `Data Verification Tests` and `Bug Tests` describe blocks):
+- UPRN: `'100022918361'`
+- Building Reference Number: `'1172671'` (same physical property as the UPRN above)
+- Expected `property.buildingReferenceNumber`: `1172671`
+- Expected `property.postcode`: `'DA1 4AL'`
+- Expected `property.town`: `'DARTFORD'`
+- Expected `property.epcEnergyRating`: `22`
+- Expected `property.epcEnergyRatingBand`: `'A'`
+- Expected `property.rateableValue`: `25500`
+- Expected `property.epcExpiryDate`: contains `'2035-08-13'`
+- Expected `epcCertificates` count: `2`
+- Expected `epcCertificates[0].assetRating`: `22`
+- Expected `epcCertificates[0].assetRatingBand`: `'A'`
+- Expected `epcCertificates[0].lodgementDate`: contains `'2025-08-13'`
+- Expected `epcCertificates[0].expiryDate`: contains `'2035-08-13'`
+- Expected `epcCertificates[1].assetRating`: `93`
+- Expected `epcCertificates[1].assetRatingBand`: `'D'`
+- Expected `epcCertificates[1].lodgementDate`: contains `'2015-03-06'`
+- Expected `epcCertificates[1].expiryDate`: contains `'2025-03-06'`
+- Expected `landlords` count: `1`
+- Expected `landlords[0].companyName`: `'BRITISH OVERSEAS BANK NOMINEES LIMITED'`
+- Expected `landlords[0].address`: `'250 Bishopsgate, London EC2M 4AA'`
+- Expected `landlords[0].location`: `'Onshore'`
+
 ### PropertiesDmsBoundaryTests.spec.ts
 **Location**: [tests/test/api/PropertiesDmsBoundaryTests.spec.ts](../tests/test/api/PropertiesDmsBoundaryTests.spec.ts)
 
