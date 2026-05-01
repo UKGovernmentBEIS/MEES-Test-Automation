@@ -64,7 +64,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private breadcrumbHome: Locator;
     private breadcrumbViewPropertyRecords: Locator;
     private breadcrumbFilterPropertiesRecords: Locator;
-    private epcHistoryTable: Locator;
     private commentsList: Locator;
     private commentTextArea: Locator;
     private commentSaveButton: Locator;
@@ -81,7 +80,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.breadcrumbViewPropertyRecords = page.getByRole('link', { name: 'View property records' });
         this.breadcrumbFilterPropertiesRecords = page.getByRole('link', { name: 'Filter property records' });
-        this.epcHistoryTable = page.locator("//div[@data-id='EPCTab']/table");
         this.commentsList = page.locator('.comments-list');
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
@@ -217,7 +215,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     async getEPCHistoryTableData(): Promise<EPCHistory[]> {
         let epcHistoryData: EPCHistory[] = [];
 
-        const rows = this.epcHistoryTable.locator('tbody tr');
+        const rows = this.page.locator('tbody tr');
         const rowCount = await rows.count();
         for (let i = 0; i < rowCount; i++) {
             const row = rows.nth(i);
