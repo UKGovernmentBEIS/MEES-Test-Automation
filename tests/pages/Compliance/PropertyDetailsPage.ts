@@ -186,6 +186,17 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return value;
     }
 
+    async getEnergyEfficiencyDetails(detailName: string): Promise<Locator> {
+        // Click on the 'Energy efficiency details' tab to ensure the details section is visible before trying to locate the detail
+        await this.ClickTab('Energy efficiency details');
+
+        // Search all summary list rows on the page rather than relying on .nth(0), because LWC removes non-active tab content from the DOM on tab switch, shifting the index of remaining summary lists.
+        const detailRow: Locator = this.page.locator('.govuk-summary-list__row')
+            .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(detailName, { exact: true }) });
+        let value = detailRow.locator('.govuk-summary-list__value');
+        return value;
+    }
+
     async DisplayEPCHistoryData(): Promise<void> {
         await this.ClickTab('Energy efficiency details');
 
