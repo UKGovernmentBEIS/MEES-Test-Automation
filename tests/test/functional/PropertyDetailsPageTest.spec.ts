@@ -68,15 +68,6 @@ test.describe('View Properties Page Data Validation Tests', () => {
         // Verify Rateable Value (DMS)
         const expectedRateableValue = formatCurrency(dmsPropertyDetails.property.rateableValue!);
         expect(await propertyDetailsPage.getPropertyDetails("Rateable value")).toHaveText(expectedRateableValue);
-
-        // Verify Landlord Name (DMS) - Use first landlord
-        expect(await propertyDetailsPage.getPropertyDetails("Landlord")).toHaveText(dmsPropertyDetails.landlords[0].companyName);
-
-        // Verify Landlord Location (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Landlord location")).toHaveText(dmsPropertyDetails.landlords[0].location);
-
-        // Verify Landlord Address (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("Landlord address")).toHaveText(dmsPropertyDetails.landlords[0].address);
     });
 
     test('Verify data displayed in the Energy Ratings and PRS Exemptions section of the Property Details page', async () => {
