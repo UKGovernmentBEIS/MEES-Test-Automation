@@ -579,11 +579,8 @@ test.describe('View Properties export functionality', () => {
         // Derive expected value from all EPC certificates for the reference property
         // Each certificate entry is formatted as 'AssetRatingBand (AssetRating); ExpiryDate; TransactionType'
         // with entries joined by ' | '.
-        // BUG 914 PARTIAL FIX WORKAROUND: ExpiryDate has a trailing space before the semicolon separator — 'ExpiryDate ;'
-        // instead of 'ExpiryDate;'. The template below uses ' ; ' after the date to match the current export output.
-        // Remove the extra space once the trailing-space issue is fully resolved.
         const expectedValue = dmsPropertyWithMultiEPCCertificates!.EpcCertificates!
-            .map(epc => `${epc.AssetRatingBand} (${epc.AssetRating}); ${epc.ExpiryDate.split('T')[0]} ; ${epc.TransactionType}`)
+            .map(epc => `${epc.AssetRatingBand} (${epc.AssetRating}); ${epc.ExpiryDate.split('T')[0]}; ${epc.TransactionType}`)
             .join(' | ');
         const actualValue = propertyMatchInExport!['EPC history'];
 
