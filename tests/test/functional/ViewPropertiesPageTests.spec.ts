@@ -577,12 +577,13 @@ test.describe('View Properties export functionality', () => {
         expect(propertyMatchInExport, `Cannot find UPRN '${uprnDMSPropertyWithMultiEPCCertificates}' in the export`).toBeDefined();
 
         // Derive expected value from all EPC certificates for the reference property
-        // Each certificate entry should be formatted as 'AssetRatingBand (AssetRating); ExpiryDate; TransactionType'
-        // BUG 914 WORKAROUND: 'EPC history' currently exports sub-fields with '; - ' separator instead of '; '
-        // The template string below uses '; - ' to match the current (buggy) export output.
-        // When BUG 914 is fixed, replace '; - ' with '; ' in the template string below.
+        // Each certificate entry is formatted as 'AssetRatingBand (AssetRating); ExpiryDate; TransactionType'
+        // with entries joined by ' | '.
+        // BUG 914 PARTIAL FIX WORKAROUND: ExpiryDate has a trailing space before the semicolon separator — 'ExpiryDate ;'
+        // instead of 'ExpiryDate;'. The template below uses ' ; ' after the date to match the current export output.
+        // Remove the extra space once the trailing-space issue is fully resolved.
         const expectedValue = dmsPropertyWithMultiEPCCertificates!.EpcCertificates!
-            .map(epc => `${epc.AssetRatingBand} (${epc.AssetRating}); - ${epc.ExpiryDate.split('T')[0]}; - ${epc.TransactionType}`)
+            .map(epc => `${epc.AssetRatingBand} (${epc.AssetRating}); ${epc.ExpiryDate.split('T')[0]} ; ${epc.TransactionType}`)
             .join(' | ');
         const actualValue = propertyMatchInExport!['EPC history'];
 
@@ -660,9 +661,7 @@ test.describe('View Properties export functionality', () => {
         const EPC_BASE_URL = 'https://find-energy-certificate.service.gov.uk/energy-certificate/';
 
         // Find a property with 'EPC energy rating' = '0'.
-        // BUG 913 WORKAROUND: Column is currently named 'Current EPC energy rating' instead of 'EPC energy rating'.
-        // Change key back to 'EPC energy rating' when bug 913 is fixed.
-        const propertyWithoutEpcEnergyData = exportedData.find(r => r['Current EPC energy rating'] === '0');
+        const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === '0');
         expect(propertyWithoutEpcEnergyData, 'No property with an EPC energy rating of "0" was found in the export').toBeDefined();
 
         // Verify that the 'EPC certificates (Link)' field is empty for this property

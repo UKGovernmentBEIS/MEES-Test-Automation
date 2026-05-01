@@ -47,9 +47,9 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'Property owner 1 location',        dmsLandlordField: 'LandlordLocation' },
         { exportColumn: 'Property owner 1 address',         dmsLandlordField: 'LandlordAddress' },
         { exportColumn: 'Property owner 1 SIC code(s)',     dmsLandlordFields: ['SicCodeSicText1', 'SicCodeSicText2', 'SicCodeSicText3', 'SicCodeSicText4'], normalize: (v) => v.split(',').map(s => s.trim()).filter(s => s !== 'null').join(' | ') },
-        { exportColumn: 'Current EPC energy rating band',   dmsField: 'EPCEnergyRatingBand' }, // BUG 913: Should be 'EPC energy rating band' — remove 'Current' prefix when fixed.
-        { exportColumn: 'Current EPC energy rating',        dmsField: 'EPCEnergyRating' },       // BUG 913: Should be 'EPC energy rating' — remove 'Current' prefix when fixed.
-        { exportColumn: 'Current EPC expiry date',          dmsField: 'EPCExpiryDate',            // BUG 913: Should be 'EPC expiry date' — remove 'Current' prefix when fixed.
+        { exportColumn: 'EPC energy rating band',           dmsField: 'EPCEnergyRatingBand' },
+        { exportColumn: 'EPC energy rating',                dmsField: 'EPCEnergyRating' },
+        { exportColumn: 'EPC expiry date',                  dmsField: 'EPCExpiryDate',
             normalize: (v) => {
                 // DMS format: 2032-09-15T00:00:00 → extract YYYY-MM-DD
                 const isoMatch = v.match(/^(\d{4}-\d{2}-\d{2})T/);
