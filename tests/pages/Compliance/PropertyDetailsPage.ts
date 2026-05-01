@@ -64,7 +64,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private breadcrumbHome: Locator;
     private breadcrumbViewPropertyRecords: Locator;
     private breadcrumbFilterPropertiesRecords: Locator;
-    private tabEPCHistory: Locator;
     private epcHistoryTable: Locator;
     private commentsList: Locator;
     private commentTextArea: Locator;
@@ -74,14 +73,14 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private propertyDetailsRows: Locator;
     private propertyExemptionDetails: Locator;
     private propertyExemptionDetailsRows: Locator;
-    // .govuk-main-wrapper .govuk-summary-list
+    private tab(tabName: string): Locator { return this.page.locator(`//li/div[contains(text(), '${tabName}')]`); }
+    private tabParentElement(tabName: string): Locator { return this.tab(tabName).locator('..'); }
 
     constructor(page: Page) {
         super(page);
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.breadcrumbViewPropertyRecords = page.getByRole('link', { name: 'View property records' });
         this.breadcrumbFilterPropertiesRecords = page.getByRole('link', { name: 'Filter property records' });
-        this.tabEPCHistory = page.locator("//li[@data-id='EPCTab']");
         this.epcHistoryTable = page.locator("//div[@data-id='EPCTab']/table");
         this.commentsList = page.locator('.comments-list');
         this.commentTextArea = page.locator('div textarea')
@@ -105,7 +104,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
                 breadcrumbViewPropertyRecords: this.breadcrumbViewPropertyRecords,
                 breadcrumbFilterPropertiesRecords: this.breadcrumbFilterPropertiesRecords,
                 signOutButton: this.signOutButton,
-                tabEPCHistory: this.tabEPCHistory,
                 commentTextArea: this.commentTextArea,
                 commentSaveButton: this.commentSaveButton,
                 commentCancelButton: this.commentCancelButton,
@@ -147,24 +145,57 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return viewPropertiesPage;
     }
 
+    async ClickTab(tabName: string): Promise<void> {
+        switch (tabName) {
+            case 'Property details':
+                await this.tab(tabName).click();
+                break;
+            case 'Property owner(s)':
+                await this.tab(tabName).click();
+                break;
+            case 'Energy efficiency details':
+                await this.tab(tabName).click();
+                break;
+            case 'PRS exemptions and penalties':
+                await this.tab(tabName).click();
+                break;
+            default:
+                throw new Error(`Tab with name ${tabName} is not defined on Property Details Page`);
+        }
+    }
+
     async getPropertyDetails(detailName: string): Promise<Locator> {
+        // Click on the 'Property Details' tab to ensure the details section is visible before trying to locate the detail
+        await this.ClickTab('Property details');
+
+        // Filter the property details rows to find the one that contains the specified detail name, then get the corresponding value
         const detailRow: Locator = this.propertyDetailsRows
             .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(detailName, { exact: true }) });
         return detailRow.locator('.govuk-summary-list__value');
     }
 
     async getExemptionDetails(detailName: string): Promise<Locator> {
-        const detailRow: Locator = this.propertyExemptionDetailsRows
+        // Click on the 'PRS exemptions and penalties' tab to ensure the details section is visible before trying to locate the detail
+        await this.ClickTab('PRS exemptions and penalties');
+
+        // Search all summary list rows on the page rather than relying on .nth(1), because LWC removes
+        // non-active tab content from the DOM on tab switch, shifting the index of remaining summary lists.
+        const detailRow: Locator = this.page.locator('.govuk-summary-list__row')
             .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(detailName, { exact: true }) });
         let value = detailRow.locator('.govuk-summary-list__value');
         return value;
     }
 
     async DisplayEPCHistoryData(): Promise<void> {
-        await this.tabEPCHistory.click();
+        await this.ClickTab('Energy efficiency details');
 
         // Check if the EPC Tab is active
-        const classAttribute = await this.tabEPCHistory.getAttribute('class');
+        const classAttribute = await await this.tabParentElement('Energy efficiency details').getAttribute('class');
+        const isTabActive = classAttribute?.includes('govuk-tabs__list-item--selected')
+        if (!isTabActive) {
+            throw new Error('Failed to display EPC History data. The EPC History tab is not active after clicking on it.');
+        }
+        
         const hasSelectedClass = classAttribute?.includes('govuk-tabs__list-item--selected')
 
         if (!hasSelectedClass) {

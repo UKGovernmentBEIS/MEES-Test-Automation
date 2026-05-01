@@ -18,10 +18,6 @@ export interface ExportFieldMapping {
     dmsLandlordField?: string;
     /** Multiple raw keys inside DMSRawItem.Landlords[0] — used for landlord-specific fields that combine several DMS fields (e.g. SicCodeSicText1, SicCodeSicText2, etc.) */
     dmsLandlordFields?: string[];
-    /** PRSE fields, requires manual check due to missing API to Salesforce */
-    prseField?: true;
-    /** MEES Exemptions fields, requires manual check due to missing API to Salesforce */
-    meesField?: true;
     /** EPC Certificate fields, requires manual check due to missing API to Salesforce */
     dmsEpcField?: string;
     /** Field that requires a dedicated test — skipped in the generic loop because its export value is derived from multiple DMS booleans or aggregated from an array rather than a direct field lookup */
@@ -47,13 +43,13 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         // Validated in the dedicated 'Exported Possible rental evidence field value is correct' test.
         { exportColumn: 'Possible rental evidence', dedicatedTest: true },
         // Property owner fields are dynamic based on the maximum number of landlords associated with a property in exported data.
-        { exportColumn: 'Property owner 1 name',      dmsLandlordField: 'LandlordCompanyName' },
-        { exportColumn: 'Property owner 1 location',  dmsLandlordField: 'LandlordLocation' },
-        { exportColumn: 'Property owner 1 address',   dmsLandlordField: 'LandlordAddress' },
-        { exportColumn: 'Property owner 1 SIC code(s)', dmsLandlordFields: ['SicCodeSicText1', 'SicCodeSicText2', 'SicCodeSicText3', 'SicCodeSicText4'], normalize: (v) => v.split(',').map(s => s.trim()).filter(s => s !== 'null').join(' | ') },
-        { exportColumn: 'Current EPC energy rating band',  dmsField: 'EPCEnergyRatingBand' }, // BUG 913: Should be 'EPC energy rating band' — remove 'Current' prefix when fixed.
-        { exportColumn: 'Current EPC energy rating',       dmsField: 'EPCEnergyRating' },       // BUG 913: Should be 'EPC energy rating' — remove 'Current' prefix when fixed.
-        { exportColumn: 'Current EPC expiry date',         dmsField: 'EPCExpiryDate',            // BUG 913: Should be 'EPC expiry date' — remove 'Current' prefix when fixed.
+        { exportColumn: 'Property owner 1 name',            dmsLandlordField: 'LandlordCompanyName' },
+        { exportColumn: 'Property owner 1 location',        dmsLandlordField: 'LandlordLocation' },
+        { exportColumn: 'Property owner 1 address',         dmsLandlordField: 'LandlordAddress' },
+        { exportColumn: 'Property owner 1 SIC code(s)',     dmsLandlordFields: ['SicCodeSicText1', 'SicCodeSicText2', 'SicCodeSicText3', 'SicCodeSicText4'], normalize: (v) => v.split(',').map(s => s.trim()).filter(s => s !== 'null').join(' | ') },
+        { exportColumn: 'Current EPC energy rating band',   dmsField: 'EPCEnergyRatingBand' }, // BUG 913: Should be 'EPC energy rating band' — remove 'Current' prefix when fixed.
+        { exportColumn: 'Current EPC energy rating',        dmsField: 'EPCEnergyRating' },       // BUG 913: Should be 'EPC energy rating' — remove 'Current' prefix when fixed.
+        { exportColumn: 'Current EPC expiry date',          dmsField: 'EPCExpiryDate',            // BUG 913: Should be 'EPC expiry date' — remove 'Current' prefix when fixed.
             normalize: (v) => {
                 // DMS format: 2032-09-15T00:00:00 → extract YYYY-MM-DD
                 const isoMatch = v.match(/^(\d{4}-\d{2}-\d{2})T/);
@@ -67,12 +63,12 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         // EPC history aggregates TransactionType from every element in the EpcCertificates array joined with ' | '.
         // flattenItem() only reads the first EPC certificate, so a direct loop comparison would miss subsequent entries.
         // Validated in the dedicated 'Exported EPC history field value is correct' test.
-        { exportColumn: 'EPC history', dedicatedTest: true },
-        { exportColumn: 'PRS exemption status',    prseField: true },
-        { exportColumn: 'PRS exemption date',      prseField: true },
-        { exportColumn: 'Comments',                meesField: true },
-        { exportColumn: 'EPC certificates (Link)',  dmsEpcField: 'CertificateLink' },
-        { exportColumn: 'EPC transaction type',    dmsField: 'EPCTransactionType' },
+        { exportColumn: 'EPC history',                      dedicatedTest: true },
+        { exportColumn: 'PRS exemption status',             dedicatedTest: true },
+        { exportColumn: 'PRS exemption date',               dedicatedTest: true },
+        { exportColumn: 'Comments',                         dedicatedTest: true },
+        { exportColumn: 'EPC certificates (Link)',          dmsEpcField: 'CertificateLink' },
+        { exportColumn: 'EPC transaction type',             dmsField: 'EPCTransactionType' },
     ];
 
     private pageContext: Locator;

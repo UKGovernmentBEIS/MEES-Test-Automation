@@ -452,11 +452,11 @@ test.describe('View Properties export functionality', () => {
 
         // Compare each mapped field value between DMS and export
         const valueMismatches: string[] = [];
-        for (const { exportColumn, dmsField, dmsFields, dmsLandlordField, dmsLandlordFields, prseField, meesField, dmsEpcField, dedicatedTest, normalize } of fieldMappings) {
+        for (const { exportColumn, dmsField, dmsFields, dmsLandlordField, dmsLandlordFields, dmsEpcField, dedicatedTest, normalize } of fieldMappings) {
             const raw = (v: unknown) => (v === null || v === undefined || v === 'Data not found') ? '' : String(v);
             let rawDmsValue: unknown;
-            if  (prseField || meesField || dedicatedTest) {
-                // Skip fields with no DMS equivalent (prseField/meesField) or that require a dedicated test (dedicatedTest).
+            if  (dedicatedTest) {
+                // Skip fields dedicated tests
                 continue;
             } if (dmsFields) {
                 // Multi-field column — concatenate multiple DMS fields into a single string
@@ -669,5 +669,109 @@ test.describe('View Properties export functionality', () => {
         const rawEpcLink = propertyWithoutEpcEnergyData!['EPC certificates (Link)']?.trim() ?? '';
         const hasEpcLink = rawEpcLink !== '' && rawEpcLink !== EPC_BASE_URL;
         expect(hasEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of "0" but has an EPC link '${rawEpcLink}' in the export`).toBe(false);
+    });
+
+    test('Exported PRS Exemption Status, PRS Exemption Date and Comments match Salesforce data', async ({ request }) => {
+        // Property under this address has prepared data in Salesforce with:
+        // - PRS Exemption Status, 
+        // - PRS Exemption Date,
+        // - Comments populated, 
+        // so we can verify the export values against the source of truth in Salesforce
+        const energyRatingFilter = 'A';
+        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+        const postcodeFilter = 'DA1 4BZ';
+
+        // Find a property with PRS Exemption Status, PRS Exemption Date and Comments populated on the Property Details page
+        // - display properties list on the View Properties page
+        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+        await filterPropertiesPage.setCouncilFilter(councilFilter);
+        await filterPropertiesPage.setPostcodeFilter(postcodeFilter);   
+        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await viewPropertiesPage.waitForTableContent();
+
+        // - find property with PRS Exemption Status and display Property Details page for that property
+        const propertiesData: PropertyData[] = await viewPropertiesPage.getPropertiesDataFromTable();
+        let referenceProperty: PropertyData | null = null;
+        for (const property of propertiesData) {
+            if (property.PRSExemptions && property.PRSExemptions !== 'Not found') {
+                referenceProperty = property;
+                break;
+            }
+        }
+        expect(referenceProperty, 'No property with a PRS Exemption Status found in the table').toBeDefined();
+        const propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(referenceProperty!.address);
+        await propertyDetailsPage.waitForPageToLoad();
+
+        // Store values property UPRN and values for these fields to compare against the export later
+        const referenceUPRN: string = await (await propertyDetailsPage.getPropertyDetails('UPRN')).innerText();
+        expect(referenceUPRN, 'Reference property has no UPRN').toBeDefined();
+        const expectedPRSExemptionStatus: string = await (await propertyDetailsPage.getExemptionDetails('PRS exemption status')).innerText();
+        expect(expectedPRSExemptionStatus, 'Reference property has no PRS Exemption Status').toBeDefined();
+        const expectedPRSExemptionDate: string = await (await propertyDetailsPage.getExemptionDetails('PRS exemption date')).innerText();
+        expect(expectedPRSExemptionDate, 'Reference property has no PRS Exemption Date').toBeDefined();
+        const expectedPRSExemptionComments: string[] = await (await propertyDetailsPage.getComments()).allInnerTexts();
+        expect(expectedPRSExemptionComments.length, 'Reference property has no PRS Exemption Comments').toBeGreaterThan(0);
+
+        // Navigate back to View Properties and export the CSV (filters are preserved in the breadcrumb URL)
+        const viewPropertiesPageForExport = await propertyDetailsPage.clickBreadcrumbViewProperties();
+        await viewPropertiesPageForExport.waitForTableContent();
+        const exportedData: Record<string, string>[] = await viewPropertiesPageForExport.exportFilteredData();
+        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+        // Locate the reference property in the export by UPRN
+        const matchInExport = exportedData.find(r => String(r['UPRN']).trim() === referenceUPRN.trim());
+        expect(matchInExport, `Property with UPRN ${referenceUPRN} not found in the export`).toBeDefined();
+
+        // Normalise dates to YYYY-MM-DD for comparison:
+        //   UI format: 'D Month YYYY' (e.g. '14 February 2026')
+        //   Export format: 'DD/MM/YYYY' (e.g. '14/02/2026')
+        const normalizeDate = (d: string): string => {
+            d = d.trim();
+            const ddmmyyyy = d.match(/^(\d{1,2})\/(\d{2})\/(\d{4})$/);
+            if (ddmmyyyy) return `${ddmmyyyy[3]}-${ddmmyyyy[2].padStart(2, '0')}-${ddmmyyyy[1].padStart(2, '0')}`;
+            const months: Record<string, string> = {
+                'January': '01', 'February': '02', 'March': '03', 'April': '04',
+                'May': '05', 'June': '06', 'July': '07', 'August': '08',
+                'September': '09', 'October': '10', 'November': '11', 'December': '12'
+            };
+            const dMonthYear = d.match(/^(\d{1,2})\s+(\w+)\s+(\d{4})$/);
+            if (dMonthYear && months[dMonthYear[2]]) {
+                return `${dMonthYear[3]}-${months[dMonthYear[2]]}-${dMonthYear[1].padStart(2, '0')}`;
+            }
+            return d;
+        };
+
+        // Compare the exported PRS Exemption Status, PRS Exemption Date and Comments against the values from Salesforce
+        expect(matchInExport!['PRS exemption status'].trim(),
+            `PRS Exemption Status mismatch for UPRN ${referenceUPRN}: UI shows '${expectedPRSExemptionStatus}', export shows '${matchInExport!['PRS exemption status']}'`
+        ).toBe(expectedPRSExemptionStatus.trim());
+
+        expect(normalizeDate(matchInExport!['PRS exemption date']),
+            `PRS Exemption Date mismatch for UPRN ${referenceUPRN}: UI shows '${expectedPRSExemptionDate}', export shows '${matchInExport!['PRS exemption date']}'`
+        ).toBe(normalizeDate(expectedPRSExemptionDate));
+
+        // Normalise comments for comparison.
+        // UI: allInnerTexts() on the comments list returns a mix of comment body lines,
+        //     blank lines, and 'Added by ...' attribution lines — extract just the bodies.
+        const uiCommentTexts = expectedPRSExemptionComments.join('\n').split('\n')
+            .map(s => s.trim())
+            .filter(s => s !== '' && !s.startsWith('Added by'));
+
+        // Export: all comments joined as 'body by author on date | body by author on date | ...'
+        // Extract just the comment body (everything before the last ' by ') from each entry.
+        const exportCommentTexts = matchInExport!['Comments']
+            .split(' | ')
+            .map(entry => {
+                const byIdx = entry.lastIndexOf(' by ');
+                return (byIdx !== -1 ? entry.substring(0, byIdx) : entry).trim();
+            })
+            .filter(s => s !== '');
+
+        expect(exportCommentTexts,
+            `Comments mismatch for UPRN ${referenceUPRN}: ` +
+            `UI has ${uiCommentTexts.length} comment(s), export has ${exportCommentTexts.length} comment(s). ` +
+            `First UI: '${uiCommentTexts[0]}', First export: '${exportCommentTexts[0]}'`
+        ).toEqual(uiCommentTexts);
     });
 });
