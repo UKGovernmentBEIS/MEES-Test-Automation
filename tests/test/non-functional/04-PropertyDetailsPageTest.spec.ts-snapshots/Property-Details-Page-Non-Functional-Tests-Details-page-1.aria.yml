@@ -8,9 +8,3 @@
 - definition: /£\d+,\d+/
 - term: Possible rental evidence
 - definition: Mandatory issue (Property to let) EPC transaction type
-- term: Landlord
-- definition: BRITISH OVERSEAS BANK NOMINEES LIMITED
-- term: Landlord location
-- definition: Onshore
-- term: Landlord address
-- definition: /\d+ Bishopsgate, London EC2M 4AA/
