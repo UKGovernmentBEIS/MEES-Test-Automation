@@ -116,7 +116,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        return [this.propertyDetails, this.propertyExemptionDetails];
+        return [this.propertyDetails];
     }
 
     async clickBreadcrumbHome(): Promise<HomePage> {
