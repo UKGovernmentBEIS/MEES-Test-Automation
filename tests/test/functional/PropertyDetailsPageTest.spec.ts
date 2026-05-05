@@ -92,11 +92,9 @@ test.describe('View Properties Page Data Validation Tests', () => {
         // Click on the EPC History tab
         await propertyDetailsPage.DisplayEPCHistoryData();
 
-        // Verify that there is an EPC History section and it contains expected data
-        const epcHistoryData = await propertyDetailsPage.getEPCHistoryTableData();
-        expect(epcHistoryData.length).toBeGreaterThan(0);
-        expect(epcHistoryData[0].assetRatingBand).toBe('A (22)');
-        expect(epcHistoryData[0].expiryDate).toBe('13 August 2035');
+        // Verify that the EPC History section shows the no-history message (BUG 925: property now has no EPC certificate history)
+        const noHistoryMessage = await propertyDetailsPage.getNoEPCHistoryMessageText();
+        expect(noHistoryMessage).toBe('No EPC certificate history available.');
     });
 });
 

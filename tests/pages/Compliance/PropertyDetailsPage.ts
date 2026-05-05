@@ -72,6 +72,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private propertyDetailsRows: Locator;
     private propertyExemptionDetails: Locator;
     private propertyExemptionDetailsRows: Locator;
+    private noEPCHistoryMessage: Locator;
     private tab(tabName: string): Locator { return this.page.locator(`//li/div[contains(text(), '${tabName}')]`); }
     private tabParentElement(tabName: string): Locator { return this.tab(tabName).locator('..'); }
 
@@ -88,6 +89,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.propertyDetailsRows = this.propertyDetails.locator('.govuk-summary-list__row');
         this.propertyExemptionDetails = page.locator('.govuk-summary-list').nth(1);
         this.propertyExemptionDetailsRows = this.propertyExemptionDetails.locator('.govuk-summary-list__row');
+        this.noEPCHistoryMessage = page.locator('[data-id="EPCTab"] p.govuk-body');
     }
 
     // Wait for the Property Details Page to load
@@ -210,6 +212,11 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         if (!hasSelectedClass) {
             throw new Error('Failed to display EPC History data. The EPC History tab is not active after clicking on it.');
         }
+    }
+
+    async getNoEPCHistoryMessageText(): Promise<string> {
+        await this.ClickTab('Energy efficiency details');
+        return this.noEPCHistoryMessage.innerText();
     }
 
     async getEPCHistoryTableData(): Promise<EPCHistory[]> {
