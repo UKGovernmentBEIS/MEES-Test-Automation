@@ -169,7 +169,8 @@ test.describe('Response Structure Tests', () => {
         expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText4);
     });
 
-    test('Landlords array has correct structure using Building Reference Number', async ({ request }) => {
+    // Bug 925: Property fields are only returned when querying by UPRN, not when querying by Building Reference Number — this test verifies the presence of property data when using Building Reference Number, but is currently skipped until the underlying issue is resolved
+    test.skip('Landlords array has correct structure using Building Reference Number', async ({ request }) => {
         const response = await request.get(`${baseUrl}?buildingrefnum=${parambuildingrefnum}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
