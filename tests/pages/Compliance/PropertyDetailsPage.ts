@@ -219,6 +219,11 @@ export class PropertyDetailsPage extends BaseCompliancePage {
             throw new Error('Failed to get no EPC history message text. The Energy efficiency details tab is not active.');
         }
 
+        const isNoEPCMessageVisible = await this.noEPCHistoryMessage.isVisible();
+        if (!isNoEPCMessageVisible) {
+            throw new Error('Failed to get no EPC history message text. The no EPC history message is not visible on the page.');
+        }
+
         return this.noEPCHistoryMessage.innerText();
     }
 

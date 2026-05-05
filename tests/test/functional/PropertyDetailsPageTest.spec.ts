@@ -76,18 +76,16 @@ test.describe('View Properties Page Data Validation Tests', () => {
 
         // Verify Current energy rating
         await propertyDetailsPage.SelectTab('Energy efficiency details');
-        // (BUG 925: energy rating details are currently unavailable for this property)
-        expect(await propertyDetailsPage.getNoEPCHistoryMessageText()).toBe('No EPC certificate history available.');
-        // const energyRatingText = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Energy efficiency details', 'Current energy rating');
-        // expect(energyRatingText).toBe('A (22)');
+        const energyRatingText = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Energy efficiency details', 'Current energy rating');
+        expect(energyRatingText).toBe('A (22)');
 
         // Verify Current EPC expiry date
         // BUG 922 WORKAROUND: EPC expiry date is displayed as a raw ISO 8601 string instead of a formatted date (e.g. '13 August 2035').
         // Update expected value to '13 August 2035' once BUG 922 is fixed.
-        // const epcExpiryDateText = 
-        //     await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName(
-        //         'Energy efficiency details', 'Current EPC expiry date');
-        // expect(epcExpiryDateText).toBe('2035-08-13T00:00:00');
+        const epcExpiryDateText = 
+            await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName(
+                'Energy efficiency details', 'Current EPC expiry date');
+        expect(epcExpiryDateText).toBe('2035-08-13T00:00:00');
 
         // Verify PRS exemption status
         await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
@@ -105,9 +103,13 @@ test.describe('View Properties Page Data Validation Tests', () => {
         // Click on the EPC History tab
         await propertyDetailsPage.SelectTab('Energy efficiency details');
 
-        // Verify that the EPC History section shows the no-history message (BUG 925: property now has no EPC certificate history)
-        const noHistoryMessage = await propertyDetailsPage.getNoEPCHistoryMessageText();
-        expect(noHistoryMessage).toBe('No EPC certificate history available.');
+        // Verify that the EPC History table contains 2 records
+        const epcHistory = await propertyDetailsPage.getEPCHistoryTableData();
+        expect(epcHistory).toHaveLength(2);
+
+        // Verify the first EPC History record
+        expect(epcHistory[0].assetRatingBand).toBe('A (22)');
+        expect(epcHistory[0].expiryDate).toBe('13 August 2035');
     });
 });
 
