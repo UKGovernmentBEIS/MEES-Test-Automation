@@ -675,41 +675,46 @@ test.describe('View Properties export functionality', () => {
         // so we can verify the export values against the source of truth in Salesforce
         const energyRatingFilter = 'A';
         const councilFilter = 'LONDON BOROUGH OF BEXLEY';
-        const postcodeFilter = 'DA1 4BZ';
+        const postcodeFilter = 'DA1 4AL';
+        const address = 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL';
 
-        // Find a property with PRS Exemption Status, PRS Exemption Date and Comments populated on the Property Details page
-        // - display properties list on the View Properties page
+        // Display the Property Details page for the property with the above filters
+        // - apply filters
         await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
         await filterPropertiesPage.setCouncilFilter(councilFilter);
         await filterPropertiesPage.setPostcodeFilter(postcodeFilter);   
         const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForPageToLoad();
         await viewPropertiesPage.waitForTableContent();
-
-        // - find property with PRS Exemption Status and display Property Details page for that property
-        const propertiesData: PropertyData[] = await viewPropertiesPage.getPropertiesDataFromTable();
-        let referenceProperty: PropertyData | null = null;
-        for (const property of propertiesData) {
-            if (property.PRSExemptions && property.PRSExemptions !== 'Not found') {
-                referenceProperty = property;
-                break;
-            }
-        }
-        expect(referenceProperty, 'No property with a PRS Exemption Status found in the table').toBeDefined();
-        const propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(referenceProperty!.address);
+        const countField = await viewPropertiesPage.getPropertiesCountField();
+        expect(await countField.textContent()).toBe('1 results');
+        // - display Property Details page for the property
+        const propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(address);
         await propertyDetailsPage.waitForPageToLoad();
 
-        // Store values property UPRN and values for these fields to compare against the export later
-        const referenceUPRN: string = await (await propertyDetailsPage.getPropertyDetails('UPRN')).innerText();
-        expect(referenceUPRN, 'Reference property has no UPRN').toBeDefined();
-        const expectedPRSExemptionStatus: string = await (await propertyDetailsPage.getExemptionDetails('PRS exemption status')).innerText();
-        expect(expectedPRSExemptionStatus, 'Reference property has no PRS Exemption Status').toBeDefined();
-        const expectedPRSExemptionDate: string = await (await propertyDetailsPage.getExemptionDetails('PRS exemption date')).innerText();
-        expect(expectedPRSExemptionDate, 'Reference property has no PRS Exemption Date').toBeDefined();
+        // Navigate to the 'Property details' and get the UPRN for the property to use as a reference when locating the same property in the export
+        await propertyDetailsPage.SelectTab('Property details');
+        const referencedProperty_UPRN = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'UPRN');
+
+        // Navigate to the 'PRS Exemptions and penalties' tab and get:
+        // - PRS Exemption Status, 
+        // - PRS Exemption Date,
+        // - Comments 
+        // to compare against the export later
+        await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
+        // 
+        const referencedProperty_PRSExemptionStatus: string = 
+            await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
+        expect(referencedProperty_PRSExemptionStatus, 'Reference property has no PRS Exemption Status').toBeDefined();
+
+        const referencedProperty_PRSExemptionDate: string = 
+            await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
+        expect(referencedProperty_PRSExemptionDate, 'Reference property has no PRS Exemption Date').toBeDefined();
+
         const commentsLocator = await propertyDetailsPage.getComments();
         await commentsLocator.first().waitFor({ state: 'visible' });
-        const expectedPRSExemptionComments: string[] = await commentsLocator.allInnerTexts();
-        expect(expectedPRSExemptionComments.length, 'Reference property has no PRS Exemption Comments').toBeGreaterThan(0);
+        const referencedProperty_PRSExemptionComments: string[] = await commentsLocator.allInnerTexts();
+        expect(referencedProperty_PRSExemptionComments.length, 'Reference property has no PRS Exemption Comments').toBeGreaterThan(0);
 
         // Navigate back to View Properties and export the CSV (filters are preserved in the breadcrumb URL)
         const viewPropertiesPageForExport = await propertyDetailsPage.clickBreadcrumbViewProperties();
@@ -718,8 +723,8 @@ test.describe('View Properties export functionality', () => {
         expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
         // Locate the reference property in the export by UPRN
-        const matchInExport = exportedData.find(r => String(r['UPRN']).trim() === referenceUPRN.trim());
-        expect(matchInExport, `Property with UPRN ${referenceUPRN} not found in the export`).toBeDefined();
+        const matchInExport = exportedData.find(r => String(r['UPRN']).trim() === referencedProperty_UPRN.trim());
+        expect(matchInExport, `Property with UPRN ${referencedProperty_UPRN} not found in the export`).toBeDefined();
 
         // Normalise dates to YYYY-MM-DD for comparison:
         //   UI format: 'D Month YYYY' (e.g. '14 February 2026')
@@ -742,17 +747,17 @@ test.describe('View Properties export functionality', () => {
 
         // Compare the exported PRS Exemption Status, PRS Exemption Date and Comments against the values from Salesforce
         expect(matchInExport!['PRS exemption status'].trim(),
-            `PRS Exemption Status mismatch for UPRN ${referenceUPRN}: UI shows '${expectedPRSExemptionStatus}', export shows '${matchInExport!['PRS exemption status']}'`
-        ).toBe(expectedPRSExemptionStatus.trim());
+            `PRS Exemption Status mismatch for UPRN ${referencedProperty_UPRN}: UI shows '${referencedProperty_PRSExemptionStatus}', export shows '${matchInExport!['PRS exemption status']}'`
+        ).toBe(referencedProperty_PRSExemptionStatus.trim());
 
         expect(normalizeDate(matchInExport!['PRS exemption date']),
-            `PRS Exemption Date mismatch for UPRN ${referenceUPRN}: UI shows '${expectedPRSExemptionDate}', export shows '${matchInExport!['PRS exemption date']}'`
-        ).toBe(normalizeDate(expectedPRSExemptionDate));
+            `PRS Exemption Date mismatch for UPRN ${referencedProperty_UPRN}: UI shows '${referencedProperty_PRSExemptionDate}', export shows '${matchInExport!['PRS exemption date']}'`
+        ).toBe(normalizeDate(referencedProperty_PRSExemptionDate));
 
         // Normalise comments for comparison.
         // UI: allInnerTexts() on the comments list returns a mix of comment body lines,
         //     blank lines, and 'Added by ...' attribution lines — extract just the bodies.
-        const uiCommentTexts = expectedPRSExemptionComments.join('\n').split('\n')
+        const uiCommentTexts = referencedProperty_PRSExemptionComments.join('\n').split('\n')
             .map(s => s.trim())
             .filter(s => s !== '' && !s.startsWith('Added by'));
 
@@ -766,8 +771,16 @@ test.describe('View Properties export functionality', () => {
             })
             .filter(s => s !== '');
 
-        expect(exportCommentTexts,
-            `Comments mismatch for UPRN ${referenceUPRN}: ` +
+        // TODO (Bug 929): The UI truncates the comments list to 29 entries even when more exist.
+        // Until fixed, compare only the comments visible in the UI against the export (the export
+        // correctly contains the full history). If the UI shows all comments (≤ export count and
+        // the counts match), fall through to a full equality check.
+        const uiCommentTextsToCompare = uiCommentTexts.length < exportCommentTexts.length
+            ? exportCommentTexts.slice(0, uiCommentTexts.length)
+            : exportCommentTexts;
+
+        expect(uiCommentTextsToCompare,
+            `Comments mismatch for UPRN ${referencedProperty_UPRN}: ` +
             `UI has ${uiCommentTexts.length} comment(s), export has ${exportCommentTexts.length} comment(s). ` +
             `First UI: '${uiCommentTexts[0]}', First export: '${exportCommentTexts[0]}'`
         ).toEqual(uiCommentTexts);

@@ -121,6 +121,8 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return [this.propertyDetails];
     }
 
+    //#region Breadcrumb Methods
+
     async clickBreadcrumbHome(): Promise<HomePage> {
         await this.breadcrumbHome.click();
 
@@ -145,81 +147,87 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return viewPropertiesPage;
     }
 
-    async ClickTab(tabName: string): Promise<void> {
-        switch (tabName) {
-            case 'Property details':
-                await this.tab(tabName).click();
-                break;
-            case 'Property owner(s)':
-                await this.tab(tabName).click();
-                break;
-            case 'Energy efficiency details':
-                await this.tab(tabName).click();
-                break;
-            case 'PRS exemptions and penalties':
-                await this.tab(tabName).click();
-                break;
-            default:
-                throw new Error(`Tab with name ${tabName} is not defined on Property Details Page`);
+    //#endregion
+
+    //#region Property Details Tab Methods
+
+    private readonly tabNameToElementIDMapping: Record<string, string> = {
+        'Property details': 'PropertyDetailsTab',
+        'Property owner(s)': 'PropertyOwnerTab',
+        'Energy efficiency details': 'EPCTab',
+        'PRS exemptions and penalties': 'PRSTab'
+    };
+
+    async SelectTab(tabName: string): Promise<void> {
+        // Confirm that tab name is valid
+        if (!this.tabNameToElementIDMapping[tabName]) {
+            throw new Error(`Failed to select tab. Tab with name '${tabName}' does not exist on Property Details Page.`);
+        }
+
+        // Click on the tab
+        await this.tab(tabName).click();
+
+        // Check if the clicked tab is active
+        if (!await this.isTabActive(tabName)) {
+            throw new Error(`Failed to switch to the '${tabName}' tab. The tab is not active after clicking on it.`);
         }
     }
 
-    async getPropertyDetails(detailName: string): Promise<Locator> {
-        // Click on the 'Property Details' tab to ensure the details section is visible before trying to locate the detail
-        await this.ClickTab('Property details');
-
-        // Filter the property details rows to find the one that contains the specified detail name, then get the corresponding value
-        const detailRow: Locator = this.propertyDetailsRows
-            .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(detailName, { exact: true }) });
-        return detailRow.locator('.govuk-summary-list__value');
-    }
-
-    async getExemptionDetails(detailName: string): Promise<Locator> {
-        // Click on the 'PRS exemptions and penalties' tab to ensure the details section is visible before trying to locate the detail
-        await this.ClickTab('PRS exemptions and penalties');
-
-        // Search all summary list rows on the page rather than relying on .nth(1), because LWC removes
-        // non-active tab content from the DOM on tab switch, shifting the index of remaining summary lists.
-        const detailRow: Locator = this.page.locator('.govuk-summary-list__row')
-            .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(detailName, { exact: true }) });
-        let value = detailRow.locator('.govuk-summary-list__value');
-        return value;
-    }
-
-    async getEnergyEfficiencyDetails(detailName: string): Promise<Locator> {
-        // Click on the 'Energy efficiency details' tab to ensure the details section is visible before trying to locate the detail
-        await this.ClickTab('Energy efficiency details');
-
-        // Search all summary list rows on the page rather than relying on .nth(0), because LWC removes non-active tab content from the DOM on tab switch, shifting the index of remaining summary lists.
-        const detailRow: Locator = this.page.locator('.govuk-summary-list__row')
-            .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(detailName, { exact: true }) });
-        let value = detailRow.locator('.govuk-summary-list__value');
-        return value;
-    }
-
-    async DisplayEPCHistoryData(): Promise<void> {
-        await this.ClickTab('Energy efficiency details');
-
-        // Check if the EPC Tab is active
-        const classAttribute = await await this.tabParentElement('Energy efficiency details').getAttribute('class');
-        const isTabActive = classAttribute?.includes('govuk-tabs__list-item--selected')
-        if (!isTabActive) {
-            throw new Error('Failed to display EPC History data. The EPC History tab is not active after clicking on it.');
+    private getTabElementIDNameByTabName(tabName: string): string {
+        const elementIDName = this.tabNameToElementIDMapping[tabName];
+        if (!elementIDName) {
+            throw new Error(`Failed to get tab element ID name. Tab with name '${tabName}' does not exist on Property Details Page.`);
         }
-        
-        const hasSelectedClass = classAttribute?.includes('govuk-tabs__list-item--selected')
+        return elementIDName;
+    }
 
-        if (!hasSelectedClass) {
-            throw new Error('Failed to display EPC History data. The EPC History tab is not active after clicking on it.');
+    async getPropertyDetailsByTabNameAndFieldName(tabName: string, fieldName: string): Promise<string> {
+        // Confirm that tab name is valid
+        if (!this.tabNameToElementIDMapping[tabName]) {
+            throw new Error(`Failed to get property details. Tab with name '${tabName}' does not exist on Property Details Page.`);
         }
+
+        // Select tab
+        await this.SelectTab(tabName);
+
+        // Get field value based on the tab
+        const fieldValueLocator = await this.getFieldValueLocatorByTabNameAndFieldName(tabName, fieldName);
+        return await fieldValueLocator.textContent() || '';
+    }
+
+    private async getFieldValueLocatorByTabNameAndFieldName(tabName: string, fieldName: string): Promise<Locator> {
+        // Confirm that the correct tab is active
+        if (!await this.isTabActive(tabName)) {
+            throw new Error(`Failed to get property details. The '${tabName}' tab is not active.`);
+        }
+
+        // Get the correct field value locator for provided tab and field name
+        const tabElementID = this.getTabElementIDNameByTabName(tabName);
+        return this.page.locator(`[data-id="${tabElementID}"] .govuk-summary-list__row`)
+            .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(fieldName, { exact: true }) })
+            .locator('.govuk-summary-list__value');
+    }
+
+    private async isTabActive(tabName: string): Promise<boolean> {
+        const classAttribute = await this.tabParentElement(tabName).getAttribute('class');
+        return classAttribute?.includes('govuk-tabs__list-item--selected') || false;
     }
 
     async getNoEPCHistoryMessageText(): Promise<string> {
-        await this.ClickTab('Energy efficiency details');
+        // Confirm that the 'Energy efficiency details' tab is active
+        if (!await this.isTabActive('Energy efficiency details')) {
+            throw new Error('Failed to get no EPC history message text. The Energy efficiency details tab is not active.');
+        }
+
         return this.noEPCHistoryMessage.innerText();
     }
 
     async getEPCHistoryTableData(): Promise<EPCHistory[]> {
+        // Confirm that the 'Energy efficiency details' tab is active
+        if (!await this.isTabActive('Energy efficiency details')) {
+            throw new Error('Failed to get EPC history table data. The Energy efficiency details tab is not active.');
+        }
+
         let epcHistoryData: EPCHistory[] = [];
 
         const rows = this.page.locator('tbody tr');
@@ -232,6 +240,10 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         }
         return epcHistoryData;
     }
+
+    //#endregion
+
+    //#region DMS API Methods
 
     async GetDMSPropertyDetailsValues(request: APIRequestContext, uprn: string): Promise<DMSPropertyDetails> {
         const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
@@ -248,6 +260,8 @@ export class PropertyDetailsPage extends BaseCompliancePage {
 
         return await response.json() as DMSPropertyDetails;
     }
+
+    //#endregion
 
     //#region Comments Section Methods
 
