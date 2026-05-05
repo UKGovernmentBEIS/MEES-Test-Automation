@@ -90,7 +90,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
     test('Verify EPC History data displayed in the Property Details page', async () => {
 
         // Click on the EPC History tab
-        await propertyDetailsPage.DisplayEPCHistoryData();
+        await propertyDetailsPage.SelectTab('Energy efficiency details');
 
         // Verify that the EPC History section shows the no-history message (BUG 925: property now has no EPC certificate history)
         const noHistoryMessage = await propertyDetailsPage.getNoEPCHistoryMessageText();
