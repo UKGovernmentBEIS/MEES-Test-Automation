@@ -40,7 +40,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
                 property.line3,
                 property.town,
                 property.postcode
-            ].filter(part => part !== null && part !== '').join(' ');
+            ].filter(part => part !== null && part !== '').join('\n');
             return addressParts;
         };
 
@@ -56,18 +56,20 @@ test.describe('View Properties Page Data Validation Tests', () => {
 
         // Verify Address (DMS)
         const expectedAddress = constructAddress(dmsPropertyDetails.property);
-        expect(await propertyDetailsPage.getPropertyDetails("Property address")).toHaveText(expectedAddress);
+        await propertyDetailsPage.SelectTab('Property details');
+        expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName(
+            'Property details', 'Property address')).toBe(expectedAddress);
 
         // Verify UPRN (DMS)
-        expect(await propertyDetailsPage.getPropertyDetails("UPRN")).toHaveText(dmsPropertyDetails.property.uprn.toString());
+        expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'UPRN')).toBe(dmsPropertyDetails.property.uprn.toString());
 
         // Verify Property Type (DMS)
         // ToDo. We are expecting changes to the property type data in DMS which will allow us to verify this field. Once those changes are in place we can update the test to verify the property type as well.
-        //expect(await propertyDetailsPage.getPropertyDetails("Property type")).toHaveText(dmsPropertyDetails.property.epcPropertyType);
+        //expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Property type')).toBe(dmsPropertyDetails.property.epcPropertyType);
 
         // Verify Rateable Value (DMS)
         const expectedRateableValue = formatCurrency(dmsPropertyDetails.property.rateableValue!);
-        expect(await propertyDetailsPage.getPropertyDetails("Rateable value")).toHaveText(expectedRateableValue);
+        expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Rateable value')).toBe(expectedRateableValue);
     });
 
     test('Verify data displayed in the Energy Ratings and PRS Exemptions section of the Property Details page', async () => {
