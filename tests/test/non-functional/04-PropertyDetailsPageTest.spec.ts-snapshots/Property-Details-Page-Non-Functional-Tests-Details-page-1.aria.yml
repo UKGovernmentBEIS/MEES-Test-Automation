@@ -3,7 +3,7 @@
 - term: UPRN
 - definition: /\d+/
 - term: Property type
-- definition: Not available
+- definition: Not found
 - term: Rateable value
 - definition: /£\d+,\d+/
 - term: Possible rental evidence

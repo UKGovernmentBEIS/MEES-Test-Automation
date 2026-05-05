@@ -36,7 +36,7 @@
       - link "Sign out":
         - /url: "#"
   - main:
-    - paragraph: Guidance
+    - heading "Guidance" [level=1]
     - heading "Where property information comes from" [level=1]
     - paragraph: Multiple datasets are combined in this service to create a single record for each property, including information from the PRS Exemptions Register. The data is collected, cleaned, and checked before it is shown in this service.
     - term: "From:"

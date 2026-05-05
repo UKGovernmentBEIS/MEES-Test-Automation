@@ -13,7 +13,7 @@ export const TemplateTypes = {
     UNDERSTANDING_COMPLIANCE: 'Understanding compliance notices',
     UNDERSTANDING_PENALTIES: 'Understanding penalties',
     ENFORCEMENT_TIMELINE: 'Enforcement timeline',
-    UNDERSTANDING_MEES_REGULATIONS: 'Understanding the MEES regulations',
+    UNDERSTANDING_MEES_REGULATIONS: 'Understanding the MEES Regulations',
     WHERE_PROPERTY_INFORMATION_COMES_FROM: 'Where property information comes from'
 } as const;
 
@@ -45,7 +45,7 @@ export class GuidanceMainPage extends BaseCompliancePage {
     }
 
     async isDisplayed(): Promise<boolean> {
-        return this.page.url().includes('guidance') && await this.pageTitle.isVisible();
+        return await this.pageTitle.isVisible()==true;
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
@@ -66,15 +66,25 @@ export class GuidanceMainPage extends BaseCompliancePage {
          await templateLink.click();
         switch (templateType) {
             case 'Understanding compliance notices':
-                return new GuidanceUnderstandingComplianceNoticePage(this.page);
+                const page = new GuidanceUnderstandingComplianceNoticePage(this.page);
+                await page.waitForPageToLoad();
+                return page;
             case 'Understanding penalties':
-                return new GuidanceUnderstandingPenaltiesPage(this.page);
+                const penaltiesPage = new GuidanceUnderstandingPenaltiesPage(this.page);
+                await penaltiesPage.waitForPageToLoad();
+                return penaltiesPage;
             case 'Enforcement timeline':
-                return new GuidanceEnforcementTimelinePage(this.page);
-            case 'Understanding the MEES regulations':
-                return new GuidanceUnderstandingTheMEESRegulationsPage(this.page);
+                const timelinePage = new GuidanceEnforcementTimelinePage(this.page);
+                await timelinePage.waitForPageToLoad();
+                return timelinePage;
+            case 'Understanding the MEES Regulations':
+                const meesPage = new GuidanceUnderstandingTheMEESRegulationsPage(this.page);
+                await meesPage.waitForPageToLoad();
+                return meesPage;
             case 'Where property information comes from':
-                return new GuidanceWherePropertyInformationComesFromPage(this.page);
+                const propertyInfoPage = new GuidanceWherePropertyInformationComesFromPage(this.page);
+                await propertyInfoPage.waitForPageToLoad();
+                return propertyInfoPage;
         }
     }
 

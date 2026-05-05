@@ -39,7 +39,7 @@
     - heading "View property records" [level=1]
     - heading "Filters applied" [level=2]
     - term: Council
-    - definition: All councils
+    - definition: All your councils
     - term: Energy rating
     - definition: All energy ratings
     - term: Street

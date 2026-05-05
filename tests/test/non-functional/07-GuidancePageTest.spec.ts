@@ -1,4 +1,4 @@
-import { test } from '../../fixtures/authFixtures';
+import { expect, test } from '../../fixtures/authFixtures';
 import { LandingPage } from '../../pages/LandingPage';
 import { PageName } from '../../utils/TestTypes';
 import { BaseNonFunctionalTest } from '../../utils/BaseNonFunctionalTest';
@@ -36,6 +36,12 @@ test.describe('Guidance Main Page Non-Functional Tests', () => {
             // Click on the template link to navigate to the template page
             const templatePage = await guidanceMainPage.clickTemplateLink(templateType);
 
+            // Verify correct page is displayed
+            const headingText = await templatePage.getPageHeadingText();
+            expect(headingText,
+                `Expected page heading to be "${templateType}", but found "${headingText}" instead.`)
+                .toBe(templateType);
+
             // Verify accessibility on the template page
             await baseTest.verifyAccessibility(guidanceMainPage.getPageNameForTemplate(templateType));
 
@@ -45,6 +51,9 @@ test.describe('Guidance Main Page Non-Functional Tests', () => {
 
             // Navigate back to the Guidance Main page for the next iteration
             await templatePage.clickGuidanceBreadcrumb();
+            expect(await guidanceMainPage.isDisplayed(),
+                `Expected to be back on the Guidance Main page after clicking breadcrumb, but it was not displayed.`)
+                .toBeTruthy();
         }
     });
 });

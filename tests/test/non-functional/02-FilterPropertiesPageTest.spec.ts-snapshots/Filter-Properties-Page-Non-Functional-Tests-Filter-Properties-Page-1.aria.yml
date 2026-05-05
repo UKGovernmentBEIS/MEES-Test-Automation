@@ -41,7 +41,7 @@
     - group: You can view records from 2 councils
     - text: Council (optional) Select the council you want to view records for
     - combobox "Council (optional)":
-      - option "Show all 2 councils" [selected]
+      - option "Show all your councils" [selected]
       - option "LONDON BOROUGH OF BARNET"
       - option "LONDON BOROUGH OF BEXLEY"
     - group "Energy rating (optional)":

@@ -9,6 +9,7 @@ export abstract class BaseGuidancePage extends BaseCompliancePage {
     protected readonly breadcrumbGuidance: Locator;
     protected readonly pageTitle: Locator
     protected readonly pageContext: Locator;
+    protected readonly pageHeading: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -16,6 +17,7 @@ export abstract class BaseGuidancePage extends BaseCompliancePage {
         this.breadcrumbGuidance = page.getByLabel('Breadcrumb').getByRole('link', { name: 'Guidance' });
         this.pageTitle = page.getByRole('heading', { name: 'Guidance' });
         this.pageContext = page.locator('#main-content');
+        this.pageHeading = page.locator('h1.govuk-heading-l');
     }
 
     async waitForPageToLoad(): Promise<void> {
@@ -52,5 +54,9 @@ export abstract class BaseGuidancePage extends BaseCompliancePage {
         const guidanceMainPage = new GuidanceMainPage(this.page);
         await guidanceMainPage.waitForPageToLoad();
         return guidanceMainPage;
+    }
+
+    async getPageHeadingText(): Promise<string> {
+        return await this.pageHeading.textContent() ?? '';
     }
 }
