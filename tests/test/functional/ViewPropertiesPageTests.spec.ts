@@ -706,7 +706,9 @@ test.describe('View Properties export functionality', () => {
         expect(expectedPRSExemptionStatus, 'Reference property has no PRS Exemption Status').toBeDefined();
         const expectedPRSExemptionDate: string = await (await propertyDetailsPage.getExemptionDetails('PRS exemption date')).innerText();
         expect(expectedPRSExemptionDate, 'Reference property has no PRS Exemption Date').toBeDefined();
-        const expectedPRSExemptionComments: string[] = await (await propertyDetailsPage.getComments()).allInnerTexts();
+        const commentsLocator = await propertyDetailsPage.getComments();
+        await commentsLocator.first().waitFor({ state: 'visible' });
+        const expectedPRSExemptionComments: string[] = await commentsLocator.allInnerTexts();
         expect(expectedPRSExemptionComments.length, 'Reference property has no PRS Exemption Comments').toBeGreaterThan(0);
 
         // Navigate back to View Properties and export the CSV (filters are preserved in the breadcrumb URL)
