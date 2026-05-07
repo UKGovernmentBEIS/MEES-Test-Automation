@@ -647,7 +647,7 @@ test.describe('Data Verification Tests', () => {
         expect(cert.transactionType).toBe('Mandatory issue (Property on construction).');
     });
 
-    test('Landlord returns expected data values when buildingrefnum is set to EPC Id', async ({ request }) => {
+    test('Landlords array is empty when querying by EPC Id with no UPRN', async ({ request }) => {
         const response = await request.get(`${baseUrl}?buildingrefnum=${refBuildingRefNum}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
@@ -659,7 +659,7 @@ test.describe('Data Verification Tests', () => {
         
         expect(property.uprn).toBeNull();
         expect(property.buildingReferenceNumber).toBe(Number(refBuildingRefNum));
-        // TODO: Find a property with landlord data and no UPRN (EPC Id only) to assert landlord field values
+        // Landlords are linked to a property by UPRN — properties without a UPRN will always return an empty landlords array
         expect(landlords).toHaveLength(0);
     });
 
