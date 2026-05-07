@@ -6,6 +6,8 @@ const KNOWN_TOWN = 'DARTFORD';
 const KNOWN_POSTCODE = 'DA1 3PY';
 const KNOWN_STREET = 'LOWER STATION  ROAD';
 const KNOWN_ENERGY_RATING_BAND = 'B';
+const POSSIBLE_EVIDENCE_EPC_TRUE_UPRN = 100022918346;
+const POSSIBLE_EVIDENCE_EPC_FALSE_UPRN = 10011861777;
 
 test.describe('Export DMS API Tests', () => {
     const baseUrl = process.env.DMS_BASE_URL + '/mees/export';
@@ -676,5 +678,126 @@ test.describe('Export EPC Data Integrity Tests', () => {
                 `UPRN ${item.property.Uprn}: most recent EPC AssetRatingBand '${mostRecentEpc.AssetRatingBand}' does not match property EPCEnergyRatingBand '${item.property.EPCEnergyRatingBand}'`
             ).toBe(item.property.EPCEnergyRatingBand);
         }
+    });
+});
+
+test.describe('Export Possible Evidence Rule Tests', () => {
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/export';
+
+    test('PossibleEvidenceEpcTransactionType is true when the latest EPC certificate transaction type is Property to let', async ({ request }) => {
+        const response = await request.post(baseUrl, {
+            data: { "lacodes": KNOWN_LACODES, "town": KNOWN_TOWN },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+        const item = parsedBody.data.find((entry: any) => entry.property.Uprn === POSSIBLE_EVIDENCE_EPC_TRUE_UPRN);
+
+        expect(item, `Expected to find UPRN ${POSSIBLE_EVIDENCE_EPC_TRUE_UPRN} in export response`).toBeDefined();
+        expect(item.property.PossibleEvidenceEpcTransactionType).toBe(true);
+
+        const latestEpc = [...item.EpcCertificates].sort(
+            (a: any, b: any) => new Date(b.LodgementDate).getTime() - new Date(a.LodgementDate).getTime()
+        )[0];
+
+        expect(latestEpc, `Expected UPRN ${POSSIBLE_EVIDENCE_EPC_TRUE_UPRN} to have at least one EPC certificate`).toBeDefined();
+        expect(latestEpc.TransactionType).toBe('Mandatory issue (Property to let).');
+    });
+
+    test('PossibleEvidenceEpcTransactionType is false when only an older EPC certificate is Property to let', async ({ request }) => {
+        const response = await request.post(baseUrl, {
+            data: { "lacodes": KNOWN_LACODES, "town": KNOWN_TOWN },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+        const item = parsedBody.data.find((entry: any) => entry.property.Uprn === POSSIBLE_EVIDENCE_EPC_FALSE_UPRN);
+
+        expect(item, `Expected to find UPRN ${POSSIBLE_EVIDENCE_EPC_FALSE_UPRN} in export response`).toBeDefined();
+        expect(item.property.PossibleEvidenceEpcTransactionType).toBe(false);
+
+        const sortedEpcs = [...item.EpcCertificates].sort(
+            (a: any, b: any) => new Date(b.LodgementDate).getTime() - new Date(a.LodgementDate).getTime()
+        );
+
+        expect(sortedEpcs.length, `Expected UPRN ${POSSIBLE_EVIDENCE_EPC_FALSE_UPRN} to have multiple EPC certificates`).toBeGreaterThan(1);
+        expect(sortedEpcs[0].TransactionType).not.toBe('Mandatory issue (Property to let).');
+        expect(
+            sortedEpcs.some((epc: any) => epc.TransactionType === 'Mandatory issue (Property to let).'),
+            `Expected UPRN ${POSSIBLE_EVIDENCE_EPC_FALSE_UPRN} to have an older EPC certificate with TransactionType 'Mandatory issue (Property to let).'`
+        ).toBe(true);
+    });
+
+    test('PossibleEvidenceSiccode is true only when at least one landlord SIC code contains 68209', async ({ request }) => {
+        const response = await request.post(baseUrl, {
+            data: { "lacodes": KNOWN_LACODES, "town": KNOWN_TOWN },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+
+        const itemsToValidate = parsedBody.data
+            .filter((item: any) => item.property.PossibleEvidenceSiccode === true)
+            .slice(0, MAX_PROPERTIES_TO_VALIDATE);
+        expect(itemsToValidate.length, 'Expected at least one property with PossibleEvidenceSiccode = true').toBeGreaterThan(0);
+
+        for (const item of itemsToValidate) {
+            const sicCodes = item.Landlords.flatMap((landlord: any) => [
+                landlord.SicCodeSicText1,
+                landlord.SicCodeSicText2,
+                landlord.SicCodeSicText3,
+                landlord.SicCodeSicText4
+            ].filter(Boolean));
+
+            expect(
+                sicCodes.some((sicCode: string) => sicCode.includes('68209')),
+                `UPRN ${item.property.Uprn} has PossibleEvidenceSiccode = true but no landlord SIC code contains 68209`
+            ).toBe(true);
+        }
+    });
+
+    test('PossibleEvidenceSiccode is false when no landlord SIC code contains 68209', async ({ request }) => {
+        const response = await request.post(baseUrl, {
+            data: { "lacodes": KNOWN_LACODES, "town": KNOWN_TOWN },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+        const item = parsedBody.data.find((entry: any) => entry.property.Uprn === POSSIBLE_EVIDENCE_EPC_TRUE_UPRN);
+
+        expect(item, `Expected to find UPRN ${POSSIBLE_EVIDENCE_EPC_TRUE_UPRN} in export response`).toBeDefined();
+        expect(item.property.PossibleEvidenceSiccode).toBe(false);
+
+        const sicCodes = item.Landlords.flatMap((landlord: any) => [
+            landlord.SicCodeSicText1,
+            landlord.SicCodeSicText2,
+            landlord.SicCodeSicText3,
+            landlord.SicCodeSicText4
+        ].filter(Boolean));
+
+        expect(
+            sicCodes.some((sicCode: string) => sicCode.includes('68209')),
+            `UPRN ${POSSIBLE_EVIDENCE_EPC_TRUE_UPRN} should not contain landlord SIC code 68209`
+        ).toBe(false);
     });
 });
