@@ -771,15 +771,8 @@ test.describe('View Properties export functionality', () => {
             })
             .filter(s => s !== '');
 
-        // TODO (Bug 929): The UI truncates the comments list to 29 entries even when more exist.
-        // Until fixed, compare only the comments visible in the UI against the export (the export
-        // correctly contains the full history). If the UI shows all comments (≤ export count and
-        // the counts match), fall through to a full equality check.
-        const uiCommentTextsToCompare = uiCommentTexts.length < exportCommentTexts.length
-            ? exportCommentTexts.slice(0, uiCommentTexts.length)
-            : exportCommentTexts;
-
-        expect(uiCommentTextsToCompare,
+        // Compare all comments between UI and export
+        expect(exportCommentTexts,
             `Comments mismatch for UPRN ${referencedProperty_UPRN}: ` +
             `UI has ${uiCommentTexts.length} comment(s), export has ${exportCommentTexts.length} comment(s). ` +
             `First UI: '${uiCommentTexts[0]}', First export: '${exportCommentTexts[0]}'`

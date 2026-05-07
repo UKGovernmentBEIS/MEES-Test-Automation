@@ -106,9 +106,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
                 signOutButton: this.signOutButton,
                 commentTextArea: this.commentTextArea,
                 commentSaveButton: this.commentSaveButton,
-                commentCancelButton: this.commentCancelButton,
-                propertyDetailsRows: this.propertyDetailsRows,
-                propertyExemptionDetailsRows: this.propertyExemptionDetailsRows
+                commentCancelButton: this.commentCancelButton
             },
             60000);
     }
@@ -250,10 +248,19 @@ export class PropertyDetailsPage extends BaseCompliancePage {
 
     //#region DMS API Methods
 
-    async GetDMSPropertyDetailsValues(request: APIRequestContext, uprn: string): Promise<DMSPropertyDetails> {
+    async GetDMSPropertyDetailsValues(request: APIRequestContext, uprn: string | null = null, buildingReferenceNumber: string | null = null): Promise<DMSPropertyDetails> {
         const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
 
-        const response = await request.get(`${baseUrl}?uprn=${uprn}`, {
+        let queryParam = '';
+        if (uprn) {
+            queryParam = `uprn=${uprn}`;
+        } else if (buildingReferenceNumber) {
+            queryParam = `buildingrefnum=${buildingReferenceNumber}`;
+        } else {
+            throw new Error('Either uprn or buildingReferenceNumber must be provided');
+        }
+
+        const response = await request.get(`${baseUrl}?${queryParam}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
             }

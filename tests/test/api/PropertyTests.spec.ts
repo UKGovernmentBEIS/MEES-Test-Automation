@@ -169,9 +169,8 @@ test.describe('Response Structure Tests', () => {
         expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText4);
     });
 
-    // Bug 925: Property fields are only returned when querying by UPRN, not when querying by Building Reference Number — this test verifies the presence of property data when using Building Reference Number, but is currently skipped until the underlying issue is resolved
-    test.skip('Landlords array has correct structure using Building Reference Number', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=${parambuildingrefnum}`, {
+    test('Landlords array has correct structure using Building Reference Number', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=${paramUprn}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
             }
@@ -531,12 +530,10 @@ test.describe('Edge Case Tests', () => {
 
 test.describe('Data Verification Tests', () => {
     const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
-    // Reference property: Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL
     const refUprn = '100022918361';
-    const refBuildingRefNum = '1172671'; // same physical property as refUprn
+    const refBuildingRefNum = '858945';
 
-    // Bug 925: Property fields are only returned when querying by UPRN, not when querying by Building Reference Number — this test verifies the presence of property data when using Building Reference Number, but is currently skipped until the underlying issue is resolved
-    test.skip('Property fields return expected values for known UPRN', async ({ request }) => {
+    test('Property fields return expected values for known UPRN', async ({ request }) => {
         const response = await request.get(`${baseUrl}?uprn=${refUprn}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
@@ -546,7 +543,7 @@ test.describe('Data Verification Tests', () => {
 
         const { property } = await response.json();
         expect(property.uprn).toBe(100022918361);
-        expect(property.buildingReferenceNumber).toBe(1172671);
+        expect(property.buildingReferenceNumber).toBe(Number(refUprn)); // buildingReferenceNumber equals UPRN when UPRN is available
         expect(property.postcode).toBe('DA1 4AL');
         expect(property.town).toBe('DARTFORD');
         expect(property.epcEnergyRating).toBe(22);
@@ -584,9 +581,8 @@ test.describe('Data Verification Tests', () => {
         expect(cert1.expiryDate).toContain('2025-03-06');
     });
 
-    // Bug 925: EPC certificates are only returned when querying by UPRN, not when querying by Building Reference Number — this test verifies the presence of EPC data when using Building Reference Number, but is currently skipped until the underlying issue is resolved
-    test.skip('epcCertificates contains two entries with expected data for known buildingrefnum', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=${refBuildingRefNum}`, {
+    test('epcCertificates contains two entries with expected data when buildingrefnum is set to UPRN', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=${refUprn}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTY_KEY!
             }
@@ -600,15 +596,15 @@ test.describe('Data Verification Tests', () => {
         expect(cert0.uprn).toBe(100022918361);
         expect(cert0.assetRating).toBe(22);
         expect(cert0.assetRatingBand).toBe('A');
-        expect(cert0.lodgementDate).toContain('2025 August 13');
-        expect(cert0.expiryDate).toContain('2035 August 13');
+        expect(cert0.lodgementDate).toContain('2025-08-13T00:00:00');
+        expect(cert0.expiryDate).toContain('2035-08-13T00:00:00');
 
         const cert1 = epcCertificates[1];
         expect(cert1.uprn).toBe(100022918361);
         expect(cert1.assetRating).toBe(93);
         expect(cert1.assetRatingBand).toBe('D');
-        expect(cert1.lodgementDate).toContain('2015 March 06');
-        expect(cert1.expiryDate).toContain('2025 March 06');
+        expect(cert1.lodgementDate).toContain('2015-03-06T00:00:00');
+        expect(cert1.expiryDate).toContain('2025-03-06T00:00:00');
     });
 
     test('Landlord returns expected data values for known UPRN', async ({ request }) => {
@@ -626,5 +622,70 @@ test.describe('Data Verification Tests', () => {
         expect(landlord.companyName).toBe('BRITISH OVERSEAS BANK NOMINEES LIMITED');
         expect(landlord.address).toBe('250 Bishopsgate, London EC2M 4AA');
         expect(landlord.location).toBe('Onshore');
+    });
+
+    test('epcCertificates contains one entry with expected data when buildingrefnum is set to EPC Id', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=${refBuildingRefNum}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        const { property, epcCertificates } = await response.json();
+        
+        expect(property.uprn).toBeNull();
+        expect(property.buildingReferenceNumber).toBe(Number(refBuildingRefNum));
+        expect(epcCertificates).toHaveLength(1);
+
+        const cert = epcCertificates[0];
+        expect(cert.uprn).toBe(0);
+        expect(cert.assetRating).toBe(25);
+        expect(cert.assetRatingBand).toBe('A');
+        expect(cert.lodgementDate).toContain('2022-09-23');
+        expect(cert.expiryDate).toContain('2032-09-23');
+        expect(cert.transactionType).toBe('Mandatory issue (Property on construction).');
+    });
+
+    test('Landlord returns expected data values when buildingrefnum is set to EPC Id', async ({ request }) => {
+        const response = await request.get(`${baseUrl}?buildingrefnum=${refBuildingRefNum}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        const { property, landlords } = await response.json();
+        
+        expect(property.uprn).toBeNull();
+        expect(property.buildingReferenceNumber).toBe(Number(refBuildingRefNum));
+        // TODO: Find a property with landlord data and no UPRN (EPC Id only) to assert landlord field values
+        expect(landlords).toHaveLength(0);
+    });
+
+    test('buildingReferenceNumber is consistent when querying same property by uprn vs buildingrefnum', async ({ request }) => {
+        // Query the same property using uprn parameter
+        const responseByUprn = await request.get(`${baseUrl}?uprn=${refUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(responseByUprn.status()).toBe(200);
+
+        // Query the same property using buildingrefnum parameter set to UPRN
+        const responseByBuildingRef = await request.get(`${baseUrl}?buildingrefnum=${refUprn}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTY_KEY!
+            }
+        });
+        expect(responseByBuildingRef.status()).toBe(200);
+
+        // Both responses should return the same buildingReferenceNumber (equal to UPRN)
+        const propertyByUprn = (await responseByUprn.json()).property;
+        const propertyByBuildingRef = (await responseByBuildingRef.json()).property;
+        
+        expect(propertyByUprn.buildingReferenceNumber).toBe(Number(refUprn));
+        expect(propertyByBuildingRef.buildingReferenceNumber).toBe(Number(refUprn));
+        expect(propertyByUprn.buildingReferenceNumber).toBe(propertyByBuildingRef.buildingReferenceNumber);
     });
 });
