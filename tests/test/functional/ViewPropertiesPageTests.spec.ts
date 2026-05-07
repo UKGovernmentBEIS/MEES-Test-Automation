@@ -652,9 +652,6 @@ test.describe('View Properties export functionality', () => {
         const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
         expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-        // BUG 900 WORKAROUND: For properties with no EPC data, the export currently outputs the base URL
-        // 'https://find-energy-certificate.service.gov.uk/energy-certificate/' instead of an empty string.
-        // Update the find predicate to check for an empty link once BUG 900 is fixed.
         const EPC_BASE_URL = 'https://find-energy-certificate.service.gov.uk/energy-certificate/';
 
         // Find a property with 'EPC energy rating' = '0'.
