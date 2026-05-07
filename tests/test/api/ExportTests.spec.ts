@@ -511,3 +511,170 @@ test.describe('Export Filter Criteria Tests', () => {
         }
     });
 });
+
+test.describe('Export EPC Data Integrity Tests', () => {
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/export';
+
+    test('Unrated properties have null CertificateLink', async ({ request }) => {
+        const response = await request.post(baseUrl, {
+            data: { "lacodes": KNOWN_LACODES, "energyratingband": "Unrated" },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+        const itemsToValidate = parsedBody.data.slice(0, MAX_PROPERTIES_TO_VALIDATE);
+        expect(itemsToValidate.length, 'Expected at least one Unrated property to validate').toBeGreaterThan(0);
+
+        for (const item of itemsToValidate) {
+            expect(
+                item.property.CertificateLink,
+                `Unrated property UPRN ${item.property.Uprn} should have null CertificateLink but got: ${item.property.CertificateLink}`
+            ).toBeNull();
+        }
+    });
+
+    test('Unrated properties have EPCEnergyRating of 0 and null EPCPropertyType, EPCExpiryDate and EPCTransactionType', async ({ request }) => {
+        const response = await request.post(baseUrl, {
+            data: { "lacodes": KNOWN_LACODES, "energyratingband": "Unrated" },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+        const itemsToValidate = parsedBody.data.slice(0, MAX_PROPERTIES_TO_VALIDATE);
+        expect(itemsToValidate.length, 'Expected at least one Unrated property to validate').toBeGreaterThan(0);
+
+        for (const item of itemsToValidate) {
+            expect(
+                item.property.EPCEnergyRating,
+                `Unrated property UPRN ${item.property.Uprn} should have EPCEnergyRating of 0`
+            ).toBe(0);
+            expect(
+                item.property.EPCPropertyType,
+                `Unrated property UPRN ${item.property.Uprn} should have null EPCPropertyType`
+            ).toBeNull();
+            expect(
+                item.property.EPCExpiryDate,
+                `Unrated property UPRN ${item.property.Uprn} should have null EPCExpiryDate`
+            ).toBeNull();
+            expect(
+                item.property.EPCTransactionType,
+                `Unrated property UPRN ${item.property.Uprn} should have null EPCTransactionType`
+            ).toBeNull();
+        }
+    });
+
+    test('Unrated properties have an empty EpcCertificates array', async ({ request }) => {
+        const response = await request.post(baseUrl, {
+            data: { "lacodes": KNOWN_LACODES, "energyratingband": "Unrated" },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+        const itemsToValidate = parsedBody.data.slice(0, MAX_PROPERTIES_TO_VALIDATE);
+        expect(itemsToValidate.length, 'Expected at least one Unrated property to validate').toBeGreaterThan(0);
+
+        for (const item of itemsToValidate) {
+            expect(
+                item.EpcCertificates.length,
+                `Unrated property UPRN ${item.property.Uprn} should have no EPC certificates`
+            ).toBe(0);
+        }
+    });
+
+    test('Non-null CertificateLink is a valid https URL', async ({ request }) => {
+        const response = await request.post(baseUrl, {
+            data: { "lacodes": KNOWN_LACODES, "town": KNOWN_TOWN },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+
+        const itemsWithLink = parsedBody.data
+            .filter((item: any) => item.property.CertificateLink !== null)
+            .slice(0, MAX_PROPERTIES_TO_VALIDATE);
+        expect(itemsWithLink.length, 'Expected at least one property with a non-null CertificateLink').toBeGreaterThan(0);
+
+        for (const item of itemsWithLink) {
+            expect(
+                item.property.CertificateLink,
+                `UPRN ${item.property.Uprn} CertificateLink should start with https://`
+            ).toMatch(/^https:\/\//);
+        }
+    });
+
+    test('Properties with EPC certificates have a non-null EPCExpiryDate', async ({ request }) => {
+        const response = await request.post(baseUrl, {
+            data: { "lacodes": KNOWN_LACODES, "town": KNOWN_TOWN },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+
+        const itemsWithEpc = parsedBody.data
+            .filter((item: any) => item.EpcCertificates.length > 0)
+            .slice(0, MAX_PROPERTIES_TO_VALIDATE);
+        expect(itemsWithEpc.length, 'Expected at least one property with EPC certificates').toBeGreaterThan(0);
+
+        for (const item of itemsWithEpc) {
+            expect(
+                item.property.EPCExpiryDate,
+                `UPRN ${item.property.Uprn} has EPC certificates but EPCExpiryDate is null`
+            ).not.toBeNull();
+        }
+    });
+
+    test('Most recent EpcCertificate AssetRatingBand matches property EPCEnergyRatingBand', async ({ request }) => {
+        const response = await request.post(baseUrl, {
+            data: { "lacodes": KNOWN_LACODES, "town": KNOWN_TOWN },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+
+        const itemsWithEpc = parsedBody.data
+            .filter((item: any) => item.EpcCertificates.length > 0)
+            .slice(0, MAX_PROPERTIES_TO_VALIDATE);
+        expect(itemsWithEpc.length, 'Expected at least one property with EPC certificates').toBeGreaterThan(0);
+
+        for (const item of itemsWithEpc) {
+            // Sort by LodgementDate descending to get the most recent EPC certificate
+            const mostRecentEpc = [...item.EpcCertificates].sort(
+                (a: any, b: any) => new Date(b.LodgementDate).getTime() - new Date(a.LodgementDate).getTime()
+            )[0];
+            expect(
+                mostRecentEpc.AssetRatingBand,
+                `UPRN ${item.property.Uprn}: most recent EPC AssetRatingBand '${mostRecentEpc.AssetRatingBand}' does not match property EPCEnergyRatingBand '${item.property.EPCEnergyRatingBand}'`
+            ).toBe(item.property.EPCEnergyRatingBand);
+        }
+    });
+});
