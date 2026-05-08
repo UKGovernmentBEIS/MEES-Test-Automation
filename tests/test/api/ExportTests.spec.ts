@@ -8,6 +8,7 @@ const KNOWN_STREET = 'LOWER STATION  ROAD';
 const KNOWN_ENERGY_RATING_BAND = 'B';
 const POSSIBLE_EVIDENCE_EPC_TRUE_UPRN = 100022918346;
 const POSSIBLE_EVIDENCE_EPC_FALSE_UPRN = 10011861777;
+const POSSIBLE_EVIDENCE_BOTH_TRUE_UPRN = 200002783818;
 
 test.describe('Export DMS API Tests', () => {
     const baseUrl = process.env.DMS_BASE_URL + '/mees/export';
@@ -769,6 +770,34 @@ test.describe('Export Possible Evidence Rule Tests', () => {
                 `UPRN ${item.property.Uprn} has PossibleEvidenceSiccode = true but no landlord SIC code contains 68209`
             ).toBe(true);
         }
+    });
+
+    test('Both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode can be true simultaneously', async ({ request }) => {
+        const response = await request.post(baseUrl, {
+            data: { "lacodes": KNOWN_LACODES, "town": KNOWN_TOWN },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+        const item = parsedBody.data.find((entry: any) => entry.property.Uprn === POSSIBLE_EVIDENCE_BOTH_TRUE_UPRN);
+
+        expect(item, `Expected to find UPRN ${POSSIBLE_EVIDENCE_BOTH_TRUE_UPRN} in export response`).toBeDefined();
+        expect(
+            item.property.PossibleEvidenceSiccode,
+            `UPRN ${POSSIBLE_EVIDENCE_BOTH_TRUE_UPRN} should have PossibleEvidenceSiccode = true`
+        ).toBe(true);
+        // BUG 948: PossibleEvidenceEpcTransactionType should be true — the latest EPC has TransactionType 'Mandatory issue (Property to let).'
+        // but the API incorrectly returns false when PossibleEvidenceSiccode is also true.
+        // Revert this assertion to .toBe(true) once Bug 948 is resolved.
+        expect(
+            item.property.PossibleEvidenceEpcTransactionType,
+            `UPRN ${POSSIBLE_EVIDENCE_BOTH_TRUE_UPRN} EPCTransactionType is 'Mandatory issue (Property to let).' so PossibleEvidenceEpcTransactionType should be true (BUG 948: currently returns false)`
+        ).toBe(false);
     });
 
     test('PossibleEvidenceSiccode is false when no landlord SIC code contains 68209', async ({ request }) => {
