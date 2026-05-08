@@ -37,16 +37,13 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'Property address',        dmsFields: ['Name', 'Number', 'Line1', 'Line2', 'Line3', 'Town', 'County', 'Postcode'], normalize: (v) => v.trim() },
         { exportColumn: 'UPRN',                    dmsField: 'Uprn' },
         { exportColumn: 'Property type',           dmsField: 'EPCPropertyType' },
+        // BUG 937: Export column header reads 'Rateable value (£)' but specification defines it as 'Rateable value (GBP)'.
+        // Update exportColumn to 'Rateable value (GBP)' once BUG 937 is resolved.
         { exportColumn: 'Rateable value (£)',      dmsField: 'RateableValue' },
         // Possible rental evidence is computed: 'Found' when at least one of PossibleEvidenceEpcTransactionType or PossibleEvidenceSiccode is true;
         // 'Not found' only when both are false.
         // Validated in the dedicated 'Exported Possible rental evidence field value is correct' test.
         { exportColumn: 'Possible rental evidence', dedicatedTest: true },
-        // Property owner fields are dynamic based on the maximum number of landlords associated with a property in exported data.
-        { exportColumn: 'Property owner 1 name',            dmsLandlordField: 'LandlordCompanyName' },
-        { exportColumn: 'Property owner 1 location',        dmsLandlordField: 'LandlordLocation' },
-        { exportColumn: 'Property owner 1 address',         dmsLandlordField: 'LandlordAddress' },
-        { exportColumn: 'Property owner 1 SIC code(s)',     dmsLandlordFields: ['SicCodeSicText1', 'SicCodeSicText2', 'SicCodeSicText3', 'SicCodeSicText4'], normalize: (v) => v.split(',').map(s => s.trim()).filter(s => s !== 'null').join(' | ') },
         { exportColumn: 'EPC energy rating band',           dmsField: 'EPCEnergyRatingBand' },
         { exportColumn: 'EPC energy rating',                dmsField: 'EPCEnergyRating' },
         { exportColumn: 'EPC expiry date',                  dmsField: 'EPCExpiryDate',
@@ -60,15 +57,22 @@ export class ViewPropertiesPage extends BaseCompliancePage {
                 return v;
             }
         },
+        { exportColumn: 'EPC transaction type',             dmsField: 'EPCTransactionType' },
+        // BUG 951: Export column header reads 'EPC certificates (Link)' but specification defines it as 'EPC certificate link'.
+        // Update exportColumn to 'EPC certificate link' once BUG 951 is resolved.
+        { exportColumn: 'EPC certificates (Link)',          dmsEpcField: 'CertificateLink' },
         // EPC history aggregates TransactionType from every element in the EpcCertificates array joined with ' | '.
         // flattenItem() only reads the first EPC certificate, so a direct loop comparison would miss subsequent entries.
         // Validated in the dedicated 'Exported EPC history field value is correct' test.
         { exportColumn: 'EPC history',                      dedicatedTest: true },
         { exportColumn: 'PRS exemption status',             dedicatedTest: true },
         { exportColumn: 'PRS exemption date',               dedicatedTest: true },
+        // Property owner fields are dynamic based on the maximum number of landlords associated with a property in exported data.
+        { exportColumn: 'Property owner 1 name',            dmsLandlordField: 'LandlordCompanyName' },
+        { exportColumn: 'Property owner 1 location',        dmsLandlordField: 'LandlordLocation' },
+        { exportColumn: 'Property owner 1 address',         dmsLandlordField: 'LandlordAddress' },
+        { exportColumn: 'Property owner 1 SIC code(s)',     dmsLandlordFields: ['SicCodeSicText1', 'SicCodeSicText2', 'SicCodeSicText3', 'SicCodeSicText4'], normalize: (v) => v.split(',').map(s => s.trim()).filter(s => s !== 'null').join(' | ') },
         { exportColumn: 'Comments',                         dedicatedTest: true },
-        { exportColumn: 'EPC certificates (Link)',          dmsEpcField: 'CertificateLink' },
-        { exportColumn: 'EPC transaction type',             dmsField: 'EPCTransactionType' },
     ];
 
     private pageContext: Locator;

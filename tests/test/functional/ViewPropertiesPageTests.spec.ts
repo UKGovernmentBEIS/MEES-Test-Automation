@@ -398,7 +398,7 @@ test.describe('View Properties export functionality', () => {
         expect(exportedRecords.length).toEqual(displayedCount);
     });
 
-    test('Only required fields are exported', async ({ page }) => {
+    test('Only required fields are exported in the correct order', async ({ page }) => {
         // Set specific filter criteria to get one property owner/landlord filed set in the export
         const energyRatingFilter = 'A';
         const councilFilter = 'LONDON BOROUGH OF BEXLEY';
@@ -422,6 +422,75 @@ test.describe('View Properties export functionality', () => {
         const extraColumns   = exportColumnNames.filter(c => !expectedColumns.includes(c));
         expect(missingColumns, `Columns missing from export: ${missingColumns.join(', ')}`).toEqual([]);
         expect(extraColumns,   `Unexpected columns in export: ${extraColumns.join(', ')}`).toEqual([]);
+        // BUG 937: 'Rateable value (£)' should be 'Rateable value (GBP)'. BUG 951: 'EPC certificates (Link)' should be 'EPC certificate link'. Order assertion will fail until both bugs are resolved.
+        expect(exportColumnNames, 'Export column order does not match EXPORT_FIELD_MAPPINGS specification').toEqual(expectedColumns);
+    });
+
+    test('Property owner column sets in export equal the maximum landlord count', async ({ request }) => {
+        const energyRatingFilter = 'A';
+        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+        const lacodes = ['E09000004'];
+
+        // Apply filters in the UI and export the CSV
+        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+        await filterPropertiesPage.setCouncilFilter(councilFilter);
+        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await viewPropertiesPage.waitForTableContent();
+        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+        // Determine maximum owner index N from CSV headers (Property owner N name)
+        const exportHeaders = Object.keys(exportedData[0]);
+        const ownerNameHeaderRegex = /^Property owner (\d+) name$/;
+        const ownerIndexes = exportHeaders
+            .map(h => h.match(ownerNameHeaderRegex))
+            .filter((m): m is RegExpMatchArray => m !== null)
+            .map(m => parseInt(m[1], 10));
+        const maxOwnerIndexFromExport = ownerIndexes.length > 0 ? Math.max(...ownerIndexes) : 0;
+
+        // Determine maximum landlord count from DMS for the same filters
+        const dmsApiClient = new DMSExportApiClient(request);
+        const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, energyratingband: energyRatingFilter });
+        expect(rawDmsItems.length, 'DMS export returned no items').toBeGreaterThan(0);
+        const maxLandlordCountFromDms = rawDmsItems.reduce((max, item) => {
+            const landlordCount = Array.isArray(item.Landlords) ? item.Landlords.length : 0;
+            return Math.max(max, landlordCount);
+        }, 0);
+
+        expect(maxOwnerIndexFromExport,
+            `Maximum owner index in export (${maxOwnerIndexFromExport}) does not match maximum landlord count in DMS (${maxLandlordCountFromDms})`
+        ).toBe(maxLandlordCountFromDms);
+
+        // Validate all owner column groups exist for indexes 1..N with no gaps
+        const missingOwnerColumns: string[] = [];
+        for (let i = 1; i <= maxOwnerIndexFromExport; i++) {
+            const requiredColumns = [
+                `Property owner ${i} name`,
+                `Property owner ${i} location`,
+                `Property owner ${i} address`,
+                `Property owner ${i} SIC code(s)`
+            ];
+            requiredColumns.forEach(column => {
+                if (!exportHeaders.includes(column)) {
+                    missingOwnerColumns.push(column);
+                }
+            });
+        }
+        expect(missingOwnerColumns,
+            `Missing owner columns for indexes 1..${maxOwnerIndexFromExport}: ${missingOwnerColumns.join(', ')}`
+        ).toEqual([]);
+
+        // Ensure there are no extra owner columns above N
+        const ownerColumnRegex = /^Property owner (\d+) (name|location|address|SIC code\(s\))$/;
+        const extraOwnerColumns = exportHeaders.filter(header => {
+            const match = header.match(ownerColumnRegex);
+            if (!match) return false;
+            return parseInt(match[1], 10) > maxOwnerIndexFromExport;
+        });
+        expect(extraOwnerColumns,
+            `Unexpected owner columns above max index ${maxOwnerIndexFromExport}: ${extraOwnerColumns.join(', ')}`
+        ).toEqual([]);
     });
 
     test('Exported directly-mapped field values match DMS API', async ({ request }) => {
@@ -604,6 +673,8 @@ test.describe('View Properties export functionality', () => {
     });
 
     test('Exported EPC Certificates (Link) field is valid and matches the property address', async ({ page }) => {
+        // [BUG 951] The export column is currently named 'EPC certificates (Link)'. The specification defines it as 'EPC certificate link'.
+        // All column references in this test must be updated once BUG 951 is resolved.
         // Apply filters in the UI and export the CSV
         const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForPageToLoad();
@@ -645,6 +716,8 @@ test.describe('View Properties export functionality', () => {
     });
 
     test('Exported EPC Certificates (Link) field is empty for properties without EPC data', async ({ page }) => {
+        // [BUG 951] The export column is currently named 'EPC certificates (Link)'. The specification defines it as 'EPC certificate link'.
+        // All column references in this test must be updated once BUG 951 is resolved.
         // Apply filters in the UI and export the CSV
         const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForPageToLoad();
