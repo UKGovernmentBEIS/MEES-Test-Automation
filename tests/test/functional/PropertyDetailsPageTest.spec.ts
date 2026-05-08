@@ -168,10 +168,8 @@ test.describe('View Properties Page Data Validation Tests', () => {
             'Property details', 'Property address')).toBe(expectedAddress);
 
         // Verify UPRN field displays 'Not found' when property has no UPRN
-        // BUG 938 WORKAROUND: UPRN field is empty/null instead of displaying 'Not found' for properties without UPRN.
-        // Update expected value to 'Not found' once BUG 938 is fixed.
         const uprnValue = await propertyDetailsPageNoUprn.getPropertyDetailsByTabNameAndFieldName('Property details', 'UPRN');
-        expect(uprnValue === null || uprnValue === '' || uprnValue === 'null').toBe(true);
+        expect(uprnValue).toBe('Not found');
     });
 });
 
