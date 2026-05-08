@@ -3,7 +3,7 @@
 - term: UPRN
 - definition: /\d+/
 - term: Property type
-- definition: Not found
+- definition: General Industrial and Special Industrial Groups
 - term: Rateable value
 - definition: /£\d+,\d+/
 - term: Possible rental evidence

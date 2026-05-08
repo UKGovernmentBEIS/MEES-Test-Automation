@@ -42,7 +42,7 @@
       - text: ""
       - radio "More than 3 months"
       - text: ""
-    - text: /What is the rateable value of the property\? For example, \d+/
+    - text: /What is the rateable value of the property at the time the penalty notice is served\? For example \d+\. You can find the most current rateable value using the ‘Find a business rates valuation' service\./
     - paragraph: "Error: Enter the rateable value of the property"
-    - textbox "What is the rateable value of the property?"
+    - textbox "What is the rateable value of the property at the time the penalty notice is served?"
     - button "Calculate maximum penalty"

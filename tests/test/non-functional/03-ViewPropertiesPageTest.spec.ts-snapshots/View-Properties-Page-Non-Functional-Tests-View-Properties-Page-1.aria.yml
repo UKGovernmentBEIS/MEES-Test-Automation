@@ -57,5 +57,9 @@
     - button "Export filtered table (.csv)"
     - table:
       - rowgroup:
-        - row "No records found":
-          - cell "No records found"
+        - row "No records found. Learn about why some information may not appear.":
+          - cell "No records found. Learn about why some information may not appear.":
+            - text: ""
+            - link "why some information may not appear":
+              - /url: /guidance-detail?contentKey=MC3SMZCU3HAZASLOEVEBOZNARVTM
+            - text: ""
