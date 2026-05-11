@@ -371,631 +371,630 @@ test.describe('View Properties export functionality', () => {
         filterPropertiesPage = await homePage.clickViewProperties();
     });
 
-    test('Exported data match filtered UI data', async ({ page }) => {       
-        // Set Energy Rating filter to 'A'
-        await filterPropertiesPage.setEnergyRatingFilter('A');
+    test.describe('Export structure', () => {
+        test('Exported data match filtered UI data', async ({ page }) => {       
+            // Set Energy Rating filter to 'A'
+            await filterPropertiesPage.setEnergyRatingFilter('A');
         
-        // Set Council filter to 'LONDON BOROUGH OF BEXLEY'
-        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
+            // Set Council filter to 'LONDON BOROUGH OF BEXLEY'
+            await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
         
-        // Apply the filters
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
+            // Apply the filters
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
 
-        // Get the display count of records before export
-        const propertiesCountField = await viewPropertiesPage.getPropertiesCountField();
-        const displayedCountText = await propertiesCountField.innerText();
-        const displayedCount = parseInt(displayedCountText.match(/(\d+)/)?.[1] || '0', 10);
+            // Get the display count of records before export
+            const propertiesCountField = await viewPropertiesPage.getPropertiesCountField();
+            const displayedCountText = await propertiesCountField.innerText();
+            const displayedCount = parseInt(displayedCountText.match(/(\d+)/)?.[1] || '0', 10);
 
-        // Ensure we have records to export
-        expect(displayedCount).toBeGreaterThan(0);
+            // Ensure we have records to export
+            expect(displayedCount).toBeGreaterThan(0);
         
-        // Export the filtered data
-        const exportedRecords = await viewPropertiesPage.exportFilteredData();
+            // Export the filtered data
+            const exportedRecords = await viewPropertiesPage.exportFilteredData();
         
-        // Validate the exported data
-        expect(exportedRecords.length).toEqual(displayedCount);
-    });
+            // Validate the exported data
+            expect(exportedRecords.length).toEqual(displayedCount);
+        });
 
-    test('Export column names match specification', async ({ page }) => {
-        // TC-2048
-        // [BUG 937] Export column header reads 'Rateable value (£)' but specification defines it as 'Rateable value (GBP)'.
-        // [BUG 951] Export column header reads 'EPC certificates (Link)' but specification defines it as 'EPC certificate link'.
-        // This test will fail until both bugs are resolved and EXPORT_FIELD_MAPPINGS is updated to the correct names.
-        const energyRatingFilter = 'A';
-        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
-        const postcodeFilter = 'DA16 3QD';
-        const fieldMappings: ExportFieldMapping[] = ViewPropertiesPage.EXPORT_FIELD_MAPPINGS;
+        test('Only required fields are exported in the correct order', async ({ page }) => {
+            // TC-2001
+            const energyRatingFilter = 'A';
+            const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+            const postcodeFilter = 'DA16 3QD';
+            const fieldMappings: ExportFieldMapping[] = ViewPropertiesPage.EXPORT_FIELD_MAPPINGS;
 
-        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
-        await filterPropertiesPage.setCouncilFilter(councilFilter);
-        await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+            await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+            await filterPropertiesPage.setCouncilFilter(councilFilter);
+            await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-        const exportColumnNames = Object.keys(exportedData[0]);
-        const expectedColumns = fieldMappings.map(m => m.exportColumn);
-        const missingColumns = expectedColumns.filter(c => !exportColumnNames.includes(c));
-        const extraColumns   = exportColumnNames.filter(c => !expectedColumns.includes(c));
-        expect(missingColumns, `Columns missing from export: ${missingColumns.join(', ')}`).toEqual([]);
-        expect(extraColumns,   `Unexpected columns in export: ${extraColumns.join(', ')}`).toEqual([]);
-    });
+            const exportColumnNames = Object.keys(exportedData[0]);
+            const expectedColumns = fieldMappings.map(m => m.exportColumn);
+            expect(exportColumnNames, 'Export column order does not match EXPORT_FIELD_MAPPINGS specification').toEqual(expectedColumns);
+        });
 
-    test('Only required fields are exported in the correct order', async ({ page }) => {
-        // TC-2001
-        const energyRatingFilter = 'A';
-        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
-        const postcodeFilter = 'DA16 3QD';
-        const fieldMappings: ExportFieldMapping[] = ViewPropertiesPage.EXPORT_FIELD_MAPPINGS;
+        test('Export column names match specification', async ({ page }) => {
+            // TC-2048
+            // [BUG 937] Export column header reads 'Rateable value (£)' but specification defines it as 'Rateable value (GBP)'.
+            // [BUG 951] Export column header reads 'EPC certificates (Link)' but specification defines it as 'EPC certificate link'.
+            // This test will fail until both bugs are resolved and EXPORT_FIELD_MAPPINGS is updated to the correct names.
+            const energyRatingFilter = 'A';
+            const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+            const postcodeFilter = 'DA16 3QD';
+            const fieldMappings: ExportFieldMapping[] = ViewPropertiesPage.EXPORT_FIELD_MAPPINGS;
 
-        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
-        await filterPropertiesPage.setCouncilFilter(councilFilter);
-        await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+            await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+            await filterPropertiesPage.setCouncilFilter(councilFilter);
+            await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-        const exportColumnNames = Object.keys(exportedData[0]);
-        const expectedColumns = fieldMappings.map(m => m.exportColumn);
-        expect(exportColumnNames, 'Export column order does not match EXPORT_FIELD_MAPPINGS specification').toEqual(expectedColumns);
-    });
+            const exportColumnNames = Object.keys(exportedData[0]);
+            const expectedColumns = fieldMappings.map(m => m.exportColumn);
+            const missingColumns = expectedColumns.filter(c => !exportColumnNames.includes(c));
+            const extraColumns   = exportColumnNames.filter(c => !expectedColumns.includes(c));
+            expect(missingColumns, `Columns missing from export: ${missingColumns.join(', ')}`).toEqual([]);
+            expect(extraColumns,   `Unexpected columns in export: ${extraColumns.join(', ')}`).toEqual([]);
+        });
 
-    test('Property owner column sets in export equal the maximum landlord count', async ({ request }) => {
-        const energyRatingFilter = 'A';
-        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
-        const lacodes = ['E09000004'];
+        test('Exported directly-mapped field values match DMS API', async ({ request }) => {
+            const energyRatingFilter = 'A';
+            const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+            const lacodes = ['E09000004'];
+            const fieldMappings: ExportFieldMapping[] = ViewPropertiesPage.EXPORT_FIELD_MAPPINGS;
 
-        // Apply filters in the UI and export the CSV
-        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
-        await filterPropertiesPage.setCouncilFilter(councilFilter);
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+            // Apply filters in the UI and export the CSV
+            await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+            await filterPropertiesPage.setCouncilFilter(councilFilter);
+            //await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-        // Determine maximum owner index N from CSV headers (Property owner N name)
-        const exportHeaders = Object.keys(exportedData[0]);
-        const ownerNameHeaderRegex = /^Property owner (\d+) name$/;
-        const ownerIndexes = exportHeaders
-            .map(h => h.match(ownerNameHeaderRegex))
-            .filter((m): m is RegExpMatchArray => m !== null)
-            .map(m => parseInt(m[1], 10));
-        const maxOwnerIndexFromExport = ownerIndexes.length > 0 ? Math.max(...ownerIndexes) : 0;
+            // Fetch a reference property from DMS and locate it in the export by UPRN
+            const dmsApiClient = new DMSExportApiClient(request);
+            const rawDmsItem = await dmsApiClient.findFirstFullyPopulatedItem({ lacodes, energyratingband: energyRatingFilter});
+            const dmsProperty = dmsApiClient.flattenItem(rawDmsItem);
+            expect(dmsProperty['Uprn'], 'Reference DMS property has no UPRN').toBeDefined();
+            const matchInExport = exportedData.find(r => String(r['UPRN']) === String(dmsProperty['Uprn']));
+            expect(matchInExport,
+                `Cannot find UPRN '${dmsProperty['Uprn']}' for property with postcode '${dmsProperty['Postcode']}' from DMS not found in export.`
+            ).toBeDefined();
 
-        // Determine maximum landlord count from DMS for the same filters
-        const dmsApiClient = new DMSExportApiClient(request);
-        const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, energyratingband: energyRatingFilter });
-        expect(rawDmsItems.length, 'DMS export returned no items').toBeGreaterThan(0);
-        const maxLandlordCountFromDms = rawDmsItems.reduce((max, item) => {
-            const landlordCount = Array.isArray(item.Landlords) ? item.Landlords.length : 0;
-            return Math.max(max, landlordCount);
-        }, 0);
+            // Compare each mapped field value between DMS and export
+            const valueMismatches: string[] = [];
+            for (const { exportColumn, dmsField, dmsFields, dmsLandlordField, dmsLandlordFields, dmsEpcField, dedicatedTest, normalize } of fieldMappings) {
+                const raw = (v: unknown) => (v === null || v === undefined || v === 'Data not found') ? '' : String(v);
+                let rawDmsValue: unknown;
+                if  (dedicatedTest) {
+                    // Skip fields dedicated tests
+                    continue;
+                } if (dmsFields) {
+                    // Multi-field column — concatenate multiple DMS fields into a single string
+                    rawDmsValue = dmsFields.map(f => dmsProperty[f] ?? '').filter(p => String(p).trim() !== '').join(', ');
+                } else if (dmsLandlordFields) {
+                    // Multi-field landlord column — concatenate multiple DMS landlord fields into a single string
+                    rawDmsValue = dmsLandlordFields.map(f => dmsProperty[f] ?? '').filter(p => String(p).trim() !== '').join(' | ');
+                } else {
+                    // Single field — direct lookup from the flattened DMS property
+                    rawDmsValue = dmsProperty[(dmsField ?? dmsLandlordField ?? dmsEpcField)!];
+                }
+                const dmsValue    = normalize ? normalize(raw(rawDmsValue)) : raw(rawDmsValue);
+                const exportValue = normalize ? normalize(raw(matchInExport![exportColumn])) : raw(matchInExport![exportColumn]);
+                if (dmsValue !== exportValue) {
+                    valueMismatches.push(`${exportColumn}: DMS='${rawDmsValue}' vs Export='${matchInExport![exportColumn]}'`);
+                }
+            }
+            expect(valueMismatches,
+                `Field value mismatches for UPRN ${dmsProperty['Uprn']}: ${valueMismatches.join('; ')}`
+            ).toEqual([]);
+        });
 
-        expect(maxOwnerIndexFromExport,
-            `Maximum owner index in export (${maxOwnerIndexFromExport}) does not match maximum landlord count in DMS (${maxLandlordCountFromDms})`
-        ).toBe(maxLandlordCountFromDms);
+        test('Exported PRS Exemption Status, PRS Exemption Date and Comments match Salesforce data', async ({ request }) => {
+            // Property under this address has prepared data in Salesforce with:
+            // - PRS Exemption Status, 
+            // - PRS Exemption Date,
+            // - Comments populated, 
+            // so we can verify the export values against the source of truth in Salesforce
+            const energyRatingFilter = 'A';
+            const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+            const postcodeFilter = 'DA1 4AL';
+            const address = 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL';
 
-        // Validate all owner column groups exist for indexes 1..N with no gaps
-        const missingOwnerColumns: string[] = [];
-        for (let i = 1; i <= maxOwnerIndexFromExport; i++) {
-            const requiredColumns = [
-                `Property owner ${i} name`,
-                `Property owner ${i} location`,
-                `Property owner ${i} address`,
-                `Property owner ${i} SIC code(s)`
-            ];
-            requiredColumns.forEach(column => {
-                if (!exportHeaders.includes(column)) {
-                    missingOwnerColumns.push(column);
+            // Display the Property Details page for the property with the above filters
+            // - apply filters
+            await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+            await filterPropertiesPage.setCouncilFilter(councilFilter);
+            await filterPropertiesPage.setPostcodeFilter(postcodeFilter);   
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const countField = await viewPropertiesPage.getPropertiesCountField();
+            expect(await countField.textContent()).toBe('1 results');
+            // - display Property Details page for the property
+            const propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(address);
+            await propertyDetailsPage.waitForPageToLoad();
+
+            // Navigate to the 'Property details' and get the UPRN for the property to use as a reference when locating the same property in the export
+            await propertyDetailsPage.SelectTab('Property details');
+            const referencedProperty_UPRN = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'UPRN');
+
+            // Navigate to the 'PRS Exemptions and penalties' tab and get:
+            // - PRS Exemption Status, 
+            // - PRS Exemption Date,
+            // - Comments 
+            // to compare against the export later
+            await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
+            // 
+            const referencedProperty_PRSExemptionStatus: string = 
+                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
+            expect(referencedProperty_PRSExemptionStatus, 'Reference property has no PRS Exemption Status').toBeDefined();
+
+            const referencedProperty_PRSExemptionDate: string = 
+                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
+            expect(referencedProperty_PRSExemptionDate, 'Reference property has no PRS Exemption Date').toBeDefined();
+
+            const commentsLocator = await propertyDetailsPage.getComments();
+            await commentsLocator.first().waitFor({ state: 'visible' });
+            const referencedProperty_PRSExemptionComments: string[] = await commentsLocator.allInnerTexts();
+            expect(referencedProperty_PRSExemptionComments.length, 'Reference property has no PRS Exemption Comments').toBeGreaterThan(0);
+
+            // Navigate back to View Properties and export the CSV (filters are preserved in the breadcrumb URL)
+            const viewPropertiesPageForExport = await propertyDetailsPage.clickBreadcrumbViewProperties();
+            await viewPropertiesPageForExport.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPageForExport.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+            // Locate the reference property in the export by UPRN
+            const matchInExport = exportedData.find(r => String(r['UPRN']).trim() === referencedProperty_UPRN.trim());
+            expect(matchInExport, `Property with UPRN ${referencedProperty_UPRN} not found in the export`).toBeDefined();
+
+            // Normalise dates to YYYY-MM-DD for comparison:
+            //   UI format: 'D Month YYYY' (e.g. '14 February 2026')
+            //   Export format: 'DD/MM/YYYY' (e.g. '14/02/2026')
+            const normalizeDate = (d: string): string => {
+                d = d.trim();
+                const ddmmyyyy = d.match(/^(\d{1,2})\/(\d{2})\/(\d{4})$/);
+                if (ddmmyyyy) return `${ddmmyyyy[3]}-${ddmmyyyy[2].padStart(2, '0')}-${ddmmyyyy[1].padStart(2, '0')}`;
+                const months: Record<string, string> = {
+                    'January': '01', 'February': '02', 'March': '03', 'April': '04',
+                    'May': '05', 'June': '06', 'July': '07', 'August': '08',
+                    'September': '09', 'October': '10', 'November': '11', 'December': '12'
+                };
+                const dMonthYear = d.match(/^(\d{1,2})\s+(\w+)\s+(\d{4})$/);
+                if (dMonthYear && months[dMonthYear[2]]) {
+                    return `${dMonthYear[3]}-${months[dMonthYear[2]]}-${dMonthYear[1].padStart(2, '0')}`;
+                }
+                return d;
+            };
+
+            // Compare the exported PRS Exemption Status, PRS Exemption Date and Comments against the values from Salesforce
+            expect(matchInExport!['PRS exemption status'].trim(),
+                `PRS Exemption Status mismatch for UPRN ${referencedProperty_UPRN}: UI shows '${referencedProperty_PRSExemptionStatus}', export shows '${matchInExport!['PRS exemption status']}'`
+            ).toBe(referencedProperty_PRSExemptionStatus.trim());
+
+            expect(normalizeDate(matchInExport!['PRS exemption date']),
+                `PRS Exemption Date mismatch for UPRN ${referencedProperty_UPRN}: UI shows '${referencedProperty_PRSExemptionDate}', export shows '${matchInExport!['PRS exemption date']}'`
+            ).toBe(normalizeDate(referencedProperty_PRSExemptionDate));
+
+            // Normalise comments for comparison.
+            // UI: allInnerTexts() on the comments list returns a mix of comment body lines,
+            //     blank lines, and 'Added by ...' attribution lines — extract just the bodies.
+            const uiCommentTexts = referencedProperty_PRSExemptionComments.join('\n').split('\n')
+                .map(s => s.trim())
+                .filter(s => s !== '' && !s.startsWith('Added by'));
+
+            // Export: all comments joined as 'body by author on date | body by author on date | ...'
+            // Extract just the comment body (everything before the last ' by ') from each entry.
+            const exportCommentTexts = matchInExport!['Comments']
+                .split(' | ')
+                .map(entry => {
+                    const byIdx = entry.lastIndexOf(' by ');
+                    return (byIdx !== -1 ? entry.substring(0, byIdx) : entry).trim();
+                })
+                .filter(s => s !== '');
+
+            // Compare all comments between UI and export
+            expect(exportCommentTexts,
+                `Comments mismatch for UPRN ${referencedProperty_UPRN}: ` +
+                `UI has ${uiCommentTexts.length} comment(s), export has ${exportCommentTexts.length} comment(s). ` +
+                `First UI: '${uiCommentTexts[0]}', First export: '${exportCommentTexts[0]}'`
+            ).toEqual(uiCommentTexts);
+        });
+
+        test('Exported date field values use YYYY-MM-DD format', async ({ page }) => {
+            // DA1 4AL returns a property with both an EPC expiry date and a PRS exemption date,
+            // allowing both date columns to be validated in a single export.
+            const energyRatingFilter = 'A';
+            const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+            const postcodeFilter = 'DA1 4AL';
+
+            await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+            await filterPropertiesPage.setCouncilFilter(councilFilter);
+            await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+            const yyyyMmDd = /^\d{4}-\d{2}-\d{2}$/;
+
+            // Validate EPC expiry date cell format
+            const epcDateRows = exportedData.filter(r => r['EPC expiry date']?.trim() !== '');
+            expect(epcDateRows.length, 'No rows with a populated EPC expiry date found — cannot validate format').toBeGreaterThan(0);
+            const epcDateErrors = epcDateRows
+                .filter(r => !yyyyMmDd.test(r['EPC expiry date'].trim()))
+                .map(r => `UPRN ${r['UPRN']}: '${r['EPC expiry date']}'`);
+            expect(epcDateErrors,
+                `EPC expiry date values not in YYYY-MM-DD format: ${epcDateErrors.join('; ')}`
+            ).toEqual([]);
+
+            // Validate PRS exemption date cell format
+            const prsDateRows = exportedData.filter(r => r['PRS exemption date']?.trim() !== '');
+            expect(prsDateRows.length, 'No rows with a populated PRS exemption date found — cannot validate format').toBeGreaterThan(0);
+            const prsDateErrors = prsDateRows
+                .filter(r => !yyyyMmDd.test(r['PRS exemption date'].trim()))
+                .map(r => `UPRN ${r['UPRN']}: '${r['PRS exemption date']}'`);
+            expect(prsDateErrors,
+                `PRS exemption date values not in YYYY-MM-DD format: ${prsDateErrors.join('; ')}`
+            ).toEqual([]);
+        });
+
+        // TODO: Re-enable once the export endpoint timeout issue is resolved.
+        test.describe.skip('Verify field values when source data is absent', () => {
+            // Two small targeted exports replace a single full-lacodes export that times out.
+            // exportedDataNoUprn — postcode DA1 4FY: ~3 rows, includes a no-UPRN and a no-owner property.
+            // exportedDataUnrated — Unrated energy rating: small set of properties with no EPC certificate.
+            let exportedDataNoUprn: Record<string, string>[];
+            let exportedDataUnrated: Record<string, string>[];
+
+            test.beforeAll(async ({ workerContext }) => {
+                const page = await workerContext.newPage();
+                try {
+                    const landingPage = new LandingPage(page);
+                    await landingPage.navigate();
+                    const homePage = await landingPage.clickSignIn_AuthenticatedUser();
+
+                    // First export: DA1 4FY — returns a handful of rows that include a
+                    // no-UPRN property and properties with no owner data.
+                    const filterPage1 = await homePage.clickViewProperties();
+                    await filterPage1.setPostcodeFilter('DA1 4FY');
+                    const viewPage1 = await filterPage1.clickApplyFilters();
+                    await viewPage1.waitForPageToLoad();
+                    await viewPage1.waitForTableContent();
+                    exportedDataNoUprn = await viewPage1.exportFilteredData();
+
+                    // Second export: Unrated energy rating — returns only properties with no
+                    // EPC certificate so all EPC-related fields are expected to be empty.
+                    const filterPage2 = await viewPage1.clickChangeFilters();
+                    await filterPage2.clickClearFilters();
+                    await filterPage2.setEnergyRatingFilter('Unrated');
+                    const viewPage2 = await filterPage2.clickApplyFilters();
+                    await viewPage2.waitForPageToLoad();
+                    await viewPage2.waitForTableContent();
+                    exportedDataUnrated = await viewPage2.exportFilteredData();
+                } finally {
+                    await page.close();
                 }
             });
-        }
-        expect(missingOwnerColumns,
-            `Missing owner columns for indexes 1..${maxOwnerIndexFromExport}: ${missingOwnerColumns.join(', ')}`
-        ).toEqual([]);
 
-        // Ensure there are no extra owner columns above N
-        const ownerColumnRegex = /^Property owner (\d+) (name|location|address|SIC code\(s\))$/;
-        const extraOwnerColumns = exportHeaders.filter(header => {
-            const match = header.match(ownerColumnRegex);
-            if (!match) return false;
-            return parseInt(match[1], 10) > maxOwnerIndexFromExport;
+            test.beforeEach(async ({}, testInfo) => {
+                testInfo.annotations.push(TestAnnotations.testType(TestType.FUNCTIONAL));
+            });
+
+            test('Property data fields show expected placeholder values when source data is absent', async () => {
+                expect(exportedDataNoUprn.length, 'Export returned no records').toBeGreaterThan(0);
+
+                // Find a row for a property that exists only via its EPC record (no UPRN).
+                // All property-level fields sourced via UPRN linkage (VOA, DMS, Salesforce) should
+                // display their respective 'not found' placeholders for such a row.
+                const rowWithNoUprn = exportedDataNoUprn.find(r => r['UPRN'] === 'Not found');
+                expect(rowWithNoUprn, 'No row with UPRN "Not found" found in export — test data gap').toBeDefined();
+
+                // UPRN — confirmed 'Not found' when no UPRN (TC-2027)
+                expect(rowWithNoUprn!['UPRN']).toBe('Not found');
+                // Rateable value — sourced from VOA data via UPRN; absent when there is no UPRN
+                expect(rowWithNoUprn!['Rateable value (£)']).toBe('Not found');
+                // Possible rental evidence — both DMS booleans are false when no landlord/SIC link via UPRN
+                expect(rowWithNoUprn!['Possible rental evidence']).toBe('Not found');
+                // PRS exemption status — Salesforce record is keyed by UPRN; no UPRN = no record
+                expect(rowWithNoUprn!['PRS exemption status']).toBe('Data not found');
+                // PRS exemption date — empty when there is no PRS exemption record
+                expect(rowWithNoUprn!['PRS exemption date'].trim()).toBe('');
+            });
+
+            test('EPC data fields are empty when property has no EPC certificate', async () => {
+                expect(exportedDataUnrated.length, 'Export returned no records').toBeGreaterThan(0);
+
+                // All rows in this export are Unrated — any row will have empty EPC-specific fields.
+                // Use the first row as the reference.
+                const unratedRow = exportedDataUnrated[0];
+                expect(unratedRow, 'Unrated export returned no records — test data gap').toBeDefined();
+
+                expect(unratedRow!['EPC expiry date'].trim()).toBe('');
+                expect(unratedRow!['EPC transaction type'].trim()).toBe('');
+                expect(unratedRow!['EPC certificates (Link)'].trim()).toBe('');
+                expect(unratedRow!['EPC history'].trim()).toBe('');
+            });
+
+            test('Landlord SIC code field shows No data when property has no owner SIC data', async () => {
+                expect(exportedDataNoUprn.length, 'Export returned no records').toBeGreaterThan(0);
+
+                // The API always populates name, location and address when an owner record exists.
+                // SIC code(s) is 'No data' when the owner has no SIC data. Find all such rows.
+                const noSicRows = exportedDataNoUprn.filter(r => r['Property owner 1 SIC code(s)']?.trim() === 'No data');
+                expect(noSicRows.length, 'No property with "No data" SIC code found in export — test data gap').toBeGreaterThan(0);
+            });
         });
-        expect(extraOwnerColumns,
-            `Unexpected owner columns above max index ${maxOwnerIndexFromExport}: ${extraOwnerColumns.join(', ')}`
-        ).toEqual([]);
     });
 
-    test('Exported directly-mapped field values match DMS API', async ({ request }) => {
-        const energyRatingFilter = 'A';
-        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
-        const lacodes = ['E09000004'];
-        const fieldMappings: ExportFieldMapping[] = ViewPropertiesPage.EXPORT_FIELD_MAPPINGS;
+    test.describe('Export field values', () => {
+        test('Property owner column sets in export equal the maximum landlord count', async ({ request }) => {
+            const energyRatingFilter = 'A';
+            const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+            const lacodes = ['E09000004'];
 
-        // Apply filters in the UI and export the CSV
-        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
-        await filterPropertiesPage.setCouncilFilter(councilFilter);
-        //await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+            // Apply filters in the UI and export the CSV
+            await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+            await filterPropertiesPage.setCouncilFilter(councilFilter);
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-        // Fetch a reference property from DMS and locate it in the export by UPRN
-        const dmsApiClient = new DMSExportApiClient(request);
-        const rawDmsItem = await dmsApiClient.findFirstFullyPopulatedItem({ lacodes, energyratingband: energyRatingFilter});
-        const dmsProperty = dmsApiClient.flattenItem(rawDmsItem);
-        expect(dmsProperty['Uprn'], 'Reference DMS property has no UPRN').toBeDefined();
-        const matchInExport = exportedData.find(r => String(r['UPRN']) === String(dmsProperty['Uprn']));
-        expect(matchInExport,
-            `Cannot find UPRN '${dmsProperty['Uprn']}' for property with postcode '${dmsProperty['Postcode']}' from DMS not found in export.`
-        ).toBeDefined();
+            // Determine maximum owner index N from CSV headers (Property owner N name)
+            const exportHeaders = Object.keys(exportedData[0]);
+            const ownerNameHeaderRegex = /^Property owner (\d+) name$/;
+            const ownerIndexes = exportHeaders
+                .map(h => h.match(ownerNameHeaderRegex))
+                .filter((m): m is RegExpMatchArray => m !== null)
+                .map(m => parseInt(m[1], 10));
+            const maxOwnerIndexFromExport = ownerIndexes.length > 0 ? Math.max(...ownerIndexes) : 0;
 
-        // Compare each mapped field value between DMS and export
-        const valueMismatches: string[] = [];
-        for (const { exportColumn, dmsField, dmsFields, dmsLandlordField, dmsLandlordFields, dmsEpcField, dedicatedTest, normalize } of fieldMappings) {
-            const raw = (v: unknown) => (v === null || v === undefined || v === 'Data not found') ? '' : String(v);
-            let rawDmsValue: unknown;
-            if  (dedicatedTest) {
-                // Skip fields dedicated tests
-                continue;
-            } if (dmsFields) {
-                // Multi-field column — concatenate multiple DMS fields into a single string
-                rawDmsValue = dmsFields.map(f => dmsProperty[f] ?? '').filter(p => String(p).trim() !== '').join(', ');
-            } else if (dmsLandlordFields) {
-                // Multi-field landlord column — concatenate multiple DMS landlord fields into a single string
-                rawDmsValue = dmsLandlordFields.map(f => dmsProperty[f] ?? '').filter(p => String(p).trim() !== '').join(' | ');
-            } else {
-                // Single field — direct lookup from the flattened DMS property
-                rawDmsValue = dmsProperty[(dmsField ?? dmsLandlordField ?? dmsEpcField)!];
+            // Determine maximum landlord count from DMS for the same filters
+            const dmsApiClient = new DMSExportApiClient(request);
+            const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, energyratingband: energyRatingFilter });
+            expect(rawDmsItems.length, 'DMS export returned no items').toBeGreaterThan(0);
+            const maxLandlordCountFromDms = rawDmsItems.reduce((max, item) => {
+                const landlordCount = Array.isArray(item.Landlords) ? item.Landlords.length : 0;
+                return Math.max(max, landlordCount);
+            }, 0);
+
+            expect(maxOwnerIndexFromExport,
+                `Maximum owner index in export (${maxOwnerIndexFromExport}) does not match maximum landlord count in DMS (${maxLandlordCountFromDms})`
+            ).toBe(maxLandlordCountFromDms);
+
+            // Validate all owner column groups exist for indexes 1..N with no gaps
+            const missingOwnerColumns: string[] = [];
+            for (let i = 1; i <= maxOwnerIndexFromExport; i++) {
+                const requiredColumns = [
+                    `Property owner ${i} name`,
+                    `Property owner ${i} location`,
+                    `Property owner ${i} address`,
+                    `Property owner ${i} SIC code(s)`
+                ];
+                requiredColumns.forEach(column => {
+                    if (!exportHeaders.includes(column)) {
+                        missingOwnerColumns.push(column);
+                    }
+                });
             }
-            const dmsValue    = normalize ? normalize(raw(rawDmsValue)) : raw(rawDmsValue);
-            const exportValue = normalize ? normalize(raw(matchInExport![exportColumn])) : raw(matchInExport![exportColumn]);
-            if (dmsValue !== exportValue) {
-                valueMismatches.push(`${exportColumn}: DMS='${rawDmsValue}' vs Export='${matchInExport![exportColumn]}'`);
-            }
-        }
-        expect(valueMismatches,
-            `Field value mismatches for UPRN ${dmsProperty['Uprn']}: ${valueMismatches.join('; ')}`
-        ).toEqual([]);
-    });
+            expect(missingOwnerColumns,
+                `Missing owner columns for indexes 1..${maxOwnerIndexFromExport}: ${missingOwnerColumns.join(', ')}`
+            ).toEqual([]);
 
-    test('Exported Possible rental evidence field value is correct', async ({ request }) => {
-        const energyRatingFilter = 'A';
-        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
-        const lacodes = ['E09000004'];
+            // Ensure there are no extra owner columns above N
+            const ownerColumnRegex = /^Property owner (\d+) (name|location|address|SIC code\(s\))$/;
+            const extraOwnerColumns = exportHeaders.filter(header => {
+                const match = header.match(ownerColumnRegex);
+                if (!match) return false;
+                return parseInt(match[1], 10) > maxOwnerIndexFromExport;
+            });
+            expect(extraOwnerColumns,
+                `Unexpected owner columns above max index ${maxOwnerIndexFromExport}: ${extraOwnerColumns.join(', ')}`
+            ).toEqual([]);
+        });
 
-        // Apply filters in the UI and export the CSV
-        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
-        await filterPropertiesPage.setCouncilFilter(councilFilter);
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+        test('Exported EPC Certificates (Link) field is valid and matches the property address', async ({ page }) => {
+            // [BUG 951] The export column is currently named 'EPC certificates (Link)'. The specification defines it as 'EPC certificate link'.
+            // All column references in this test must be updated once BUG 951 is resolved.
+            // Apply filters in the UI and export the CSV
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-        // Fetch raw DMS items so we can derive the expected computed value for each row
-        const dmsApiClient = new DMSExportApiClient(request);
-        const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, energyratingband: energyRatingFilter });
-        expect(rawDmsItems.length, 'DMS export returned no items').toBeGreaterThan(0);
+            // Find a property with a non-empty 'EPC certificates (Link)'
+            const propertyWithEpcLink = exportedData.find(r => r['EPC certificates (Link)'] && r['EPC certificates (Link)'].trim() !== '');
+            expect(propertyWithEpcLink, 'No property with a non-empty EPC Certificates (Link) field was found in the export').toBeDefined();
 
-        // Build UPRN → raw DMS item lookup map
-        const dmsItemByUprn = new Map<string, DMSRawItem>();
-        for (const item of rawDmsItems) {
-            dmsItemByUprn.set(String(item.property.Uprn), item);
-        }
+            // Copy the URL from the export
+            const url = propertyWithEpcLink!['EPC certificates (Link)'];
 
-        // 'Found' when at least one of the two booleans is true;
-        // 'Not found' only when both are false.
-
-        // Guard: verify both branches are present in the dataset so neither goes untested
-        const hasFoundCase = rawDmsItems.some(item =>
-            item.property.PossibleEvidenceEpcTransactionType === true ||
-            item.property.PossibleEvidenceSiccode === true
-        );
-        const hasNotFoundCase = rawDmsItems.some(item =>
-            item.property.PossibleEvidenceEpcTransactionType !== true &&
-            item.property.PossibleEvidenceSiccode !== true
-        );
-        expect(hasFoundCase,    'Test data gap: no DMS item where at least one boolean is true — cannot verify "Found" branch').toBe(true);
-        expect(hasNotFoundCase, 'Test data gap: no DMS item where both booleans are false — cannot verify "Not found" branch').toBe(true);
-
-        // Compare each exported row against the derived expected value
-        const valueMismatches: string[] = [];
-        for (const row of exportedData) {
-            const uprn = String(row['UPRN']);
-            const dmsItem = dmsItemByUprn.get(uprn);
-            if (!dmsItem) continue; // Row is outside the DMS page returned — skip
-
-            // 'Not found' only when both booleans are false
-            const isFound =
-                dmsItem.property.PossibleEvidenceEpcTransactionType === true ||
-                dmsItem.property.PossibleEvidenceSiccode === true;
-            const expectedValue = isFound ? 'Found' : 'Not found';
-            const actualValue = row['Possible rental evidence'];
-
-            if (actualValue !== expectedValue) {
-                valueMismatches.push(
-                    `UPRN ${uprn}: expected '${expectedValue}' ` +
-                    `(PossibleEvidenceEpcTransactionType=${dmsItem.property.PossibleEvidenceEpcTransactionType}, ` +
-                    `PossibleEvidenceSiccode=${dmsItem.property.PossibleEvidenceSiccode}), ` +
-                    `got '${actualValue}'`
-                );
-            }
-        }
-        expect(valueMismatches,
-            `Possible rental evidence mismatches: ${valueMismatches.join('; ')}`
-        ).toEqual([]);
-    });
-
-    test('Exported EPC history field value is correct', async ({ request }) => {
-        const energyRatingFilter = 'A';
-        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
-        const lacodes = ['E09000004'];
-
-        // Fetch raw DMS items and find one property with multiple EPC certificates
-        const dmsApiClient = new DMSExportApiClient(request);
-        const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, energyratingband: energyRatingFilter });
-        expect(rawDmsItems.length, 'DMS export returned no items').toBeGreaterThan(0);
-
-        const dmsPropertyWithMultiEPCCertificates = rawDmsItems.find(item =>
-            Array.isArray(item.EpcCertificates) && item.EpcCertificates.length > 1
-        );
-        expect(dmsPropertyWithMultiEPCCertificates, 'Test data gap: no DMS item with multiple EPC certificates — cannot verify the join behaviour').toBeDefined();
-
-        // Apply filters in the UI and export the CSV
-        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
-        await filterPropertiesPage.setCouncilFilter(councilFilter);
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
-
-        // Locate the reference property in the export by UPRN
-        const uprnDMSPropertyWithMultiEPCCertificates = String(dmsPropertyWithMultiEPCCertificates!.property.Uprn);
-        const propertyMatchInExport = exportedData.find(r => String(r['UPRN']) === uprnDMSPropertyWithMultiEPCCertificates);
-        expect(propertyMatchInExport, `Cannot find UPRN '${uprnDMSPropertyWithMultiEPCCertificates}' in the export`).toBeDefined();
-
-        // Derive expected value from all EPC certificates for the reference property
-        // Each certificate entry is formatted as 'AssetRatingBand (AssetRating); ExpiryDate; TransactionType'
-        // with entries joined by ' | '.
-        const expectedValue = dmsPropertyWithMultiEPCCertificates!.EpcCertificates!
-            .map(epc => `${epc.AssetRatingBand} (${epc.AssetRating}); ${epc.ExpiryDate.split('T')[0]}; ${epc.TransactionType}`)
-            .join(' | ');
-        const actualValue = propertyMatchInExport!['EPC history'];
-
-        expect(actualValue,
-            `UPRN ${uprnDMSPropertyWithMultiEPCCertificates}: expected '${expectedValue}' (${dmsPropertyWithMultiEPCCertificates!.EpcCertificates!.length} EPC certificate(s)), got '${actualValue}'`
-        ).toBe(expectedValue);
-    });
-
-    test('Exported data does not contain Landlord location column', async ({ page }) => {
-        // Apply filters and export the CSV
-        await filterPropertiesPage.setEnergyRatingFilter('A');
-        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
-
-        const exportColumnNames = Object.keys(exportedData[0]);
-        expect(exportColumnNames, "'Landlord location' column should not be present in the export").not.toContain('Landlord location');
-    });
-
-    test('Exported EPC Certificates (Link) field is valid and matches the property address', async ({ page }) => {
-        // [BUG 951] The export column is currently named 'EPC certificates (Link)'. The specification defines it as 'EPC certificate link'.
-        // All column references in this test must be updated once BUG 951 is resolved.
-        // Apply filters in the UI and export the CSV
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
-
-        // Find a property with a non-empty 'EPC certificates (Link)'
-        const propertyWithEpcLink = exportedData.find(r => r['EPC certificates (Link)'] && r['EPC certificates (Link)'].trim() !== '');
-        expect(propertyWithEpcLink, 'No property with a non-empty EPC Certificates (Link) field was found in the export').toBeDefined();
-
-        // Copy the URL from the export
-        const url = propertyWithEpcLink!['EPC certificates (Link)'];
-
-        // Verify that the resulting string is a valid URL
-        const isValidUrl = (str: string): boolean => {
-            try {
-                new URL(str);
-                return true;
-            } catch {
-                return false;
-            }
-        };
-        expect(isValidUrl(url), `The EPC Certificates (Link) value '${url}' is not a valid URL`).toBe(true);
-
-        // Load the URL and Verify that the address displayed on the EPC certificate page matches the address of the property in the export
-        await page.goto(url);
-        const certificateAddressLocator = page.locator('p.epc-address.govuk-body');
-        await expect(certificateAddressLocator).toBeVisible();
-        // The address parts are separated by <br> tags which produce no separator in textContent(),
-        // so use innerHTML and replace <br> with ', ' before stripping remaining tags
-        const certificateAddressHtml = await certificateAddressLocator.innerHTML();
-        const certificateAddress = certificateAddressHtml
-            .replace(/<br\s*\/?>/gi, ', ')
-            .replace(/<[^>]+>/g, '')
-            .trim();
-        const expectedAddress = propertyWithEpcLink!['Property address'];
-        expect(certificateAddress, `The address on the EPC certificate page '${certificateAddress}' does not match the expected address '${expectedAddress}' from the export`).toBe(expectedAddress);
-    });
-
-    test('Exported EPC Certificates (Link) field is empty for properties without EPC data', async ({ page }) => {
-        // [BUG 951] The export column is currently named 'EPC certificates (Link)'. The specification defines it as 'EPC certificate link'.
-        // All column references in this test must be updated once BUG 951 is resolved.
-        // Apply filters in the UI and export the CSV
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
-
-        const EPC_BASE_URL = 'https://find-energy-certificate.service.gov.uk/energy-certificate/';
-
-        // Find a property with 'EPC energy rating' = '0'.
-        const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === '0');
-        expect(propertyWithoutEpcEnergyData, 'No property with an EPC energy rating of "0" was found in the export').toBeDefined();
-
-        // Verify that the 'EPC certificates (Link)' field is empty for this property
-        const rawEpcLink = propertyWithoutEpcEnergyData!['EPC certificates (Link)']?.trim() ?? '';
-        const hasEpcLink = rawEpcLink !== '' && rawEpcLink !== EPC_BASE_URL;
-        expect(hasEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of "0" but has an EPC link '${rawEpcLink}' in the export`).toBe(false);
-    });
-
-    test('Exported PRS Exemption Status, PRS Exemption Date and Comments match Salesforce data', async ({ request }) => {
-        // Property under this address has prepared data in Salesforce with:
-        // - PRS Exemption Status, 
-        // - PRS Exemption Date,
-        // - Comments populated, 
-        // so we can verify the export values against the source of truth in Salesforce
-        const energyRatingFilter = 'A';
-        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
-        const postcodeFilter = 'DA1 4AL';
-        const address = 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL';
-
-        // Display the Property Details page for the property with the above filters
-        // - apply filters
-        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
-        await filterPropertiesPage.setCouncilFilter(councilFilter);
-        await filterPropertiesPage.setPostcodeFilter(postcodeFilter);   
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-        const countField = await viewPropertiesPage.getPropertiesCountField();
-        expect(await countField.textContent()).toBe('1 results');
-        // - display Property Details page for the property
-        const propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(address);
-        await propertyDetailsPage.waitForPageToLoad();
-
-        // Navigate to the 'Property details' and get the UPRN for the property to use as a reference when locating the same property in the export
-        await propertyDetailsPage.SelectTab('Property details');
-        const referencedProperty_UPRN = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'UPRN');
-
-        // Navigate to the 'PRS Exemptions and penalties' tab and get:
-        // - PRS Exemption Status, 
-        // - PRS Exemption Date,
-        // - Comments 
-        // to compare against the export later
-        await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
-        // 
-        const referencedProperty_PRSExemptionStatus: string = 
-            await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
-        expect(referencedProperty_PRSExemptionStatus, 'Reference property has no PRS Exemption Status').toBeDefined();
-
-        const referencedProperty_PRSExemptionDate: string = 
-            await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
-        expect(referencedProperty_PRSExemptionDate, 'Reference property has no PRS Exemption Date').toBeDefined();
-
-        const commentsLocator = await propertyDetailsPage.getComments();
-        await commentsLocator.first().waitFor({ state: 'visible' });
-        const referencedProperty_PRSExemptionComments: string[] = await commentsLocator.allInnerTexts();
-        expect(referencedProperty_PRSExemptionComments.length, 'Reference property has no PRS Exemption Comments').toBeGreaterThan(0);
-
-        // Navigate back to View Properties and export the CSV (filters are preserved in the breadcrumb URL)
-        const viewPropertiesPageForExport = await propertyDetailsPage.clickBreadcrumbViewProperties();
-        await viewPropertiesPageForExport.waitForTableContent();
-        const exportedData: Record<string, string>[] = await viewPropertiesPageForExport.exportFilteredData();
-        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
-
-        // Locate the reference property in the export by UPRN
-        const matchInExport = exportedData.find(r => String(r['UPRN']).trim() === referencedProperty_UPRN.trim());
-        expect(matchInExport, `Property with UPRN ${referencedProperty_UPRN} not found in the export`).toBeDefined();
-
-        // Normalise dates to YYYY-MM-DD for comparison:
-        //   UI format: 'D Month YYYY' (e.g. '14 February 2026')
-        //   Export format: 'DD/MM/YYYY' (e.g. '14/02/2026')
-        const normalizeDate = (d: string): string => {
-            d = d.trim();
-            const ddmmyyyy = d.match(/^(\d{1,2})\/(\d{2})\/(\d{4})$/);
-            if (ddmmyyyy) return `${ddmmyyyy[3]}-${ddmmyyyy[2].padStart(2, '0')}-${ddmmyyyy[1].padStart(2, '0')}`;
-            const months: Record<string, string> = {
-                'January': '01', 'February': '02', 'March': '03', 'April': '04',
-                'May': '05', 'June': '06', 'July': '07', 'August': '08',
-                'September': '09', 'October': '10', 'November': '11', 'December': '12'
+            // Verify that the resulting string is a valid URL
+            const isValidUrl = (str: string): boolean => {
+                try {
+                    new URL(str);
+                    return true;
+                } catch {
+                    return false;
+                }
             };
-            const dMonthYear = d.match(/^(\d{1,2})\s+(\w+)\s+(\d{4})$/);
-            if (dMonthYear && months[dMonthYear[2]]) {
-                return `${dMonthYear[3]}-${months[dMonthYear[2]]}-${dMonthYear[1].padStart(2, '0')}`;
+            expect(isValidUrl(url), `The EPC Certificates (Link) value '${url}' is not a valid URL`).toBe(true);
+
+            // Load the URL and Verify that the address displayed on the EPC certificate page matches the address of the property in the export
+            await page.goto(url);
+            const certificateAddressLocator = page.locator('p.epc-address.govuk-body');
+            await expect(certificateAddressLocator).toBeVisible();
+            // The address parts are separated by <br> tags which produce no separator in textContent(),
+            // so use innerHTML and replace <br> with ', ' before stripping remaining tags
+            const certificateAddressHtml = await certificateAddressLocator.innerHTML();
+            const certificateAddress = certificateAddressHtml
+                .replace(/<br\s*\/?>/gi, ', ')
+                .replace(/<[^>]+>/g, '')
+                .trim();
+            const expectedAddress = propertyWithEpcLink!['Property address'];
+            expect(certificateAddress, `The address on the EPC certificate page '${certificateAddress}' does not match the expected address '${expectedAddress}' from the export`).toBe(expectedAddress);
+        });
+
+        test('Exported EPC Certificates (Link) field is empty for properties without EPC data', async ({ page }) => {
+            // [BUG 951] The export column is currently named 'EPC certificates (Link)'. The specification defines it as 'EPC certificate link'.
+            // All column references in this test must be updated once BUG 951 is resolved.
+            // Apply filters in the UI and export the CSV
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+            const EPC_BASE_URL = 'https://find-energy-certificate.service.gov.uk/energy-certificate/';
+
+            // Find a property with 'EPC energy rating' = '0'.
+            const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === '0');
+            expect(propertyWithoutEpcEnergyData, 'No property with an EPC energy rating of "0" was found in the export').toBeDefined();
+
+            // Verify that the 'EPC certificates (Link)' field is empty for this property
+            const rawEpcLink = propertyWithoutEpcEnergyData!['EPC certificates (Link)']?.trim() ?? '';
+            const hasEpcLink = rawEpcLink !== '' && rawEpcLink !== EPC_BASE_URL;
+            expect(hasEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of "0" but has an EPC link '${rawEpcLink}' in the export`).toBe(false);
+        });
+
+        test('Exported Possible rental evidence field value is correct', async ({ request }) => {
+            const energyRatingFilter = 'A';
+            const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+            const lacodes = ['E09000004'];
+
+            // Apply filters in the UI and export the CSV
+            await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+            await filterPropertiesPage.setCouncilFilter(councilFilter);
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+            // Fetch raw DMS items so we can derive the expected computed value for each row
+            const dmsApiClient = new DMSExportApiClient(request);
+            const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, energyratingband: energyRatingFilter });
+            expect(rawDmsItems.length, 'DMS export returned no items').toBeGreaterThan(0);
+
+            // Build UPRN → raw DMS item lookup map
+            const dmsItemByUprn = new Map<string, DMSRawItem>();
+            for (const item of rawDmsItems) {
+                dmsItemByUprn.set(String(item.property.Uprn), item);
             }
-            return d;
-        };
 
-        // Compare the exported PRS Exemption Status, PRS Exemption Date and Comments against the values from Salesforce
-        expect(matchInExport!['PRS exemption status'].trim(),
-            `PRS Exemption Status mismatch for UPRN ${referencedProperty_UPRN}: UI shows '${referencedProperty_PRSExemptionStatus}', export shows '${matchInExport!['PRS exemption status']}'`
-        ).toBe(referencedProperty_PRSExemptionStatus.trim());
+            // 'Found' when at least one of the two booleans is true;
+            // 'Not found' only when both are false.
 
-        expect(normalizeDate(matchInExport!['PRS exemption date']),
-            `PRS Exemption Date mismatch for UPRN ${referencedProperty_UPRN}: UI shows '${referencedProperty_PRSExemptionDate}', export shows '${matchInExport!['PRS exemption date']}'`
-        ).toBe(normalizeDate(referencedProperty_PRSExemptionDate));
+            // Guard: verify both branches are present in the dataset so neither goes untested
+            const hasFoundCase = rawDmsItems.some(item =>
+                item.property.PossibleEvidenceEpcTransactionType === true ||
+                item.property.PossibleEvidenceSiccode === true
+            );
+            const hasNotFoundCase = rawDmsItems.some(item =>
+                item.property.PossibleEvidenceEpcTransactionType !== true &&
+                item.property.PossibleEvidenceSiccode !== true
+            );
+            expect(hasFoundCase,    'Test data gap: no DMS item where at least one boolean is true — cannot verify "Found" branch').toBe(true);
+            expect(hasNotFoundCase, 'Test data gap: no DMS item where both booleans are false — cannot verify "Not found" branch').toBe(true);
 
-        // Normalise comments for comparison.
-        // UI: allInnerTexts() on the comments list returns a mix of comment body lines,
-        //     blank lines, and 'Added by ...' attribution lines — extract just the bodies.
-        const uiCommentTexts = referencedProperty_PRSExemptionComments.join('\n').split('\n')
-            .map(s => s.trim())
-            .filter(s => s !== '' && !s.startsWith('Added by'));
+            // Compare each exported row against the derived expected value
+            const valueMismatches: string[] = [];
+            for (const row of exportedData) {
+                const uprn = String(row['UPRN']);
+                const dmsItem = dmsItemByUprn.get(uprn);
+                if (!dmsItem) continue; // Row is outside the DMS page returned — skip
 
-        // Export: all comments joined as 'body by author on date | body by author on date | ...'
-        // Extract just the comment body (everything before the last ' by ') from each entry.
-        const exportCommentTexts = matchInExport!['Comments']
-            .split(' | ')
-            .map(entry => {
-                const byIdx = entry.lastIndexOf(' by ');
-                return (byIdx !== -1 ? entry.substring(0, byIdx) : entry).trim();
-            })
-            .filter(s => s !== '');
+                // 'Not found' only when both booleans are false
+                const isFound =
+                    dmsItem.property.PossibleEvidenceEpcTransactionType === true ||
+                    dmsItem.property.PossibleEvidenceSiccode === true;
+                const expectedValue = isFound ? 'Found' : 'Not found';
+                const actualValue = row['Possible rental evidence'];
 
-        // Compare all comments between UI and export
-        expect(exportCommentTexts,
-            `Comments mismatch for UPRN ${referencedProperty_UPRN}: ` +
-            `UI has ${uiCommentTexts.length} comment(s), export has ${exportCommentTexts.length} comment(s). ` +
-            `First UI: '${uiCommentTexts[0]}', First export: '${exportCommentTexts[0]}'`
-        ).toEqual(uiCommentTexts);
+                if (actualValue !== expectedValue) {
+                    valueMismatches.push(
+                        `UPRN ${uprn}: expected '${expectedValue}' ` +
+                        `(PossibleEvidenceEpcTransactionType=${dmsItem.property.PossibleEvidenceEpcTransactionType}, ` +
+                        `PossibleEvidenceSiccode=${dmsItem.property.PossibleEvidenceSiccode}), ` +
+                        `got '${actualValue}'`
+                    );
+                }
+            }
+            expect(valueMismatches,
+                `Possible rental evidence mismatches: ${valueMismatches.join('; ')}`
+            ).toEqual([]);
+        });
+
+        test('Exported EPC history field value is correct', async ({ request }) => {
+            const energyRatingFilter = 'A';
+            const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+            const lacodes = ['E09000004'];
+
+            // Fetch raw DMS items and find one property with multiple EPC certificates
+            const dmsApiClient = new DMSExportApiClient(request);
+            const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, energyratingband: energyRatingFilter });
+            expect(rawDmsItems.length, 'DMS export returned no items').toBeGreaterThan(0);
+
+            const dmsPropertyWithMultiEPCCertificates = rawDmsItems.find(item =>
+                Array.isArray(item.EpcCertificates) && item.EpcCertificates.length > 1
+            );
+            expect(dmsPropertyWithMultiEPCCertificates, 'Test data gap: no DMS item with multiple EPC certificates — cannot verify the join behaviour').toBeDefined();
+
+            // Apply filters in the UI and export the CSV
+            await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+            await filterPropertiesPage.setCouncilFilter(councilFilter);
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+            // Locate the reference property in the export by UPRN
+            const uprnDMSPropertyWithMultiEPCCertificates = String(dmsPropertyWithMultiEPCCertificates!.property.Uprn);
+            const propertyMatchInExport = exportedData.find(r => String(r['UPRN']) === uprnDMSPropertyWithMultiEPCCertificates);
+            expect(propertyMatchInExport, `Cannot find UPRN '${uprnDMSPropertyWithMultiEPCCertificates}' in the export`).toBeDefined();
+
+            // Derive expected value from all EPC certificates for the reference property
+            // Each certificate entry is formatted as 'AssetRatingBand (AssetRating); ExpiryDate; TransactionType'
+            // with entries joined by ' | '.
+            const expectedValue = dmsPropertyWithMultiEPCCertificates!.EpcCertificates!
+                .map(epc => `${epc.AssetRatingBand} (${epc.AssetRating}); ${epc.ExpiryDate.split('T')[0]}; ${epc.TransactionType}`)
+                .join(' | ');
+            const actualValue = propertyMatchInExport!['EPC history'];
+
+            expect(actualValue,
+                `UPRN ${uprnDMSPropertyWithMultiEPCCertificates}: expected '${expectedValue}' (${dmsPropertyWithMultiEPCCertificates!.EpcCertificates!.length} EPC certificate(s)), got '${actualValue}'`
+            ).toBe(expectedValue);
+        });
+
+        test('Exported data does not contain Landlord location column', async ({ page }) => {
+            // Apply filters and export the CSV
+            await filterPropertiesPage.setEnergyRatingFilter('A');
+            await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+            const exportColumnNames = Object.keys(exportedData[0]);
+            expect(exportColumnNames, "'Landlord location' column should not be present in the export").not.toContain('Landlord location');
+        });
     });
-
-    test('Exported date field values use YYYY-MM-DD format', async ({ page }) => {
-        // DA1 4AL returns a property with both an EPC expiry date and a PRS exemption date,
-        // allowing both date columns to be validated in a single export.
-        const energyRatingFilter = 'A';
-        const councilFilter = 'LONDON BOROUGH OF BEXLEY';
-        const postcodeFilter = 'DA1 4AL';
-
-        await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
-        await filterPropertiesPage.setCouncilFilter(councilFilter);
-        await filterPropertiesPage.setPostcodeFilter(postcodeFilter);
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForPageToLoad();
-        await viewPropertiesPage.waitForTableContent();
-        const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
-        expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
-
-        const yyyyMmDd = /^\d{4}-\d{2}-\d{2}$/;
-
-        // Validate EPC expiry date cell format
-        const epcDateRows = exportedData.filter(r => r['EPC expiry date']?.trim() !== '');
-        expect(epcDateRows.length, 'No rows with a populated EPC expiry date found — cannot validate format').toBeGreaterThan(0);
-        const epcDateErrors = epcDateRows
-            .filter(r => !yyyyMmDd.test(r['EPC expiry date'].trim()))
-            .map(r => `UPRN ${r['UPRN']}: '${r['EPC expiry date']}'`);
-        expect(epcDateErrors,
-            `EPC expiry date values not in YYYY-MM-DD format: ${epcDateErrors.join('; ')}`
-        ).toEqual([]);
-
-        // Validate PRS exemption date cell format
-        const prsDateRows = exportedData.filter(r => r['PRS exemption date']?.trim() !== '');
-        expect(prsDateRows.length, 'No rows with a populated PRS exemption date found — cannot validate format').toBeGreaterThan(0);
-        const prsDateErrors = prsDateRows
-            .filter(r => !yyyyMmDd.test(r['PRS exemption date'].trim()))
-            .map(r => `UPRN ${r['UPRN']}: '${r['PRS exemption date']}'`);
-        expect(prsDateErrors,
-            `PRS exemption date values not in YYYY-MM-DD format: ${prsDateErrors.join('; ')}`
-        ).toEqual([]);
-    });
-});
-
-// TODO: Re-enable once the export endpoint timeout issue is resolved.
-test.describe.skip('Verify field values when source data is absent', () => {
-    // Two small targeted exports replace a single full-lacodes export that times out.
-    // exportedDataNoUprn — postcode DA1 4FY: ~3 rows, includes a no-UPRN and a no-owner property.
-    // exportedDataUnrated — Unrated energy rating: small set of properties with no EPC certificate.
-    let exportedDataNoUprn: Record<string, string>[];
-    let exportedDataUnrated: Record<string, string>[];
-
-    test.beforeAll(async ({ workerContext }) => {
-        const page = await workerContext.newPage();
-        try {
-            const landingPage = new LandingPage(page);
-            await landingPage.navigate();
-            const homePage = await landingPage.clickSignIn_AuthenticatedUser();
-
-            // First export: DA1 4FY — returns a handful of rows that include a
-            // no-UPRN property and properties with no owner data.
-            const filterPage1 = await homePage.clickViewProperties();
-            await filterPage1.setPostcodeFilter('DA1 4FY');
-            const viewPage1 = await filterPage1.clickApplyFilters();
-            await viewPage1.waitForPageToLoad();
-            await viewPage1.waitForTableContent();
-            exportedDataNoUprn = await viewPage1.exportFilteredData();
-
-            // Second export: Unrated energy rating — returns only properties with no
-            // EPC certificate so all EPC-related fields are expected to be empty.
-            const filterPage2 = await viewPage1.clickChangeFilters();
-            await filterPage2.clickClearFilters();
-            await filterPage2.setEnergyRatingFilter('Unrated');
-            const viewPage2 = await filterPage2.clickApplyFilters();
-            await viewPage2.waitForPageToLoad();
-            await viewPage2.waitForTableContent();
-            exportedDataUnrated = await viewPage2.exportFilteredData();
-        } finally {
-            await page.close();
-        }
-    });
-
-    test.beforeEach(async ({}, testInfo) => {
-        testInfo.annotations.push(TestAnnotations.testType(TestType.FUNCTIONAL));
-    });
-
-    test('Property data fields show expected placeholder values when source data is absent', async () => {
-        expect(exportedDataNoUprn.length, 'Export returned no records').toBeGreaterThan(0);
-
-        // Find a row for a property that exists only via its EPC record (no UPRN).
-        // All property-level fields sourced via UPRN linkage (VOA, DMS, Salesforce) should
-        // display their respective 'not found' placeholders for such a row.
-        const rowWithNoUprn = exportedDataNoUprn.find(r => r['UPRN'] === 'Not found');
-        expect(rowWithNoUprn, 'No row with UPRN "Not found" found in export — test data gap').toBeDefined();
-
-        // UPRN — confirmed 'Not found' when no UPRN (TC-2027)
-        expect(rowWithNoUprn!['UPRN']).toBe('Not found');
-        // Rateable value — sourced from VOA data via UPRN; absent when there is no UPRN
-        expect(rowWithNoUprn!['Rateable value (£)']).toBe('Not found');
-        // Possible rental evidence — both DMS booleans are false when no landlord/SIC link via UPRN
-        expect(rowWithNoUprn!['Possible rental evidence']).toBe('Not found');
-        // PRS exemption status — Salesforce record is keyed by UPRN; no UPRN = no record
-        expect(rowWithNoUprn!['PRS exemption status']).toBe('Data not found');
-        // PRS exemption date — empty when there is no PRS exemption record
-        expect(rowWithNoUprn!['PRS exemption date'].trim()).toBe('');
-    });
-
-    test('EPC data fields are empty when property has no EPC certificate', async () => {
-        expect(exportedDataUnrated.length, 'Export returned no records').toBeGreaterThan(0);
-
-        // All rows in this export are Unrated — any row will have empty EPC-specific fields.
-        // Use the first row as the reference.
-        const unratedRow = exportedDataUnrated[0];
-        expect(unratedRow, 'Unrated export returned no records — test data gap').toBeDefined();
-
-        expect(unratedRow!['EPC expiry date'].trim()).toBe('');
-        expect(unratedRow!['EPC transaction type'].trim()).toBe('');
-        expect(unratedRow!['EPC certificates (Link)'].trim()).toBe('');
-        expect(unratedRow!['EPC history'].trim()).toBe('');
-    });
-
-    test('Landlord fields are empty when property has no owner data', async () => {
-        expect(exportedDataNoUprn.length, 'Export returned no records').toBeGreaterThan(0);
-
-        // Find a row where the first owner name is empty (property with no landlord data)
-        const noOwnerRow = exportedDataNoUprn.find(r => r['Property owner 1 name']?.trim() === '');
-        expect(noOwnerRow, 'No property with empty owner data found in export — test data gap').toBeDefined();
-
-        expect(noOwnerRow!['Property owner 1 name'].trim()).toBe('');
-        expect(noOwnerRow!['Property owner 1 location'].trim()).toBe('');
-        expect(noOwnerRow!['Property owner 1 address'].trim()).toBe('');
-        expect(noOwnerRow!['Property owner 1 SIC code(s)'].trim()).toBe('');
-    });
-});
