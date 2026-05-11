@@ -874,6 +874,89 @@ test.describe('View Properties export functionality', () => {
             expect(hasEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of "0" but has an EPC link '${rawEpcLink}' in the export`).toBe(false);
         });
 
+        test('Exported \'Property owner 1 SIC code(s)\' field value format is correct', async ({ request }) => {
+            // TC-2016
+            const energyRatingFilter = 'A';
+            const councilFilter = 'LONDON BOROUGH OF BEXLEY';
+            const lacodes = ['E09000004'];
+
+            // Apply filters in the UI and export the CSV
+            await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+            await filterPropertiesPage.setCouncilFilter(councilFilter);
+            const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+            await viewPropertiesPage.waitForTableContent();
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+            // Fetch raw DMS items for the same filters
+            const dmsApiClient = new DMSExportApiClient(request);
+            const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, energyratingband: energyRatingFilter });
+            expect(rawDmsItems.length, 'DMS export returned no items').toBeGreaterThan(0);
+
+            // Build UPRN → export row lookup
+            const exportRowByUprn = new Map<string, Record<string, string>>();
+            for (const row of exportedData) {
+                exportRowByUprn.set(String(row['UPRN']).trim(), row);
+            }
+
+            // Case 1: first landlord has at least two non-null SIC codes → expect pipe-separated values in export
+            const dmsItemWithMultiSic = rawDmsItems.find(item =>
+                Array.isArray(item.Landlords) &&
+                item.Landlords.length > 0 &&
+                item.Landlords[0]['SicCodeSicText1'] != null &&
+                item.Landlords[0]['SicCodeSicText2'] != null
+            );
+            expect(dmsItemWithMultiSic,
+                'Test data gap: no DMS item with two or more SIC codes on the first landlord — cannot verify pipe-separated format'
+            ).toBeDefined();
+
+            // Case 2: first landlord exists but all SIC code fields are null → expect 'No data' in export
+            const dmsItemWithNoSic = rawDmsItems.find(item =>
+                Array.isArray(item.Landlords) &&
+                item.Landlords.length > 0 &&
+                item.Landlords[0]['SicCodeSicText1'] == null
+            );
+            expect(dmsItemWithNoSic,
+                'Test data gap: no DMS item where the first landlord has no SIC codes — cannot verify "No data" value'
+            ).toBeDefined();
+
+            // Case 3: no landlords at all → expect 'No data' in export
+            const dmsItemWithNoLandlord = rawDmsItems.find(item =>
+                !Array.isArray(item.Landlords) || item.Landlords.length === 0
+            );
+            expect(dmsItemWithNoLandlord,
+                'Test data gap: no DMS item with no landlord data — cannot verify empty field'
+            ).toBeDefined();
+
+            // Verify Case 1: field contains pipe-separated SIC codes and each part is non-empty
+            const multiSicExportRow = exportRowByUprn.get(String(dmsItemWithMultiSic!.property.Uprn));
+            expect(multiSicExportRow, `UPRN ${dmsItemWithMultiSic!.property.Uprn} not found in export`).toBeDefined();
+            const multiSicValue = multiSicExportRow!['Property owner 1 SIC code(s)'];
+            expect(multiSicValue,
+                `UPRN ${dmsItemWithMultiSic!.property.Uprn}: expected pipe-separated SIC codes, got '${multiSicValue}'`
+            ).toContain(' | ');
+            multiSicValue.split(' | ').forEach(part => {
+                expect(part.trim(),
+                    `UPRN ${dmsItemWithMultiSic!.property.Uprn}: empty SIC code part in '${multiSicValue}'`
+                ).not.toBe('');
+            });
+
+            // Verify Case 2: field shows 'No data' when the landlord has no SIC codes
+            const noSicExportRow = exportRowByUprn.get(String(dmsItemWithNoSic!.property.Uprn));
+            expect(noSicExportRow, `UPRN ${dmsItemWithNoSic!.property.Uprn} not found in export`).toBeDefined();
+            expect(noSicExportRow!['Property owner 1 SIC code(s)'].trim(),
+                `UPRN ${dmsItemWithNoSic!.property.Uprn}: expected 'No data' for landlord with no SIC codes, got '${noSicExportRow!['Property owner 1 SIC code(s)']}'`
+            ).toBe('No data');
+
+            // Verify Case 3: field shows 'No data' when the property has no landlord data at all
+            const noLandlordExportRow = exportRowByUprn.get(String(dmsItemWithNoLandlord!.property.Uprn));
+            expect(noLandlordExportRow, `UPRN ${dmsItemWithNoLandlord!.property.Uprn} not found in export`).toBeDefined();
+            expect(noLandlordExportRow!['Property owner 1 SIC code(s)'].trim(),
+                `UPRN ${dmsItemWithNoLandlord!.property.Uprn}: expected 'No data' when no owner data, got '${noLandlordExportRow!['Property owner 1 SIC code(s)']}'`
+            ).toBe('No data');
+        });
+
         test('Exported Possible rental evidence field value is correct', async ({ request }) => {
             const energyRatingFilter = 'A';
             const councilFilter = 'LONDON BOROUGH OF BEXLEY';
