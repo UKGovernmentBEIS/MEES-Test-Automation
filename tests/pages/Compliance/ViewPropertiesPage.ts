@@ -46,6 +46,8 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'Possible rental evidence', dedicatedTest: true },
         { exportColumn: 'EPC energy rating band',           dmsField: 'EPCEnergyRatingBand' },
         { exportColumn: 'EPC energy rating',                dmsField: 'EPCEnergyRating' },
+        // BUG 953: Export column header reads 'EPC expiry date' but specification defines it as 'EPC expiry date (YYYY-MM-DD)'.
+        // Update exportColumn to 'EPC expiry date (YYYY-MM-DD)' once BUG 953 is resolved.
         { exportColumn: 'EPC expiry date',                  dmsField: 'EPCExpiryDate',
             normalize: (v) => {
                 // DMS format: 2032-09-15T00:00:00 → extract YYYY-MM-DD
@@ -64,8 +66,12 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         // EPC history aggregates TransactionType from every element in the EpcCertificates array joined with ' | '.
         // flattenItem() only reads the first EPC certificate, so a direct loop comparison would miss subsequent entries.
         // Validated in the dedicated 'Exported EPC history field value is correct' test.
+        // BUG 953: Export column header reads 'EPC history' but specification defines it as 'EPC history (rating; expiry; transaction type)'.
+        // Update exportColumn to 'EPC history (rating; expiry; transaction type)' once BUG 953 is resolved.
         { exportColumn: 'EPC history',                      dedicatedTest: true },
         { exportColumn: 'PRS exemption status',             dedicatedTest: true },
+        // BUG 953: Export column header reads 'PRS exemption date' but specification defines it as 'PRS exemption date (YYYY-MM-DD)'.
+        // Update exportColumn to 'PRS exemption date (YYYY-MM-DD)' once BUG 953 is resolved.
         { exportColumn: 'PRS exemption date',               dedicatedTest: true },
         // Property owner fields are dynamic based on the maximum number of landlords associated with a property in exported data.
         { exportColumn: 'Property owner 1 name',            dmsLandlordField: 'LandlordCompanyName' },
