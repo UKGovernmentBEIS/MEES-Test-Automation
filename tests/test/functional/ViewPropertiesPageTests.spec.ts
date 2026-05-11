@@ -972,13 +972,14 @@ test.describe('View Properties export functionality', () => {
         });
 
         test('Exported Possible rental evidence field value is correct', async ({ request }) => {
-            const energyRatingFilter = 'A';
-            const councilFilter = 'LONDON BOROUGH OF BEXLEY';
-            const lacodes = ['E09000004'];
+            const lacodes = ["E09000003", "E09000004"];
+
+            const expectedBothTrue = 'Mandatory issue (Property to let) EPC transaction type | Property owner has letting company SIC code';
+            const expectedEPCTransactionTypeOnly = 'Mandatory issue (Property to let) EPC transaction type';
+            const expectedSiccodeOnly = 'Property owner has letting company SIC code';
+            const expectedBothFalse = 'Not found';
 
             // Apply filters in the UI and export the CSV
-            await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
-            await filterPropertiesPage.setCouncilFilter(councilFilter);
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForPageToLoad();
             await viewPropertiesPage.waitForTableContent();
@@ -987,56 +988,84 @@ test.describe('View Properties export functionality', () => {
 
             // Fetch raw DMS items so we can derive the expected computed value for each row
             const dmsApiClient = new DMSExportApiClient(request);
-            const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, energyratingband: energyRatingFilter });
+            const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, });
             expect(rawDmsItems.length, 'DMS export returned no items').toBeGreaterThan(0);
 
-            // Build UPRN → raw DMS item lookup map
-            const dmsItemByUprn = new Map<string, DMSRawItem>();
-            for (const item of rawDmsItems) {
-                dmsItemByUprn.set(String(item.property.Uprn), item);
-            }
-
-            // 'Found' when at least one of the two booleans is true;
-            // 'Not found' only when both are false.
-
-            // Guard: verify both branches are present in the dataset so neither goes untested
-            const hasFoundCase = rawDmsItems.some(item =>
-                item.property.PossibleEvidenceEpcTransactionType === true ||
+            // Case 1: both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are true
+            // Expect 'Mandatory issue (Property to let) EPC transaction type | Property owner has letting SIC code'
+            // - Find UPRN for property with both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode true
+            const uprnForBothEvidenceTrue = rawDmsItems.find(item =>
+                item.property.PossibleEvidenceEpcTransactionType === true &&
                 item.property.PossibleEvidenceSiccode === true
-            );
-            const hasNotFoundCase = rawDmsItems.some(item =>
+            )?.property.Uprn;
+            expect(uprnForBothEvidenceTrue, 
+                'Test data gap: no DMS item with both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode true — cannot verify "Found" branch')
+                .toBeDefined();
+
+            // - Lookup for a property with uprnForBothEvidenceTrue in the export and 
+            // verify that the value contains 'Mandatory issue (Property to let) EPC transaction type | Property owner has letting SIC code'
+            const exportRowForBothEvidenceTrue = exportedData.find(r => String(r['UPRN']) === String(uprnForBothEvidenceTrue));
+            expect(exportRowForBothEvidenceTrue, `UPRN ${uprnForBothEvidenceTrue} not found in export`).toBeDefined();
+            expect(exportRowForBothEvidenceTrue!['Possible rental evidence'],
+                `UPRN ${uprnForBothEvidenceTrue}: expected '${expectedBothTrue}'
+                 when both evidences are true, 
+                 got '${exportRowForBothEvidenceTrue!['Possible rental evidence']}'`
+            ).toBe(expectedBothTrue);
+
+            // Case 2: PossibleEvidenceEpcTransactionType is true but PossibleEvidenceSiccode is false 
+            // Expect 'Mandatory issue (Property to let) EPC transaction type'
+            // - Find UPRN for property with one of PossibleEvidenceEpcTransactionType true and PossibleEvidenceSiccode false
+            const uprnPossibleEvidenceEpcTransactionTypeTrue = rawDmsItems.find(item => 
+                (item.property.PossibleEvidenceEpcTransactionType === true) && (item.property.PossibleEvidenceSiccode !== true)
+            )?.property.Uprn;
+            expect(uprnPossibleEvidenceEpcTransactionTypeTrue, 
+                `Test data gap: no DMS item with exactly one of PossibleEvidenceEpcTransactionType the and PossibleEvidenceSiccode false`).toBeDefined();
+
+            // - Lookup for a property with uprnPossibleEvidenceEpcTransactionTypeTrue in the export and
+            // verify that the value contains 'Mandatory issue (Property to let) EPC transaction type'
+            const exportRowForEpcTransactionTypeTrue = exportedData.find(r => String(r['UPRN']) === String(uprnPossibleEvidenceEpcTransactionTypeTrue));
+            expect(exportRowForEpcTransactionTypeTrue, `UPRN ${uprnPossibleEvidenceEpcTransactionTypeTrue} not found in export`).toBeDefined();
+            expect(exportRowForEpcTransactionTypeTrue!['Possible rental evidence'],
+                `UPRN ${uprnPossibleEvidenceEpcTransactionTypeTrue}: expected '${expectedEPCTransactionTypeOnly}' 
+                when PossibleEvidenceEpcTransactionType is true and PossibleEvidenceSiccode is false, 
+                got '${exportRowForEpcTransactionTypeTrue!['Possible rental evidence']}'`
+            ).toBe(expectedEPCTransactionTypeOnly);
+            
+
+            // Case 3: PossibleEvidenceEpcTransactionType is false but PossibleEvidenceSiccode is true
+            // Expect 'Property owner has letting SIC code'
+            // - Find UPRN for property with one of PossibleEvidenceEpcTransactionType false and PossibleEvidenceSiccode true
+            const uprnPossibleEvidenceSiccodeTrue = rawDmsItems.find(item => 
+                (item.property.PossibleEvidenceEpcTransactionType !== true) && (item.property.PossibleEvidenceSiccode === true)
+            )?.property.Uprn;
+            expect(uprnPossibleEvidenceSiccodeTrue, 
+                `Test data gap: no DMS item with exactly one of PossibleEvidenceEpcTransactionType false and PossibleEvidenceSiccode true`).toBeDefined();
+
+            // - Lookup for a property with uprnPossibleEvidenceSiccodeTrue in the export and
+            // verify that the value contains 'Property owner has letting SIC code'
+            const exportRowForSiccodeTrue = exportedData.find(r => String(r['UPRN']) === String(uprnPossibleEvidenceSiccodeTrue));
+            expect(exportRowForSiccodeTrue, `UPRN ${uprnPossibleEvidenceSiccodeTrue} not found in export`).toBeDefined();
+            expect(exportRowForSiccodeTrue!['Possible rental evidence'],
+                `UPRN ${uprnPossibleEvidenceSiccodeTrue}: expected '${expectedSiccodeOnly}' 
+                when PossibleEvidenceEpcTransactionType is false and PossibleEvidenceSiccode is true, 
+                got '${exportRowForSiccodeTrue!['Possible rental evidence']}'`
+            ).toBe(expectedSiccodeOnly);
+
+            //Case 4: both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are false
+            // Expect 'Not found'
+            // - Find UPRN for property with both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode false
+            const uprnForBothEvidenceFalse = rawDmsItems.find(item =>
                 item.property.PossibleEvidenceEpcTransactionType !== true &&
                 item.property.PossibleEvidenceSiccode !== true
-            );
-            expect(hasFoundCase,    'Test data gap: no DMS item where at least one boolean is true — cannot verify "Found" branch').toBe(true);
-            expect(hasNotFoundCase, 'Test data gap: no DMS item where both booleans are false — cannot verify "Not found" branch').toBe(true);
+            )?.property.Uprn;
+            expect(uprnForBothEvidenceFalse, 'Test data gap: no DMS item with both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode false — cannot verify "Not found" branch').toBeDefined();
 
-            // Compare each exported row against the derived expected value
-            const valueMismatches: string[] = [];
-            for (const row of exportedData) {
-                const uprn = String(row['UPRN']);
-                const dmsItem = dmsItemByUprn.get(uprn);
-                if (!dmsItem) continue; // Row is outside the DMS page returned — skip
-
-                // 'Not found' only when both booleans are false
-                const isFound =
-                    dmsItem.property.PossibleEvidenceEpcTransactionType === true ||
-                    dmsItem.property.PossibleEvidenceSiccode === true;
-                const expectedValue = isFound ? 'Found' : 'Not found';
-                const actualValue = row['Possible rental evidence'];
-
-                if (actualValue !== expectedValue) {
-                    valueMismatches.push(
-                        `UPRN ${uprn}: expected '${expectedValue}' ` +
-                        `(PossibleEvidenceEpcTransactionType=${dmsItem.property.PossibleEvidenceEpcTransactionType}, ` +
-                        `PossibleEvidenceSiccode=${dmsItem.property.PossibleEvidenceSiccode}), ` +
-                        `got '${actualValue}'`
-                    );
-                }
-            }
-            expect(valueMismatches,
-                `Possible rental evidence mismatches: ${valueMismatches.join('; ')}`
-            ).toEqual([]);
+            // - Lookup for a property with uprnForBothEvidenceFalse in the export and verify that the value contains 'Not found'
+            const exportRowForBothEvidenceFalse = exportedData.find(r => String(r['UPRN']) === String(uprnForBothEvidenceFalse));
+            expect(exportRowForBothEvidenceFalse, `UPRN ${uprnForBothEvidenceFalse} not found in export`).toBeDefined();
+            expect(exportRowForBothEvidenceFalse!['Possible rental evidence'],
+                `UPRN ${uprnForBothEvidenceFalse}: expected '${expectedBothFalse}' when both evidences are false, got '${exportRowForBothEvidenceFalse!['Possible rental evidence']}'`
+            ).toBe(expectedBothFalse);
         });
 
         test('Exported EPC history field value is correct', async ({ request }) => {
