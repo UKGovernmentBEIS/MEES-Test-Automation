@@ -263,6 +263,10 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         return this.noRecordsFoundMessage;
     }
 
+    getExportButton(): Locator {
+        return this.exportButton;
+    }
+
     async getPropertiesCountField(): Promise<Locator> {
         return this.totalRecordsField;
     }
@@ -368,6 +372,13 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         const propertyDetailsPage = new PropertyDetailsPage(this.page);
         await propertyDetailsPage.waitForPageToLoad();
         return propertyDetailsPage;
+    }
+
+    async getExportFilename(): Promise<string> {
+        await this.exportButton.click();
+        const download = await this.page.waitForEvent('download');
+        await download.cancel();
+        return download.suggestedFilename();
     }
 
     async exportFilteredData(): Promise<Record<string, string>[]> { 

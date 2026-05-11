@@ -371,6 +371,20 @@ test.describe('View Properties export functionality', () => {
         filterPropertiesPage = await homePage.clickViewProperties();
     });
 
+    test('Exported CSV filename follows the MEES_Properties_YYYY-MM-DDThh-mm-ss.csv pattern', async ({ page }) => {
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
+        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForPageToLoad();
+        await viewPropertiesPage.waitForTableContent();
+
+        const filename = await viewPropertiesPage.getExportFilename();
+
+        // Expected pattern: MEES_Properties_YYYY-MM-DDThh-mm-ss.csv
+        const filenamePattern = /^MEES_Properties_\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}\.csv$/;
+        expect(filename, `Export filename '${filename}' does not match expected pattern 'MEES_Properties_YYYY-MM-DDThh-mm-ss.csv'`).toMatch(filenamePattern);
+    });
+
     test.describe('Export structure', () => {
         test('Exported data match filtered UI data', async ({ page }) => {       
             // Set Energy Rating filter to 'A'
@@ -1080,4 +1094,22 @@ test.describe('View Properties export functionality', () => {
             const exportColumnNames = Object.keys(exportedData[0]);
             expect(exportColumnNames, "'Landlord location' column should not be present in the export").not.toContain('Landlord location');
         });
+
+        test('Export button is not displayed when there are no records', async ({ page }) => {
+            // TC-2050
+            // Apply a filter that returns no results
+            const filterPropertiesPage2 = await filterPropertiesPage.clickApplyFilters();
+            await filterPropertiesPage2.waitForPageToLoad();
+            const filterPropertiesPageAgain = await filterPropertiesPage2.clickChangeFilters();
+            await filterPropertiesPageAgain.setTownFilter('NonExistentTown');
+            const viewPropertiesPage = await filterPropertiesPageAgain.clickApplyFilters();
+            await viewPropertiesPage.waitForPageToLoad();
+
+            // Verify no records message is shown
+            await expect(await viewPropertiesPage.getNoRecordsFoundMessage()).toBeVisible();
+
+            // Verify the export button is not visible
+            await expect(viewPropertiesPage.getExportButton()).not.toBeVisible();
+        });
     });
+});
