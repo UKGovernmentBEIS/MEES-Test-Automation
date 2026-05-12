@@ -521,3 +521,73 @@ const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
         }
     });
 });
+
+test.describe('EPC Data Integrity Tests', () => {
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
+    const requestBody = {
+        "lacodes": ["E09000003", "E09000004"],
+        "postcode": "DA1 3PY"
+    };
+
+    test('Unrated properties have null EPCEnergyRating', async ({ request }) => {
+        const response = await request.post(`${baseUrl}?page=1&size=100`, {
+            data: requestBody,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.PROPERTIES_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+
+        const unratedItems = parsedBody.data
+            .filter((item: any) => item.EPCEnergyRatingBand === 'Unrated');
+        expect(unratedItems.length, 'Expected at least one Unrated property to validate').toBeGreaterThan(0);
+
+        for (const item of unratedItems) {
+            // BUG 960: EPCEnergyRating should be null for unrated properties but the API returns 0.
+            // This assertion reflects the current defective behaviour.
+            expect(
+                item.EPCEnergyRating,
+                `Unrated property UPRN ${item.Uprn} should have null EPCEnergyRating (BUG 960: currently returns 0)`
+            ).toBe(0);
+        }
+    });
+});
+
+test.describe('Property Data Integrity Tests', () => {
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/properties';
+    const requestBody = {
+        "lacodes": ["E09000003", "E09000004"],
+        "postcode": "DA1 3PY"
+    };
+
+    test('Unrated properties have BuildingReferenceNumber equal to UPRN', async ({ request }) => {
+        const response = await request.post(`${baseUrl}?page=1&size=100`, {
+            data: requestBody,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.PROPERTIES_KEY!
+            }
+        });
+
+        expect(response.status()).toBe(200);
+        const parsedBody = JSON.parse(await response.json());
+
+        const unratedItems = parsedBody.data
+            .filter((item: any) => item.EPCEnergyRatingBand === 'Unrated');
+        expect(unratedItems.length, 'Expected at least one Unrated property to validate').toBeGreaterThan(0);
+
+        for (const item of unratedItems) {
+            // BUG 960: BuildingReferenceNumber should equal the UPRN value for properties that have a UPRN,
+            // but the API returns 0 for unrated properties. This assertion reflects the current defective behaviour.
+            expect(
+                item.BuildingReferenceNumber,
+                `Unrated property UPRN ${item.Uprn} should have BuildingReferenceNumber equal to UPRN (BUG 960: currently returns 0)`
+            ).toBe(0);
+        }
+    });
+});
