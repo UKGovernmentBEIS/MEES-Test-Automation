@@ -565,18 +565,14 @@ test.describe('Export EPC Data Integrity Tests', () => {
                 item.property.EPCPropertyType,
                 `Unrated property UPRN ${item.property.Uprn} should have null EPCPropertyType`
             ).toBeNull();
-            // BUG 956: EPCExpiryDate should be null for unrated properties but the API returns the sentinel
-            // date "1910-01-01T00:00:00" instead. This assertion reflects the current defective behaviour.
             expect(
                 item.property.EPCExpiryDate,
-                `Unrated property UPRN ${item.property.Uprn} should have null EPCExpiryDate (BUG 956: currently returns sentinel date "1910-01-01T00:00:00")`
-            ).toBe('1910-01-01T00:00:00');
-            // BUG 956: EPCTransactionType should be null for unrated properties but the API returns the
-            // string "NULL" instead of JSON null. This assertion reflects the current defective behaviour.
+                `Unrated property UPRN ${item.property.Uprn} should have null EPCExpiryDate`
+            ).toBeNull();
             expect(
                 item.property.EPCTransactionType,
-                `Unrated property UPRN ${item.property.Uprn} should have null EPCTransactionType (BUG 956: currently returns string "NULL")`
-            ).toBe('NULL');
+                `Unrated property UPRN ${item.property.Uprn} should have null EPCTransactionType`
+            ).toBeNull();
         }
     });
 

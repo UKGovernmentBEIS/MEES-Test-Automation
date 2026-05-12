@@ -634,12 +634,12 @@ test.describe('Data Verification Tests', () => {
 
         const { property, epcCertificates } = await response.json();
         
-        expect(property.uprn).toBe(0); // BUG 957: should be null, temporarily changed to 0 to pass test
+        expect(property.uprn).toBeNull();
         expect(property.buildingReferenceNumber).toBe(Number(refBuildingRefNum));
         expect(epcCertificates).toHaveLength(1);
 
         const cert = epcCertificates[0];
-        expect(cert.uprn).toBe(0);
+        expect(cert.uprn).toBeNull();
         expect(cert.assetRating).toBe(25);
         expect(cert.assetRatingBand).toBe('A');
         expect(cert.lodgementDate).toContain('2022-09-23');
@@ -657,7 +657,7 @@ test.describe('Data Verification Tests', () => {
 
         const { property, landlords } = await response.json();
         
-        expect(property.uprn).toBe(0); // BUG 957: should be null, temporarily changed to 0 to pass test
+        expect(property.uprn).toBeNull();
         expect(property.buildingReferenceNumber).toBe(Number(refBuildingRefNum));
         // Landlords are linked to a property by UPRN — properties without a UPRN will always return an empty landlords array
         expect(landlords).toHaveLength(0);
