@@ -823,7 +823,7 @@ test.describe('View Properties export functionality', () => {
             ).toEqual([]);
         });
 
-        test('Exported EPC Certificates (Link) field is valid and matches the property address', async ({ page }) => {
+        test('Exported EPC certificate link field is valid and matches the property address', async ({ page }) => {
             // [BUG 951] The export column is currently named 'EPC certificates (Link)'. The specification defines it as 'EPC certificate link'.
             // All column references in this test must be updated once BUG 951 is resolved.
             // Apply filters in the UI and export the CSV
@@ -833,12 +833,12 @@ test.describe('View Properties export functionality', () => {
             const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
             expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-            // Find a property with a non-empty 'EPC certificates (Link)'
-            const propertyWithEpcLink = exportedData.find(r => r['EPC certificates (Link)'] && r['EPC certificates (Link)'].trim() !== '');
-            expect(propertyWithEpcLink, 'No property with a non-empty EPC Certificates (Link) field was found in the export').toBeDefined();
+            // Find a property with a non-empty 'EPC certificate link'
+            const propertyWithEpcLink = exportedData.find(r => r['EPC certificate link'] && r['EPC certificate link'].trim() !== '');
+            expect(propertyWithEpcLink, 'No property with a non-empty EPC certificate link field was found in the export').toBeDefined();
 
             // Copy the URL from the export
-            const url = propertyWithEpcLink!['EPC certificates (Link)'];
+            const url = propertyWithEpcLink!['EPC certificate link']!.trim();
 
             // Verify that the resulting string is a valid URL
             const isValidUrl = (str: string): boolean => {
@@ -849,7 +849,7 @@ test.describe('View Properties export functionality', () => {
                     return false;
                 }
             };
-            expect(isValidUrl(url), `The EPC Certificates (Link) value '${url}' is not a valid URL`).toBe(true);
+            expect(isValidUrl(url), `The EPC certificate link value '${url}' is not a valid URL`).toBe(true);
 
             // Load the URL and Verify that the address displayed on the EPC certificate page matches the address of the property in the export
             await page.goto(url);
@@ -866,8 +866,8 @@ test.describe('View Properties export functionality', () => {
             expect(certificateAddress, `The address on the EPC certificate page '${certificateAddress}' does not match the expected address '${expectedAddress}' from the export`).toBe(expectedAddress);
         });
 
-        test('Exported EPC Certificates (Link) field is empty for properties without EPC data', async ({ page }) => {
-            // [BUG 951] The export column is currently named 'EPC certificates (Link)'. The specification defines it as 'EPC certificate link'.
+        test('Exported EPC certificate link field is empty for properties without EPC data', async ({ page }) => {
+            // [BUG 951] The export column is currently named 'EPC certificate link'. The specification defines it as 'EPC certificate link'.
             // All column references in this test must be updated once BUG 951 is resolved.
             // Apply filters in the UI and export the CSV
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
@@ -882,8 +882,8 @@ test.describe('View Properties export functionality', () => {
             const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === '0');
             expect(propertyWithoutEpcEnergyData, 'No property with an EPC energy rating of "0" was found in the export').toBeDefined();
 
-            // Verify that the 'EPC certificates (Link)' field is empty for this property
-            const rawEpcLink = propertyWithoutEpcEnergyData!['EPC certificates (Link)']?.trim() ?? '';
+            // Verify that the 'EPC certificate link' field is empty for this property
+            const rawEpcLink = propertyWithoutEpcEnergyData!['EPC certificate link']?.trim() ?? '';
             const hasEpcLink = rawEpcLink !== '' && rawEpcLink !== EPC_BASE_URL;
             expect(hasEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of "0" but has an EPC link '${rawEpcLink}' in the export`).toBe(false);
         });
@@ -960,15 +960,15 @@ test.describe('View Properties export functionality', () => {
             const noSicExportRow = exportRowByUprn.get(String(dmsItemWithNoSic!.property.Uprn));
             expect(noSicExportRow, `UPRN ${dmsItemWithNoSic!.property.Uprn} not found in export`).toBeDefined();
             expect(noSicExportRow!['Property owner 1 SIC code(s)'].trim(),
-                `UPRN ${dmsItemWithNoSic!.property.Uprn}: expected 'No data' for landlord with no SIC codes, got '${noSicExportRow!['Property owner 1 SIC code(s)']}'`
-            ).toBe('No data');
+                `UPRN ${dmsItemWithNoSic!.property.Uprn}: expected 'Not found' for landlord with no SIC codes, got '${noSicExportRow!['Property owner 1 SIC code(s)']}'`
+            ).toBe('Not found');
 
-            // Verify Case 3: field shows 'No data' when the property has no landlord data at all
+            // Verify Case 3: field shows 'Not found' when the property has no landlord data at all
             const noLandlordExportRow = exportRowByUprn.get(String(dmsItemWithNoLandlord!.property.Uprn));
             expect(noLandlordExportRow, `UPRN ${dmsItemWithNoLandlord!.property.Uprn} not found in export`).toBeDefined();
             expect(noLandlordExportRow!['Property owner 1 SIC code(s)'].trim(),
-                `UPRN ${dmsItemWithNoLandlord!.property.Uprn}: expected 'No data' when no owner data, got '${noLandlordExportRow!['Property owner 1 SIC code(s)']}'`
-            ).toBe('No data');
+                `UPRN ${dmsItemWithNoLandlord!.property.Uprn}: expected 'Not found' when no owner data, got '${noLandlordExportRow!['Property owner 1 SIC code(s)']}'`
+            ).toBe('Not found');
         });
 
         test('Exported Possible rental evidence field value is correct', async ({ request }) => {
