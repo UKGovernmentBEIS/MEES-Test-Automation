@@ -831,3 +831,116 @@ test.describe('Export Possible Evidence Rule Tests', () => {
         ).toBe(false);
     });
 });
+
+test.describe('Export vs Properties cross-endpoint data consistency', () => {
+    const filterBody = {
+        "lacodes": ['E09000003', 'E09000004'],
+        "postcode": 'DA1 4FY'
+    };
+
+    let exportItems: any[];
+    let propertiesData: Record<string, any>[];
+    let propertiesByUprn: Map<number, Record<string, any>>;
+
+    test.beforeAll(async ({ request }) => {
+        const exportResponse = await request.post(process.env.DMS_BASE_URL + '/mees/export', {
+            data: filterBody,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.EXPORT_KEY!
+            }
+        });
+        expect(exportResponse.status(), 'Export endpoint setup request failed').toBe(200);
+        exportItems = JSON.parse(await exportResponse.json()).data;
+
+        const propsResponse = await request.post(process.env.DMS_BASE_URL + '/mees/properties', {
+            data: filterBody,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-functions-key': process.env.PROPERTIES_KEY!
+            }
+        });
+        expect(propsResponse.status(), 'Properties endpoint setup request failed').toBe(200);
+        propertiesData = JSON.parse(await propsResponse.json()).data;
+
+        propertiesByUprn = new Map<number, Record<string, any>>(
+            propertiesData.map((p: any) => [p.Uprn, p])
+        );
+    });
+
+    test('Export and Properties endpoints return the same set of UPRNs', () => {
+        expect(exportItems.length, 'Export endpoint returned no results for filter criteria').toBeGreaterThan(0);
+        expect(propertiesData.length, 'Properties endpoint returned no results for filter criteria').toBeGreaterThan(0);
+
+        const exportUprns = new Set(exportItems.map((item: any) => item.property.Uprn));
+        const propertiesUprns = new Set(propertiesData.map((p: any) => p.Uprn));
+
+        const onlyInExport = [...exportUprns].filter(u => !propertiesUprns.has(u));
+        const onlyInProperties = [...propertiesUprns].filter(u => !exportUprns.has(u));
+
+        expect(onlyInExport, `UPRNs present in /mees/export but missing from /mees/properties: ${onlyInExport.join(', ')}`).toHaveLength(0);
+        expect(onlyInProperties, `UPRNs present in /mees/properties but missing from /mees/export: ${onlyInProperties.join(', ')}`).toHaveLength(0);
+    });
+
+    test('Property address fields match between Export and Properties endpoints', () => {
+        const addressFields = ['Name', 'Number', 'FlatNameNumber', 'Line1', 'Line2', 'Line3', 'Town', 'County', 'Postcode'];
+
+        for (const item of exportItems) {
+            const exportProp = item.property;
+            const propertiesProp = propertiesByUprn.get(exportProp.Uprn);
+
+            expect(propertiesProp, `UPRN ${exportProp.Uprn} found in export but not in /mees/properties`).toBeDefined();
+            if (!propertiesProp) continue;
+
+            for (const field of addressFields) {
+                expect(
+                    exportProp[field],
+                    `UPRN ${exportProp.Uprn}: address field '${field}' mismatch — export='${exportProp[field]}', properties='${propertiesProp[field]}'`
+                ).toBe(propertiesProp[field]);
+            }
+        }
+    });
+
+    test('BuildingReferenceNumber matches between Export and Properties endpoints', () => {
+        for (const item of exportItems) {
+            const exportProp = item.property;
+            const propertiesProp = propertiesByUprn.get(exportProp.Uprn);
+
+            expect(propertiesProp, `UPRN ${exportProp.Uprn} found in export but not in /mees/properties`).toBeDefined();
+            if (!propertiesProp) continue;
+
+            expect(
+                exportProp.BuildingReferenceNumber,
+                `UPRN ${exportProp.Uprn}: BuildingReferenceNumber mismatch — export='${exportProp.BuildingReferenceNumber}', properties='${propertiesProp.BuildingReferenceNumber}'`
+            ).toBe(propertiesProp.BuildingReferenceNumber);
+        }
+    });
+
+    test('Export items contain valid EpcCertificates and Landlords counts', () => {
+        expect(exportItems.length, 'Export endpoint returned no results for filter criteria').toBeGreaterThan(0);
+
+        for (const item of exportItems) {
+            const uprn = item.property.Uprn;
+
+            expect(
+                Array.isArray(item.EpcCertificates),
+                `UPRN ${uprn}: EpcCertificates should be an array`
+            ).toBe(true);
+            expect(
+                item.EpcCertificates.length,
+                `UPRN ${uprn}: EpcCertificates count should be a non-negative number`
+            ).toBeGreaterThanOrEqual(0);
+
+            expect(
+                Array.isArray(item.Landlords),
+                `UPRN ${uprn}: Landlords should be an array`
+            ).toBe(true);
+            expect(
+                item.Landlords.length,
+                `UPRN ${uprn}: Landlords count should be a non-negative number`
+            ).toBeGreaterThanOrEqual(0);
+        }
+    });
+});
