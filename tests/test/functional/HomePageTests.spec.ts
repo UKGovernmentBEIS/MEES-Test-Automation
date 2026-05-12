@@ -1,8 +1,27 @@
 import { test, expect } from '../../fixtures/authFixtures';
+import { test as baseTest } from '@playwright/test';
 import { HomePage } from '../../pages/Compliance/HomePage';
 import { FilterPropertiesPage } from '../../pages/Compliance/FilterPropertiesPage';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
+import fs from 'fs';
+import path from 'path';
+
+function getDualAccessCredentials(): { email: string; password: string } {
+    const accountsPath = path.join(__dirname, '../../config/test-accounts.json');
+    const dualAccessAccount = JSON.parse(fs.readFileSync(accountsPath, 'utf-8')).dualAccessAccount;
+
+    const email = process.env[dualAccessAccount.email];
+    const password = process.env[dualAccessAccount.password];
+
+    if (!email || !password) {
+        throw new Error(
+            `Dual access account credentials not set. ` +
+            `Expected env vars: ${dualAccessAccount.email}, ${dualAccessAccount.password}`
+        );
+    }
+    return { email, password };
+}
 
 test.describe('Home Page Functional Tests', () => {
     let landingPage: LandingPage;
@@ -59,5 +78,54 @@ test.describe('Home Page Navigation Tests', () => {
     test('Navigate to Penalty Calculator page from Home Page using the Penalty Calculator tab', async ({ page }) => {
         const penaltyCalculatorPage = await homePage.clickOnPenaltyCalculatorTab();
         expect(await penaltyCalculatorPage.isDisplayed()).toBeTruthy();
+    });
+});
+
+baseTest.describe('Dual Access User - MEES Tests', () => {
+    baseTest.beforeEach(async ({}, testInfo) => {
+        testInfo.annotations.push(TestAnnotations.testType(TestType.FUNCTIONAL));
+    });
+
+    baseTest('Dual-access user can sign in to MEES and reach the home page', async ({ page }) => {
+        const { email, password } = getDualAccessCredentials();
+
+        const landingPage = new LandingPage(page);
+        await landingPage.navigate();
+
+        const signInOrCreatePage = await landingPage.clickSignIn_NotAuthenticatedUser();
+        const loginEmailPage = await signInOrCreatePage.clickSignIn();
+        const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
+        const homePage = await loginPasswordPage.enterPasswordAndContinueToComplianceLandingPage(password);
+
+        await expect(page).toHaveURL(/.*landing-page/);
+        expect(await homePage.isDisplayed()).toBeTruthy();
+    });
+});
+
+// Skipped until the PRSE site is fixed
+baseTest.describe('Dual Access User - PRSE Tests', () => {
+    baseTest.beforeEach(async ({}, testInfo) => {
+        testInfo.annotations.push(TestAnnotations.testType(TestType.FUNCTIONAL));
+    });
+
+    baseTest.skip('Dual-access user can sign in to PRSE and reach the PRSE home page', async ({ page }) => {
+        const { email, password } = getDualAccessCredentials();
+
+        const prseBaseUrl = process.env.PRSE_BASE_URL;
+        if (!prseBaseUrl) {
+            throw new Error('PRSE_BASE_URL environment variable is not set');
+        }
+
+        await page.goto(prseBaseUrl);
+        const landingPage = new LandingPage(page);
+        await landingPage.waitForPageToLoad();
+
+        const signInOrCreatePage = await landingPage.clickSignIn_NotAuthenticatedUser();
+        const loginEmailPage = await signInOrCreatePage.clickSignIn();
+        const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
+        const homePage = await loginPasswordPage.enterPasswordAndContinueToComplianceLandingPage(password);
+
+        await expect(page).toHaveURL(new RegExp(prseBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+        expect(await homePage.isDisplayed()).toBeTruthy();
     });
 });
