@@ -93,7 +93,6 @@ export class ViewPropertiesPage extends BaseCompliancePage {
     private previousPageButton: Locator;
     private lastPageButton: Locator;
     private totalRecordsField: Locator;
-    private downloadButton: Locator;
     private noRecordsFoundMessage: Locator;
     private readonly exportButton: Locator;
 
@@ -111,7 +110,6 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         this.previousPageButton = this.paginationContainer.getByRole('link', { name: 'Previous page' });
         this.lastPageButton = this.paginationContainer.locator('.govuk-pagination__list .govuk-pagination__item');
         this.totalRecordsField = this.page.getByText('results');
-        this.downloadButton = this.page.getByRole('button', { name: 'Export filtered table (.csv)' });
         this.noRecordsFoundMessage = this.page.getByText('No records found');
         this.exportButton = this.page.getByRole('button', { name: 'Export filtered table (.csv)' });
     }
@@ -125,8 +123,6 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             breadcrumbHomeLink: this.breadcrumbHomeLink,
             breadcrumbFilterPropertiesLink: this.breadcrumbFilterPropertiesLink,
             changeFiltersLink: this.changeFiltersLink,
-            downloadButton: this.downloadButton,
-            exportButton: this.exportButton
         };
 
         const locatorsToWaitFor = additionalLocators 

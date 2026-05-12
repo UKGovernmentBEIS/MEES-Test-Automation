@@ -45,7 +45,7 @@ export enum PageName {
   UNDERSTANDING_PENALTIES_PAGE = "Understanding Penalties Page",
   ENFORCEMENT_TIMELINE_PAGE = "Enforcement Timeline Page",
   UNDERSTANDING_MEES_REGULATIONS_PAGE = "Understanding MEES Regulations Page",
-  WHERE_PROPERTY_INFORMATION_COMES_FROM_PAGE = "Where Property Information Comes From Page"
+  HOW_PRS_PROPERTIES_ARE_IDENTIFIED_PAGE = "How PRS Properties Are Identified Page"
 }
 
 /**
