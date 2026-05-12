@@ -582,9 +582,11 @@ test.describe('Property Data Integrity Tests', () => {
         expect(unratedItems.length, 'Expected at least one Unrated property to validate').toBeGreaterThan(0);
 
         for (const item of unratedItems) {
+            // BUG 960: BuildingReferenceNumber should equal the UPRN value for properties that have a UPRN,
+            // but the API returns null for unrated properties. This assertion reflects the current defective behaviour.
             expect(
                 item.BuildingReferenceNumber,
-                `Unrated property UPRN ${item.Uprn} should have null BuildingReferenceNumber`
+                `Unrated property UPRN ${item.Uprn} should have null BuildingReferenceNumber (BUG 960: currently returns null)`
             ).toBeNull();
         }
     });
