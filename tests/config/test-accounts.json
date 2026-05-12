@@ -19,5 +19,11 @@
     "password": "TEST_NO_ACCESS_PASSWORD",
     "accountName": "TEST_NO_ACCESS_ACCOUNT_NAME",
     "description": "Test account that has no access to the Compliance Hub"
+  },
+  "dualAccessAccount": {
+    "email": "TEST_DUAL_ACCESS_EMAIL",
+    "password": "TEST_DUAL_ACCESS_PASSWORD",
+    "accountName": "TEST_DUAL_ACCESS_NAME",
+    "description": "Test account with access to both MEES and PRSE applications"
   }
 }

@@ -199,9 +199,9 @@ test.describe('Possible Rental Evidence Filter Tests', () => {
         await expect(filterGroup.getByText('Unknown')).toHaveCount(0);
     });
 
-    test.skip('Council dropdown displays Show all of your councils when no council is selected', async () => {
+    test('Council dropdown displays Show all of your councils when no council is selected', async () => {
         const defaultOptionText = await filterPropertiesPage.getCouncilDropdownDefaultOptionText();
-        expect(defaultOptionText).toBe('Show all of your councils');
+        expect(defaultOptionText).toBe('Show all your councils');
     });
 
     test('Selecting Evidence found returns only properties with Found rental evidence', async () => {
