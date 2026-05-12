@@ -791,13 +791,10 @@ test.describe('Export Possible Evidence Rule Tests', () => {
             item.property.PossibleEvidenceSiccode,
             `UPRN ${POSSIBLE_EVIDENCE_BOTH_TRUE_UPRN} should have PossibleEvidenceSiccode = true`
         ).toBe(true);
-        // BUG 948: PossibleEvidenceEpcTransactionType should be true — the latest EPC has TransactionType 'Mandatory issue (Property to let).'
-        // but the API incorrectly returns false when PossibleEvidenceSiccode is also true.
-        // Revert this assertion to .toBe(true) once Bug 948 is resolved.
         expect(
             item.property.PossibleEvidenceEpcTransactionType,
-            `UPRN ${POSSIBLE_EVIDENCE_BOTH_TRUE_UPRN} EPCTransactionType is 'Mandatory issue (Property to let).' so PossibleEvidenceEpcTransactionType should be true (BUG 948: currently returns false)`
-        ).toBe(false);
+            `UPRN ${POSSIBLE_EVIDENCE_BOTH_TRUE_UPRN} EPCTransactionType is 'Mandatory issue (Property to let).' so PossibleEvidenceEpcTransactionType should be true`
+        ).toBe(true);
     });
 
     test('PossibleEvidenceSiccode is false when no landlord SIC code contains 68209', async ({ request }) => {
