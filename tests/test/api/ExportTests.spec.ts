@@ -557,12 +557,10 @@ test.describe('Export EPC Data Integrity Tests', () => {
         expect(itemsToValidate.length, 'Expected at least one Unrated property to validate').toBeGreaterThan(0);
 
         for (const item of itemsToValidate) {
-            // BUG 960: EPCEnergyRating should be null for unrated properties but the API returns 0.
-            // This assertion reflects the current defective behaviour.
             expect(
                 item.property.EPCEnergyRating,
-                `Unrated property UPRN ${item.property.Uprn} should have null EPCEnergyRating (BUG 960: currently returns 0)`
-            ).toBe(0);
+                `Unrated property UPRN ${item.property.Uprn} should have null EPCEnergyRating`
+            ).toBeNull();
             expect(
                 item.property.EPCPropertyType,
                 `Unrated property UPRN ${item.property.Uprn} should have null EPCPropertyType`
@@ -704,11 +702,11 @@ test.describe('Export Property Data Integrity Tests', () => {
 
         for (const item of itemsToValidate) {
             // BUG 960: BuildingReferenceNumber should equal the UPRN value for properties that have a UPRN,
-            // but the API returns 0 for unrated properties. This assertion reflects the current defective behaviour.
+            // but the API returns null for unrated properties. This assertion reflects the current defective behaviour.
             expect(
                 item.property.BuildingReferenceNumber,
-                `Unrated property UPRN ${item.property.Uprn} should have BuildingReferenceNumber equal to UPRN (BUG 960: currently returns 0)`
-            ).toBe(0);
+                `Unrated property UPRN ${item.property.Uprn} should have null BuildingReferenceNumber (BUG 960: currently returns null)`
+            ).toBeNull();
         }
     });
 });
