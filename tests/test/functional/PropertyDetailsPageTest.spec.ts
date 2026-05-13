@@ -198,8 +198,9 @@ test.describe('Property Details Comments Tests', () => {
         // Add comment - directly using page methods
         await propertyDetailsPage.addComment(uniqueComment);
         await propertyDetailsPage.saveComment();
+        const propertyCommentsWithAnnotations = await propertyDetailsPage.getCommentsTestData();
 
-        await expect(await propertyDetailsPage.getComments()).toContainText(uniqueComment);
+        expect(propertyCommentsWithAnnotations).toContainEqual(expect.objectContaining({ commentText: uniqueComment }));
 
         // BUG 941 WORKAROUND: annotation currently uses email, not user name/surname.
         // Expected annotation currently follows invalid behavior until bug 941 is fixed.
@@ -222,7 +223,7 @@ test.describe('Property Details Comments Tests', () => {
         // Expected annotation format:
         const expectedAnnotation = `Added by ${currentUserIdentifier} on ${dayWithSuffix} ${month} ${year}`;
 
-        await expect(await propertyDetailsPage.getComments()).toContainText(expectedAnnotation);
+           expect(propertyCommentsWithAnnotations).toContainEqual(expect.objectContaining({ commentAnnotations: expectedAnnotation }));
     });
 
     // Validate that cancel button clear the comment input and does not save the comment
@@ -232,9 +233,10 @@ test.describe('Property Details Comments Tests', () => {
         // Enter comment and click cancel
         await propertyDetailsPage.addComment(uniqueComment);
         await propertyDetailsPage.cancelComment();
+        const propertyCommentsWithAnnotations = await propertyDetailsPage.getCommentsTestData();
 
         // Verify comment does not appear in previous comments
-        await expect(await propertyDetailsPage.getComments()).not.toContainText(uniqueComment);
+        expect(propertyCommentsWithAnnotations).not.toContainEqual(expect.objectContaining({ commentText: uniqueComment }));
     });
 
     // Validate comments must have the text entered before they can be saved, and an error message is displayed if trying to save an empty comment

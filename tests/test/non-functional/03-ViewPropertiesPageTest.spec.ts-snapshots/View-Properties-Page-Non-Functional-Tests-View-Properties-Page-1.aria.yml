@@ -33,6 +33,9 @@
       - listitem: View property records
   - list:
     - listitem:
+      - link "Profile settings":
+        - /url: ./profile
+    - listitem:
       - link "Sign out":
         - /url: "#"
   - main:
@@ -51,15 +54,11 @@
     - term: Possible rental evidence
     - definition: Show all
     - link "Change filters":
-      - /url: "#-74"
-    - heading "Property records" [level=1]
-    - paragraph: 0 results
-    - button "Export filtered table (.csv)"
+      - /url: "#"
+    - heading "Property records" [level=2]
+    - text: 0 results No records found. Learn about
+    - link "why some information may not appear":
+      - /url: guidance-detail?contentKey=MC6ZMWNRJIR5GGVMGCXITZAKWIJU
+    - text: .
     - table:
-      - rowgroup:
-        - row "No records found. Learn about why some information may not appear.":
-          - cell "No records found. Learn about why some information may not appear.":
-            - text: ""
-            - link "why some information may not appear":
-              - /url: /guidance-detail?contentKey=MC3SMZCU3HAZASLOEVEBOZNARVTM
-            - text: ""
+      - rowgroup

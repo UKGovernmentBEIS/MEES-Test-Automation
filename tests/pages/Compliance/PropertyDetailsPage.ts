@@ -81,7 +81,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.breadcrumbViewPropertyRecords = page.getByRole('link', { name: 'View property records' });
         this.breadcrumbFilterPropertiesRecords = page.getByRole('link', { name: 'Filter property records' });
-        this.commentsList = page.locator('.comments-list');
+        this.commentsList = page.locator('c-mees-property-comments div.comment-meta').locator('..');
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
         this.commentCancelButton = page.getByRole('link', { name: 'Cancel' });
@@ -306,6 +306,17 @@ export class PropertyDetailsPage extends BaseCompliancePage {
 
     async getComments(): Promise<Locator> {
         return this.commentsList;
+    }
+
+    async getCommentsTestData(): Promise<Comment[]> {
+        const rawComments = await this.commentsList.allInnerTexts();
+        rawComments.length === 0 && (() => { throw new Error('No comments found for the property'); })();
+        
+        return rawComments.map(comment => {
+            const [commentText, ...commentAnnotationParts] = comment.split('\n');
+            const commentAnnotations = commentAnnotationParts.join('\n') || null;
+            return { commentText, commentAnnotations };
+        });
     }
     //#endregion
 }

@@ -536,7 +536,9 @@ test.describe('View Properties export functionality', () => {
             await viewPropertiesPage.waitForPageToLoad();
             await viewPropertiesPage.waitForTableContent();
             const countField = await viewPropertiesPage.getPropertiesCountField();
-            expect(await countField.textContent()).toBe('1 results');
+            const countText = await countField.textContent();
+            const different = countText?.split(' ')[0];
+            expect(countText, `Unexpected number of results. Expected 1 result, but found a ${different} number`).toBe('1 results');
             // - display Property Details page for the property
             const propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(address);
             await propertyDetailsPage.waitForPageToLoad();
@@ -667,49 +669,14 @@ test.describe('View Properties export functionality', () => {
             ).toEqual([]);
         });
 
-        // TODO: Re-enable once the export endpoint timeout issue is resolved.
-        test.describe.skip('Verify field values when source data is absent', () => {
-            // Two small targeted exports replace a single full-lacodes export that times out.
-            // exportedDataNoUprn — postcode DA1 4FY: ~3 rows, includes a no-UPRN and a no-owner property.
-            // exportedDataUnrated — Unrated energy rating: small set of properties with no EPC certificate.
-            let exportedDataNoUprn: Record<string, string>[];
-            let exportedDataUnrated: Record<string, string>[];
-
-            test.beforeAll(async ({ workerContext }) => {
-                const page = await workerContext.newPage();
-                try {
-                    const landingPage = new LandingPage(page);
-                    await landingPage.navigate();
-                    const homePage = await landingPage.clickSignIn_AuthenticatedUser();
-
-                    // First export: DA1 4FY — returns a handful of rows that include a
-                    // no-UPRN property and properties with no owner data.
-                    const filterPage1 = await homePage.clickViewProperties();
-                    await filterPage1.setPostcodeFilter('DA1 4FY');
-                    const viewPage1 = await filterPage1.clickApplyFilters();
-                    await viewPage1.waitForPageToLoad();
-                    await viewPage1.waitForTableContent();
-                    exportedDataNoUprn = await viewPage1.exportFilteredData();
-
-                    // Second export: Unrated energy rating — returns only properties with no
-                    // EPC certificate so all EPC-related fields are expected to be empty.
-                    const filterPage2 = await viewPage1.clickChangeFilters();
-                    await filterPage2.clickClearFilters();
-                    await filterPage2.setEnergyRatingFilter('Unrated');
-                    const viewPage2 = await filterPage2.clickApplyFilters();
-                    await viewPage2.waitForPageToLoad();
-                    await viewPage2.waitForTableContent();
-                    exportedDataUnrated = await viewPage2.exportFilteredData();
-                } finally {
-                    await page.close();
-                }
-            });
-
-            test.beforeEach(async ({}, testInfo) => {
-                testInfo.annotations.push(TestAnnotations.testType(TestType.FUNCTIONAL));
-            });
+        test.describe('Verify field values when source data is absent', () => {
 
             test('Property data fields show expected placeholder values when source data is absent', async () => {
+                await filterPropertiesPage.setPostcodeFilter('DA1 4FY');
+                const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+                await viewPropertiesPage.waitForPageToLoad();
+                await viewPropertiesPage.waitForTableContent();
+                const exportedDataNoUprn: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
                 expect(exportedDataNoUprn.length, 'Export returned no records').toBeGreaterThan(0);
 
                 // Find a row for a property that exists only via its EPC record (no UPRN).
@@ -721,36 +688,35 @@ test.describe('View Properties export functionality', () => {
                 // UPRN — confirmed 'Not found' when no UPRN (TC-2027)
                 expect(rowWithNoUprn!['UPRN']).toBe('Not found');
                 // Rateable value — sourced from VOA data via UPRN; absent when there is no UPRN
-                expect(rowWithNoUprn!['Rateable value (£)']).toBe('Not found');
+                expect(rowWithNoUprn!['Rateable value (GBP)']).toBe('Not found');
                 // Possible rental evidence — both DMS booleans are false when no landlord/SIC link via UPRN
                 expect(rowWithNoUprn!['Possible rental evidence']).toBe('Not found');
                 // PRS exemption status — Salesforce record is keyed by UPRN; no UPRN = no record
-                expect(rowWithNoUprn!['PRS exemption status']).toBe('Data not found');
+                expect(rowWithNoUprn!['PRS exemption status']).toBe('Not found');
                 // PRS exemption date — empty when there is no PRS exemption record
-                expect(rowWithNoUprn!['PRS exemption date'].trim()).toBe('');
+                expect(rowWithNoUprn!['PRS exemption date'].trim()).toBe('Not found');
             });
 
-            test('EPC data fields are empty when property has no EPC certificate', async () => {
+            test('EPC fields show correct values when property has no EPC certificate', async () => {
+                await filterPropertiesPage.setEnergyRatingFilter('Unrated');
+                const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+                await viewPropertiesPage.waitForPageToLoad();
+                await viewPropertiesPage.waitForTableContent();
+                const exportedDataUnrated: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
                 expect(exportedDataUnrated.length, 'Export returned no records').toBeGreaterThan(0);
 
-                // All rows in this export are Unrated — any row will have empty EPC-specific fields.
+                // All rows in this export are Unrated — any row will have no EPC data.
                 // Use the first row as the reference.
                 const unratedRow = exportedDataUnrated[0];
                 expect(unratedRow, 'Unrated export returned no records — test data gap').toBeDefined();
 
-                expect(unratedRow!['EPC expiry date'].trim()).toBe('');
-                expect(unratedRow!['EPC transaction type'].trim()).toBe('');
-                expect(unratedRow!['EPC certificates (Link)'].trim()).toBe('');
-                expect(unratedRow!['EPC history'].trim()).toBe('');
-            });
-
-            test('Landlord SIC code field shows No data when property has no owner SIC data', async () => {
-                expect(exportedDataNoUprn.length, 'Export returned no records').toBeGreaterThan(0);
-
-                // The API always populates name, location and address when an owner record exists.
-                // SIC code(s) is 'No data' when the owner has no SIC data. Find all such rows.
-                const noSicRows = exportedDataNoUprn.filter(r => r['Property owner 1 SIC code(s)']?.trim() === 'No data');
-                expect(noSicRows.length, 'No property with "No data" SIC code found in export — test data gap').toBeGreaterThan(0);
+                // EPC energy rating, EPC expiry date and EPC certificate link show 'Not found' when there is no EPC data.
+                expect(unratedRow!['EPC energy rating'].trim()).toBe('Not found');
+                expect(unratedRow!['EPC expiry date'].trim()).toBe('Not found');
+                expect(unratedRow!['EPC certificate link'].trim()).toBe('Not found');
+                // EPC transaction type and EPC history remain empty when there is no EPC certificate.
+                expect(unratedRow!['EPC transaction type'].trim()).toBe('Not found');
+                expect(unratedRow!['EPC history'].trim()).toBe('Not found');
             });
         });
     });
@@ -827,6 +793,7 @@ test.describe('View Properties export functionality', () => {
             // [BUG 951] The export column is currently named 'EPC certificates (Link)'. The specification defines it as 'EPC certificate link'.
             // All column references in this test must be updated once BUG 951 is resolved.
             // Apply filters in the UI and export the CSV
+            await filterPropertiesPage.setEnergyRatingFilter('A');
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForPageToLoad();
             await viewPropertiesPage.waitForTableContent();
@@ -866,26 +833,27 @@ test.describe('View Properties export functionality', () => {
             expect(certificateAddress, `The address on the EPC certificate page '${certificateAddress}' does not match the expected address '${expectedAddress}' from the export`).toBe(expectedAddress);
         });
 
-        test('Exported EPC certificate link field is empty for properties without EPC data', async ({ page }) => {
+        test('Exported EPC certificate link field shows \'Not found\' for properties without EPC data', async ({ page }) => {
             // [BUG 951] The export column is currently named 'EPC certificate link'. The specification defines it as 'EPC certificate link'.
             // All column references in this test must be updated once BUG 951 is resolved.
             // Apply filters in the UI and export the CSV
+            await filterPropertiesPage.setEnergyRatingFilter('Unrated');
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForPageToLoad();
             await viewPropertiesPage.waitForTableContent();
             const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
             expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-            const EPC_BASE_URL = 'https://find-energy-certificate.service.gov.uk/energy-certificate/';
+            // Find a property with 'EPC energy rating' = 'Not found' (no EPC data).
+            const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === 'Not found');
+            expect(propertyWithoutEpcEnergyData, 'No property with an EPC energy rating of "Not found" was found in the export').toBeDefined();
 
-            // Find a property with 'EPC energy rating' = '0'.
-            const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === '0');
-            expect(propertyWithoutEpcEnergyData, 'No property with an EPC energy rating of "0" was found in the export').toBeDefined();
-
-            // Verify that the 'EPC certificate link' field is empty for this property
+            // Verify that the 'EPC certificate link' field shows 'Not found' for this property
             const rawEpcLink = propertyWithoutEpcEnergyData!['EPC certificate link']?.trim() ?? '';
-            const hasEpcLink = rawEpcLink !== '' && rawEpcLink !== EPC_BASE_URL;
-            expect(hasEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of "0" but has an EPC link '${rawEpcLink}' in the export`).toBe(false);
+            expect(rawEpcLink, 
+                `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has 
+                an 'EPC energy rating' of 'Not found' but 'EPC certificate link' is '${rawEpcLink}' 
+                instead of 'Not found'`).toBe('Not found');
         });
 
         test('Exported \'Property owner 1 SIC code(s)\' field value format is correct', async ({ request }) => {

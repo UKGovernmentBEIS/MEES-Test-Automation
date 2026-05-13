@@ -33,72 +33,74 @@
       - listitem: Guidance article
   - list:
     - listitem:
+      - link "Profile settings":
+        - /url: ./profile
+    - listitem:
       - link "Sign out":
         - /url: "#"
-  - main:
-    - heading "Guidance" [level=1]
-    - heading "Understanding compliance notices" [level=1]
-    - paragraph: /A compliance notice can be sent to a landlord if extra information is needed to determine compliance with the MEES Regulations\. If you suspect that a property has not complied with the MEES Regulations any time in the last \d+ months, you may serve the landlord a compliance notice\./
-    - term: "From:"
-    - definition:
-      - link "Department for Energy Security and Net Zero":
-        - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
-    - term: Published
-    - definition: /\d+ March \d+/
-    - term: Last updated
-    - definition: /\d+ March \d+/
-    - heading "Contents" [level=2]
-    - heading "─ Contacting a landlord before issuing a compliance notice" [level=3]:
-      - text: ""
-      - link "Contacting a landlord before issuing a compliance notice":
-        - /url: "#contacting"
-    - heading "─ Issuing a compliance notice" [level=3]:
-      - text: ""
-      - link "Issuing a compliance notice":
-        - /url: "#issuing"
-    - heading "Contacting a landlord before issuing a compliance notice" [level=2]
-    - paragraph
-    - text: You may reach out to landlords to notify them informally that they need to improve the energy efficiency of their properties. You may choose to do this because the landlord may not realise that their property is non-compliant.
-    - paragraph
-    - paragraph
-    - text: This informal engagement step can help to resolve simple cases of non-compliance without the need for formal enforcement action.
-    - paragraph
-    - paragraph
-    - text: Landlords have guidance on the
-    - link "MEES Regulations":
-      - /url: https://www.gov.uk/guidance/non-domestic-private-rented-property-minimum-energy-efficiency-standard-landlord-guidance
-    - text: and the
-    - link "PRS Exemptions Register":
-      - /url: https://www.gov.uk/government/publications/private-rented-sector-minimum-energy-efficiency-standard-exemptions/guidance-on-prs-exemptions-and-exemptions-register-evidence-requirements
-    - text: publicly available to them which you may wish to share.
-    - paragraph
-    - heading "Issuing a compliance notice" [level=2]
-    - paragraph
-    - text: "A compliance notice may request either the original or copies of the following information:"
-    - paragraph
-    - list
-    - listitem: the EPC that was valid for the time when the property was let
-    - listitem: any other EPC for the property in the landlord’s possession
-    - listitem: the current tenancy agreement used for letting the property
-    - listitem: any qualifying assessment report relating to the property
-    - listitem: any other relevant document that are required for you to carry out compliance and enforcement activities
-    - paragraph
-    - text: A compliance notice can also require the landlord to register the requested information on the
-    - link "PRS Exemptions Register.":
-      - /url: https://prsregister.beis.gov.uk/NdsBeisUi/register-search-exemptions
-    - paragraph
-    - paragraph
-    - text: Compliance notices must be sent in writing, as a hard copy or electronically. You may send amendments to the compliance notice in the same way.
-    - paragraph
-    - paragraph
-    - text: You must give landlords at least one calendar month to respond to a compliance notice.
-    - paragraph
-    - paragraph
-    - text: You can withdraw a compliance notice.
-    - paragraph
-    - paragraph
-    - link:
-      - /url: https://desnz-gm--prseqa.sandbox.my.site.com/compliance/templates
-    - link "Check the templates section for compliance notice templates.":
-      - /url: https://desnz-gm--prseqa.sandbox.my.site.com/compliance/templates
-    - paragraph
+  - heading "Guidance" [level=1]
+  - heading "Understanding compliance notices" [level=1]
+  - paragraph: /A compliance notice can be sent to a landlord if extra information is needed to determine compliance with the MEES Regulations\. If you suspect that a property has not complied with the MEES Regulations any time in the last \d+ months, you may serve the landlord a compliance notice\./
+  - term: "From:"
+  - definition:
+    - link "Department for Energy Security and Net Zero":
+      - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
+  - term: Published
+  - definition: /\d+ March \d+/
+  - term: Last updated
+  - definition: /\d+ March \d+/
+  - heading "Contents" [level=2]
+  - heading "─ Contacting a landlord before issuing a compliance notice" [level=3]:
+    - text: ""
+    - link "Contacting a landlord before issuing a compliance notice":
+      - /url: "#contacting"
+  - heading "─ Issuing a compliance notice" [level=3]:
+    - text: ""
+    - link "Issuing a compliance notice":
+      - /url: "#issuing"
+  - heading "Contacting a landlord before issuing a compliance notice" [level=2]
+  - paragraph
+  - text: You may reach out to landlords to notify them informally that they need to improve the energy efficiency of their properties. You may choose to do this because the landlord may not realise that their property is non-compliant.
+  - paragraph
+  - paragraph
+  - text: This informal engagement step can help to resolve simple cases of non-compliance without the need for formal enforcement action.
+  - paragraph
+  - paragraph
+  - text: Landlords have guidance on the
+  - link "MEES Regulations":
+    - /url: https://www.gov.uk/guidance/non-domestic-private-rented-property-minimum-energy-efficiency-standard-landlord-guidance
+  - text: and the
+  - link "PRS Exemptions Register":
+    - /url: https://www.gov.uk/government/publications/private-rented-sector-minimum-energy-efficiency-standard-exemptions/guidance-on-prs-exemptions-and-exemptions-register-evidence-requirements
+  - text: publicly available to them which you may wish to share.
+  - paragraph
+  - heading "Issuing a compliance notice" [level=2]
+  - paragraph
+  - text: "A compliance notice may request either the original or copies of the following information:"
+  - paragraph
+  - list
+  - listitem: the EPC that was valid for the time when the property was let
+  - listitem: any other EPC for the property in the landlord’s possession
+  - listitem: the current tenancy agreement used for letting the property
+  - listitem: any qualifying assessment report relating to the property
+  - listitem: any other relevant document that are required for you to carry out compliance and enforcement activities
+  - paragraph
+  - text: A compliance notice can also require the landlord to register the requested information on the
+  - link "PRS Exemptions Register.":
+    - /url: https://prsregister.beis.gov.uk/NdsBeisUi/register-search-exemptions
+  - paragraph
+  - paragraph
+  - text: Compliance notices must be sent in writing, as a hard copy or electronically. You may send amendments to the compliance notice in the same way.
+  - paragraph
+  - paragraph
+  - text: You must give landlords at least one calendar month to respond to a compliance notice.
+  - paragraph
+  - paragraph
+  - text: You can withdraw a compliance notice.
+  - paragraph
+  - paragraph
+  - link:
+    - /url: https://desnz-gm--prseqa.sandbox.my.site.com/compliance/templates
+  - link "Check the templates section for compliance notice templates.":
+    - /url: https://desnz-gm--prseqa.sandbox.my.site.com/compliance/templates
+  - paragraph
