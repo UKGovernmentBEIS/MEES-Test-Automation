@@ -60,8 +60,6 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             }
         },
         { exportColumn: 'EPC transaction type',             dmsField: 'EPCTransactionType' },
-        // BUG 951: Export column header reads 'EPC certificates (Link)' but specification defines it as 'EPC certificate link'.
-        // Update exportColumn to 'EPC certificate link' once BUG 951 is resolved.
         { exportColumn: 'EPC certificate link',          dmsEpcField: 'CertificateLink' },
         // EPC history aggregates TransactionType from every element in the EpcCertificates array joined with ' | '.
         // flattenItem() only reads the first EPC certificate, so a direct loop comparison would miss subsequent entries.
