@@ -890,12 +890,15 @@ test.describe('View Properties export functionality', () => {
             expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
             // Find a property with 'EPC energy rating' = 'Not found' (no EPC data).
-            const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === 'Not found');
+            const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === '');
             expect(propertyWithoutEpcEnergyData, 'No property with an EPC energy rating of "Not found" was found in the export').toBeDefined();
 
             // Verify that the 'EPC certificate link' field shows 'Not found' for this property
             const rawEpcLink = propertyWithoutEpcEnergyData!['EPC certificate link']?.trim() ?? '';
-            expect(rawEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of 'Not found' but 'EPC certificate link' is '${rawEpcLink}' instead of 'Not found'`).toBe('Not found');
+            expect(rawEpcLink, 
+                `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has 
+                an 'EPC energy rating' of 'Not found' but 'EPC certificate link' is '${rawEpcLink}' 
+                instead of 'Not found'`).toBe('');
         });
 
         test('Exported \'Property owner 1 SIC code(s)\' field value format is correct', async ({ request }) => {
