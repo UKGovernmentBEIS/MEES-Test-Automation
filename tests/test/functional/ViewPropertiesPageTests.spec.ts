@@ -870,6 +870,7 @@ test.describe('View Properties export functionality', () => {
             // [BUG 951] The export column is currently named 'EPC certificate link'. The specification defines it as 'EPC certificate link'.
             // All column references in this test must be updated once BUG 951 is resolved.
             // Apply filters in the UI and export the CSV
+            filterPropertiesPage.setEnergyRatingFilter('Unrated');
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForPageToLoad();
             await viewPropertiesPage.waitForTableContent();
@@ -878,14 +879,15 @@ test.describe('View Properties export functionality', () => {
 
             const EPC_BASE_URL = 'https://find-energy-certificate.service.gov.uk/energy-certificate/';
 
-            // Find a property with 'EPC energy rating' = '0'.
-            const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === '0');
-            expect(propertyWithoutEpcEnergyData, 'No property with an EPC energy rating of "0" was found in the export').toBeDefined();
+            // Find a property with 'EPC energy rating' = 'Not found'.
+            // Bug 962 Some EPC fields on export have shows no data instead of 'Not found'
+            const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === '');
+            expect(propertyWithoutEpcEnergyData, 'No property with an EPC energy rating of "Not found" was found in the export').toBeDefined();
 
             // Verify that the 'EPC certificate link' field is empty for this property
             const rawEpcLink = propertyWithoutEpcEnergyData!['EPC certificate link']?.trim() ?? '';
             const hasEpcLink = rawEpcLink !== '' && rawEpcLink !== EPC_BASE_URL;
-            expect(hasEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of "0" but has an EPC link '${rawEpcLink}' in the export`).toBe(false);
+            expect(hasEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of "Not found" but has an EPC link '${rawEpcLink}' in the export`).toBe(false);
         });
 
         test('Exported \'Property owner 1 SIC code(s)\' field value format is correct', async ({ request }) => {
