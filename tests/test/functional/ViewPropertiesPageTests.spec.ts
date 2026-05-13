@@ -536,7 +536,9 @@ test.describe('View Properties export functionality', () => {
             await viewPropertiesPage.waitForPageToLoad();
             await viewPropertiesPage.waitForTableContent();
             const countField = await viewPropertiesPage.getPropertiesCountField();
-            expect(await countField.textContent()).toBe('1 results');
+            const countText = await countField.textContent();
+            const different = countText?.split(' ')[0];
+            expect(countText, `Unexpected number of results. Expected 1 result, but found a ${different} number`).toBe('1 results');
             // - display Property Details page for the property
             const propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(address);
             await propertyDetailsPage.waitForPageToLoad();
@@ -692,7 +694,8 @@ test.describe('View Properties export functionality', () => {
                     exportedDataNoUprn = await viewPage1.exportFilteredData();
 
                     // Second export: Unrated energy rating — returns only properties with no
-                    // EPC certificate so all EPC-related fields are expected to be empty.
+                    // EPC certificate. EPC energy rating, EPC expiry date and EPC certificate link
+                    // are expected to show 'Not found'; EPC transaction type and EPC history are empty.
                     const filterPage2 = await viewPage1.clickChangeFilters();
                     await filterPage2.clickClearFilters();
                     await filterPage2.setEnergyRatingFilter('Unrated');
@@ -730,17 +733,23 @@ test.describe('View Properties export functionality', () => {
                 expect(rowWithNoUprn!['PRS exemption date'].trim()).toBe('');
             });
 
-            test('EPC data fields are empty when property has no EPC certificate', async () => {
+            test('EPC fields show correct values when property has no EPC certificate', async () => {
+                // [BUG 962] EPC energy rating, EPC expiry date and EPC certificate link show empty
+                // instead of 'Not found' for properties with no EPC data. Assertions below reflect
+                // the correct expected behaviour and will fail until BUG 962 is resolved.
                 expect(exportedDataUnrated.length, 'Export returned no records').toBeGreaterThan(0);
 
-                // All rows in this export are Unrated — any row will have empty EPC-specific fields.
+                // All rows in this export are Unrated — any row will have no EPC data.
                 // Use the first row as the reference.
                 const unratedRow = exportedDataUnrated[0];
                 expect(unratedRow, 'Unrated export returned no records — test data gap').toBeDefined();
 
-                expect(unratedRow!['EPC expiry date'].trim()).toBe('');
+                // [BUG 962] These three fields should show 'Not found' when there is no EPC data.
+                expect(unratedRow!['EPC energy rating'].trim()).toBe('Not found');
+                expect(unratedRow!['EPC expiry date'].trim()).toBe('Not found');
+                expect(unratedRow!['EPC certificates (Link)'].trim()).toBe('Not found');
+                // EPC transaction type and EPC history remain empty when there is no EPC certificate.
                 expect(unratedRow!['EPC transaction type'].trim()).toBe('');
-                expect(unratedRow!['EPC certificates (Link)'].trim()).toBe('');
                 expect(unratedRow!['EPC history'].trim()).toBe('');
             });
 
@@ -866,9 +875,12 @@ test.describe('View Properties export functionality', () => {
             expect(certificateAddress, `The address on the EPC certificate page '${certificateAddress}' does not match the expected address '${expectedAddress}' from the export`).toBe(expectedAddress);
         });
 
-        test('Exported EPC certificate link field is empty for properties without EPC data', async ({ page }) => {
+        test('Exported EPC certificate link field shows \'Not found\' for properties without EPC data', async ({ page }) => {
             // [BUG 951] The export column is currently named 'EPC certificate link'. The specification defines it as 'EPC certificate link'.
             // All column references in this test must be updated once BUG 951 is resolved.
+            // [BUG 962] EPC energy rating, EPC expiry date and EPC certificate link show empty instead
+            // of 'Not found' for properties with no EPC data. The assertions below reflect the correct
+            // expected behaviour and will fail until BUG 962 is resolved.
             // Apply filters in the UI and export the CSV
             filterPropertiesPage.setEnergyRatingFilter('Unrated');
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
@@ -877,17 +889,13 @@ test.describe('View Properties export functionality', () => {
             const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
             expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
 
-            const EPC_BASE_URL = 'https://find-energy-certificate.service.gov.uk/energy-certificate/';
-
-            // Find a property with 'EPC energy rating' = 'Not found'.
-            // Bug 962 Some EPC fields on export have shows no data instead of 'Not found'
-            const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === '');
+            // Find a property with 'EPC energy rating' = 'Not found' (no EPC data).
+            const propertyWithoutEpcEnergyData = exportedData.find(r => r['EPC energy rating'] === 'Not found');
             expect(propertyWithoutEpcEnergyData, 'No property with an EPC energy rating of "Not found" was found in the export').toBeDefined();
 
-            // Verify that the 'EPC certificate link' field is empty for this property
+            // Verify that the 'EPC certificate link' field shows 'Not found' for this property
             const rawEpcLink = propertyWithoutEpcEnergyData!['EPC certificate link']?.trim() ?? '';
-            const hasEpcLink = rawEpcLink !== '' && rawEpcLink !== EPC_BASE_URL;
-            expect(hasEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of "Not found" but has an EPC link '${rawEpcLink}' in the export`).toBe(false);
+            expect(rawEpcLink, `Property with UPRN ${propertyWithoutEpcEnergyData!['UPRN']} has an 'EPC energy rating' of 'Not found' but 'EPC certificate link' is '${rawEpcLink}' instead of 'Not found'`).toBe('Not found');
         });
 
         test('Exported \'Property owner 1 SIC code(s)\' field value format is correct', async ({ request }) => {
