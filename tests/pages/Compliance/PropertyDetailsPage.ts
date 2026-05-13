@@ -307,5 +307,16 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     async getComments(): Promise<Locator> {
         return this.commentsList;
     }
+
+    async getCommentsTestData(): Promise<Comment[]> {
+        const rawComments = await this.commentsList.allInnerTexts();
+        rawComments.length === 0 && (() => { throw new Error('No comments found for the property'); })();
+        
+        return rawComments.map(comment => {
+            const [commentText, ...commentAnnotationParts] = comment.split('\n');
+            const commentAnnotations = commentAnnotationParts.join('\n') || null;
+            return { commentText, commentAnnotations };
+        });
+    }
     //#endregion
 }

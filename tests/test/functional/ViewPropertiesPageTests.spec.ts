@@ -793,7 +793,7 @@ test.describe('View Properties export functionality', () => {
             // [BUG 951] The export column is currently named 'EPC certificates (Link)'. The specification defines it as 'EPC certificate link'.
             // All column references in this test must be updated once BUG 951 is resolved.
             // Apply filters in the UI and export the CSV
-            filterPropertiesPage.setEnergyRatingFilter('A');
+            await filterPropertiesPage.setEnergyRatingFilter('A');
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForPageToLoad();
             await viewPropertiesPage.waitForTableContent();
@@ -837,7 +837,7 @@ test.describe('View Properties export functionality', () => {
             // [BUG 951] The export column is currently named 'EPC certificate link'. The specification defines it as 'EPC certificate link'.
             // All column references in this test must be updated once BUG 951 is resolved.
             // Apply filters in the UI and export the CSV
-            filterPropertiesPage.setEnergyRatingFilter('Unrated');
+            await filterPropertiesPage.setEnergyRatingFilter('Unrated');
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForPageToLoad();
             await viewPropertiesPage.waitForTableContent();
