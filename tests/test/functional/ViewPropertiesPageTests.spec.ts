@@ -436,8 +436,6 @@ test.describe('View Properties export functionality', () => {
 
         test('Export column names match specification', async ({ page }) => {
             // TC-2048
-            // [BUG 937] Export column header reads 'Rateable value (£)' but specification defines it as 'Rateable value (GBP)'.
-            // This test will fail until BUG 937 is resolved and EXPORT_FIELD_MAPPINGS is updated to the correct name.
             const energyRatingFilter = 'A';
             const councilFilter = 'LONDON BOROUGH OF BEXLEY';
             const postcodeFilter = 'DA16 3QD';

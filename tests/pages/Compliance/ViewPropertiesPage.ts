@@ -37,8 +37,6 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'Property address',        dmsFields: ['Name', 'Number', 'Line1', 'Line2', 'Line3', 'Town', 'County', 'Postcode'], normalize: (v) => v.trim() },
         { exportColumn: 'UPRN',                    dmsField: 'Uprn' },
         { exportColumn: 'Property type',           dmsField: 'EPCPropertyType' },
-        // BUG 937: Export column header reads 'Rateable value (£)' but specification defines it as 'Rateable value (GBP)'.
-        // Update exportColumn to 'Rateable value (GBP)' once BUG 937 is resolved.
         { exportColumn: 'Rateable value (GBP)',    dmsField: 'RateableValue' },
         // Possible rental evidence is computed: 'Found' when at least one of PossibleEvidenceEpcTransactionType or PossibleEvidenceSiccode is true;
         // 'Not found' only when both are false.
