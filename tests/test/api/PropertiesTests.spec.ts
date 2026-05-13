@@ -562,7 +562,7 @@ test.describe('Property Data Integrity Tests', () => {
         "postcode": "DA1 3PY"
     };
 
-    test('Unrated properties have null BuildingReferenceNumber', async ({ request }) => {
+    test('Unrated properties have BuildingReferenceNumber equal to UPRN', async ({ request }) => {
         const response = await request.post(`${baseUrl}?page=1&size=100`, {
             data: requestBody,
             headers: {
@@ -582,8 +582,8 @@ test.describe('Property Data Integrity Tests', () => {
         for (const item of unratedItems) {
             expect(
                 item.BuildingReferenceNumber,
-                `Unrated property UPRN ${item.Uprn} should have null BuildingReferenceNumber`
-            ).toBeNull();
+                `Unrated property UPRN ${item.Uprn} should have BuildingReferenceNumber equal to UPRN`
+            ).toBe(item.Uprn);
         }
     });
 });
