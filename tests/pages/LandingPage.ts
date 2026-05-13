@@ -14,7 +14,7 @@ export class LandingPage extends BasePage {
     super(page);
     this.signInButton = this.page.getByRole('button', { name: 'Sign in' });
     this.pageContext = page.locator('#main-content.govuk-width-container');
-    this.pageSecondaryContext = page.getByText('If you need help Contact our');
+    this.pageSecondaryContext = page.getByText('If you need help').locator('..');
   }
 
   /**
@@ -22,7 +22,7 @@ export class LandingPage extends BasePage {
    * @returns Locator for the page context element
    */
   async getPageContextLocator(): Promise<Locator[]> {
-    return [this.pageContext, this.signInButton];
+    return [this.pageContext, this.signInButton, this.pageSecondaryContext];
   }
 
   /**
