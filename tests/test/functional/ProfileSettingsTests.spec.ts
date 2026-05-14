@@ -36,7 +36,7 @@ test.describe('Profile Settings Page', () => {
         profileSettingsPage = await homePage.clickProfileSettings();
     });
 
-    test.skip('Profile settings page heading is correct', async ({ page }) => {
+    test('Profile settings page heading is correct', async ({ page }) => {
         await expect(page.getByRole('heading', { name: 'Profile settings', level: 1 })).toBeVisible();
     });
 
@@ -89,7 +89,7 @@ test.describe('Change Contact Details Page', () => {
         testInfo.annotations.push(TestAnnotations.testType(TestType.FUNCTIONAL));
     });
 
-    test.skip('Change contact details page heading is correct', async ({ page }) => {
+    test('Change contact details page heading is correct', async ({ page }) => {
         const landingPage = new LandingPage(page);
         await landingPage.navigate();
         const homePage = await landingPage.clickSignIn_AuthenticatedUser();
@@ -169,7 +169,7 @@ test.describe('Check Contact Details Page', () => {
         testInfo.annotations.push(TestAnnotations.testType(TestType.FUNCTIONAL));
     });
 
-    test.skip('Check contact details page heading is correct', async ({ page }) => {
+    test('Check contact details page heading is correct', async ({ page }) => {
         const landingPage = new LandingPage(page);
         await landingPage.navigate();
         const homePage = await landingPage.clickSignIn_AuthenticatedUser();
