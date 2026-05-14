@@ -233,6 +233,7 @@ test.describe('Property Details Comments Tests', () => {
         // Enter comment and click cancel
         await propertyDetailsPage.addComment(uniqueComment);
         await propertyDetailsPage.cancelComment();
+        await propertyDetailsPage.waitForPageToLoad();
         const propertyCommentsWithAnnotations = await propertyDetailsPage.getCommentsTestData();
 
         // Verify comment does not appear in previous comments
