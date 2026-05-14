@@ -273,6 +273,17 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return await response.json() as DMSPropertyDetails;
     }
 
+    GetPossibleRentalEvidenceFromDMSPropertyDetails(dmsPropertyDetails: DMSPropertyDetails) {
+        const possibleEvidenceTypes = [];
+        if (dmsPropertyDetails.property.possibleEvidenceEpcTransactionType) {
+            possibleEvidenceTypes.push('Mandatory issue (Property to let) EPC transaction type');
+        }
+        if (dmsPropertyDetails.property.possibleEvidenceSiccode) {
+            possibleEvidenceTypes.push('Property owner has letting company SIC code');
+        }
+        return possibleEvidenceTypes.join(' | ');
+    }
+
     //#endregion
 
     //#region Comments Section Methods
