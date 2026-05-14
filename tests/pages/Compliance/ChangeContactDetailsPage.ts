@@ -74,6 +74,7 @@ export class ChangeContactDetailsPage extends BaseCompliancePage {
     }
 
     async clearLastName(): Promise<void> {
+        await this.lastNameInput.click({ clickCount: 3 });
         await this.lastNameInput.fill('');
     }
 
