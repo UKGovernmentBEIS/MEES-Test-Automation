@@ -2,7 +2,6 @@ import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { BaseCompliancePage } from './BaseCompliancePage';
 import { ChangeContactDetailsPage } from './ChangeContactDetailsPage';
-import { HomePage } from './HomePage';
 
 export class ProfileSettingsPage extends BaseCompliancePage {
     private readonly pageContext: Locator;
@@ -11,7 +10,6 @@ export class ProfileSettingsPage extends BaseCompliancePage {
     private readonly councilsHeading: Locator;
     private readonly helpSection: Locator;
     private readonly helpLink: Locator;
-    private readonly backLink: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -21,7 +19,6 @@ export class ProfileSettingsPage extends BaseCompliancePage {
         this.councilsHeading = page.getByText('Council data sets', { exact: false });
         this.helpSection = page.getByRole('heading', { name: 'If you need help' });
         this.helpLink = page.locator('#main-content').getByRole('link', { name: 'Help' });
-        this.backLink = page.getByRole('link', { name: 'Back', exact: true });
     }
 
     async waitForPageToLoad(): Promise<void> {
@@ -94,21 +91,5 @@ export class ProfileSettingsPage extends BaseCompliancePage {
 
     async isHelpSectionVisible(): Promise<boolean> {
         return this.helpSection.isVisible();
-    }
-
-    async isBackLinkVisible(): Promise<boolean> {
-        try {
-            await this.backLink.waitFor({ timeout: 5000 });
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    async clickBack(): Promise<HomePage> {
-        await this.backLink.click();
-        const homePage = new HomePage(this.page);
-        await homePage.waitForPageToLoad();
-        return homePage;
     }
 }

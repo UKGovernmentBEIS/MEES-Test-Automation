@@ -40,10 +40,8 @@ test.describe('Profile Settings Page', () => {
         await expect(page.getByRole('heading', { name: 'Profile settings', level: 1 })).toBeVisible();
     });
 
-    test('Profile settings page has a Back link that returns to the home page', async ({ page }) => {
-        expect(await profileSettingsPage.isBackLinkVisible()).toBeTruthy();
-        const homePage = await profileSettingsPage.clickBack();
-        expect(await homePage.isDisplayed()).toBeTruthy();
+    test('Profile settings page does not contain a back navigation button', async ({ page }) => {
+        await expect(page.getByRole('link', { name: 'Back', exact: true })).not.toBeVisible();
     });
 
     test('Contact details section displays the correct user details', async ({ page }) => {
@@ -51,12 +49,9 @@ test.describe('Profile Settings Page', () => {
         const lastName = await profileSettingsPage.getContactDetailValue('Last name');
         const email = await profileSettingsPage.getContactDetailValue('Email address');
 
-        // Two test accounts may run across workers — accept either user's valid data
-        const validLastNames = ['user1', 'user2'];
-        const validEmails = ['testusertriad123+001@gmail.com', 'testusertriad123+002@gmail.com'];
         expect(firstName.trim()).toBe('test');
-        expect(validLastNames).toContain(lastName.trim());
-        expect(validEmails).toContain(email.trim());
+        expect(lastName.trim()).toBe('user1');
+        expect(email.trim()).toBe('testusertriad123+001@gmail.com');
     });
 
     test('Change link is present for first name and last name but not email address', async ({ page }) => {
@@ -65,7 +60,7 @@ test.describe('Profile Settings Page', () => {
         expect(await profileSettingsPage.isChangeLinkPresent('Email address')).toBeFalsy();
     });
 
-    test.skip('Councils are listed in alphabetical order', async ({ page }) => {
+    test('Councils are listed in alphabetical order', async ({ page }) => {
         const councils = await profileSettingsPage.getCouncilNames();
         expect(councils.length).toBeGreaterThan(0);
         const sorted = [...councils].sort();
