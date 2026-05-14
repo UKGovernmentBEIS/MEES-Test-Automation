@@ -5,7 +5,6 @@ import { FilterPropertiesPage } from './FilterPropertiesPage';
 import { PenaltyCalculatorPage } from './PenaltyCalculatorPage';
 import { TemplatesPage } from './TemplatesPage';
 import { GuidanceMainPage } from './Guidance/GuidanceMainPage';
-import { ProfileSettingsPage } from './ProfileSettingsPage';
 
 export class HomePage extends BaseCompliancePage {
     private pageContext: Locator;
@@ -74,12 +73,5 @@ export class HomePage extends BaseCompliancePage {
         const guidanceMainPage = new GuidanceMainPage(this.page);
         await guidanceMainPage.waitForPageToLoad();
         return guidanceMainPage;
-    }
-
-    async clickProfileSettings(): Promise<ProfileSettingsPage> {
-        await this.profileSettingsLink.click();
-        const profileSettingsPage = new ProfileSettingsPage(this.page);
-        await profileSettingsPage.waitForPageToLoad();
-        return profileSettingsPage;
     }
 }

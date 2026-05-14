@@ -9,18 +9,16 @@ export abstract class BaseCompliancePage extends BasePage {
     protected readonly page: Page;
     protected readonly pageHeaderLink: Locator;
     protected signOutButton: Locator;
-    protected profileSettingsLink: Locator;
     protected tabPropertyRecords: Locator;
     protected tabGuidance: Locator;
     protected tabTemplates: Locator;
     protected tabPenaltyCalculator: Locator;
-
+  
     constructor(page: Page) {
             super(page);
             this.page = page;
             this.pageHeaderLink = page.getByRole('link', { name: 'Check if properties meet minimum energy efficiency standards' });
             this.signOutButton = this.page.getByRole('link', { name: 'Sign out' });
-            this.profileSettingsLink = this.page.getByRole('link', { name: 'Profile settings' });
             this.tabPropertyRecords = page.getByRole('link', { name: 'Property records', exact: true })
             this.tabGuidance = page.getByRole('link', { name: 'Guidance', exact: true });
             this.tabTemplates = page.getByRole('link', { name: 'Templates', exact: true });
@@ -65,9 +63,5 @@ export abstract class BaseCompliancePage extends BasePage {
         const homePage = new HomePage(this.page);
         await homePage.waitForPageToLoad();
         return homePage;
-    }
-
-    async isProfileSettingsLinkVisible(): Promise<boolean> {
-        return this.profileSettingsLink.isVisible();
     }
 }
