@@ -1,0 +1,38 @@
+- main:
+  - paragraph:
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback by email":
+      - /url: mailto:meesdigital@energysecurity.gov.uk?subject=Feedback
+    - text: .
+  - heading "Check if properties meet minimum energy efficiency standards" [level=2]:
+    - link "Check if properties meet minimum energy efficiency standards":
+      - /url: /landing-page
+  - navigation "Menu":
+    - list:
+      - listitem:
+        - link "Property records":
+          - /url: /filter-properties
+      - listitem:
+        - link "Guidance":
+          - /url: /guidance
+      - listitem:
+        - link "Penalty calculator":
+          - /url: /penalty-calculator
+      - listitem:
+        - link "Templates":
+          - /url: /templates
+  - list:
+    - listitem:
+      - link "Profile settings":
+        - /url: ./profile
+    - listitem:
+      - link "Sign out":
+        - /url: "#"
+  - link "Back":
+    - /url: "#"
+  - heading "Your contact details" [level=2]
+  - heading "First name" [level=2]
+  - textbox "First name"
+  - heading "Last name" [level=2]
+  - textbox "Last name"
+  - button "Save and continue"
