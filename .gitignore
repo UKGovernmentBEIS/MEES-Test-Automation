@@ -13,3 +13,4 @@ node_modules/
 **/non-functional-test-coverage.html
 /ProjectDocumentation/
 /Documentation/Test Cases/
+/Documentation/GitIgnored/

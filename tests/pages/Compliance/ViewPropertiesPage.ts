@@ -37,8 +37,6 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'Property address',        dmsFields: ['Name', 'Number', 'Line1', 'Line2', 'Line3', 'Town', 'County', 'Postcode'], normalize: (v) => v.trim() },
         { exportColumn: 'UPRN',                    dmsField: 'Uprn' },
         { exportColumn: 'Property type',           dmsField: 'EPCPropertyType' },
-        // BUG 937: Export column header reads 'Rateable value (£)' but specification defines it as 'Rateable value (GBP)'.
-        // Update exportColumn to 'Rateable value (GBP)' once BUG 937 is resolved.
         { exportColumn: 'Rateable value (GBP)',    dmsField: 'RateableValue' },
         // Possible rental evidence is computed: 'Found' when at least one of PossibleEvidenceEpcTransactionType or PossibleEvidenceSiccode is true;
         // 'Not found' only when both are false.
@@ -60,8 +58,6 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             }
         },
         { exportColumn: 'EPC transaction type',             dmsField: 'EPCTransactionType' },
-        // BUG 951: Export column header reads 'EPC certificates (Link)' but specification defines it as 'EPC certificate link'.
-        // Update exportColumn to 'EPC certificate link' once BUG 951 is resolved.
         { exportColumn: 'EPC certificate link',          dmsEpcField: 'CertificateLink' },
         // EPC history aggregates TransactionType from every element in the EpcCertificates array joined with ' | '.
         // flattenItem() only reads the first EPC certificate, so a direct loop comparison would miss subsequent entries.

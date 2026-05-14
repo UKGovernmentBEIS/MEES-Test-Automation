@@ -436,9 +436,6 @@ test.describe('View Properties export functionality', () => {
 
         test('Export column names match specification', async ({ page }) => {
             // TC-2048
-            // [BUG 937] Export column header reads 'Rateable value (£)' but specification defines it as 'Rateable value (GBP)'.
-            // [BUG 951] Export column header reads 'EPC certificates (Link)' but specification defines it as 'EPC certificate link'.
-            // This test will fail until both bugs are resolved and EXPORT_FIELD_MAPPINGS is updated to the correct names.
             const energyRatingFilter = 'A';
             const councilFilter = 'LONDON BOROUGH OF BEXLEY';
             const postcodeFilter = 'DA16 3QD';
@@ -790,8 +787,6 @@ test.describe('View Properties export functionality', () => {
         });
 
         test('Exported EPC certificate link field is valid and matches the property address', async ({ page }) => {
-            // [BUG 951] The export column is currently named 'EPC certificates (Link)'. The specification defines it as 'EPC certificate link'.
-            // All column references in this test must be updated once BUG 951 is resolved.
             // Apply filters in the UI and export the CSV
             await filterPropertiesPage.setEnergyRatingFilter('A');
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
@@ -834,8 +829,6 @@ test.describe('View Properties export functionality', () => {
         });
 
         test('Exported EPC certificate link field shows \'Not found\' for properties without EPC data', async ({ page }) => {
-            // [BUG 951] The export column is currently named 'EPC certificate link'. The specification defines it as 'EPC certificate link'.
-            // All column references in this test must be updated once BUG 951 is resolved.
             // Apply filters in the UI and export the CSV
             await filterPropertiesPage.setEnergyRatingFilter('Unrated');
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
