@@ -11,8 +11,7 @@ import { HomePage } from '../HomePage';
 
 export const TemplateTypes = {
     UNDERSTANDING_COMPLIANCE: 'Understanding compliance notices',
-    // TODO: Bug 961 - Typo in page link and heading; revert to 'Understanding penalties' once fixed
-    UNDERSTANDING_PENALTIES: 'Understanding penalities',
+    UNDERSTANDING_PENALTIES: 'Understanding penalties',
     ENFORCEMENT_TIMELINE: 'Enforcement timeline',
     UNDERSTANDING_MEES_REGULATIONS: 'Understanding the MEES Regulations',
     HOW_PRS_PROPERTIES_ARE_IDENTIFIED: 'How PRS properties are identified'
@@ -70,7 +69,7 @@ export class GuidanceMainPage extends BaseCompliancePage {
                 const page = new GuidanceUnderstandingComplianceNoticePage(this.page);
                 await page.waitForPageToLoad();
                 return page;
-            case 'Understanding penalities':
+            case 'Understanding penalties':
                 const penaltiesPage = new GuidanceUnderstandingPenaltiesPage(this.page);
                 await penaltiesPage.waitForPageToLoad();
                 return penaltiesPage;
