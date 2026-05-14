@@ -45,7 +45,13 @@ export enum PageName {
   UNDERSTANDING_PENALTIES_PAGE = "Understanding Penalties Page",
   ENFORCEMENT_TIMELINE_PAGE = "Enforcement Timeline Page",
   UNDERSTANDING_MEES_REGULATIONS_PAGE = "Understanding MEES Regulations Page",
-  HOW_PRS_PROPERTIES_ARE_IDENTIFIED_PAGE = "How PRS Properties Are Identified Page"
+  HOW_PRS_PROPERTIES_ARE_IDENTIFIED_PAGE = "How PRS Properties Are Identified Page",
+  PROFILE_SETTINGS_PAGE = "Profile Settings Page",
+  CHANGE_CONTACT_DETAILS_PAGE = "Change Contact Details Page",
+  CHANGE_CONTACT_DETAILS_FIRST_NAME_ERROR = "Change Contact Details Page - First Name Error",
+  CHANGE_CONTACT_DETAILS_LAST_NAME_ERROR = "Change Contact Details Page - Last Name Error",
+  CHECK_CONTACT_DETAILS_PAGE = "Check Contact Details Page",
+  CONTACT_DETAILS_CONFIRMATION_PAGE = "Contact Details Confirmation Page"
 }
 
 /**

@@ -36,10 +36,6 @@ test.describe('Profile Settings Page', () => {
         profileSettingsPage = await homePage.clickProfileSettings();
     });
 
-    test.skip('Profile settings page heading is correct', async ({ page }) => {
-        await expect(page.getByRole('heading', { name: 'Profile settings', level: 1 })).toBeVisible();
-    });
-
     test('Profile settings page has a Back link that returns to the home page', async ({ page }) => {
         expect(await profileSettingsPage.isBackLinkVisible()).toBeTruthy();
         const homePage = await profileSettingsPage.clickBack();
@@ -87,17 +83,6 @@ test.describe('Profile Settings Page', () => {
 test.describe('Change Contact Details Page', () => {
     test.beforeEach(async ({}, testInfo) => {
         testInfo.annotations.push(TestAnnotations.testType(TestType.FUNCTIONAL));
-    });
-
-    test.skip('Change contact details page heading is correct', async ({ page }) => {
-        const landingPage = new LandingPage(page);
-        await landingPage.navigate();
-        const homePage = await landingPage.clickSignIn_AuthenticatedUser();
-        const profileSettingsPage = await homePage.clickProfileSettings();
-        const changeContactDetailsPage = await profileSettingsPage.clickChangeFirstName();
-
-        await expect(page.getByRole('heading', { name: 'Change your contact details', level: 1 })).toBeVisible();
-        expect(await changeContactDetailsPage.isDisplayed()).toBeTruthy();
     });
 
     test('Back button on Change contact details page returns to Profile settings page', async ({ page }) => {
@@ -168,18 +153,6 @@ test.describe('Change Contact Details Page', () => {
 test.describe('Check Contact Details Page', () => {
     test.beforeEach(async ({}, testInfo) => {
         testInfo.annotations.push(TestAnnotations.testType(TestType.FUNCTIONAL));
-    });
-
-    test.skip('Check contact details page heading is correct', async ({ page }) => {
-        const landingPage = new LandingPage(page);
-        await landingPage.navigate();
-        const homePage = await landingPage.clickSignIn_AuthenticatedUser();
-        const profileSettingsPage = await homePage.clickProfileSettings();
-        const changeContactDetailsPage = await profileSettingsPage.clickChangeFirstName();
-        const checkContactDetailsPage = await changeContactDetailsPage.clickSaveAndContinue();
-
-        await expect(page.getByRole('heading', { name: 'Check your contact details', level: 1 })).toBeVisible();
-        expect(await checkContactDetailsPage.isDisplayed()).toBeTruthy();
     });
 
     test('Check contact details page displays the updated contact details', async ({ page }) => {
