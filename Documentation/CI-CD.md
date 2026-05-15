@@ -17,15 +17,39 @@ GitHub Actions pipeline for automated test execution with two-job architecture:
 
 **Required secrets**:
 ```
+# Standard test accounts (used by functional and non-functional tests)
+TEST_ACCOUNT_1_NAME = Test User 1
 TEST_ACCOUNT_1_EMAIL = user1@example.com
 TEST_ACCOUNT_1_PASSWORD = Password123!
-TEST_ACCOUNT_2_EMAIL = user2@example.com  
+TEST_ACCOUNT_2_NAME = Test User 2
+TEST_ACCOUNT_2_EMAIL = user2@example.com
 TEST_ACCOUNT_2_PASSWORD = Password456!
+TEST_ACCOUNT_3_NAME = Test User 3
+TEST_ACCOUNT_3_EMAIL = user3@example.com
+TEST_ACCOUNT_3_PASSWORD = Password789!
+
+# Special-role accounts
+TEST_NO_ACCESS_EMAIL = noaccess@example.com
+TEST_NO_ACCESS_PASSWORD = NoAccessPassword!
+TEST_DUAL_ACCESS_EMAIL = dualaccess@example.com
+TEST_DUAL_ACCESS_PASSWORD = DualAccessPassword!
+
+# Application URL
 BASE_URL = https://your-app-url.com
-PROPERTIES_KEY = your-api-key-here
-PROPERTY_KEY = your-api-key-here
-LOCAL_AUTHORITIES_KEY=your-la-key-here
-DMS_BASE_URL=url-to-dms-service
+
+# API keys (used by DMS-API tests)
+PROPERTIES_KEY = your-properties-api-key-here
+PROPERTY_KEY = your-property-api-key-here
+LOCAL_AUTHORITIES_KEY = your-la-key-here
+EXPORT_KEY = your-export-api-key-here
+DMS_BASE_URL = url-to-dms-service
+```
+
+**Optional secrets** (local development only):
+```
+# Set to 1 to auto-run setup before tests (convenient but slower)
+# Default behaviour (unset): setup must be run manually
+RUN_SETUP_AUTOMATICALLY = 1
 ```
 
 ### Workflow Triggers
