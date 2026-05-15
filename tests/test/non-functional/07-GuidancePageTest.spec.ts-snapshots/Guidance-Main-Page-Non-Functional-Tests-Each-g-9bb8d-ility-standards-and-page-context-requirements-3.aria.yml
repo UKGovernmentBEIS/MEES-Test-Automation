@@ -90,7 +90,7 @@
     - text: if an exemption is recorded against a property, you can review the associated evidence on the
     - link "PRS Exemptions Register":
       - /url: https://prsregister.beis.gov.uk/NdsBeisUi/register-search-exemptions
-  - paragraph: if ‘Not found’ is shown, it is recommended that the PRS Exemption Register is checked to validate that there are no exemptions recorded for that property prior to issuing a compliance notice or penalty
+  - listitem: if ‘Not found’ is shown, it is recommended that the PRS Exemption Register is checked to validate that there are no exemptions recorded for that property prior to issuing a compliance notice or penalty
   - heading "4. Begin enforcement action" [level=1]
   - paragraph: "This may include:"
   - list
