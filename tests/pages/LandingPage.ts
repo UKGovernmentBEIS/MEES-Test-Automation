@@ -9,12 +9,20 @@ export class LandingPage extends BasePage {
   private readonly signInButton: Locator;
   private readonly pageContext: Locator;
   private readonly pageSecondaryContext: Locator;
+  private readonly registrationLink: Locator;
+  private readonly requestSupportLink: Locator;
+  private readonly reviewExemptionsLink: Locator;
+  private readonly findEnergyCertificateLink: Locator;
 
   constructor(page: Page) {
     super(page);
     this.signInButton = this.page.getByRole('button', { name: 'Sign in' });
     this.pageContext = page.locator('#main-content.govuk-width-container');
     this.pageSecondaryContext = page.getByText('If you need help').locator('..');
+    this.registrationLink = page.getByRole('link', { name: /Microsoft Form/ });
+    this.requestSupportLink = page.getByRole('link', { name: 'Request support' });
+    this.reviewExemptionsLink = page.getByRole('link', { name: 'Review exemptions for private rented sector energy standards' });
+    this.findEnergyCertificateLink = page.getByRole('link', { name: 'Find an energy certificate' });
   }
 
   /**
@@ -56,6 +64,39 @@ export class LandingPage extends BasePage {
     const signInOrCreatePage = new SignInOrCreatePage(this.page);
     await signInOrCreatePage.waitForPageToLoad();
     return signInOrCreatePage;
+  }
+
+  async getRegistrationLinkHref(): Promise<string | null> {
+    return this.registrationLink.getAttribute('href');
+  }
+
+  async registrationLinkOpensInNewTab(): Promise<boolean> {
+    const target = await this.registrationLink.getAttribute('target');
+    return target === '_blank';
+  }
+
+  async getRequestSupportLinkHref(): Promise<string | null> {
+    return this.requestSupportLink.getAttribute('href');
+  }
+
+  async clickRequestSupportLink(): Promise<void> {
+    await this.requestSupportLink.click();
+  }
+
+  async getReviewExemptionsLinkHref(): Promise<string | null> {
+    return this.reviewExemptionsLink.getAttribute('href');
+  }
+
+  async getReviewExemptionsLinkText(): Promise<string> {
+    return this.reviewExemptionsLink.innerText();
+  }
+
+  async getFindEnergyCertificateLinkHref(): Promise<string | null> {
+    return this.findEnergyCertificateLink.getAttribute('href');
+  }
+
+  async getFindEnergyCertificateLinkText(): Promise<string> {
+    return this.findEnergyCertificateLink.innerText();
   }
 
   // Authenticated User - Click Sign In button to navigate to Compliance Landing Page
