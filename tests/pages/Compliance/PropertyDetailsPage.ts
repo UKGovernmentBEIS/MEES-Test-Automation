@@ -71,7 +71,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private propertyDetails: Locator;
     private propertyExemptionDetails: Locator;
     private noEPCHistoryMessage: Locator;
-    private commentsSection: Locator;
+    private commentPrivacyStatement: Locator;
     private linkWhereThisDataComesFrom: Locator;
     private tab(tabName: string): Locator { return this.page.locator(`//li/div[contains(text(), '${tabName}')]`); }
     private tabParentElement(tabName: string): Locator { return this.tab(tabName).locator('..'); }
@@ -88,7 +88,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
             this.propertyDetails = page.locator('.govuk-summary-list').first();
         this.propertyExemptionDetails = page.locator('.govuk-summary-list').nth(1);
         this.noEPCHistoryMessage = page.locator('[data-id="EPCTab"] p.govuk-body');
-        this.commentsSection = page.locator('c-mees-property-comments');
+        this.commentPrivacyStatement = page.getByText('Comments are visible to other enforcement officers in your Trading Standards Office and to DESNZ Policy Officials.', { exact: true });
         this.linkWhereThisDataComesFrom = page.getByRole('link', { name: 'where this data comes from' });
     }
 
@@ -117,7 +117,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        return [this.propertyDetails, this.commentsSection];
+        return [this.propertyDetails, this.commentPrivacyStatement];
     }
 
     //#region Breadcrumb Methods
