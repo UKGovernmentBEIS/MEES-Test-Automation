@@ -2,6 +2,7 @@ import { expect, test } from '../../fixtures/authFixtures';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
 import { GuidanceMainPage, TemplateTypes } from '../../pages/Compliance/Guidance/GuidanceMainPage';
+import { GuidanceHowPRSPropertiesAreIdentifiedPage } from '../../pages/Compliance/Guidance/GuidanceHowPRSPropertiesAreIdentified';
 import { PenaltyCalculatorPage } from '../../pages/Compliance/PenaltyCalculatorPage';
 import { HomePage } from '../../pages/Compliance/HomePage';
 
@@ -118,4 +119,26 @@ test.describe('Guidance sub-pages', () => {
             await guidanceMainPage.waitForPageToLoad();
         }
      });
+});
+
+test.describe('How PRS Properties Are Identified Guidance Page', () => {
+    let prsPage: GuidanceHowPRSPropertiesAreIdentifiedPage;
+
+    test.beforeEach(async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.FUNCTIONAL)
+        );
+
+        const landingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage = await landingPage.clickSignIn_AuthenticatedUser();
+        const guidanceMainPage = await homePage.clickGuidanceLink();
+        await guidanceMainPage.waitForPageToLoad();
+        prsPage = await guidanceMainPage.clickTemplateLink(TemplateTypes.HOW_PRS_PROPERTIES_ARE_IDENTIFIED) as GuidanceHowPRSPropertiesAreIdentifiedPage;
+    });
+
+    test('External legislation link should open in a new tab', async () => {
+        const newTab = await prsPage.clickEnergyEfficiencyRegulationsLinkAndGetNewTab();
+        expect(newTab.url()).toContain('legislation.gov.uk');
+    });
 });
