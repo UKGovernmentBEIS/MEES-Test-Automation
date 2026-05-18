@@ -79,14 +79,15 @@ export class TemplatesPage extends BaseCompliancePage {
 
     async downloadFileNamesForTemplates(): Promise<string[]> {
         const templates = await this.templateList;
-        const downloadPromises: Promise<string>[] = [];
+        const fileNames: string[] = [];
 
-        // Create promises for all downloads
+        // Run downloads sequentially so each waitForEvent('download') is
+        // paired with its own click rather than racing with the others
         for (let i = 0; i < templates.length; i++) {
-            downloadPromises.push(this.downloadAndGetFilename(i));
+            fileNames.push(await this.downloadAndGetFilename(i));
         }
 
-        return Promise.all(downloadPromises);
+        return fileNames;
     }
 
     private async downloadAndGetFilename(templateIndex: number): Promise<string> {

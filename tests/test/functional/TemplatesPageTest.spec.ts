@@ -34,9 +34,9 @@ test.describe('Templates Page', () => {
         // Check that we have the expected number of files
         expect(actualFileNames).toHaveLength(expectedTemplateFileNames.length);
         
-        // Check each filename is in the expected list
-        actualFileNames.forEach(filename => {
-            expect(expectedTemplateFileNames).toContain(filename);
+        // Check each expected filename is present in the actual downloaded files
+        expectedTemplateFileNames.forEach(filename => {
+            expect(actualFileNames).toContain(filename);
         });
     });
 
