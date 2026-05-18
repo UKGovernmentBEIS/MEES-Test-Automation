@@ -64,12 +64,11 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private breadcrumbHome: Locator;
     private breadcrumbViewPropertyRecords: Locator;
     private breadcrumbFilterPropertiesRecords: Locator;
-    private commentsList: Locator;
+    private commentsList: Promise<Locator>;
     private commentTextArea: Locator;
     private commentSaveButton: Locator;
     private commentCancelButton: Locator;
     private propertyDetails: Locator;
-    private propertyExemptionDetails: Locator;
     private noEPCHistoryMessage: Locator;
     private commentsSection: Locator;
     private linkWhereThisDataComesFrom: Locator;
@@ -81,12 +80,13 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.breadcrumbViewPropertyRecords = page.getByRole('link', { name: 'View property records' });
         this.breadcrumbFilterPropertiesRecords = page.getByRole('link', { name: 'Filter property records' });
-        this.commentsList = page.locator('c-mees-property-comments div.comment-meta').locator('..');
+        this.commentsList = page.locator('c-mees-property-comments div.comment-meta').locator('..').first().waitFor({ state: 'visible' }).then(
+            () => page.locator('c-mees-property-comments div.comment-meta').locator('..')
+        );
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
         this.commentCancelButton = page.getByRole('link', { name: 'Cancel' });
             this.propertyDetails = page.locator('.govuk-summary-list').first();
-        this.propertyExemptionDetails = page.locator('.govuk-summary-list').nth(1);
         this.noEPCHistoryMessage = page.locator('[data-id="EPCTab"] p.govuk-body');
         this.commentsSection = page.locator('c-mees-property-comments');
         this.linkWhereThisDataComesFrom = page.getByRole('link', { name: 'where this data comes from' });
@@ -307,7 +307,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         // Search for the text from the comment text area in the previous comments to confirm that the comment has been saved
         // Do it only if comment text area wasn't empty
         if (commentValueBeforeSave.trim() !== '') {
-            await this.commentsList.getByText(commentValueBeforeSave).waitFor({ timeout: 5000 });
+            await (await this.commentsList).getByText(commentValueBeforeSave).waitFor({ timeout: 5000 });
         }
     }
 
@@ -321,11 +321,11 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     }
 
     async getComments(): Promise<Locator> {
-        return this.commentsList;
+        return await this.commentsList;
     }
 
     async getCommentsTestData(): Promise<Comment[]> {
-        const rawComments = await this.commentsList.allInnerTexts();
+        const rawComments = await (await this.commentsList).allInnerTexts();
         rawComments.length === 0 && (() => { throw new Error('No comments found for the property'); })();
         
         return rawComments.map(comment => {
