@@ -73,6 +73,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private propertyExemptionDetails: Locator;
     private propertyExemptionDetailsRows: Locator;
     private noEPCHistoryMessage: Locator;
+    private commentsSection: Locator;
     private tab(tabName: string): Locator { return this.page.locator(`//li/div[contains(text(), '${tabName}')]`); }
     private tabParentElement(tabName: string): Locator { return this.tab(tabName).locator('..'); }
 
@@ -90,6 +91,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.propertyExemptionDetails = page.locator('.govuk-summary-list').nth(1);
         this.propertyExemptionDetailsRows = this.propertyExemptionDetails.locator('.govuk-summary-list__row');
         this.noEPCHistoryMessage = page.locator('[data-id="EPCTab"] p.govuk-body');
+        this.commentsSection = page.locator('c-mees-property-comments');
     }
 
     // Wait for the Property Details Page to load
@@ -116,7 +118,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        return [this.propertyDetails];
+        return [this.propertyDetails, this.commentsSection];
     }
 
     //#region Breadcrumb Methods
