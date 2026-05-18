@@ -182,6 +182,13 @@ test.describe('Penalty Calculator Results Page Navigation Tests', () => {
         expect(await calculatorPage.isDisplayed()).toBe(true);
     });
 
+    test('Guidance link on results page should open in a new tab and navigate to the guidance page', async () => {
+        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('Less than 3 months', 50000);
+        const newTab = await resultsPage.clickGuidanceLinkAndGetNewTab();
+        expect(newTab.url()).toContain('guidance-detail');
+        expect(newTab.url()).toContain('MCM6RZ6JHKLRBOXNIRXKLHUYPNXM');
+    });
+
     test.skip('Navigate to Filter Properties page from Penalty Calculator Page using the View Properties tab', async ({ page }) => {
         const filterPropertiesPage: FilterPropertiesPage = await penaltyCalculatorPage.clickOnPropertyRecordsTab();
         expect(await filterPropertiesPage.isDisplayed()).toBeTruthy();
