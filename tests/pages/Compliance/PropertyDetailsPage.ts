@@ -190,9 +190,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
             throw new Error(`Failed to get property details. Tab with name '${tabName}' does not exist on Property Details Page.`);
         }
 
-        // Select tab
-        await this.SelectTab(tabName);
-
         // Get field value based on the tab
         const fieldValueLocator = await this.getFieldValueLocatorByTabNameAndFieldName(tabName, fieldName);
         return await fieldValueLocator.textContent() || '';
