@@ -64,14 +64,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private breadcrumbHome: Locator;
     private breadcrumbViewPropertyRecords: Locator;
     private breadcrumbFilterPropertiesRecords: Locator;
-    private commentsList: Promise<Locator> = 
-        this.page.locator('c-mees-property-comments div.comment-meta')
-            .locator('..')
-            .first()
-            .waitFor({ state: 'visible' })
-            .then(
-                () => this.page.locator('c-mees-property-comments div.comment-meta').locator('..')
-            );
     private commentTextArea: Locator;
     private commentSaveButton: Locator;
     private commentCancelButton: Locator;
@@ -308,7 +300,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         // Search for the text from the comment text area in the previous comments to confirm that the comment has been saved
         // Do it only if comment text area wasn't empty
         if (commentValueBeforeSave.trim() !== '') {
-            await (await this.commentsList).getByText(commentValueBeforeSave).waitFor({ timeout: 5000 });
+            await (await this.getComments()).getByText(commentValueBeforeSave).waitFor({ timeout: 5000 });
         }
     }
 
@@ -321,12 +313,19 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return classAttribute?.includes('govuk-textarea--error') || false;
     }
 
+    // This method can only be used when there is at least one comment for the property, otherwise it will throw an error
     async getComments(): Promise<Locator> {
-        return await this.commentsList;
+        return await this.page.locator('c-mees-property-comments div.comment-meta')
+            .locator('..')
+            .first()
+            .waitFor({ state: 'visible' })
+            .then(
+                () => this.page.locator('c-mees-property-comments div.comment-meta').locator('..')
+            );;
     }
 
     async getCommentsTestData(): Promise<Comment[]> {
-        const rawComments = await (await this.commentsList).allInnerTexts();
+        const rawComments = await (await this.getComments()).allInnerTexts();
         rawComments.length === 0 && (() => { throw new Error('No comments found for the property'); })();
         
         return rawComments.map(comment => {
