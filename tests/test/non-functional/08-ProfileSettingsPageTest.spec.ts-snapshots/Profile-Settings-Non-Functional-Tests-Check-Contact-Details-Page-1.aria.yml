@@ -34,12 +34,12 @@
   - paragraph: These are the details that we may use to communicate with you.
   - heading [level=2]
   - term: First name
-  - definition: test
+  - definition: /.+/
   - definition:
     - link "Change First name":
       - /url: "#-137"
   - term: Last name
-  - definition: user1
+  - definition: /.+/
   - definition:
     - link "Change Last name":
       - /url: "#-137"
