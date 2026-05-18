@@ -44,8 +44,9 @@
     - paragraph: /£\d+,\d+/
     - paragraph:
       - text: This is the maximum financial penalty that may be issued for this non-domestic PR property MEES Regulations breach, based on the information provided. Learn
-      - link "how this penalty was calculated.":
+      - link "how this penalty was calculated (opens in a new tab)":
         - /url: guidance-detail?contentKey=MCM6RZ6JHKLRBOXNIRXKLHUYPNXM#issuance
+      - text: .
     - text: This estimate does not take account of mitigating factors or enforcement discretion.
     - term: Length of breach
     - definition: Less than 3 months

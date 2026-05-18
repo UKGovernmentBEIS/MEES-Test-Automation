@@ -1,9 +1,4 @@
 - main:
-  - paragraph:
-    - text: Beta This is a new service. Help us improve it and
-    - link "give your feedback by email":
-      - /url: mailto:meesdigital@energysecurity.gov.uk?subject=Feedback
-    - text: .
   - heading "Check if properties meet minimum energy efficiency standards" [level=2]:
     - link "Check if properties meet minimum energy efficiency standards":
       - /url: /landing-page
@@ -21,6 +16,11 @@
       - listitem:
         - link "Templates":
           - /url: /templates
+  - paragraph:
+    - text: Beta This is a new service. Help us improve it and
+    - link "give your feedback by email":
+      - /url: mailto:meesdigital@energysecurity.gov.uk?subject=Feedback
+    - text: .
   - list:
     - listitem:
       - link "Profile settings":
@@ -39,7 +39,7 @@
     - link "Change First name":
       - /url: "#-75"
   - term: Last name
-  - definition: /user\d+/
+  - definition: user1
   - definition:
     - link "Change Last name":
       - /url: "#-75"
@@ -49,7 +49,7 @@
   - heading "Council data sets that you have access to" [level=2]
   - heading [level=2]
   - term: Councils
-  - definition: /LONDON BOROUGH OF (BARNET|BEXLEY) LONDON BOROUGH OF (BARNET|BEXLEY)/
+  - definition: LONDON BOROUGH OF BEXLEY LONDON BOROUGH OF BARNET
   - definition: Councils
   - heading "If you need help" [level=2]
   - paragraph: "Contact our support team if you:"

@@ -1,5 +1,5 @@
 - img "Document icon"
-- link "Compliance notice letter template":
+- link "Penalty notice letter (publication) template":
   - /url: "#-53"
 - paragraph: /MS Word Document, \d+\.\d+ KB/
-- paragraph: /\d+ February \d+/
+- paragraph: /\d+ May \d+/

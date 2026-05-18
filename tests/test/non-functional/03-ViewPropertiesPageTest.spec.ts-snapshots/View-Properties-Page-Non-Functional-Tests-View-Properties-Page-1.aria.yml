@@ -57,7 +57,7 @@
       - /url: "#"
     - heading "Property records" [level=2]
     - text: 0 results No records found. Learn about
-    - link "why some information may not appear":
+    - link "why some information may not appear (opens in a new tab)":
       - /url: guidance-detail?contentKey=MC6ZMWNRJIR5GGVMGCXITZAKWIJU
     - text: .
     - table:
