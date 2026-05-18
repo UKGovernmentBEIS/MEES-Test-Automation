@@ -11,6 +11,7 @@ export class PenaltyCalculatorResultsPage extends BaseCompliancePage {
     private readonly maximumPenaltyValue: Locator;
     private readonly changeLengthOfBreachLink: Locator;
     private readonly changeRateableValueLink: Locator;
+    private readonly guidanceLink: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -20,6 +21,7 @@ export class PenaltyCalculatorResultsPage extends BaseCompliancePage {
         this.maximumPenaltyValue = this.page.locator('.penalty-amount');
         this.changeLengthOfBreachLink = this.page.getByRole('link', { name: 'Change length of breach' })
         this.changeRateableValueLink = this.page.getByRole('link', { name: 'Change rateable value' })
+        this.guidanceLink = this.page.getByRole('link', { name: /how this penalty was calculated/ })
     }
 
     async waitForPageToLoad(): Promise<void> {
@@ -74,6 +76,15 @@ export class PenaltyCalculatorResultsPage extends BaseCompliancePage {
         const penaltyCalculatorPage = new PenaltyCalculatorPage(this.page);
         await penaltyCalculatorPage.waitForPageToLoad();
         return penaltyCalculatorPage;
+    }
+
+    async clickGuidanceLinkAndGetNewTab(): Promise<import('@playwright/test').Page> {
+        const [newTab] = await Promise.all([
+            this.page.context().waitForEvent('page'),
+            this.guidanceLink.click()
+        ]);
+        await newTab.waitForLoadState();
+        return newTab;
     }
 
 }
