@@ -48,7 +48,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
         dmsPropertyDetails = await propertyDetailsPage.GetDMSPropertyDetailsValues(request, '100022918361');
     });
 
-    test('Verify data displayed in the main section of the Property Details page for property with UPRN', async () => {
+    test('Verify data displayed in the Property details tab for property with UPRN', async () => {
         // Helper function to construct address from DMS data
         const constructAddress = (property: any) => {
             const addressParts = [
@@ -71,22 +71,66 @@ test.describe('View Properties Page Data Validation Tests', () => {
             }).format(value);
         };
 
-        // Verify Address (DMS)
-        const expectedAddress = constructAddress(dmsPropertyDetails.property);
+        // Select the Property details tab before verifying any details to ensure all data is loaded
         await propertyDetailsPage.SelectTab('Property details');
+
+        // Verify Address
+        const expectedAddress = constructAddress(dmsPropertyDetails.property);
         expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName(
             'Property details', 'Property address')).toBe(expectedAddress);
 
-        // Verify UPRN (DMS)
+        // Verify UPRN
         expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'UPRN')).toBe(dmsPropertyDetails.property.uprn.toString());
 
-        // Verify Property Type (DMS)
-        // ToDo. We are expecting changes to the property type data in DMS which will allow us to verify this field. Once those changes are in place we can update the test to verify the property type as well.
-        //expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Property type')).toBe(dmsPropertyDetails.property.epcPropertyType);
+        // Verify Property Type
+        expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Property type')).toBe(dmsPropertyDetails.property.epcPropertyType);
 
-        // Verify Rateable Value (DMS)
+        // Verify Rateable Value
         const expectedRateableValue = formatCurrency(dmsPropertyDetails.property.rateableValue!);
         expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Rateable value')).toBe(expectedRateableValue);
+
+        // Verify Possible Rental Evidence
+        const expectedPossibleRentalEvidence = propertyDetailsPage.GetPossibleRentalEvidenceFromDMSPropertyDetails(dmsPropertyDetails);
+        expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence')).toBe(expectedPossibleRentalEvidence);
+    });
+
+    test('Verify all possible values for the Possible rental evidence field in the Property details tab', async ( {page} ) => {
+        // All combinations of possible evidence values based on DMS data
+        interface PossibleEvidenceTestCase {
+            possibleEvidenceEpcTransactionType: boolean;
+            possibleEvidenceSiccode: boolean;
+            expectedPossibleRentalEvidence: string;
+        }
+
+        const testCases: PossibleEvidenceTestCase[] = [
+            { possibleEvidenceEpcTransactionType: true, possibleEvidenceSiccode: true, expectedPossibleRentalEvidence: 'Mandatory issue (Property to let) EPC transaction type\nProperty owner has letting company SIC code' },
+            { possibleEvidenceEpcTransactionType: true, possibleEvidenceSiccode: false, expectedPossibleRentalEvidence: 'Mandatory issue (Property to let) EPC transaction type' },
+            { possibleEvidenceEpcTransactionType: false, possibleEvidenceSiccode: true, expectedPossibleRentalEvidence: 'Property owner has letting company SIC code' },
+            { possibleEvidenceEpcTransactionType: false, possibleEvidenceSiccode: false, expectedPossibleRentalEvidence: 'Not found' },
+        ];
+
+        const uprnForPropertyWithoutPossibleEvidence = '100022917839';
+        const uprnForPropertyWithBothPossibleEvidence = '10023302621';
+        const uprnForPropertyWithOnlyEpcEvidence = '100022918419';
+        const uprnForPropertyWithOnlySiccodeEvidence = '10011861801';
+       
+        // Enhance Property Details page URL to navigate directly to the property details page for each test case based on UPRN
+        for (const testCase of testCases) {
+            let uprn: string;
+            if (testCase.possibleEvidenceEpcTransactionType && testCase.possibleEvidenceSiccode) {
+                uprn = uprnForPropertyWithBothPossibleEvidence;
+            } else if (testCase.possibleEvidenceEpcTransactionType && !testCase.possibleEvidenceSiccode) {
+                uprn = uprnForPropertyWithOnlyEpcEvidence;
+            } else if (!testCase.possibleEvidenceEpcTransactionType && testCase.possibleEvidenceSiccode) {
+                uprn = uprnForPropertyWithOnlySiccodeEvidence;
+            } else {
+                uprn = uprnForPropertyWithoutPossibleEvidence;
+            }
+
+            await page.goto(`/compliance/view-details?buildingrefnum=${uprn}`);
+            const actualPossibleEvidence = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence');
+            expect(actualPossibleEvidence).toBe(testCase.expectedPossibleRentalEvidence);
+        }
     });
 
     test('Verify data displayed in the Energy Ratings and PRS Exemptions section of the Property Details page', async () => {
