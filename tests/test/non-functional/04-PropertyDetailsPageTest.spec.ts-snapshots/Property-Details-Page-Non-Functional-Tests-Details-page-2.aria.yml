@@ -1,0 +1,11 @@
+- heading "Comments" [level=2]
+- text: Comments are visible to other enforcement officers in your Trading Standards Office and to DESNZ Policy Officials.
+- heading "Add a comment" [level=2]
+- paragraph: Add a note about this property. Do not record any personally identifiable information here.
+- textbox
+- text: /You have \d+ characters remaining/
+- button "Save comment"
+- link "Cancel":
+  - /url: "#-102"
+- heading "Previous comments" [level=2]
+- text: /.+/
