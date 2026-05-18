@@ -49,7 +49,7 @@
   - heading "Council data sets that you have access to" [level=2]
   - heading [level=2]
   - term: Councils
-  - definition: LONDON BOROUGH OF BEXLEY LONDON BOROUGH OF BARNET
+  - definition: /.+/
   - definition: Councils
   - heading "If you need help" [level=2]
   - paragraph: "Contact our support team if you:"
