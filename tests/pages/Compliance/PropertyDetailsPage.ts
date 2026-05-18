@@ -64,12 +64,10 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private breadcrumbHome: Locator;
     private breadcrumbViewPropertyRecords: Locator;
     private breadcrumbFilterPropertiesRecords: Locator;
-    private commentsList: Locator;
     private commentTextArea: Locator;
     private commentSaveButton: Locator;
     private commentCancelButton: Locator;
     private propertyDetails: Locator;
-    private propertyExemptionDetails: Locator;
     private noEPCHistoryMessage: Locator;
     private commentPrivacyStatement: Locator;
     private linkWhereThisDataComesFrom: Locator;
@@ -81,12 +79,10 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.breadcrumbViewPropertyRecords = page.getByRole('link', { name: 'View property records' });
         this.breadcrumbFilterPropertiesRecords = page.getByRole('link', { name: 'Filter property records' });
-        this.commentsList = page.locator('c-mees-property-comments div.comment-meta').locator('..');
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
         this.commentCancelButton = page.getByRole('link', { name: 'Cancel' });
-            this.propertyDetails = page.locator('.govuk-summary-list').first();
-        this.propertyExemptionDetails = page.locator('.govuk-summary-list').nth(1);
+        this.propertyDetails = page.locator('.govuk-summary-list').first();
         this.noEPCHistoryMessage = page.locator('[data-id="EPCTab"] p.govuk-body');
         this.commentPrivacyStatement = page.getByText('Comments are visible to other enforcement officers in your Trading Standards Office and to DESNZ Policy Officials.', { exact: true });
         this.linkWhereThisDataComesFrom = page.getByRole('link', { name: 'where this data comes from' });
@@ -189,9 +185,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         if (!this.tabNameToElementIDMapping[tabName]) {
             throw new Error(`Failed to get property details. Tab with name '${tabName}' does not exist on Property Details Page.`);
         }
-
-        // Select tab
-        await this.SelectTab(tabName);
 
         // Get field value based on the tab
         const fieldValueLocator = await this.getFieldValueLocatorByTabNameAndFieldName(tabName, fieldName);
@@ -307,7 +300,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         // Search for the text from the comment text area in the previous comments to confirm that the comment has been saved
         // Do it only if comment text area wasn't empty
         if (commentValueBeforeSave.trim() !== '') {
-            await this.commentsList.getByText(commentValueBeforeSave).waitFor({ timeout: 5000 });
+            await (await this.getComments()).getByText(commentValueBeforeSave).waitFor({ timeout: 5000 });
         }
     }
 
@@ -320,12 +313,19 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return classAttribute?.includes('govuk-textarea--error') || false;
     }
 
+    // This method can only be used when there is at least one comment for the property, otherwise it will throw an error
     async getComments(): Promise<Locator> {
-        return this.commentsList;
+        return await this.page.locator('c-mees-property-comments div.comment-meta')
+            .locator('..')
+            .first()
+            .waitFor({ state: 'visible' })
+            .then(
+                () => this.page.locator('c-mees-property-comments div.comment-meta').locator('..')
+            );;
     }
 
     async getCommentsTestData(): Promise<Comment[]> {
-        const rawComments = await this.commentsList.allInnerTexts();
+        const rawComments = await (await this.getComments()).allInnerTexts();
         rawComments.length === 0 && (() => { throw new Error('No comments found for the property'); })();
         
         return rawComments.map(comment => {

@@ -524,56 +524,45 @@ test.describe('View Properties export functionality', () => {
             const postcodeFilter = 'DA1 4AL';
             const address = 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL';
 
-            // Display the Property Details page for the property with the above filters
-            // - apply filters
+            // Apply filters and export data
             await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
             await filterPropertiesPage.setCouncilFilter(councilFilter);
             await filterPropertiesPage.setPostcodeFilter(postcodeFilter);   
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForPageToLoad();
             await viewPropertiesPage.waitForTableContent();
+            // - we are expecting just one property in the results, but let's assert that to be sure our test data is correct
             const countField = await viewPropertiesPage.getPropertiesCountField();
             const countText = await countField.textContent();
             const different = countText?.split(' ')[0];
             expect(countText, `Unexpected number of results. Expected 1 result, but found a ${different} number`).toBe('1 results');
-            // - display Property Details page for the property
+            // - export the data and verify that we have records in the export
+            const exportedData: Record<string, string>[] = await viewPropertiesPage.exportFilteredData();
+            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
+
+            // Display the Property Details page for the property with the above filters
             const propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(address);
             await propertyDetailsPage.waitForPageToLoad();
 
-            // Navigate to the 'Property details' and get the UPRN for the property to use as a reference when locating the same property in the export
+            // Get the UPRN for the property to use as a reference when locating the same property in the export
             await propertyDetailsPage.SelectTab('Property details');
             const referencedProperty_UPRN = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'UPRN');
 
-            // Navigate to the 'PRS Exemptions and penalties' tab and get:
-            // - PRS Exemption Status, 
-            // - PRS Exemption Date,
-            // - Comments 
-            // to compare against the export later
-            await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
-            // 
-            const referencedProperty_PRSExemptionStatus: string = 
-                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
-            expect(referencedProperty_PRSExemptionStatus, 'Reference property has no PRS Exemption Status').toBeDefined();
-
-            const referencedProperty_PRSExemptionDate: string = 
-                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
-            expect(referencedProperty_PRSExemptionDate, 'Reference property has no PRS Exemption Date').toBeDefined();
-
-            const commentsLocator = await propertyDetailsPage.getComments();
-            await commentsLocator.first().waitFor({ state: 'visible' });
-            const referencedProperty_PRSExemptionComments: string[] = await commentsLocator.allInnerTexts();
-            expect(referencedProperty_PRSExemptionComments.length, 'Reference property has no PRS Exemption Comments').toBeGreaterThan(0);
-
-            // Navigate back to View Properties and export the CSV (filters are preserved in the breadcrumb URL)
-            const viewPropertiesPageForExport = await propertyDetailsPage.clickBreadcrumbViewProperties();
-            await viewPropertiesPageForExport.waitForTableContent();
-            const exportedData: Record<string, string>[] = await viewPropertiesPageForExport.exportFilteredData();
-            expect(exportedData.length, 'Export returned no records').toBeGreaterThan(0);
-
-            // Locate the reference property in the export by UPRN
+            // Get exported data for the property based on UPRN and verify that we can find the property in the export using UPRN as a unique identifier
             const matchInExport = exportedData.find(r => String(r['UPRN']).trim() === referencedProperty_UPRN.trim());
             expect(matchInExport, `Property with UPRN ${referencedProperty_UPRN} not found in the export`).toBeDefined();
 
+            // Verify 'PRS exemption status', 'PRS exemption date' in the export match the values in the application for the same property
+            await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
+
+            // Verify 'PRS exemption status' value in the export matches the value in the application,
+            // using expect.poll() to retry until the page value stabilises and matches the export
+            await expect.poll(
+                () => propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status'),
+                { message: `PRS Exemption Status mismatch for UPRN ${referencedProperty_UPRN}: export shows '${matchInExport!['PRS exemption status']}'` }
+            ).toBe(matchInExport!['PRS exemption status']);
+
+            // Verify 'PRS exemption date' value in the export matches the value in the application
             // Normalise dates to YYYY-MM-DD for comparison:
             //   UI format: 'D Month YYYY' (e.g. '14 February 2026')
             //   Export format: 'DD/MM/YYYY' (e.g. '14/02/2026')
@@ -593,24 +582,29 @@ test.describe('View Properties export functionality', () => {
                 return d;
             };
 
-            // Compare the exported PRS Exemption Status, PRS Exemption Date and Comments against the values from Salesforce
-            expect(matchInExport!['PRS exemption status'].trim(),
-                `PRS Exemption Status mismatch for UPRN ${referencedProperty_UPRN}: UI shows '${referencedProperty_PRSExemptionStatus}', export shows '${matchInExport!['PRS exemption status']}'`
-            ).toBe(referencedProperty_PRSExemptionStatus.trim());
+            const referencedProperty_PRSExemptionDate: string = 
+                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
+            expect(referencedProperty_PRSExemptionDate, 'Reference property has no PRS Exemption Date').toBeDefined();
 
             expect(normalizeDate(matchInExport!['PRS exemption date']),
                 `PRS Exemption Date mismatch for UPRN ${referencedProperty_UPRN}: UI shows '${referencedProperty_PRSExemptionDate}', export shows '${matchInExport!['PRS exemption date']}'`
             ).toBe(normalizeDate(referencedProperty_PRSExemptionDate));
 
-            // Normalise comments for comparison.
+            // Verify 'Comments' in the export match the comments in the application for the same property
+            const commentsLocator = await propertyDetailsPage.getComments();
+            await commentsLocator.first().waitFor({ state: 'visible' });
+            const referencedProperty_PRSExemptionComments: string[] = await commentsLocator.allInnerTexts();
+            expect(referencedProperty_PRSExemptionComments.length, 'Reference property has no PRS Exemption Comments').toBeGreaterThan(0);
+            
+            // - normalise comments for comparison.
             // UI: allInnerTexts() on the comments list returns a mix of comment body lines,
             //     blank lines, and 'Added by ...' attribution lines — extract just the bodies.
             const uiCommentTexts = referencedProperty_PRSExemptionComments.join('\n').split('\n')
                 .map(s => s.trim())
                 .filter(s => s !== '' && !s.startsWith('Added by'));
 
-            // Export: all comments joined as 'body by author on date | body by author on date | ...'
-            // Extract just the comment body (everything before the last ' by ') from each entry.
+            // - export: all comments joined as 'body by author on date | body by author on date | ...'
+            // - extract just the comment body (everything before the last ' by ') from each entry.
             const exportCommentTexts = matchInExport!['Comments']
                 .split(' | ')
                 .map(entry => {
@@ -619,7 +613,7 @@ test.describe('View Properties export functionality', () => {
                 })
                 .filter(s => s !== '');
 
-            // Compare all comments between UI and export
+            // - compare all comments between UI and export
             expect(exportCommentTexts,
                 `Comments mismatch for UPRN ${referencedProperty_UPRN}: ` +
                 `UI has ${uiCommentTexts.length} comment(s), export has ${exportCommentTexts.length} comment(s). ` +
