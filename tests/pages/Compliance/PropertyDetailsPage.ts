@@ -64,7 +64,14 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private breadcrumbHome: Locator;
     private breadcrumbViewPropertyRecords: Locator;
     private breadcrumbFilterPropertiesRecords: Locator;
-    private commentsList: Promise<Locator>;
+    private commentsList: Promise<Locator> = 
+        this.page.locator('c-mees-property-comments div.comment-meta')
+            .locator('..')
+            .first()
+            .waitFor({ state: 'visible' })
+            .then(
+                () => this.page.locator('c-mees-property-comments div.comment-meta').locator('..')
+            );
     private commentTextArea: Locator;
     private commentSaveButton: Locator;
     private commentCancelButton: Locator;
@@ -80,13 +87,10 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.breadcrumbViewPropertyRecords = page.getByRole('link', { name: 'View property records' });
         this.breadcrumbFilterPropertiesRecords = page.getByRole('link', { name: 'Filter property records' });
-        this.commentsList = page.locator('c-mees-property-comments div.comment-meta').locator('..').first().waitFor({ state: 'visible' }).then(
-            () => page.locator('c-mees-property-comments div.comment-meta').locator('..')
-        );
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
         this.commentCancelButton = page.getByRole('link', { name: 'Cancel' });
-            this.propertyDetails = page.locator('.govuk-summary-list').first();
+        this.propertyDetails = page.locator('.govuk-summary-list').first();
         this.noEPCHistoryMessage = page.locator('[data-id="EPCTab"] p.govuk-body');
         this.commentPrivacyStatement = page.getByText('Comments are visible to other enforcement officers in your Trading Standards Office and to DESNZ Policy Officials.', { exact: true });
         this.linkWhereThisDataComesFrom = page.getByRole('link', { name: 'where this data comes from' });
