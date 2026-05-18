@@ -46,6 +46,7 @@ export enum PageName {
   ENFORCEMENT_TIMELINE_PAGE = "Enforcement Timeline Page",
   UNDERSTANDING_MEES_REGULATIONS_PAGE = "Understanding MEES Regulations Page",
   HOW_PRS_PROPERTIES_ARE_IDENTIFIED_PAGE = "How PRS Properties Are Identified Page",
+  UNDERSTANDING_PROPERTY_DETAILS_AND_DATA_SOURCES_PAGE = "Understanding Property Details And Data Sources Page",
   PROFILE_SETTINGS_PAGE = "Profile Settings Page",
   CHANGE_CONTACT_DETAILS_PAGE = "Change Contact Details Page",
   CHANGE_CONTACT_DETAILS_FIRST_NAME_ERROR = "Change Contact Details Page - First Name Error",

@@ -6,6 +6,7 @@ import { GuidanceUnderstandingTheMEESRegulationsPage } from './GuidanceUnderstan
 import { GuidanceUnderstandingComplianceNoticePage } from './GuidanceUnderstandComplianceNoticesPage';
 import { GuidanceUnderstandingPenaltiesPage } from './GuidanceUnderstandingPenaltiesPage';
 import { GuidanceEnforcementTimelinePage } from './GuidanceEnforcmentTimelinePage';
+import { GuidanceUnderstandingPropertyDetailsAndDataSourcesPage } from './GuidanceUnderstandingPropertyDetailsAndDataSources';
 import { PageName } from '../../../utils/TestTypes';
 import { HomePage } from '../HomePage';
 
@@ -14,7 +15,8 @@ export const TemplateTypes = {
     UNDERSTANDING_PENALTIES: 'Understanding penalties',
     ENFORCEMENT_TIMELINE: 'Enforcement timeline',
     UNDERSTANDING_MEES_REGULATIONS: 'Understanding the MEES Regulations',
-    HOW_PRS_PROPERTIES_ARE_IDENTIFIED: 'How PRS properties are identified'
+    HOW_PRS_PROPERTIES_ARE_IDENTIFIED: 'How PRS properties are identified',
+    UNDERSTANDING_PROPERTY_DETAILS_AND_DATA_SOURCES: 'Understanding property details and data sources'
 } as const;
 
 export type TemplateTypes = typeof TemplateTypes[keyof typeof TemplateTypes];
@@ -60,7 +62,8 @@ export class GuidanceMainPage extends BaseCompliancePage {
         GuidanceUnderstandingPenaltiesPage | 
         GuidanceEnforcementTimelinePage | 
         GuidanceUnderstandingTheMEESRegulationsPage | 
-        GuidanceHowPRSPropertiesAreIdentifiedPage
+        GuidanceHowPRSPropertiesAreIdentifiedPage |
+        GuidanceUnderstandingPropertyDetailsAndDataSourcesPage
     > {
         const templateLink = await this.templateLink(templateType);
          await templateLink.click();
@@ -85,6 +88,10 @@ export class GuidanceMainPage extends BaseCompliancePage {
                 const prsPropertiesPage = new GuidanceHowPRSPropertiesAreIdentifiedPage(this.page);
                 await prsPropertiesPage.waitForPageToLoad();
                 return prsPropertiesPage;
+            case 'Understanding property details and data sources':
+                const propertyDetailsPage = new GuidanceUnderstandingPropertyDetailsAndDataSourcesPage(this.page);
+                await propertyDetailsPage.waitForPageToLoad();
+                return propertyDetailsPage;
         }
     }
 
@@ -100,6 +107,8 @@ export class GuidanceMainPage extends BaseCompliancePage {
                 return PageName.UNDERSTANDING_MEES_REGULATIONS_PAGE;
             case TemplateTypes.HOW_PRS_PROPERTIES_ARE_IDENTIFIED:
                 return PageName.HOW_PRS_PROPERTIES_ARE_IDENTIFIED_PAGE;
+            case TemplateTypes.UNDERSTANDING_PROPERTY_DETAILS_AND_DATA_SOURCES:
+                return PageName.UNDERSTANDING_PROPERTY_DETAILS_AND_DATA_SOURCES_PAGE;
             default:
                 throw new Error(`No PageName mapping for template type: ${templateType}`);
         }

@@ -69,10 +69,9 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private commentSaveButton: Locator;
     private commentCancelButton: Locator;
     private propertyDetails: Locator;
-    private propertyDetailsRows: Locator;
     private propertyExemptionDetails: Locator;
-    private propertyExemptionDetailsRows: Locator;
     private noEPCHistoryMessage: Locator;
+    private linkWhereThisDataComesFrom: Locator;
     private tab(tabName: string): Locator { return this.page.locator(`//li/div[contains(text(), '${tabName}')]`); }
     private tabParentElement(tabName: string): Locator { return this.tab(tabName).locator('..'); }
 
@@ -85,11 +84,10 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
         this.commentCancelButton = page.getByRole('link', { name: 'Cancel' });
-        this.propertyDetails = page.locator('.govuk-summary-list').first();
-        this.propertyDetailsRows = this.propertyDetails.locator('.govuk-summary-list__row');
+            this.propertyDetails = page.locator('.govuk-summary-list').first();
         this.propertyExemptionDetails = page.locator('.govuk-summary-list').nth(1);
-        this.propertyExemptionDetailsRows = this.propertyExemptionDetails.locator('.govuk-summary-list__row');
         this.noEPCHistoryMessage = page.locator('[data-id="EPCTab"] p.govuk-body');
+        this.linkWhereThisDataComesFrom = page.getByRole('link', { name: 'where this data comes from' });
     }
 
     // Wait for the Property Details Page to load
@@ -106,7 +104,8 @@ export class PropertyDetailsPage extends BaseCompliancePage {
                 signOutButton: this.signOutButton,
                 commentTextArea: this.commentTextArea,
                 commentSaveButton: this.commentSaveButton,
-                commentCancelButton: this.commentCancelButton
+                commentCancelButton: this.commentCancelButton,
+                linkWhereThisDataComesFrom: this.linkWhereThisDataComesFrom
             },
             60000);
     }
@@ -143,6 +142,10 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         const viewPropertiesPage = new ViewPropertiesPage(this.page);
         await viewPropertiesPage.waitForPageToLoad();
         return viewPropertiesPage;
+    }
+
+    async clickLinkWhereThisDataComesFrom(): Promise<void> {
+        await this.linkWhereThisDataComesFrom.click();
     }
 
     //#endregion

@@ -338,4 +338,13 @@ test.describe('Property Details Page Navigation Tests', () => {
         const homePage = await propertyDetailsPage.clickPageHeaderLink();
         expect(await homePage.isDisplayed()).toBe(true);
     });
+
+    test('Should navigate to the correct URL when clicking on the link for where the data comes from', async ({ page }) => {
+        const [newPage] = await Promise.all([
+            page.waitForEvent('popup'),
+            propertyDetailsPage.clickLinkWhereThisDataComesFrom(),
+        ]);
+        await newPage.waitForLoadState();
+        await expect(newPage).toHaveURL(/\/compliance\/guidance-detail/);
+    });
 });
