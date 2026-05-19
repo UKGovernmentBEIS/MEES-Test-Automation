@@ -30,16 +30,16 @@
         - /url: "#"
   - link "Back":
     - /url: "#"
-  - heading "Change your contact details" [level=2]
+  - heading "Profile settings" [level=1]
   - paragraph: These are the details that we may use to communicate with you.
   - heading [level=2]
   - term: First name
-  - definition: /.+/
+  - definition: test
   - definition:
     - link "Change First name":
       - /url: "#-75"
   - term: Last name
-  - definition: /.+/
+  - definition: user1
   - definition:
     - link "Change Last name":
       - /url: "#-75"
@@ -49,7 +49,7 @@
   - heading "Council data sets that you have access to" [level=2]
   - heading [level=2]
   - term: Councils
-  - definition: /.+/
+  - definition: LONDON BOROUGH OF BEXLEY LONDON BOROUGH OF BARNET
   - definition: Councils
   - heading "If you need help" [level=2]
   - paragraph: "Contact our support team if you:"

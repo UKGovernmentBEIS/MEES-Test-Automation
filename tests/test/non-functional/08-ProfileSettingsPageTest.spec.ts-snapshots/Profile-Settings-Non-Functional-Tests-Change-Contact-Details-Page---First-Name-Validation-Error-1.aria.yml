@@ -36,7 +36,7 @@
       - listitem:
         - link "Enter a first name":
           - /url: "#-102"
-  - heading "Your contact details" [level=2]
+  - heading "Change your contact details" [level=1]
   - heading "First name" [level=2]
   - text: "Error: Enter a first name"
   - textbox "First name"
