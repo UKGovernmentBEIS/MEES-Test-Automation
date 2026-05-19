@@ -215,15 +215,14 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         return (await defaultOption.textContent() ?? '').trim();
     }
 
-    async getLACouncilsList(): Promise<Locator[]> {
+    async getLACouncilsList(): Promise<Locator> {
         // Check if the councils list is already visible, if not click to expand it
         const isVisible: boolean = await this.councilsList.isVisible();
         if (!isVisible) {
             await this.councilStatement.click();
             await this.councilsList.waitFor({ state: 'visible', timeout: 5000 });
         }
-        const councilItems = await this.councilsList.locator('li').all();
-            return councilItems;
+        return this.councilsList;
     }
 
     async clickBreadcrumbHome(): Promise<HomePage> {
