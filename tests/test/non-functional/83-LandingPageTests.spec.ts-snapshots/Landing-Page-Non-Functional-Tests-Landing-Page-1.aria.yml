@@ -1,9 +1,9 @@
 - main:
   - heading "Check if properties meet minimum energy efficiency standards" [level=1]
   - paragraph: This service is for non-domestic properties only.
-  - paragraph: The Minimum Energy Efficiency Standards (MEES) apply to all properties that are legally required to have an energy performance certificate (EPC).
-  - paragraph: The minimum level of energy efficiency is currently an energy rating of E.
-  - text: "You can use this service to:"
+  - paragraph: /Part 3 of the Energy Efficiency \(Private Rented Property\) \(England and Wales\) Regulations \d+ imposes a minimum energy efficiency standard for non-domestic privately rented properties \(the "MEES Regulations"\)\./
+  - paragraph: Landlords of non-domestic privately rented properties who have an energy performance certificate (EPC), must comply with the MEES Regulations by holding an EPC for energy band E (unless a valid exemption applies).
+  - paragraph: "You can use this service to:"
   - list:
     - listitem: search for non-domestic properties with a sub-standard energy rating
     - listitem: check whether there is evidence a property may be rented
@@ -11,7 +11,8 @@
     - listitem: find property owner details
     - listitem: view enforcement guidance
     - listitem: calculate penalties for non-compliance
-  - text: This service is for local authorities only.
+  - paragraph
+  - paragraph: This service is for local authorities only.
   - heading "Register" [level=2]
   - paragraph: You must register for a personal account to access this service.
   - paragraph:
@@ -32,3 +33,4 @@
       - listitem:
         - link "Find an energy certificate":
           - /url: "#"
+  - paragraph
