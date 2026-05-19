@@ -7,6 +7,7 @@ import { TestType, TestAnnotations } from '../../utils/TestTypes';
 import { PropertyDetailsPage, DMSPropertyDetails } from '../../pages/Compliance/PropertyDetailsPage';
 import { ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
 import { getCurrentUserAccountName } from '../../utils/AuthUtils';
+import { DMSExportApiClient, DMSRawItem } from '../../api/DMSExportApiClient';
 
 function getExpectedCommentAnnotationUserIdentifier(page: any): string {
     const currentUserName = getCurrentUserAccountName(page);
@@ -35,8 +36,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
         testInfo.annotations.push(
             TestAnnotations.testType(TestType.FUNCTIONAL)
         );
-        
-        
+
         const landingPage: LandingPage = new LandingPage(page);
         await landingPage.navigate();
         const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
@@ -77,7 +77,6 @@ test.describe('View Properties Page Data Validation Tests', () => {
 
             // Select the Property details tab before verifying any details to ensure all data is loaded
             await propertyDetailsPage.SelectTab('Property details');
-
             
             // Get DMS property details for comparison
             dmsPropertyDetails = await propertyDetailsPage.GetDMSPropertyDetailsValues(request, '100022918361');
@@ -144,7 +143,131 @@ test.describe('View Properties Page Data Validation Tests', () => {
     });
 
     test.describe('Property Owner(s) Tab Data Validation', () => {
-                
+
+        test('Verify that all landlords associated with the property are displayed in the Property owner(s) tab', async ({ request }) => {
+            // Get a property with multiple landlords from DMS 
+            // to ensure the Property owner(s) tab is populated for the test
+            const dmsApiClient = new DMSExportApiClient(request);
+            const propertyWithMultipleLandlords = 
+                await dmsApiClient.getPropertyWithMultipleLandlords({
+                    lacodes: [`E09000003`, `E09000004`],
+                    energyratingband: 'A'
+                });
+            
+            // Extract the property address to search for the property in the UI 
+            // and navigate to the Property Details page
+            const dmsPropertyStreet = propertyWithMultipleLandlords.property.Line1;
+            if (dmsPropertyStreet === null || dmsPropertyStreet === undefined || dmsPropertyStreet === '') {
+                throw new Error('Property Line1 is empty — no suitable property found with multiple landlords');
+            }
+
+            // Extract postcode to use in filter
+            // to reduce number of properties returned in the search results
+            const dmsPropertyPostcode = propertyWithMultipleLandlords.property.Postcode;
+            if (dmsPropertyPostcode === null || dmsPropertyPostcode === undefined || dmsPropertyPostcode === '') {
+                throw new Error('Property Postcode is empty — no suitable property found with multiple landlords');
+            }
+
+            // Construct property address for the View Details search results validation
+            const dmsPropertyAddress = [
+                propertyWithMultipleLandlords.property.Name,
+                propertyWithMultipleLandlords.property.Number,
+                propertyWithMultipleLandlords.property.FlatNameNumber,
+                propertyWithMultipleLandlords.property.Line1,
+                propertyWithMultipleLandlords.property.Line2,
+                propertyWithMultipleLandlords.property.Line3,
+                propertyWithMultipleLandlords.property.Town,
+                propertyWithMultipleLandlords.property.County,
+                propertyWithMultipleLandlords.property.Postcode
+            ].filter(part => part !== null && part !== undefined && part !== '').join(', ');
+
+            // Navigate to Property Details page for the property with multiple landlords
+            await filterPropertiesPage.setStreetFilter(dmsPropertyStreet);
+            await filterPropertiesPage.setPostcodeFilter(dmsPropertyPostcode);
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(dmsPropertyAddress);
+
+            await propertyDetailsPage.SelectTab('Property owner(s)');
+            
+            // Verify number of owners displayed matches number of landlords in DMS
+            const propertyOwnersCount = await propertyDetailsPage.getNumberOfPropertyOwners();
+            expect(propertyOwnersCount).toBe(propertyWithMultipleLandlords.Landlords.length);
+
+            // Verify details of each landlord are displayed
+            for (let i = 0; i < propertyWithMultipleLandlords.Landlords.length; i++) {
+                const dmsName = propertyWithMultipleLandlords.Landlords[i].CompanyName;
+                const dmsLocation = propertyWithMultipleLandlords.Landlords[i].Location;
+                const dmsAddress = propertyWithMultipleLandlords.Landlords[i].Address;
+                const dmsSicCodeRaw = [
+                    propertyWithMultipleLandlords.Landlords[i].SicCodeSicText1,
+                    propertyWithMultipleLandlords.Landlords[i].SicCodeSicText2,
+                    propertyWithMultipleLandlords.Landlords[i].SicCodeSicText3,
+                    propertyWithMultipleLandlords.Landlords[i].SicCodeSicText4
+                ].filter(code => code !== null && code !== undefined && code !== '').join(' | ');
+                const dmsSicCode = dmsSicCodeRaw === '' ? 'Not found' : dmsSicCodeRaw;
+                const uiName = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Name');
+                const uiLocation = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Location');
+                const uiAddress = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Address');
+                const uiSicCode = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'SIC code(s)');
+                expect(uiName, `Mismatch in Name for landlord ${i}. Expected: ${dmsName}, Actual: ${uiName}`).toBe(dmsName);
+                expect(uiLocation, `Mismatch in Location for landlord ${i}. Expected: ${dmsLocation}, Actual: ${uiLocation}`).toBe(dmsLocation);
+                expect(uiAddress, `Mismatch in Address for landlord ${i}. Expected: ${dmsAddress}, Actual: ${uiAddress}`).toBe(dmsAddress);
+                expect(uiSicCode, `Mismatch in SIC code for landlord ${i}. Expected: ${dmsSicCode}, Actual: ${uiSicCode}`).toBe(dmsSicCode);
+            }
+        });
+
+        test('Verify that the Property owner(s) tab shows "Not found" for each field when there is no landlord information available for the property in DMS', async ({ request }) => {
+            // Get a property with no landlord information from DMS 
+            // to ensure the Property owner(s) tab is populated for the test
+            const dmsApiClient = new DMSExportApiClient(request);
+            const propertyWithNoLandlordInfo = 
+                await dmsApiClient.getPropertyWithNoLandlords({
+                    lacodes: [`E09000003`, `E09000004`],
+                    energyratingband: 'A'
+                });
+            
+            // Extract the property address to search for the property in the UI
+            const dmsPropertyStreet = propertyWithNoLandlordInfo.property.Line1;
+            if (dmsPropertyStreet === null || dmsPropertyStreet === undefined || dmsPropertyStreet === '') {
+                throw new Error('Property Line1 is empty — no suitable property found with no landlord information');
+            }
+
+            // Extract postcode to use in filter to reduce number of properties
+            //  returned in the search results
+            const dmsPropertyPostcode = propertyWithNoLandlordInfo.property.Postcode;
+            if (dmsPropertyPostcode === null || dmsPropertyPostcode === undefined || dmsPropertyPostcode === '') {
+                throw new Error('Property Postcode is empty — no suitable property found with no landlord information');
+            }
+
+            // Construct property address for the View Details search results validation
+            const dmsPropertyAddress = [
+                propertyWithNoLandlordInfo.property.Name,
+                propertyWithNoLandlordInfo.property.Number,
+                propertyWithNoLandlordInfo.property.FlatNameNumber,
+                propertyWithNoLandlordInfo.property.Line1,
+                propertyWithNoLandlordInfo.property.Line2,
+                propertyWithNoLandlordInfo.property.Line3,
+                propertyWithNoLandlordInfo.property.Town,
+                propertyWithNoLandlordInfo.property.County,
+                propertyWithNoLandlordInfo.property.Postcode
+            ].filter(part => part !== null && part !== undefined && part !== '').join(', ');
+
+            // Navigate to Property Details page for the property with no landlord information
+            await filterPropertiesPage.setStreetFilter(dmsPropertyStreet);
+            await filterPropertiesPage.setPostcodeFilter(dmsPropertyPostcode);
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(dmsPropertyAddress);
+
+            await propertyDetailsPage.SelectTab('Property owner(s)');
+            
+            // Verify that "Not found" is displayed for each field in the Property owner(s) tab
+            expect(await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'Name')).toBe(' Not found');
+            expect(await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'Location')).toBe(' Not found');
+            expect(await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'Address')).toBe(' Not found');
+            expect(await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'SIC code(s)')).toBe(' Not found');
+        });
     });
 
     test.describe('Energy Efficiency Details and PRS Exemptions And Penalties Tabs Data Validation', () => {

@@ -70,4 +70,34 @@ export class DMSExportApiClient {
             Object.entries(landlord).map(([k, v]) => [fieldMap[k] ?? k, v])
         );
     }
+
+    async getPropertyWithMultipleLandlords(filters: Record<string, any>): Promise<DMSRawItem> {
+        const items = await this.getExportedData(filters);
+        if (items.length === 0) {
+            throw new Error('No properties returned from DMS export for filters: ' + JSON.stringify(filters));
+        }
+
+        // Find the first property with multiple landlords
+        const propertyWithMultipleLandlords = 
+            items.find(item => Array.isArray(item.Landlords) && item.Landlords.length > 1);
+        if (!propertyWithMultipleLandlords) {
+            throw new Error('No properties with multiple landlords found for filters: ' + JSON.stringify(filters));
+        }
+        return propertyWithMultipleLandlords;
+    }
+
+    async getPropertyWithNoLandlords(filters: Record<string, any>): Promise<DMSRawItem> {
+        const items = await this.getExportedData(filters);
+        if (items.length === 0) {
+            throw new Error('No properties returned from DMS export for filters: ' + JSON.stringify(filters));
+        }
+
+        // Find the first property with no landlords
+        const propertyWithNoLandlords = 
+            items.find(item => Array.isArray(item.Landlords) && item.Landlords.length === 0);
+        if (!propertyWithNoLandlords) {
+            throw new Error('No properties with no landlords found for filters: ' + JSON.stringify(filters));
+        }
+        return propertyWithNoLandlords;
+    }
 }

@@ -242,6 +242,29 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return epcHistoryData;
     }
 
+    async getNumberOfPropertyOwners(): Promise<number> {
+        // Confirm that the 'Property owner(s)' tab is active
+        if (!await this.isTabActive('Property owner(s)')) {
+            throw new Error('Failed to get number of property owners. The Property owner(s) tab is not active.');
+        }
+
+        return await this.page.locator('//h2[contains(text(), "Property owner")]').count();
+    }
+
+    async getPropertyOwnerFieldValueByOwnerIndex(ownerIndex: number, fieldName: string): Promise<string> {
+        // Confirm that the 'Property owner(s)' tab is active
+        if (!await this.isTabActive('Property owner(s)')) {
+            throw new Error('Failed to get property owner details. The Property owner(s) tab is not active.');
+        }
+
+        const fieldValueLocator = this.page.locator(`(//h2[contains(text(), "Property owner")])[${ownerIndex + 1}]`)
+            .locator('..')
+            .locator('.govuk-summary-list__row')
+            .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(fieldName, { exact: true }) })
+            .locator('.govuk-summary-list__value');
+        return await fieldValueLocator.textContent() || '';
+    }
+
     //#endregion
 
     //#region DMS API Methods
