@@ -28,147 +28,170 @@ function getExpectedCommentAnnotationUserIdentifier(page: any): string {
 test.describe('View Properties Page Data Validation Tests', () => {
     let propertyDetailsPage: PropertyDetailsPage;
     let dmsPropertyDetails: DMSPropertyDetails;
+    let filterPropertiesPage: FilterPropertiesPage;
     
 
-    test.beforeEach(async ({ page, request }, testInfo) => {
+    test.beforeEach(async ({ page }, testInfo) => {
         testInfo.annotations.push(
             TestAnnotations.testType(TestType.FUNCTIONAL)
         );
         
+        
         const landingPage: LandingPage = new LandingPage(page);
         await landingPage.navigate();
         const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
-        const filterPropertiesPage: FilterPropertiesPage = await homePage.clickViewProperties();
-        await filterPropertiesPage.setEnergyRatingFilter('A');
-        const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForTableContent();
-        propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
-        
-        // Get DMS property details for comparison
-        dmsPropertyDetails = await propertyDetailsPage.GetDMSPropertyDetailsValues(request, '100022918361');
+        filterPropertiesPage = await homePage.clickViewProperties();
     });
 
-    test('Verify data displayed in the Property details tab for property with UPRN', async () => {
-        // Helper function to construct address from DMS data
-        const constructAddress = (property: any) => {
-            const addressParts = [
-                property.line1,
-                property.line2,
-                property.line3,
-                property.town,
-                property.postcode
-            ].filter(part => part !== null && part !== '').join('\n');
-            return addressParts;
-        };
+    test.describe('Property Details Tab Data Validation', () => {
 
-        // Helper function to format currency
-        const formatCurrency = (value: number) => {
-            return new Intl.NumberFormat('en-GB', { 
-                style: 'currency', 
-                currency: 'GBP',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }).format(value);
-        };
+        test.beforeEach(async ({ page }, testInfo) => {
+            await filterPropertiesPage.setEnergyRatingFilter('A');
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+        });
 
-        // Select the Property details tab before verifying any details to ensure all data is loaded
-        await propertyDetailsPage.SelectTab('Property details');
+        test('Verify data displayed in the Property details tab for property with UPRN', async ({ request }) => {
+            // Helper function to construct address from DMS data
+            const constructAddress = (property: any) => {
+                const addressParts = [
+                    property.line1,
+                    property.line2,
+                    property.line3,
+                    property.town,
+                    property.postcode
+                ].filter(part => part !== null && part !== '').join('\n');
+                return addressParts;
+            };
 
-        // Verify Address
-        const expectedAddress = constructAddress(dmsPropertyDetails.property);
-        expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName(
-            'Property details', 'Property address')).toBe(expectedAddress);
+            // Helper function to format currency
+            const formatCurrency = (value: number) => {
+                return new Intl.NumberFormat('en-GB', { 
+                    style: 'currency', 
+                    currency: 'GBP',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(value);
+            };
 
-        // Verify UPRN
-        expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'UPRN')).toBe(dmsPropertyDetails.property.uprn.toString());
+            // Select the Property details tab before verifying any details to ensure all data is loaded
+            await propertyDetailsPage.SelectTab('Property details');
 
-        // Verify Property Type
-        expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Property type')).toBe(dmsPropertyDetails.property.epcPropertyType);
+            
+            // Get DMS property details for comparison
+            dmsPropertyDetails = await propertyDetailsPage.GetDMSPropertyDetailsValues(request, '100022918361');
 
-        // Verify Rateable Value
-        const expectedRateableValue = formatCurrency(dmsPropertyDetails.property.rateableValue!);
-        expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Rateable value')).toBe(expectedRateableValue);
+            // Verify Address
+            const expectedAddress = constructAddress(dmsPropertyDetails.property);
+            expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName(
+                'Property details', 'Property address')).toBe(expectedAddress);
 
-        // Verify Possible Rental Evidence
-        const expectedPossibleRentalEvidence = propertyDetailsPage.GetPossibleRentalEvidenceFromDMSPropertyDetails(dmsPropertyDetails);
-        expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence')).toBe(expectedPossibleRentalEvidence);
-    });
+            // Verify UPRN
+            expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'UPRN')).toBe(dmsPropertyDetails.property.uprn.toString());
 
-    test('Verify all possible values for the Possible rental evidence field in the Property details tab', async ( {page} ) => {
+            // Verify Property Type
+            expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Property type')).toBe(dmsPropertyDetails.property.epcPropertyType);
+
+            // Verify Rateable Value
+            const expectedRateableValue = formatCurrency(dmsPropertyDetails.property.rateableValue!);
+            expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Rateable value')).toBe(expectedRateableValue);
+
+            // Verify Possible Rental Evidence
+            const expectedPossibleRentalEvidence = propertyDetailsPage.GetPossibleRentalEvidenceFromDMSPropertyDetails(dmsPropertyDetails);
+            expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence')).toBe(expectedPossibleRentalEvidence);
+        });
+
+        test('Verify all possible values for the Possible rental evidence field in the Property details tab', async ( {page} ) => {
+            
         // All combinations of possible evidence values based on DMS data
-        interface PossibleEvidenceTestCase {
-            possibleEvidenceEpcTransactionType: boolean;
-            possibleEvidenceSiccode: boolean;
-            expectedPossibleRentalEvidence: string;
-        }
-
-        const testCases: PossibleEvidenceTestCase[] = [
-            { possibleEvidenceEpcTransactionType: true, possibleEvidenceSiccode: true, expectedPossibleRentalEvidence: 'Mandatory issue (Property to let) EPC transaction type\nProperty owner has letting company SIC code' },
-            { possibleEvidenceEpcTransactionType: true, possibleEvidenceSiccode: false, expectedPossibleRentalEvidence: 'Mandatory issue (Property to let) EPC transaction type' },
-            { possibleEvidenceEpcTransactionType: false, possibleEvidenceSiccode: true, expectedPossibleRentalEvidence: 'Property owner has letting company SIC code' },
-            { possibleEvidenceEpcTransactionType: false, possibleEvidenceSiccode: false, expectedPossibleRentalEvidence: 'Not found' },
-        ];
-
-        const uprnForPropertyWithoutPossibleEvidence = '100022917839';
-        const uprnForPropertyWithBothPossibleEvidence = '10023302621';
-        const uprnForPropertyWithOnlyEpcEvidence = '100022918419';
-        const uprnForPropertyWithOnlySiccodeEvidence = '10011861801';
-       
-        // Enhance Property Details page URL to navigate directly to the property details page for each test case based on UPRN
-        for (const testCase of testCases) {
-            let uprn: string;
-            if (testCase.possibleEvidenceEpcTransactionType && testCase.possibleEvidenceSiccode) {
-                uprn = uprnForPropertyWithBothPossibleEvidence;
-            } else if (testCase.possibleEvidenceEpcTransactionType && !testCase.possibleEvidenceSiccode) {
-                uprn = uprnForPropertyWithOnlyEpcEvidence;
-            } else if (!testCase.possibleEvidenceEpcTransactionType && testCase.possibleEvidenceSiccode) {
-                uprn = uprnForPropertyWithOnlySiccodeEvidence;
-            } else {
-                uprn = uprnForPropertyWithoutPossibleEvidence;
+            interface PossibleEvidenceTestCase {
+                possibleEvidenceEpcTransactionType: boolean;
+                possibleEvidenceSiccode: boolean;
+                expectedPossibleRentalEvidence: string;
             }
 
-            await page.goto(`/compliance/view-details?buildingrefnum=${uprn}`);
-            const actualPossibleEvidence = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence');
-            expect(actualPossibleEvidence).toBe(testCase.expectedPossibleRentalEvidence);
-        }
+            const testCases: PossibleEvidenceTestCase[] = [
+                { possibleEvidenceEpcTransactionType: true, possibleEvidenceSiccode: true, expectedPossibleRentalEvidence: 'Mandatory issue (Property to let) EPC transaction type\nProperty owner has letting company SIC code' },
+                { possibleEvidenceEpcTransactionType: true, possibleEvidenceSiccode: false, expectedPossibleRentalEvidence: 'Mandatory issue (Property to let) EPC transaction type' },
+                { possibleEvidenceEpcTransactionType: false, possibleEvidenceSiccode: true, expectedPossibleRentalEvidence: 'Property owner has letting company SIC code' },
+                { possibleEvidenceEpcTransactionType: false, possibleEvidenceSiccode: false, expectedPossibleRentalEvidence: 'Not found' },
+            ];
+
+            const uprnForPropertyWithoutPossibleEvidence = '100022917839';
+            const uprnForPropertyWithBothPossibleEvidence = '10023302621';
+            const uprnForPropertyWithOnlyEpcEvidence = '100022918419';
+            const uprnForPropertyWithOnlySiccodeEvidence = '10011861801';
+        
+            // Enhance Property Details page URL to navigate directly to the property details page for each test case based on UPRN
+            for (const testCase of testCases) {
+                let uprn: string;
+                if (testCase.possibleEvidenceEpcTransactionType && testCase.possibleEvidenceSiccode) {
+                    uprn = uprnForPropertyWithBothPossibleEvidence;
+                } else if (testCase.possibleEvidenceEpcTransactionType && !testCase.possibleEvidenceSiccode) {
+                    uprn = uprnForPropertyWithOnlyEpcEvidence;
+                } else if (!testCase.possibleEvidenceEpcTransactionType && testCase.possibleEvidenceSiccode) {
+                    uprn = uprnForPropertyWithOnlySiccodeEvidence;
+                } else {
+                    uprn = uprnForPropertyWithoutPossibleEvidence;
+                }
+
+                await page.goto(`/compliance/view-details?buildingrefnum=${uprn}`);
+                const actualPossibleEvidence = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence');
+                expect(actualPossibleEvidence).toBe(testCase.expectedPossibleRentalEvidence);
+            }
+        });
     });
 
-    test('Verify data displayed in the Energy Ratings and PRS Exemptions section of the Property Details page', async () => {
-
-        // Verify Current energy rating
-        await propertyDetailsPage.SelectTab('Energy efficiency details');
-        const energyRatingText = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Energy efficiency details', 'Current energy rating');
-        expect(energyRatingText).toBe('A (22)');
-
-        // Verify Current EPC expiry date
-        const epcExpiryDateText = 
-            await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName(
-                'Energy efficiency details', 'Current EPC expiry date');
-        expect(epcExpiryDateText).toBe('13 August 2035');
-
-        // Verify PRS exemption status
-        await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
-        const prsExemptionStatusText = 
-            await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
-        expect(prsExemptionStatusText).toBe('Penalty sent');
-
-        // Verify PRS exemption date
-        const prsExemptionDateText = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
-        expect(prsExemptionDateText).toBe('14 February 2026');
+    test.describe('Property Owner(s) Tab Data Validation', () => {
+                
     });
 
-    test('Verify EPC History data displayed in the Property Details page', async () => {
+    test.describe('Energy Efficiency Details and PRS Exemptions And Penalties Tabs Data Validation', () => {
 
-        // Click on the EPC History tab
-        await propertyDetailsPage.SelectTab('Energy efficiency details');
+        test.beforeEach(async ({ page }, testInfo) => {
+            await filterPropertiesPage.setEnergyRatingFilter('A');
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+        });
 
-        // Verify that the EPC History table contains 2 records
-        const epcHistory = await propertyDetailsPage.getEPCHistoryTableData();
-        expect(epcHistory).toHaveLength(2);
+        test('Verify data displayed in the Energy Ratings and PRS Exemptions section of the Property Details page', async () => {
+            // Verify Current energy rating
+            await propertyDetailsPage.SelectTab('Energy efficiency details');
+            const energyRatingText = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Energy efficiency details', 'Current energy rating');
+            expect(energyRatingText).toBe('A (22)');
 
-        // Verify the first EPC History record
-        expect(epcHistory[0].assetRatingBand).toBe('A (22)');
-        expect(epcHistory[0].expiryDate).toBe('13 August 2035');
+            // Verify Current EPC expiry date
+            const epcExpiryDateText = 
+                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName(
+                    'Energy efficiency details', 'Current EPC expiry date');
+            expect(epcExpiryDateText).toBe('13 August 2035');
+
+            // Verify PRS exemption status
+            await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
+            const prsExemptionStatusText = 
+                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
+            expect(prsExemptionStatusText).toBe('Penalty sent');
+
+            // Verify PRS exemption date
+            const prsExemptionDateText = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
+            expect(prsExemptionDateText).toBe('14 February 2026');
+        });
+
+        test('Verify EPC History data displayed in the Property Details page', async () => {
+
+            // Click on the EPC History tab
+            await propertyDetailsPage.SelectTab('Energy efficiency details');
+
+            // Verify that the EPC History table contains 2 records
+            const epcHistory = await propertyDetailsPage.getEPCHistoryTableData();
+            expect(epcHistory).toHaveLength(2);
+
+            // Verify the first EPC History record
+            expect(epcHistory[0].assetRatingBand).toBe('A (22)');
+            expect(epcHistory[0].expiryDate).toBe('13 August 2035');
+        });
     });
 
     test('Verify data displayed in the main section of the Property Details page for property without UPRN', async ({ page, request }) => {
