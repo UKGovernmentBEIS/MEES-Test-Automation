@@ -46,7 +46,7 @@ test.describe('Profile Settings Non-Functional Tests', () => {
 
         await changeContactDetailsPage.clearFirstName();
         await page.getByRole('button', { name: 'Save and continue' }).click();
-        await changeContactDetailsPage.getFirstNameError();
+        await changeContactDetailsPage.getFirstNameError().waitFor();
 
         await baseTest.verifyAccessibility(PageName.CHANGE_CONTACT_DETAILS_FIRST_NAME_ERROR);
         const locators = await changeContactDetailsPage.getPageContextLocator();
@@ -65,7 +65,7 @@ test.describe('Profile Settings Non-Functional Tests', () => {
 
         await changeContactDetailsPage.clearLastName();
         await page.getByRole('button', { name: 'Save and continue' }).click();
-        await changeContactDetailsPage.getLastNameError();
+        await changeContactDetailsPage.getLastNameError().waitFor();
 
         await baseTest.verifyAccessibility(PageName.CHANGE_CONTACT_DETAILS_LAST_NAME_ERROR);
         const locators = await changeContactDetailsPage.getPageContextLocator();
