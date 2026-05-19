@@ -30,7 +30,7 @@
         - /url: "#"
   - link "Back":
     - /url: "#"
-  - heading "Your contact details" [level=2]
+  - heading "Change your contact details" [level=1]
   - heading "First name" [level=2]
   - textbox "First name"
   - heading "Last name" [level=2]

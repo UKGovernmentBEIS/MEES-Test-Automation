@@ -6,7 +6,6 @@ import { CheckContactDetailsPage } from './CheckContactDetailsPage';
 
 export class ChangeContactDetailsPage extends BaseCompliancePage {
     private readonly pageContext: Locator;
-    private readonly pageHeading: Locator;
     private readonly firstNameInput: Locator;
     private readonly lastNameInput: Locator;
     private readonly saveAndContinueButton: Locator;
@@ -15,7 +14,6 @@ export class ChangeContactDetailsPage extends BaseCompliancePage {
     constructor(page: Page) {
         super(page);
         this.pageContext = page.locator('#main-content');
-        this.pageHeading = page.getByRole('heading', { name: 'Change your contact details', level: 1 });
         this.firstNameInput = page.getByRole('textbox', { name: 'First name' });
         this.lastNameInput = page.getByRole('textbox', { name: 'Last name' });
         this.saveAndContinueButton = page.getByRole('button', { name: 'Save and continue' });
@@ -24,8 +22,6 @@ export class ChangeContactDetailsPage extends BaseCompliancePage {
 
     async waitForPageToLoad(): Promise<void> {
         await super.waitForPageToLoad();
-        // Not waiting on pageHeading — heading text matches the Profile Settings bug heading.
-        // Rely on form fields to confirm the Change Contact Details page has rendered.
         await ElementUtilities.waitForPageToLoad(
             this.page,
             'Change Contact Details Page',
@@ -70,7 +66,8 @@ export class ChangeContactDetailsPage extends BaseCompliancePage {
     }
 
     async clearFirstName(): Promise<void> {
-        await this.firstNameInput.clear();
+        await this.firstNameInput.click({ clickCount: 3 });
+        await this.firstNameInput.fill('');
     }
 
     async clearLastName(): Promise<void> {
@@ -78,16 +75,14 @@ export class ChangeContactDetailsPage extends BaseCompliancePage {
         await this.lastNameInput.fill('');
     }
 
-    async getFirstNameError(): Promise<string> {
+    getFirstNameError(): Locator {
         return this.page.locator('#firstName-error, [id$="firstName-error"], .govuk-error-message')
-            .filter({ hasText: /first name/i })
-            .innerText();
+            .filter({ hasText: /first name/i });
     }
 
-    async getLastNameError(): Promise<string> {
+    getLastNameError(): Locator {
         return this.page.locator('#lastName-error, [id$="lastName-error"], .govuk-error-message')
-            .filter({ hasText: /last name/i })
-            .innerText();
+            .filter({ hasText: /last name/i });
     }
 
     async clickSaveAndContinue(): Promise<CheckContactDetailsPage> {

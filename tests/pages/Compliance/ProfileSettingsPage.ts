@@ -7,8 +7,6 @@ import { HomePage } from './HomePage';
 export class ProfileSettingsPage extends BaseCompliancePage {
     private readonly pageContext: Locator;
     private readonly pageHeading: Locator;
-    private readonly contactDetailsHeading: Locator;
-    private readonly councilsHeading: Locator;
     private readonly helpSection: Locator;
     private readonly helpLink: Locator;
     private readonly backLink: Locator;
@@ -17,8 +15,6 @@ export class ProfileSettingsPage extends BaseCompliancePage {
         super(page);
         this.pageContext = page.locator('#main-content');
         this.pageHeading = page.getByRole('heading', { name: 'Profile settings', level: 1 });
-        this.contactDetailsHeading = page.getByRole('heading', { name: 'Your contact details' });
-        this.councilsHeading = page.getByText('Council data sets', { exact: false });
         this.helpSection = page.getByRole('heading', { name: 'If you need help' });
         this.helpLink = page.locator('#main-content').getByRole('link', { name: 'Help' });
         this.backLink = page.getByRole('link', { name: 'Back', exact: true });
@@ -26,21 +22,19 @@ export class ProfileSettingsPage extends BaseCompliancePage {
 
     async waitForPageToLoad(): Promise<void> {
         await super.waitForPageToLoad();
-        // Known bug: app shows "Change your contact details" h1 instead of "Profile settings".
-        // Not waiting on pageHeading — use contactDetailsHeading (section heading) to confirm LWC has rendered.
         await ElementUtilities.waitForPageToLoad(
             this.page,
             'Profile Settings Page',
             {
                 pageContext: this.pageContext,
-                contactDetailsHeading: this.contactDetailsHeading,
+                pageHeading: this.pageHeading,
             }
         );
     }
 
     async isDisplayed(): Promise<boolean> {
         try {
-            await this.contactDetailsHeading.waitFor({ timeout: 5000 });
+            await this.pageHeading.waitFor({ timeout: 5000 });
             return true;
         } catch {
             return false;

@@ -30,7 +30,7 @@
         - /url: "#"
   - link "Back":
     - /url: "#"
-  - heading "Change your contact details" [level=2]
+  - heading "Profile settings" [level=1]
   - paragraph: These are the details that we may use to communicate with you.
   - heading [level=2]
   - term: First name

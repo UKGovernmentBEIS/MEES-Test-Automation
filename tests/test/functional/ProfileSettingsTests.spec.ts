@@ -118,8 +118,7 @@ test.describe('Change Contact Details Page', () => {
         await changeContactDetailsPage.clearFirstName();
         await page.getByRole('button', { name: 'Save and continue' }).click();
 
-        const error = await changeContactDetailsPage.getFirstNameError();
-        expect(error).toContain('Enter a first name');
+        await expect(changeContactDetailsPage.getFirstNameError()).toContainText('Enter a first name');
     });
 
     test('Validation error is shown when last name is empty', async ({ page }) => {
@@ -132,8 +131,7 @@ test.describe('Change Contact Details Page', () => {
         await changeContactDetailsPage.clearLastName();
         await page.getByRole('button', { name: 'Save and continue' }).click();
 
-        const error = await changeContactDetailsPage.getLastNameError();
-        expect(error).toContain('Enter a last name');
+        await expect(changeContactDetailsPage.getLastNameError()).toContainText('Enter a last name');
     });
 
     test('Save and continue navigates to Check your contact details page', async ({ page }) => {
