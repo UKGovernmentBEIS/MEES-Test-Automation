@@ -141,12 +141,10 @@ test.describe('View Properties Page Data Validation Tests', () => {
         expect(energyRatingText).toBe('A (22)');
 
         // Verify Current EPC expiry date
-        // BUG 922 WORKAROUND: EPC expiry date is displayed as a raw ISO 8601 string instead of a formatted date (e.g. '13 August 2035').
-        // Update expected value to '13 August 2035' once BUG 922 is fixed.
         const epcExpiryDateText = 
             await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName(
                 'Energy efficiency details', 'Current EPC expiry date');
-        expect(epcExpiryDateText).toBe('2035-08-13T00:00:00');
+        expect(epcExpiryDateText).toBe('13 August 2035');
 
         // Verify PRS exemption status
         await propertyDetailsPage.SelectTab('PRS exemptions and penalties');

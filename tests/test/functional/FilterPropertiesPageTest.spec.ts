@@ -161,9 +161,9 @@ test.describe('Filter Properties Page Functional Tests', () => {
         const councilsList = await filterPropertiesPage.getLACouncilsList();
 
         // Verify that the LA has two councils associated with it and that they are the expected councils
-        expect(councilsList.length).toBe(2);
-        await expect(councilsList[0]).toContainText('LONDON BOROUGH OF BARNET');
-        await expect(councilsList[1]).toContainText('LONDON BOROUGH OF BEXLEY');
+        await expect(councilsList.locator('li')).toHaveCount(2);
+        await expect(councilsList).toContainText('LONDON BOROUGH OF BARNET');
+        await expect(councilsList).toContainText('LONDON BOROUGH OF BEXLEY');
     });
 });
 

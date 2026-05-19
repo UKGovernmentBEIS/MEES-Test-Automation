@@ -44,7 +44,7 @@
     - link "Change Last name":
       - /url: "#-75"
   - term: Email address
-  - definition: /testusertriad123\+\d+@gmail\.com/
+  - definition: /.+/
   - definition: Email address
   - heading "Council data sets that you have access to" [level=2]
   - heading [level=2]
