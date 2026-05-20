@@ -115,4 +115,19 @@ export class DMSExportApiClient {
         }
         return propertyWithNoLandlords;
     }
+
+    async getPropertyWithAnOwnerWithMultipleSicCodes(filters: Record<string, any>): Promise<DMSRawItem> {
+        const items = await this.getExportedData(filters);
+        if (items.length === 0) {
+            throw new Error('No properties returned from DMS export for filters: ' + JSON.stringify(filters));
+        }
+
+        // Find the first property with an owner that has multiple sic codes
+        const propertyWithAnOwnerWithMultipleSicCodes = 
+            items.find(item => Array.isArray(item.Landlords) && item.Landlords.length > 1);
+        if (!propertyWithAnOwnerWithMultipleSicCodes) {
+            throw new Error('No properties with an owner with multiple SIC codes found for filters: ' + JSON.stringify(filters));
+        }
+        return propertyWithAnOwnerWithMultipleSicCodes;
+    }
 }
