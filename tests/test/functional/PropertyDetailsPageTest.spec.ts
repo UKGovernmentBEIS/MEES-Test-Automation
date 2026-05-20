@@ -279,6 +279,47 @@ test.describe('View Properties Page Data Validation Tests', () => {
                 });
 
             expect(propertyWithMultipleLandlords.Landlords.length).toBeGreaterThan(4);
+
+            // Extract postcode to use in filter to reduce number of properties
+            //  returned in the search results
+            const dmsPropertyPostcode = propertyWithMultipleLandlords.property.Postcode;
+            if (dmsPropertyPostcode === null || dmsPropertyPostcode === undefined || dmsPropertyPostcode === '') {
+                throw new Error('Property Postcode is empty — no suitable property found with more than 4 landlords');
+            }
+
+            // Construct property address for the View Details search results validation
+            const dmsPropertyAddress = [
+                propertyWithMultipleLandlords.property.Name,
+                propertyWithMultipleLandlords.property.Number,
+                propertyWithMultipleLandlords.property.FlatNameNumber,
+                propertyWithMultipleLandlords.property.Line1,
+                propertyWithMultipleLandlords.property.Line2,
+                propertyWithMultipleLandlords.property.Line3,
+                propertyWithMultipleLandlords.property.Town,
+                propertyWithMultipleLandlords.property.County,
+                propertyWithMultipleLandlords.property.Postcode
+            ].filter(part => part !== null && part !== undefined && part !== '').join(', ');
+
+            // Navigate to Property Details page for the property with more than 4 landlords
+            await filterPropertiesPage.setPostcodeFilter(dmsPropertyPostcode);
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(dmsPropertyAddress);
+
+            await propertyDetailsPage.SelectTab('Property owner(s)');
+
+            // Verify number of owners displayed matches number of landlords in DMS
+            const propertyOwnersCount = await propertyDetailsPage.getNumberOfPropertyOwners();
+            expect(propertyOwnersCount).toBe(propertyWithMultipleLandlords.Landlords.length);
+        });
+
+        test('Sic code field should multiple sic codes separated by |', async ({ request }) => {
+            // Get a property with multiple landlords and sic codes
+            const dmsApiClient = new DMSExportApiClient(request);
+            // const propertyWithMultipleLandlords = 
+            //     await dmsApiClient.getPropertyWithAnOwnerWithMultipleSicCodes({
+            //         lacodes: [`E09000003`, `E09000004`],
+            //         energyratingband: 'A'
         });
     });
 
