@@ -361,6 +361,56 @@ test.describe('View Properties Page Data Validation Tests', () => {
             const dmsSicCode = dmsSicCodeRaw === '' ? 'Not found' : dmsSicCodeRaw;
             expect(uiSicCode, `Expected SIC code to be "${dmsSicCode}" but found "${uiSicCode}"`).toBe(dmsSicCode);
         });
+
+        test('Verify offsore landlords are displayed in the Property owner(s) tab', async ({ request }) => {
+            // Get a property with an offshore landlord from DMS
+            const dmsApiClient = new DMSExportApiClient(request);
+            const propertyWithMultipleLandlords = 
+                await dmsApiClient.getPropertyByOwnerLocation({
+                    lacodes: [`E09000003`, `E09000004`],
+                    energyratingband: 'A'
+                }, 'Offshore') ;
+
+            // Extract postcode to use in filter to reduce number of properties
+            //  returned in the search results
+            const dmsPropertyPostcode = propertyWithMultipleLandlords.property.Postcode;
+            if (dmsPropertyPostcode === null || dmsPropertyPostcode === undefined || dmsPropertyPostcode === '') {
+                throw new Error('No valid postcode found for property with offshore landlord');
+            }
+
+            // Construct property address for the View Details search results validation
+            const dmsPropertyAddress = [
+                propertyWithMultipleLandlords.property.Name,
+                propertyWithMultipleLandlords.property.Number,
+                propertyWithMultipleLandlords.property.FlatNameNumber,
+                propertyWithMultipleLandlords.property.Line1,
+                propertyWithMultipleLandlords.property.Line2,
+                propertyWithMultipleLandlords.property.Line3,
+                propertyWithMultipleLandlords.property.Town,
+                propertyWithMultipleLandlords.property.County,
+                propertyWithMultipleLandlords.property.Postcode
+            ].filter(part => part !== null && part !== undefined && part !== '').join(', ');
+
+            // Navigate to Property Details page for the property with owner with offshore location
+            await filterPropertiesPage.setPostcodeFilter(dmsPropertyPostcode);
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(dmsPropertyAddress);
+
+            await propertyDetailsPage.SelectTab('Property owner(s)');
+
+            // Verify that at least one landlord is displayed with Location as Offshore
+            const propertyOwnersCount = await propertyDetailsPage.getNumberOfPropertyOwners();
+            let offshoreLandlordFound = false;
+            for (let i = 0; i < propertyOwnersCount; i++) {
+                const uiLocation = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Location');
+                if (uiLocation.trim().toLowerCase() === 'offshore') {
+                    offshoreLandlordFound = true;
+                    break;
+                }
+            }
+            expect(offshoreLandlordFound, 'Expected at least one offshore landlord to be displayed').toBe(true);
+        });
     });
 
     test.describe('Energy Efficiency Details and PRS Exemptions And Penalties Tabs Data Validation', () => {

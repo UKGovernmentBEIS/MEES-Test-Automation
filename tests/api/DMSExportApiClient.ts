@@ -130,4 +130,19 @@ export class DMSExportApiClient {
         }
         return propertyWithAnOwnerWithMultipleSicCodes;
     }
+
+    async getPropertyByOwnerLocation(filters: Record<string, any>, location: string): Promise<DMSRawItem> {
+        const items = await this.getExportedData(filters);
+        if (items.length === 0) {
+            throw new Error('No properties returned from DMS export for filters: ' + JSON.stringify(filters));
+        }
+
+        // Find the first property with the specified location
+        const propertyByLocation = 
+            items.find(item => Array.isArray(item.Landlords) && item.Landlords.some(landlord => landlord.Location === location));
+        if (!propertyByLocation) {
+            throw new Error('No properties found for location: ' + location + ' with filters: ' + JSON.stringify(filters));
+        }
+        return propertyByLocation;
+    }
 }
