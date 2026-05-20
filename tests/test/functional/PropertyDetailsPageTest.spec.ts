@@ -268,6 +268,18 @@ test.describe('View Properties Page Data Validation Tests', () => {
             expect(await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'Address')).toBe(' Not found');
             expect(await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'SIC code(s)')).toBe(' Not found');
         });
+
+        test('Verify that the Property owner(s) tab shows more than 4 landlords', async ({ request }) => {
+            // Get a property with more than 4 landlords
+            const dmsApiClient = new DMSExportApiClient(request);
+            const propertyWithMultipleLandlords = 
+                await dmsApiClient.getPropertyWithMoreThanFourLandlords({
+                    lacodes: [`E09000003`, `E09000004`],
+                    energyratingband: 'A'
+                });
+
+            expect(propertyWithMultipleLandlords.Landlords.length).toBeGreaterThan(4);
+        });
     });
 
     test.describe('Energy Efficiency Details and PRS Exemptions And Penalties Tabs Data Validation', () => {

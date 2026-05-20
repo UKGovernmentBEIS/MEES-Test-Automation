@@ -86,6 +86,21 @@ export class DMSExportApiClient {
         return propertyWithMultipleLandlords;
     }
 
+    async getPropertyWithMoreThanFourLandlords(filters: Record<string, any>): Promise<DMSRawItem> {
+        const items = await this.getExportedData(filters);
+        if (items.length === 0) {
+            throw new Error('No properties returned from DMS export for filters: ' + JSON.stringify(filters));
+        }
+
+        // Find the first property with more than four landlords
+        const propertyWithMoreThanFourLandlords = 
+            items.find(item => Array.isArray(item.Landlords) && item.Landlords.length > 4);
+        if (!propertyWithMoreThanFourLandlords) {
+            throw new Error('No properties with more than four landlords found for filters: ' + JSON.stringify(filters));
+        }
+        return propertyWithMoreThanFourLandlords;
+    }
+
     async getPropertyWithNoLandlords(filters: Record<string, any>): Promise<DMSRawItem> {
         const items = await this.getExportedData(filters);
         if (items.length === 0) {
