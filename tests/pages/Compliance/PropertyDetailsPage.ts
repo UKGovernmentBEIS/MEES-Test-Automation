@@ -192,7 +192,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return await fieldValueLocator.textContent() || '';
     }
 
-    private async getFieldValueLocatorByTabNameAndFieldName(tabName: string, fieldName: string): Promise<Locator> {
+    async getFieldValueLocatorByTabNameAndFieldName(tabName: string, fieldName: string): Promise<Locator> {
         // Confirm that the correct tab is active
         if (!await this.isTabActive(tabName)) {
             throw new Error(`Failed to get property details. The '${tabName}' tab is not active.`);

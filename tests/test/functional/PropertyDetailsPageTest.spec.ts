@@ -413,7 +413,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
         });
     });
 
-    test.describe('Energy efficiency details tab Data Validation', () => {
+    test.describe('Energy efficiency details Tab Data Validation', () => {
 
         test('Verify data in the Energy Ratings section of the Energy efficiency details tab matches DMS data', async ({ request }) => {
             // Get a property with EPC energy rating data from DMS 
@@ -635,7 +635,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
         });
     });
 
-    test.describe('PRS Exemptions And Penalties Tabs Data Validation', () => {
+    test.describe('PRS exemptions and penalties Tab Data Validation', () => {
 
         test.beforeEach(async ({ page }, testInfo) => {
             await filterPropertiesPage.setEnergyRatingFilter('A');
@@ -644,16 +644,40 @@ test.describe('View Properties Page Data Validation Tests', () => {
             propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
         });
 
-        test('Verify data displayed in the Energy Ratings and PRS Exemptions section of the Property Details page', async () => {
-            // Verify PRS exemption status
-            await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
-            const prsExemptionStatusText = 
-                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
-            expect(prsExemptionStatusText).toBe('Penalty sent');
+        test('Verify possible values for the PRS exemption status field on the PRS exemptions and penalties tab', async ({ page }) => {
+            const exemptionStatusesAndUprns = [
+                { uprn: '100022918361', expectedStatus: 'Penalty sent', expectedTagClass: 'govuk-tag--light-blue' },
+                { uprn: '10096984308', expectedStatus: 'Received', expectedTagClass: 'govuk-tag--blue' },
+                { uprn: '10090795654', expectedStatus: 'Updated', expectedTagClass: 'govuk-tag--orange' },
+                { uprn: '10023302263', expectedStatus: 'Approved', expectedTagClass: 'govuk-tag--green' },
+                { uprn: '10090792724', expectedStatus: 'Ended', expectedTagClass: 'govuk-tag--pink' },
+                { uprn: '10090792726', expectedStatus: 'Not found', expectedTagClass: null }, // No tag for not found
+                { uprn: '10090792723', expectedStatus: 'Expired', expectedTagClass: 'govuk-tag--grey' }
+            ];
 
-            // Verify PRS exemption date
-            const prsExemptionDateText = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
-            expect(prsExemptionDateText).toBe('14 February 2026');
+            for (const { uprn, expectedStatus, expectedTagClass } of exemptionStatusesAndUprns) {
+                // Navigate to the Property Details page for the property with the specified UPRN
+                await page.goto(`${page.url().split('?')[0]}?buildingrefnum=${uprn}`);
+                await propertyDetailsPage.waitForPageToLoad();
+
+                await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
+                await propertyDetailsPage.waitForPageToLoad();
+
+                // Verify that the PRS exemption status field displays the expected value
+                await expect(
+                    await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status'),
+                    `Expected PRS exemption status for UPRN ${uprn} to be "${expectedStatus}"`).toHaveText(expectedStatus);
+
+                // Verify that the tag class of the PRS exemption status field matches the expected class
+                const fieldLocator = await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
+                if (expectedTagClass !== null) {
+                    const tagClass = await fieldLocator.locator('span').getAttribute('class');
+                    expect(tagClass, `Expected tag class for UPRN ${uprn} to contain "${expectedTagClass}"`).toContain(expectedTagClass);
+                } else {
+                    // If no tag class is expected, verify that there is no child span element
+                    await expect(fieldLocator.locator('span')).toHaveCount(0);
+                }
+            }
         });
     });
 
