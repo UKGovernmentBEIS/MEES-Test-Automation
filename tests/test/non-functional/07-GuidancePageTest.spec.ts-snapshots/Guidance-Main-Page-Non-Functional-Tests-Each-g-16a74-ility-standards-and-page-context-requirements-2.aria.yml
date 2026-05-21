@@ -90,9 +90,9 @@
   - paragraph
   - paragraph
   - link:
-    - /url: https://desnz-gm--compliance.sandbox.my.site.com/compliance/penalty-calculator
+    - /url: /penalty-calculator
   - link "Use the penalty calculator to calculate a maximum financial penalty amount.":
-    - /url: https://desnz-gm--compliance.sandbox.my.site.com/compliance/penalty-calculator
+    - /url: /penalty-calculator
   - paragraph
   - heading "Publication penalties" [level=1]
   - paragraph: A publication penalty enables you to publish some details of the landlord’s non-compliance on a publicly accessible part of the PRS Exemptions Register.
