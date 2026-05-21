@@ -6,8 +6,9 @@ import { ViewPropertiesPage } from './ViewPropertiesPage';
 import { HomePage } from './HomePage';
 
 export interface EPCHistory {
-    assetRatingBand: string;
-    expiryDate: string;
+    energyRating: string;
+    epcExpiryDate: string;
+    epcTransactionType: string;
 }
 
 export interface DMSPropertyDetails {
@@ -235,9 +236,10 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         const rowCount = await rows.count();
         for (let i = 0; i < rowCount; i++) {
             const row = rows.nth(i);
-            const assetRatingBand = await row.locator('td').nth(0).innerText();
-            const expiryDate = await row.locator('td').nth(1).innerText();
-            epcHistoryData.push({ assetRatingBand, expiryDate });
+            const energyRating = await row.locator('td').nth(0).innerText();
+            const epcExpiryDate = await row.locator('td').nth(1).innerText();
+            const epcTransactionType = await row.locator('td').nth(2).innerText();
+            epcHistoryData.push({ energyRating, epcExpiryDate, epcTransactionType });
         }
         return epcHistoryData;
     }

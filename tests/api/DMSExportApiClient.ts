@@ -145,4 +145,64 @@ export class DMSExportApiClient {
         }
         return propertyByLocation;
     }
+
+    async getPropertywithEPCEnergyCertificate(filters: Record<string, any>): Promise<DMSRawItem> {
+        const items = await this.getExportedData(filters);
+        if (items.length === 0) {
+            throw new Error('No properties returned from DMS export for filters: ' + JSON.stringify(filters));
+        }
+
+        // Find the first property with an EPC energy certificate
+        const propertyWithEPCEnergyCertificate = 
+            items.find(item => 
+                item.property.EPCEnergyRating !== null && 
+                item.property.EPCEnergyRatingBand !== null &&
+                item.property.EPCTransactionType !== null
+            );
+        if (!propertyWithEPCEnergyCertificate) {
+            throw new Error('No properties with EPC energy certificate found for filters: ' + JSON.stringify(filters));
+        }
+        return propertyWithEPCEnergyCertificate;
+    }
+
+    async getPropertyWithMultipleEPCs(filters: Record<string, any>): Promise<DMSRawItem> {
+        const items = await this.getExportedData(filters);
+        if (items.length === 0) {
+            throw new Error('No properties returned from DMS export for filters: ' + JSON.stringify(filters));
+        }
+
+        // Find the first property with multiple EPC certificates
+        const propertyWithMultipleEPCs = 
+            items.find(item => Array.isArray(item.EpcCertificates) && item.EpcCertificates.length > 1);
+        if (!propertyWithMultipleEPCs) {
+            throw new Error('No properties with multiple EPC certificates found for filters: ' + JSON.stringify(filters));
+        }
+        return propertyWithMultipleEPCs;
+    }
+
+    async getPropertyWithoutEPCCertificates(filters: Record<string, any>): Promise<DMSRawItem> {
+        const items = await this.getExportedData(filters);
+        if (items.length === 0) {
+            throw new Error('No properties returned from DMS export for filters: ' + JSON.stringify(filters));
+        }
+
+        // Find the first property with no EPC certificates and no EPC history
+        const propertyWithoutEPCCertificates = 
+            items.find(item => 
+                (
+                    !Array.isArray(item.EpcCertificates) || 
+                    item.EpcCertificates.length === 0
+                )
+                &&
+                (
+                    item.property.EPCEnergyRating === null ||
+                    item.property.EPCEnergyRatingBand === null ||
+                    item.property.EPCTransactionType === null
+                )
+        );
+        if (!propertyWithoutEPCCertificates) {
+            throw new Error('No properties without EPC certificates found for filters: ' + JSON.stringify(filters));
+        }
+        return propertyWithoutEPCCertificates;
+    }
 }
