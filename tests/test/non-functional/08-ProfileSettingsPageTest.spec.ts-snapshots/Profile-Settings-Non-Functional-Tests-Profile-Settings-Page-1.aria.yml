@@ -36,11 +36,11 @@
   - term: First name
   - definition: /.+/
   - definition:
-    - link "Change First name":
+    - link "Change First name"
   - term: Last name
   - definition: /.+/
   - definition:
-    - link "Change Last name":
+    - link "Change Last name"
   - term: Email address
   - definition: /.+/
   - definition: Email address
