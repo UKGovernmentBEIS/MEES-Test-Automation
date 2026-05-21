@@ -547,14 +547,11 @@ test.describe('View Properties Page Data Validation Tests', () => {
                     const expEnergyRating = `${dmsEPC.AssetRatingBand} (${dmsEPC.AssetRating})`;
                     const expEPCExpiryDateISOFormatted = dmsEPC.ExpiryDate;
                     const expEPCTransactionType = dmsEPC.TransactionType;
-                    // BUG 987 WORKAROUND: DMS EpcCertificates ExpiryDate incorrectly returns the LodgmentDate value.
-                    // The UI displays the expiry date as LodgmentDate + 10 years, so adding 10 years here to match
-                    // the current invalid UI behaviour. Revert to use year without +10 once bug 987 is fixed.
                     const expEPCExpiryDate = expEPCExpiryDateISOFormatted
                         ? (() => {
                             const datePart = expEPCExpiryDateISOFormatted.split('T')[0];
                             const [year, month, day] = datePart.split('-').map(Number);
-                            return new Date(year + 10, month - 1, day).toLocaleDateString('en-GB', {
+                            return new Date(year, month - 1, day).toLocaleDateString('en-GB', {
                                 day: 'numeric', month: 'long', year: 'numeric'
                             });
                         })()
