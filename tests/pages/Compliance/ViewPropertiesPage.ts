@@ -360,7 +360,7 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         if (await row.count() === 0) {
             throw new Error(`Property with address '${address}' not found.`);
         }
-        await row.getByRole('link', { name: 'View details' }).first().click();
+        await row.getByRole('link', { name: 'View' }).first().click();
         const propertyDetailsPage = new PropertyDetailsPage(this.page);
         await propertyDetailsPage.waitForPageToLoad();
         return propertyDetailsPage;

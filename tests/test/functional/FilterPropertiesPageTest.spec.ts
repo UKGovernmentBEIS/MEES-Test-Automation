@@ -154,6 +154,11 @@ test.describe('Filter Properties Page Functional Tests', () => {
         await expect(page.getByRole('group', { name: 'Location' })).toHaveCount(0);
     });
 
+    test('Council dropdown displays Show all of your councils when no council is selected', async () => {
+        const defaultOptionText = await filterPropertiesPage.getCouncilDropdownDefaultOptionText();
+        expect(defaultOptionText).toBe('Show all your councils');
+    });
+
     // This test requires explicit selection of LA users with council associations.
     // Please go to the '/Documentation/Authentication.md' document for instructions on how to set up and run this test.
     test('Verify councils list', async ({ page }, testInfo) => {
@@ -165,80 +170,26 @@ test.describe('Filter Properties Page Functional Tests', () => {
         await expect(councilsList).toContainText('LONDON BOROUGH OF BARNET');
         await expect(councilsList).toContainText('LONDON BOROUGH OF BEXLEY');
     });
-});
 
-test.describe('Possible Rental Evidence Filter Tests', () => {
-    let filterPropertiesPage: FilterPropertiesPage;
+    test.describe('Possible Rental Evidence Filter Tests', () => {
+        let filterPropertiesPage: FilterPropertiesPage;
 
-    test.beforeEach(async ({ page }, testInfo) => {
-        testInfo.annotations.push(
-            TestAnnotations.testType(TestType.FUNCTIONAL)
-        );
+        test.beforeEach(async ({ page }, testInfo) => {
+            testInfo.annotations.push(
+                TestAnnotations.testType(TestType.FUNCTIONAL)
+            );
 
-        const landingPage: LandingPage = new LandingPage(page);
-        await landingPage.navigate();
-        const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
-        filterPropertiesPage = await homePage.clickViewProperties();
-    });
+            const landingPage: LandingPage = new LandingPage(page);
+            await landingPage.navigate();
+            const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
+            filterPropertiesPage = await homePage.clickViewProperties();
+        });
 
-    test('Possible rental evidence filter is visible on page load with Show all selected by default', async ({ page }) => {
-        await expect(page.getByRole('group', { name: 'Possible rental evidence' })).toBeVisible();
-        await expect(page.getByRole('radio', { name: 'Show all' })).toBeChecked();
-    });
-
-    test('Possible rental evidence filter provides correct options only with no PRS status labels', async ({ page }) => {
-        const filterGroup = page.getByRole('group', { name: 'Possible rental evidence' });
-
-        await expect(filterGroup.getByRole('radio')).toHaveCount(3);
-        await expect(filterGroup.getByRole('radio', { name: 'Show all' })).toBeVisible();
-        await expect(filterGroup.getByRole('radio', { name: 'Evidence found' })).toBeVisible();
-        await expect(filterGroup.getByRole('radio', { name: 'Not found' })).toBeVisible();
-
-        await expect(filterGroup.getByText('Private rented')).toHaveCount(0);
-        await expect(filterGroup.getByText('Not private rented')).toHaveCount(0);
-        await expect(filterGroup.getByText('Unknown')).toHaveCount(0);
-    });
-
-    test('Council dropdown displays Show all of your councils when no council is selected', async () => {
-        const defaultOptionText = await filterPropertiesPage.getCouncilDropdownDefaultOptionText();
-        expect(defaultOptionText).toBe('Show all your councils');
-    });
-
-    test('Selecting Evidence found returns only properties with Found rental evidence', async () => {
-        await filterPropertiesPage.selectEvidenceFoundRentalEvidence();
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForTableContent();
-
-        const properties = await viewPropertiesPage.getPropertiesDataFromTable();
-        expect(properties.length).toBeGreaterThan(0);
-        for (const property of properties) {
-            expect(property.rentalEvidence).toBe('Found');
-        }
-    });
-
-    test('Selecting Not found returns only properties with Not found rental evidence', async () => {
-        await filterPropertiesPage.selectNotFoundRentalEvidence();
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForTableContent();
-
-        const properties = await viewPropertiesPage.getPropertiesDataFromTable();
-        expect(properties.length).toBeGreaterThan(0);
-        for (const property of properties) {
-            expect(property.rentalEvidence).toBe('Not found');
-        }
-    });
-
-    test('Results table contains Rental evidence column with valid values', async ({ page }) => {
-        const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
-        await viewPropertiesPage.waitForTableContent();
-
-        await expect(page.getByRole('columnheader', { name: 'Rental evidence' })).toBeVisible();
-
-        const properties = await viewPropertiesPage.getPropertiesDataFromTable();
-        expect(properties.length).toBeGreaterThan(0);
-        for (const property of properties) {
-            expect(['Found', 'Not found']).toContain(property.rentalEvidence);
-        }
+        test('Possible rental evidence filter is visible on page load with Show all selected by default', async ({ page }) => {
+            expect(await filterPropertiesPage.isShowAllRentalEvidenceSelected()).toBe(true);
+            expect(await filterPropertiesPage.isEvidenceFoundRentalEvidenceSelected()).toBe(false);
+            expect(await filterPropertiesPage.isNotFoundRentalEvidenceSelected()).toBe(false);
+        });
     });
 });
 

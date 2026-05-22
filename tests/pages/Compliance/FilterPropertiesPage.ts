@@ -233,23 +233,35 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         return homePage;
     }
 
+    async isShowAllRentalEvidenceSelected(): Promise<boolean> {
+        return await this.showAllRentalEvidenceRadioButton.isChecked();
+    }
+
     async selectShowAllRentalEvidence(): Promise<void> {
         await this.showAllRentalEvidenceRadioButton.check();
-        if (!await this.showAllRentalEvidenceRadioButton.isChecked()) {
+        if (!await this.isShowAllRentalEvidenceSelected()) {
             throw new Error('Failed to select "Show all" radio button.');
         }
     }
 
+    async isEvidenceFoundRentalEvidenceSelected(): Promise<boolean> {
+        return await this.evidenceFoundRadioButton.isChecked();
+    }
+
     async selectEvidenceFoundRentalEvidence(): Promise<void> {
         await this.evidenceFoundRadioButton.check();
-        if (!await this.evidenceFoundRadioButton.isChecked()) {
+        if (!await this.isEvidenceFoundRentalEvidenceSelected()) {
             throw new Error('Failed to select "Evidence found" radio button.');
         }
     }
 
+    async isNotFoundRentalEvidenceSelected(): Promise<boolean> {
+        return await this.notFoundRadioButton.isChecked();
+    }
+
     async selectNotFoundRentalEvidence(): Promise<void> {
         await this.notFoundRadioButton.check();
-        if (!await this.notFoundRadioButton.isChecked()) {
+        if (!await this.isNotFoundRentalEvidenceSelected()) {
             throw new Error('Failed to select "Not found" radio button.');
         }
     }

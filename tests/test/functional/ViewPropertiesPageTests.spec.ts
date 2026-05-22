@@ -72,6 +72,46 @@ test.describe('View Properties Page Tests', () => {
         await viewPropertiesPage.waitForPageToLoad();
         await expect(await viewPropertiesPage.getNoRecordsFoundMessage()).toBeVisible();
     });
+
+    test('Selecting Evidence found returns only properties with Found rental evidence', async () => {
+        const filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
+        await filterPropertiesPage.selectEvidenceFoundRentalEvidence();
+        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+
+        const properties = await viewPropertiesPage.getPropertiesDataFromTable();
+        expect(properties.length).toBeGreaterThan(0);
+        for (const property of properties) {
+            expect(property.rentalEvidence).toBe('Found');
+        }
+    });
+
+    test('Selecting Not found returns only properties with Not found rental evidence', async () => {
+        const filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
+        await filterPropertiesPage.selectNotFoundRentalEvidence();
+        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+
+        const properties = await viewPropertiesPage.getPropertiesDataFromTable();
+        expect(properties.length).toBeGreaterThan(0);
+        for (const property of properties) {
+            expect(property.rentalEvidence).toBe('Not found');
+        }
+    });
+
+    test('Results table contains Rental evidence column with valid values', async ({ page }) => {
+        const filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
+        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+
+        await expect(page.getByRole('columnheader', { name: 'Rental evidence' })).toBeVisible();
+
+        const properties = await viewPropertiesPage.getPropertiesDataFromTable();
+        expect(properties.length).toBeGreaterThan(0);
+        for (const property of properties) {
+            expect(['Found', 'Not found']).toContain(property.rentalEvidence);
+        }
+    });
     
     test('Pagination displays when data exceeds page limit', async ({ page }) => {
         
