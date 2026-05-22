@@ -31,13 +31,10 @@
         - link "Guidance":
           - /url: /compliance/guidance
       - listitem: Guidance article
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - heading "Guidance" [level=1]
   - heading "Understanding penalties" [level=1]
   - paragraph: If you are satisfied that a property is not compliant with the MEES Regulations, you may choose to impose a penalty on the landlord. The types of penalties you can impose are a financial penalty and a publication penalty.

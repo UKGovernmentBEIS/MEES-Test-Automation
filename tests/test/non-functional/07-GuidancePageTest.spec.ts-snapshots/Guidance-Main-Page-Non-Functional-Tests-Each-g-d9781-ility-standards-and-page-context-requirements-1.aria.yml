@@ -31,13 +31,10 @@
         - link "Guidance":
           - /url: /compliance/guidance
       - listitem: Guidance article
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - heading "Guidance" [level=1]
   - heading "Understanding compliance notices" [level=1]
   - paragraph: /A compliance notice can be sent to a landlord if extra information is needed to determine compliance with the MEES Regulations\. If you suspect that a property has not complied with the MEES Regulations any time in the last \d+ months, you may serve the landlord a compliance notice\./

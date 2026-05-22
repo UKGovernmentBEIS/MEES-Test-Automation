@@ -28,13 +28,10 @@
         - link "Home":
           - /url: /compliance/landing-page
       - listitem: Penalty calculator
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - heading "Penalty calculator" [level=1]
   - text: If you have identified that a landlord is letting a sub-standard non-domestic property, use this service to calculate the maximum financial penalty for this MEES Regulations breach.
   - group "How long has the property been in breach for?":

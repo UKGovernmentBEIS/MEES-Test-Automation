@@ -31,13 +31,10 @@
         - link "Filter property records":
           - /url: /compliance/filter-properties?street=Invalid%20Street%20Name&page=1
       - listitem: View property records
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - main:
     - heading "View property records" [level=1]
     - heading "Filters applied" [level=2]

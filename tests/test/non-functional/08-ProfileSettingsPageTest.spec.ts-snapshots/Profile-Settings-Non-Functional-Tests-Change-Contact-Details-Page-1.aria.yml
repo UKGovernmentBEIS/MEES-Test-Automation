@@ -21,13 +21,10 @@
     - link "give your feedback by email":
       - /url: mailto:meesdigital@energysecurity.gov.uk?subject=Feedback
     - text: .
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - link "Back":
     - /url: "#"
   - heading "Change your contact details" [level=1]

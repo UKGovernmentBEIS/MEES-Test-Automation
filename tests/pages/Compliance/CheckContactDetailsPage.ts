@@ -13,7 +13,7 @@ export class CheckContactDetailsPage extends BaseCompliancePage {
     constructor(page: Page) {
         super(page);
         this.pageContext = page.locator('#main-content');
-        this.pageHeading = page.getByRole('heading', { name: 'Check your contact details', level: 1 });
+        this.pageHeading = page.getByRole('heading', { name: 'Check your contact details', level: 2 });
         this.confirmAndSaveButton = page.getByRole('button', { name: 'Confirm and save' });
         this.backLink = page.getByRole('link', { name: 'Back', exact: true });
     }
@@ -42,7 +42,7 @@ export class CheckContactDetailsPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        return [this.pageContext];
+        return [this.pageHeading, this.confirmAndSaveButton];
     }
 
     async getContactDetailValue(fieldName: string): Promise<string> {

@@ -31,13 +31,10 @@
         - link "Guidance":
           - /url: /compliance/guidance
       - listitem: Guidance article
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - heading "Guidance" [level=1]
   - heading "Understanding the MEES Regulations" [level=1]
   - paragraph: This page provides guidance to help you use understand the Minimum Energy Efficiency Standards (MEES) Regulations and carry out your enforcement duties.

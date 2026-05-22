@@ -7,7 +7,6 @@
       - listitem:
         - link "Property records":
           - /url: /filter-properties
-          - strong: Property records
       - listitem:
         - link "Guidance":
           - /url: /guidance
@@ -25,10 +24,10 @@
   - navigation "Breadcrumb":
     - list:
       - listitem: Home
-  - list:
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - main:
     - heading "Check if properties meet minimum energy efficiency standards" [level=1]
     - paragraph: Use this service to access information and tools to help you enforce the Minimum Energy Efficiency Standards (MEES) Regulations for non- domestic properties in the Private Rented Sector (PRS).

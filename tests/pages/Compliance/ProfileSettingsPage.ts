@@ -42,7 +42,7 @@ export class ProfileSettingsPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        return [this.pageContext];
+        return [this.pageHeading, this.helpSection];
     }
 
     async getContactDetailValue(fieldName: string): Promise<string> {
