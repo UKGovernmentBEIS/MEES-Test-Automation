@@ -72,7 +72,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private noEPCHistoryMessage: Locator;
     private commentPrivacyStatement: Locator;
     private linkWhereThisDataComesFrom: Locator;
-    private tab(tabName: string): Locator { return this.page.locator(`//li/div[contains(text(), '${tabName}')]`); }
+    private tab(tabName: string): Locator { return this.page.locator(`//li/a[contains(text(), '${tabName}')]`); }
     private tabParentElement(tabName: string): Locator { return this.tab(tabName).locator('..'); }
 
     constructor(page: Page) {
