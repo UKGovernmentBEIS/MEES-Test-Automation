@@ -28,13 +28,10 @@
         - link "Home":
           - /url: /compliance/landing-page
       - listitem: Filter property records
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - main:
     - heading "Filter property records" [level=1]
     - paragraph:
@@ -42,44 +39,46 @@
       - strong: Apply filters
       - text: to view the property records.
     - group: You can view records from 2 councils
-    - text: Council (optional) Select the council you want to view records for
-    # Council list order is not consistent, so we are not asserting the order of the options. that the expected options are present.
-    # - combobox "Council (optional)":
-    #   - option "Show all your councils" [selected]
-    #   - option "LONDON BOROUGH OF BEXLEY"
-    #   - option "LONDON BOROUGH OF BARNET"
-    - group "Energy rating (optional)":
-      - text: Energy rating (optional) Select one or more energy ratings. If you do not select any ratings,all ratings are included.
+    - paragraph: Council
+    - paragraph: Select the council you want to view records for
+    - combobox:
+      - option "Show all your councils" [selected]
+      - option "LONDON BOROUGH OF BEXLEY"
+      - option "LONDON BOROUGH OF BARNET"
+    - group:
+      - paragraph: Energy rating (optional)
+      - text: Select one or more energy ratings. If you do not select any ratings,all ratings are included.
       - checkbox "A"
-      - text: ""
+      - text: A
       - checkbox "B"
-      - text: ""
+      - text: B
       - checkbox "C"
-      - text: ""
+      - text: C
       - checkbox "D"
-      - text: ""
+      - text: D
       - checkbox "E"
-      - text: ""
+      - text: E
       - checkbox "F"
-      - text: ""
+      - text: F
       - checkbox "G"
-      - text: ""
+      - text: G
       - checkbox "Unrated"
-      - text: ""
+      - text: Unrated
     - text: Street (optional)
     - textbox "Street (optional)"
     - text: Town (optional)
     - textbox "Town (optional)"
     - text: Postcode (optional)
     - textbox "Postcode (optional)"
-    - group "Possible rental evidence":
-      - text: Possible rental evidence Filter properties by whether there is evidence that they may be rented
+    - group:
+      - paragraph: Possible rental evidence
+      - paragraph: Filter properties by whether there is evidence that they may be rented
       - radio "Show all" [checked]
-      - text: ""
+      - text: Show all
       - radio "Evidence found"
-      - text: ""
+      - text: Evidence found
       - radio "Not found"
-      - text: ""
+      - text: Not found
     - button "Apply filters"
     - link "Reset filters":
       - /url: /compliance/filter-properties

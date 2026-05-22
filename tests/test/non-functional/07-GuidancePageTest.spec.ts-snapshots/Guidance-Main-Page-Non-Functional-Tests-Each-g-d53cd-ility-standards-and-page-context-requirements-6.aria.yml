@@ -31,13 +31,10 @@
         - link "Guidance":
           - /url: /compliance/guidance
       - listitem: Guidance article
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - heading "Guidance" [level=1]
   - heading "Understanding property details and data sources" [level=1]
   - paragraph: Multiple datasets are combined in this service to create a single record for each property, including information from the PRS Exemptions Register. The data is collected, cleaned, and checked before it is shown in this service.

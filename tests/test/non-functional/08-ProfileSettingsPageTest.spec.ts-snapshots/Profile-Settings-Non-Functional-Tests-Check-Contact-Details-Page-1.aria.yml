@@ -21,26 +21,23 @@
     - link "give your feedback by email":
       - /url: mailto:meesdigital@energysecurity.gov.uk?subject=Feedback
     - text: .
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - link "Back":
     - /url: "#"
   - heading "Check your contact details" [level=2]
   - paragraph: These are the details that we may use to communicate with you.
   - heading [level=2]
   - term: First name
-  - definition: /.+/
+  - definition: test
   - definition:
     - link "Change First name":
-      - /url: "#-137"
+      - /url: "#-136"
   - term: Last name
-  - definition: /.+/
+  - definition: user2
   - definition:
     - link "Change Last name":
-      - /url: "#-137"
+      - /url: "#-136"
   - button "Confirm and save"

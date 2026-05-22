@@ -28,13 +28,10 @@
         - link "Home":
           - /url: /compliance/landing-page
       - listitem: Guidance
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - main:
     - heading "Guidance" [level=1]
     - paragraph: Use this guidance to understand how the Minimum Energy Efficiency Standards (MEES) apply to non-domestic properties and the enforcement actions you can take.

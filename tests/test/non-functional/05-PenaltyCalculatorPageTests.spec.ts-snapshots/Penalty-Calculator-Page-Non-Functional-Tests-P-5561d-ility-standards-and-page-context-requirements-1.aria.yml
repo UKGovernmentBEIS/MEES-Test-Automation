@@ -31,13 +31,10 @@
         - link "Penalty calculator":
           - /url: /compliance/penalty-calculator
       - listitem: Maximum financial penalty
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - main:
     - paragraph: Penalty calculator
     - heading "Maximum financial penalty" [level=1]

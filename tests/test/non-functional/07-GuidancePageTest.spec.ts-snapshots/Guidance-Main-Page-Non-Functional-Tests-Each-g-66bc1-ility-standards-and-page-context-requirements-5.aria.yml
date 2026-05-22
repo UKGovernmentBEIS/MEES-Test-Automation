@@ -31,13 +31,10 @@
         - link "Guidance":
           - /url: /compliance/guidance
       - listitem: Guidance article
-  - list:
-    - listitem:
-      - link "Profile settings":
-        - /url: ./profile
-    - listitem:
-      - link "Sign out":
-        - /url: "#"
+  - link "Profile settings":
+    - /url: ./profile
+  - link "Sign out":
+    - /url: "#"
   - heading "Guidance" [level=1]
   - heading "How PRS properties are identified" [level=1]
   - paragraph: Non-domestic properties are shown in this service with an indication of whether there is evidence they may be rented.
