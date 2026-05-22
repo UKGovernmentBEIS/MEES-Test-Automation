@@ -1,0 +1,12 @@
+- tabpanel:
+  - heading "Property details" [level=2]
+  - term: Property address
+  - definition: /Unit \d+, Acorn Industrial Park Crayford Road Crayford DARTFORD DA1 4AL/
+  - term: UPRN
+  - definition: /\d+/
+  - term: Property type
+  - definition: General Industrial and Special Industrial Groups
+  - term: Rateable value
+  - definition: /£\d+,\d+/
+  - term: Possible rental evidence
+  - definition: Mandatory issue (Property to let) EPC transaction type

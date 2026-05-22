@@ -1,0 +1,24 @@
+- tabpanel:
+  - heading "Energy rating" [level=2]
+  - term: Current energy rating
+  - definition: /A \(\d+\)/
+  - term: Current EPC expiry date
+  - definition: /\d+ August \d+/
+  - term: EPC transaction type
+  - definition: Mandatory issue (Property to let).
+  - heading "EPC history" [level=2]
+  - table:
+    - rowgroup:
+      - row "Energy rating EPC expiry date EPC transaction type":
+        - columnheader "Energy rating"
+        - columnheader "EPC expiry date"
+        - columnheader "EPC transaction type"
+    - rowgroup:
+      - row /A \(\d+\) \d+ August \d+ Mandatory issue \(Property to let\)\./:
+        - cell /A \(\d+\)/
+        - cell /\d+ August \d+/
+        - cell "Mandatory issue (Property to let)."
+      - row /D \(\d+\) 6 March \d+ Mandatory issue \(Property to let\)\./:
+        - cell /D \(\d+\)/
+        - cell /6 March \d+/
+        - cell "Mandatory issue (Property to let)."

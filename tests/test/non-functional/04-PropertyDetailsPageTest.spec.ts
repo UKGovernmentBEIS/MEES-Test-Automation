@@ -5,12 +5,15 @@ import { ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
 import { FilterPropertiesPage } from '../../pages/Compliance/FilterPropertiesPage';
 import { HomePage } from '../../pages/Compliance/HomePage';
 import { BaseNonFunctionalTest } from '../../utils/BaseNonFunctionalTest';
+import { PropertyDetailsPage } from '../../pages/Compliance/PropertyDetailsPage';
 
 test.describe('Property Details Page Non-Functional Tests', () => {
-
-    test('Details page', async ({ page }, testInfo) => {
-        const baseTest = new BaseNonFunctionalTest(page, testInfo);
-        baseTest.addTestAnnotations(PageName.PROPERTY_DETAILS_PAGE);
+    let baseTest: BaseNonFunctionalTest;
+    let propertyDetailsPage: PropertyDetailsPage;
+    
+    test.beforeEach(async ({ page }, testInfo) => {
+        baseTest = new BaseNonFunctionalTest(page, testInfo);
+        baseTest.addTestAnnotations(PageName.PROPERTY_DETAILS_PAGE, [TestType.ACCESSIBILITY, TestType.CONTEXT_VERIFICATION]);
 
         // Navigate to the Property Details page
         const landingPage: LandingPage = new LandingPage(page);
@@ -21,7 +24,20 @@ test.describe('Property Details Page Non-Functional Tests', () => {
         await filterPropertiesPage.selectEvidenceFoundRentalEvidence();
         const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForTableContent();
-        const propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+        propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+    });
+
+    test('Property Details page with Property details tab selected', async () => {
+        // Verify accessibility on the Property Details page
+        await baseTest.verifyAccessibility(PageName.PROPERTY_DETAILS_PAGE);
+
+        // Verify page context on the Property Details page
+        const locators = await propertyDetailsPage.getPageContextLocator();
+        await baseTest.verifyContextWithLocators(locators);
+    });
+
+    test('Property Details page with the Property owner(s) tab selected', async () => {
+        await propertyDetailsPage.SelectTab('Property owner(s)');
 
         // Verify accessibility on the Property Details page
         await baseTest.verifyAccessibility(PageName.PROPERTY_DETAILS_PAGE);
@@ -29,5 +45,27 @@ test.describe('Property Details Page Non-Functional Tests', () => {
         // Verify page context on the Property Details page
         const locators = await propertyDetailsPage.getPageContextLocator();
         await baseTest.verifyContextWithLocators(locators);
+    });
+
+    test('Property Details page with the Energy efficiency details tab selected', async () => {
+        await propertyDetailsPage.SelectTab('Energy efficiency details');
+
+        // Verify accessibility on the Property Details page
+        await baseTest.verifyAccessibility(PageName.PROPERTY_DETAILS_PAGE);
+
+        // Verify page context on the Property Details page
+        const locators = await propertyDetailsPage.getPageContextLocator();
+        await baseTest.verifyContextWithLocators(locators);
+    });
+
+    test('Property Details page with the PRS exemptions and penalties tab selected', async () => {
+        await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
+
+        // Verify accessibility on the Property Details page
+        await baseTest.verifyAccessibility(PageName.PROPERTY_DETAILS_PAGE);
+
+        // Verify page context on the Property Details page
+        const locators = await propertyDetailsPage.getPageContextLocator();
+        await baseTest.verifyContextWithLocators(locators); 
     });
 });
