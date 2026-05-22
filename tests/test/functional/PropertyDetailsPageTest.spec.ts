@@ -638,10 +638,10 @@ test.describe('View Properties Page Data Validation Tests', () => {
     test.describe('PRS exemptions and penalties Tab Data Validation', () => {
 
         test.beforeEach(async ({ page }, testInfo) => {
-            await filterPropertiesPage.setEnergyRatingFilter('A');
+            await filterPropertiesPage.setEnergyRatingFilter('B');
             const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForTableContent();
-            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('THE COTTAGE NURSERY, LOWER STATION ROAD, CRAYFORD, DARTFORD, DA1 3PY');
         });
 
         test('Verify possible values for the PRS exemption status field on the PRS exemptions and penalties tab', async ({ page }) => {
@@ -678,6 +678,32 @@ test.describe('View Properties Page Data Validation Tests', () => {
                     await expect(fieldLocator.locator('span')).toHaveCount(0);
                 }
             }
+        });
+
+        test('Verify that property displays exemption and penalty data setup in Salesforce', async () => {
+            await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
+            
+            // Verify that the PRS exemption details are displayed correctly
+            await expect(
+                await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status'),
+                `Expected PRS exemption status to be "Penalty sent" but found "${(await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status')).innerText()}"`)
+                .toHaveText('Penalty sent');
+
+            await expect(
+                await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date'),
+                `Expected PRS exemption date to be "22 May 2026" but found "${(await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date')).innerText()}"`)
+                .toHaveText('22 May 2026');
+
+            // Verify that the penalty details are displayed correctly
+            await expect(
+                await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty'),
+                `Expected PRS penalty to be "Recorded" but found "${(await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty')).innerText()}"`)
+                .toHaveText('Recorded');
+
+            await expect(
+                await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty date'),
+                `Expected PRS penalty date to be "22 May 2026" but found "${(await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty date')).innerText()}"`)
+                .toHaveText('22 May 2026');
         });
     });
 
