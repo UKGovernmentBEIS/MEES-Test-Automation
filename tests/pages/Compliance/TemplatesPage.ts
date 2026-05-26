@@ -13,10 +13,10 @@ export class TemplatesPage extends BaseCompliancePage {
         super(page);
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.paragraphList = page.locator('.govuk-grid-column-two-thirds>p').all();
-        this.publisherInformation = page.locator('.govuk-grid-column-two-thirds>.templates-metadata');
+        this.publisherInformation = page.getByRole('link', { name: 'Department for Energy Security and Net Zero' });
         // Wait for at least one template before getting all
-        this.templateList = page.locator('.template-list>div').first().waitFor({ state: 'visible' }).then(() => 
-            page.locator('.template-list>div').all());
+        this.templateList = page.locator('div:has(> a[data-filename])').first().waitFor({ state: 'visible' }).then(() =>
+            page.locator('div:has(> a[data-filename])').all());
     }
 
     async waitForPageToLoad(): Promise<void> {
@@ -59,7 +59,7 @@ export class TemplatesPage extends BaseCompliancePage {
         
         // Get fresh locators each time to ensure we get current page state
         const paragraphs = await this.page.locator('.govuk-grid-column-two-thirds>p').all();
-        const templates = await this.page.locator('.template-list>div').all();
+        const templates = await this.page.locator('div:has(> a[data-filename])').all();
         
         // Add all paragraph locators
         if (paragraphs.length > 0) {
@@ -95,13 +95,12 @@ export class TemplatesPage extends BaseCompliancePage {
         if (templateIndex >= templates.length) {
             throw new Error(`Template index ${templateIndex} is out of range`);
         }
-        
+
         const downloadLink = templates[templateIndex].locator('a.govuk-link');
-        
-        // Wait for download event
+
         const downloadPromise = this.page.waitForEvent('download');
         await downloadLink.click();
-        
+
         const download = await downloadPromise;
         return download.suggestedFilename();
     }

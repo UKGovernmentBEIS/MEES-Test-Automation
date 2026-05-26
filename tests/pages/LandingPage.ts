@@ -79,10 +79,6 @@ export class LandingPage extends BasePage {
     return this.requestSupportLink.getAttribute('href');
   }
 
-  async clickRequestSupportLink(): Promise<void> {
-    await this.requestSupportLink.click();
-  }
-
   async getReviewExemptionsLinkHref(): Promise<string | null> {
     return this.reviewExemptionsLink.getAttribute('href');
   }

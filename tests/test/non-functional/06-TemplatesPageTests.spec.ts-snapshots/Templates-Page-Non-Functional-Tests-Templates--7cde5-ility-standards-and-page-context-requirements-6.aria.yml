@@ -1,5 +1,2 @@
-- img "Document icon"
-- link "Penalty notice letter (financial) template":
-  - /url: "#-50"
-- paragraph: /MS Word Document, \d+\.\d+ KB/
-- paragraph: /\d+ May \d+/
+- link "Department for Energy Security and Net Zero":
+  - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero

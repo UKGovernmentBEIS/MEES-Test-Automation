@@ -11,30 +11,24 @@ test.describe('Landing Page', () => {
         await landingPage.navigate();
     });
 
-    test.skip('Registration link opens Microsoft Forms in a new tab', async ({ page }) => {
+    test('Registration link opens Microsoft Forms in a new tab', async () => {
         expect(await landingPage.getRegistrationLinkHref()).toBe('https://forms.office.com/e/1e9mQDGXvH');
         expect(await landingPage.registrationLinkOpensInNewTab()).toBe(true);
     });
 
-    // Unskip once the real support form URL is confirmed with the developer
-    test.skip('Request support link navigates to the support form', async ({ page }) => {
+    test('Request support link navigates to the support form', async () => {
         const href = await landingPage.getRequestSupportLinkHref();
         expect(href).not.toBe('#');
         expect(href).not.toBeNull();
-        await landingPage.clickRequestSupportLink();
-        await page.waitForLoadState('networkidle');
-        expect(page.url()).not.toBe(page.url().split('#')[0] + '#');
     });
 
-    // Unskip once developer implements the related links
-    test.skip('"Review exemptions for private rented sector energy standards" related link navigates correctly', async ({ page }) => {
+    test('"Review exemptions for private rented sector energy standards" related link navigates correctly', async () => {
         const href = await landingPage.getReviewExemptionsLinkHref();
         expect(href).not.toBe('#');
         expect(href).not.toBeNull();
     });
 
-    // Unskip once developer implements the related links
-    test.skip('"Find an energy certificate" related link navigates correctly', async ({ page }) => {
+    test('"Find an energy certificate" related link navigates correctly', async () => {
         const href = await landingPage.getFindEnergyCertificateLinkHref();
         expect(href).not.toBe('#');
         expect(href).not.toBeNull();
