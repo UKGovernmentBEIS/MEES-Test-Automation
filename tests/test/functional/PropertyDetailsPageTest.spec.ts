@@ -705,6 +705,29 @@ test.describe('View Properties Page Data Validation Tests', () => {
                 `Expected PRS penalty date to be "22 May 2026" but found "${(await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty date')).innerText()}"`)
                 .toHaveText('22 May 2026');
         });
+
+        test('Prs exemptions and penalty fields display "Not found" when there is no data in Salesforce', async ({ request }) => {
+            // Navigate to a property with no PRS exemption or penalty data in Salesforce (using a property with no landlord information as a proxy for this)
+            const filterPropertiesPage: FilterPropertiesPage = await propertyDetailsPage.clickBreadcrumbFilterProperties();
+            await filterPropertiesPage.setEnergyRatingFilter('Unrated');
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+            const propertyDetailsPageNonExemp = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(
+                'DOUGAL BROS TRANSPORT LTD, LOWER STATION ROAD, CRAYFORD, DARTFORD, DA1 3PY');
+            await propertyDetailsPageNonExemp.SelectTab('PRS exemptions and penalties');
+
+            // Verify that "Not found" is displayed for each PRS exemption and penalty field
+            const prsFields = [
+                'PRS exemption status',
+                'PRS exemption date',
+                'PRS penalty',
+                'PRS penalty date'
+            ];
+            for (const field of prsFields) {
+                const fieldValue = await propertyDetailsPageNonExemp.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', field);
+                expect(await fieldValue.innerText(), `Expected ${field} to be "Not found" but found "${await fieldValue.innerText()}"`).toBe('Not found');
+            }
+        });
     });
 
     test('Verify data displayed in the main section of the Property Details page for property without UPRN', async ({ page, request }) => {
