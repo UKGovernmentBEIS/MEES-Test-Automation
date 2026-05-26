@@ -1,1 +1,10 @@
-- text: Comments are visible to other enforcement officers in your Trading Standards Office and to DESNZ Policy Officials.
+- tabpanel:
+  - heading "Property owner 1" [level=2]
+  - term: Name
+  - definition: BRITISH OVERSEAS BANK NOMINEES LIMITED
+  - term: Location
+  - definition: Onshore
+  - term: Address
+  - definition: /\d+ Bishopsgate, London EC2M 4AA/
+  - term: SIC code(s)
+  - definition: Not found

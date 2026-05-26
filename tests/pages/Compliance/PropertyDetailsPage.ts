@@ -68,7 +68,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private commentTextArea: Locator;
     private commentSaveButton: Locator;
     private commentCancelButton: Locator;
-    private propertyDetails: Locator;
     private noEPCHistoryMessage: Locator;
     private commentPrivacyStatement: Locator;
     private linkWhereThisDataComesFrom: Locator;
@@ -84,7 +83,6 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
         this.commentCancelButton = page.getByRole('link', { name: 'Cancel' });
-        this.propertyDetails = page.locator('.govuk-summary-list').first();
         this.noEPCHistoryMessage = page.locator('[data-id="EPCTab"] p.govuk-body');
         this.commentPrivacyStatement = page.getByText('Comments are visible to other enforcement officers in your Trading Standards Office and to DESNZ Policy Officials.', { exact: true });
         this.linkWhereThisDataComesFrom = page.getByRole('link', { name: 'where this data comes from' });
@@ -116,7 +114,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        return [this.propertyDetails, this.commentPrivacyStatement, this.activeTabDetails];
+        return [this.commentPrivacyStatement, this.activeTabDetails];
     }
 
     //#region Breadcrumb Methods

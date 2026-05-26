@@ -29,8 +29,8 @@
     - list:
       - listitem:
         - link "Review exemptions for private rented sector energy standards":
-          - /url: "#"
+          - /url: https://www.view-energy-efficiency-exemptions.service.gov.uk
       - listitem:
         - link "Find an energy certificate":
-          - /url: "#"
+          - /url: https://www.gov.uk/find-energy-certificate
   - paragraph

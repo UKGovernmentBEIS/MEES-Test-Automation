@@ -1,1 +1,11 @@
-- text: Comments are visible to other enforcement officers in your Trading Standards Office and to DESNZ Policy Officials.
+- tabpanel:
+  - heading "PRS exemptions and penalties" [level=2]
+  - term: PRS exemption status
+  - definition: Penalty sent
+  - term: PRS exemption date
+  - definition: /\d+ February \d+/
+  - term: PRS penalty
+  - definition: Not found
+  - term: PRS penalty date
+  - definition: Not found
+  - paragraph: For more detail on PRS exemptions and penalties, please visit the private rented sector energy exemptions register.
