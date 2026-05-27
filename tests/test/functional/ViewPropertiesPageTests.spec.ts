@@ -268,6 +268,30 @@ test.describe('View Properties Page Tests', () => {
         expect(invalidExemptionsColors, `Invalid PRS Exemptions colors found: ${invalidExemptionsColors.join(', ')}`).toEqual([]);
     });
 
+    test('PRS Exemption column shows \'Not found\' for a non-exempt property with a penalty', async ({ page }) => {
+        // Navigate to the known property that has a penalty recorded in Salesforce but no PRS exemption.
+        // This property is used as shared test data with PropertyDetailsPageTest.spec.ts.
+        const filterPropertiesPage = await viewPropertiesPage.clickChangeFilters();
+        await filterPropertiesPage.setEnergyRatingFilter('G');
+        await filterPropertiesPage.setPostcodeFilter('DA1 4BH');
+        viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+
+        const propertiesData = await viewPropertiesPage.getPropertiesDataFromTable();
+        expect(propertiesData.length, 'No properties found in the table for postcode DA1 4BH with energy rating G').toBeGreaterThan(0);
+
+        // Find the specific property known to have a penalty but no exemption
+        const targetAddress = '6, London Road, Crayford, DARTFORD, DA1 4BH';
+        const targetProperty = propertiesData.find(p => p.address === targetAddress);
+        expect(targetProperty, `Property with address '${targetAddress}' not found in the table`).toBeDefined();
+
+        // Verify that penalty data does not bleed into the PRS Exemption column —
+        // it must show 'Not found', not a penalty status value
+        expect(targetProperty!.PRSExemptions,
+            `Expected PRS Exemption column for '${targetAddress}' to be 'Not found' but got '${targetProperty!.PRSExemptions}'`
+        ).toBe('Not found');
+    });
+
     test('Verify Energy Ratings data', async ({ page, request }) => {
         // Make sure that all data are loaded first
         await viewPropertiesPage.waitForTableContent();

@@ -706,7 +706,8 @@ test.describe('View Properties Page Data Validation Tests', () => {
                 .toHaveText('22 May 2026');
         });
 
-        test('Prs exemptions and penalty fields display "Not found" when there is no data in Salesforce', async ({ request }) => {
+        test('Prs exemptions and penalty fields display "Not found" when there is no data in Salesforce', async () => {
+
             // Navigate to a property with no PRS exemption or penalty data in Salesforce (using a property with no landlord information as a proxy for this)
             const filterPropertiesPage: FilterPropertiesPage = await propertyDetailsPage.clickBreadcrumbFilterProperties();
             await filterPropertiesPage.setEnergyRatingFilter('Unrated');
@@ -727,6 +728,29 @@ test.describe('View Properties Page Data Validation Tests', () => {
                 const fieldValue = await propertyDetailsPageNonExemp.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', field);
                 expect(await fieldValue.innerText(), `Expected ${field} to be "Not found" but found "${await fieldValue.innerText()}"`).toBe('Not found');
             }
+        });
+
+        test('Verify that the PRS exemptions and penalties tab displays penalty information for non-exempt properties', async () => {
+            // Navigate to a property with PRS penalty data but no exemption in Salesforce
+            const filterPropertiesPage: FilterPropertiesPage = await propertyDetailsPage.clickBreadcrumbFilterProperties();
+            await filterPropertiesPage.setEnergyRatingFilter('G');
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+            const propertyDetailsPagePenaltyOnly = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(
+                '6, London Road, Crayford, DARTFORD, DA1 4BH');
+            await propertyDetailsPagePenaltyOnly.SelectTab('PRS exemptions and penalties');
+
+            // Verify that the PRS exemption status field displays "Not found"
+            const exemptionStatusField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
+            expect(await exemptionStatusField.innerText(), `Expected PRS exemption status to be "Not found" but found "${await exemptionStatusField.innerText()}"`).toBe('Not found');
+            const exemptionDateField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
+            expect(await exemptionDateField.innerText(), `Expected PRS exemption date to be "Not found" but found "${await exemptionDateField.innerText()}"`).toBe('Not found');
+
+            // Verify that the PRS penalty fields display the correct information
+            const penaltyField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty');
+            expect(await penaltyField.innerText(), `Expected PRS penalty to be "Recorded" but found "${await penaltyField.innerText()}"`).toBe('Recorded');
+            const penaltyDateField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty date');
+            expect(await penaltyDateField.innerText(), `Expected PRS penalty date to be "22 May 2026" but found "${await penaltyDateField.innerText()}"`).toBe('26 May 2026');
         });
     });
 
