@@ -22,10 +22,8 @@ test.describe('Templates Page', () => {
     });
 
     test('Verify that the correct template file name is downloaded', async () => {
-        // TODO (Bug #983): File names were updated to include a '- V3' version suffix.
-        // Expected names below reflect the current file names until the bug is resolved.
         const expectedTemplateFileNames: string[] = [
-            'Penalty notice (publication) letter template - V3.docx', 
+            'Penalty notice (publication) letter template - V3.docx',
             'Penalty notice (financial) letter template - V3.docx',
             'Compliance notice letter template - V3.docx',
             'Penalty notice (financial and publication) letter template - V3.docx'
