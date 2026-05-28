@@ -929,3 +929,52 @@ test.describe('Property Details Page Navigation Tests', () => {
         await expect(newPage).toHaveURL(/\/compliance\/guidance-detail/);
     });
 });
+
+test.describe('Property Details Page Accessibility Tests', () => {
+    let propertyDetailsPage: PropertyDetailsPage;
+
+    test.beforeEach(async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.ACCESSIBILITY)
+        );
+
+        const landingPage: LandingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
+        const filterPropertiesPage: FilterPropertiesPage = await homePage.clickViewProperties();
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+        propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+    });
+
+    test('Should activate each tab using the Enter key', async ({ page }) => {
+        // The 'Property details' tab is active by default; test all other tabs then return to it
+        const tabs: { tabName: string; panelId: string }[] = [
+            { tabName: 'Property owner(s)',             panelId: 'PropertyOwnerTab'      },
+            { tabName: 'Energy efficiency details',     panelId: 'EPCTab'                },
+            { tabName: 'PRS exemptions and penalties',  panelId: 'PRSTab'                },
+            { tabName: 'Property details',              panelId: 'PropertyDetailsTab'    },
+        ];
+
+        for (const { tabName, panelId } of tabs) {
+            const tabLink = page.locator(`//li/a[contains(text(), '${tabName}')]`);
+
+            // Focus the tab link and activate it with the Enter key
+            await tabLink.focus();
+            await page.keyboard.press('Enter');
+
+            // Verify the tab panel is visible and the tab is marked as selected
+            await expect(
+                page.locator(`[data-id="${panelId}"]`),
+                `Tab panel for '${tabName}' should be visible after pressing Enter`
+            ).toBeVisible();
+
+            await expect(
+                tabLink.locator('..'),
+                `Tab '${tabName}' should be marked as selected after pressing Enter`
+            ).toHaveClass(/govuk-tabs__list-item--selected/);
+        }
+    });
+});
+
