@@ -726,7 +726,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
             ];
             for (const field of prsFields) {
                 const fieldValue = await propertyDetailsPageNonExemp.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', field);
-                expect(await fieldValue.innerText(), `Expected ${field} to be "Not found" but found "${await fieldValue.innerText()}"`).toBe('Not found');
+                await expect(fieldValue, `Expected ${field} to be "Not found" but found "${await fieldValue.innerText()}"`).toHaveText('Not found');
             }
         });
 
@@ -742,15 +742,15 @@ test.describe('View Properties Page Data Validation Tests', () => {
 
             // Verify that the PRS exemption status field displays "Not found"
             const exemptionStatusField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
-            expect(await exemptionStatusField.innerText(), `Expected PRS exemption status to be "Not found" but found "${await exemptionStatusField.innerText()}"`).toBe('Not found');
+            await expect(exemptionStatusField, `Expected PRS exemption status to be "Not found" but found "${await exemptionStatusField.innerText()}"`).toHaveText('Not found');
             const exemptionDateField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
-            expect(await exemptionDateField.innerText(), `Expected PRS exemption date to be "Not found" but found "${await exemptionDateField.innerText()}"`).toBe('Not found');
+            await expect(exemptionDateField, `Expected PRS exemption date to be "Not found" but found "${await exemptionDateField.innerText()}"`).toHaveText('Not found');
 
             // Verify that the PRS penalty fields display the correct information
             const penaltyField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty');
-            expect(await penaltyField.innerText(), `Expected PRS penalty to be "Recorded" but found "${await penaltyField.innerText()}"`).toBe('Recorded');
+            await expect(penaltyField, `Expected PRS penalty to be "Recorded" but found "${await penaltyField.innerText()}"`).toHaveText('Recorded');
             const penaltyDateField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty date');
-            expect(await penaltyDateField.innerText(), `Expected PRS penalty date to be "22 May 2026" but found "${await penaltyDateField.innerText()}"`).toBe('26 May 2026');
+            await expect(penaltyDateField, `Expected PRS penalty date to be "26 May 2026" but found "${await penaltyDateField.innerText()}"`).toHaveText('26 May 2026');
         });
     });
 
