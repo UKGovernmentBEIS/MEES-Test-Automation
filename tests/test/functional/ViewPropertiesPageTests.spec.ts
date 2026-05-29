@@ -771,7 +771,7 @@ test.describe('View Properties export functionality', () => {
                 expect(unratedRow!['EPC certificate link'].trim()).toBe('Not found');
                 // EPC transaction type and EPC history remain empty when there is no EPC certificate.
                 expect(unratedRow!['EPC transaction type'].trim()).toBe('Not found');
-                expect(unratedRow!['EPC (rating; expiry; transaction type)'].trim()).toBe('Not found');
+                expect(unratedRow!['EPC history (rating; expiry; transaction type)'].trim()).toBe('Not found');
             });
         });
     });
@@ -1122,7 +1122,7 @@ test.describe('View Properties export functionality', () => {
             const expectedValue = dmsPropertyWithMultiEPCCertificates!.EpcCertificates!
                 .map(epc => `${epc.AssetRatingBand} (${epc.AssetRating}); ${epc.ExpiryDate.split('T')[0]}; ${epc.TransactionType}`)
                 .join(' | ');
-            const actualValue = propertyMatchInExport!['EPC (rating; expiry; transaction type)'];
+            const actualValue = propertyMatchInExport!['EPC history (rating; expiry; transaction type)'];
 
             expect(actualValue,
                 `UPRN ${uprnDMSPropertyWithMultiEPCCertificates}: expected '${expectedValue}' (${dmsPropertyWithMultiEPCCertificates!.EpcCertificates!.length} EPC certificate(s)), got '${actualValue}'`
