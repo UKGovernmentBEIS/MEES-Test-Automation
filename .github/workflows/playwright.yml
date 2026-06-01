@@ -13,6 +13,7 @@ on:
         options:
           - dev
           - qa
+          - new qa
 
 jobs:
   functional-tests:
