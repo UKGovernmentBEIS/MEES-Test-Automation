@@ -142,3 +142,26 @@ test.describe('How PRS Properties Are Identified Guidance Page', () => {
         expect(newTab.url()).toContain('legislation.gov.uk');
     });
 });
+
+test.describe('Penalty calculator guidance page', () => {
+    let penaltyCalculatorGuidancePage: PenaltyCalculatorPage;
+
+    test.beforeEach(async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.FUNCTIONAL)
+        );
+
+        const landingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage = await landingPage.clickSignIn_AuthenticatedUser();
+        const guidanceMainPage = await homePage.clickGuidanceLink();
+        await guidanceMainPage.waitForPageToLoad();
+        penaltyCalculatorGuidancePage = await guidanceMainPage.clickOnPenaltyCalculatorTab();
+    });
+
+    test('The  Penalty Calculator link should navigate to the Penalty Calculator page', async () => {
+        const penaltyCalculatorPage = await penaltyCalculatorGuidancePage.clickPenaltyCalculatorLink();
+
+        await expect(penaltyCalculatorPage.isDisplayed(), 'Penalty Calculator page should be displayed').resolves.toBeTruthy();
+    });
+});

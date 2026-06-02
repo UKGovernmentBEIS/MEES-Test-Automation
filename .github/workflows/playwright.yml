@@ -20,6 +20,8 @@ jobs:
     name: Functional Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.57.0-jammy
     environment: ${{ inputs.environment || 'qa' }}
     steps: 
     - uses: actions/checkout@v5
@@ -28,8 +30,6 @@ jobs:
         node-version: lts/*
     - name: Install dependencies
       run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
     - name: Run authentication setup
       run: npx playwright test --project=setup
       env:
@@ -43,6 +43,7 @@ jobs:
     - name: Run functional tests
       run: npx playwright test --project=functional
       env:
+        HOME: /root
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
         TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}
@@ -68,6 +69,8 @@ jobs:
     name: Non-Functional Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.57.0-jammy
     environment: ${{ inputs.environment || 'qa' }}
     steps:
     - uses: actions/checkout@v5
@@ -76,8 +79,6 @@ jobs:
         node-version: lts/*
     - name: Install dependencies
       run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
     - name: Run authentication setup
       run: npx playwright test --project=setup
       env:
@@ -91,6 +92,7 @@ jobs:
     - name: Run non-functional tests
       run: npx playwright test --project=non-functional
       env:
+        HOME: /root
         TEST_ACCOUNT_1_EMAIL: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         TEST_ACCOUNT_1_PASSWORD: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
         TEST_ACCOUNT_1_NAME: ${{ secrets.TEST_ACCOUNT_1_NAME }}

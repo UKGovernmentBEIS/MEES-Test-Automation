@@ -97,6 +97,21 @@ When scaling parallelization:
 
 ## Workflow Configuration
 
+### Docker Container
+
+The `functional-tests` and `non-functional-tests` jobs run inside the official Playwright Docker container:
+
+```yaml
+container:
+  image: mcr.microsoft.com/playwright:v1.57.0-jammy
+```
+
+Chromium is pre-installed in the image, so no separate browser download step is needed. This avoids dependency on the Playwright CDN during CI runs.
+
+> **Version coupling**: the Docker image tag must match the `@playwright/test` version in `package-lock.json`. When upgrading Playwright, update `package.json`, run `npm install` to update the lockfile, and update the `container.image` tag in `.github/workflows/playwright.yml` to match.
+
+The `api-tests` job is unaffected — it does not install or use browsers.
+
 **Both test jobs** (require test credentials and BASE_URL):
 ```yaml
 - name: Run authentication setup

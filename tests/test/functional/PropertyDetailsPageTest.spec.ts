@@ -637,14 +637,12 @@ test.describe('View Properties Page Data Validation Tests', () => {
 
     test.describe('PRS exemptions and penalties Tab Data Validation', () => {
 
-        test.beforeEach(async ({ page }, testInfo) => {
+        test('Verify possible values for the PRS exemption status field on the PRS exemptions and penalties tab', async ({ page }) => {
             await filterPropertiesPage.setEnergyRatingFilter('B');
             const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForTableContent();
             propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('THE COTTAGE NURSERY, LOWER STATION ROAD, CRAYFORD, DARTFORD, DA1 3PY');
-        });
 
-        test('Verify possible values for the PRS exemption status field on the PRS exemptions and penalties tab', async ({ page }) => {
             const exemptionStatusesAndUprns = [
                 { uprn: '100022918361', expectedStatus: 'Penalty sent', expectedTagClass: 'govuk-tag--light-blue' },
                 { uprn: '10096984308', expectedStatus: 'Received', expectedTagClass: 'govuk-tag--blue' },
@@ -681,6 +679,11 @@ test.describe('View Properties Page Data Validation Tests', () => {
         });
 
         test('Verify that property displays exemption and penalty data setup in Salesforce', async () => {
+            await filterPropertiesPage.setEnergyRatingFilter('B');
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('THE COTTAGE NURSERY, LOWER STATION ROAD, CRAYFORD, DARTFORD, DA1 3PY');
+
             await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
             
             // Verify that the PRS exemption details are displayed correctly
@@ -709,7 +712,6 @@ test.describe('View Properties Page Data Validation Tests', () => {
         test('Prs exemptions and penalty fields display "Not found" when there is no data in Salesforce', async () => {
 
             // Navigate to a property with no PRS exemption or penalty data in Salesforce (using a property with no landlord information as a proxy for this)
-            const filterPropertiesPage: FilterPropertiesPage = await propertyDetailsPage.clickBreadcrumbFilterProperties();
             await filterPropertiesPage.setEnergyRatingFilter('Unrated');
             const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForTableContent();
@@ -726,13 +728,12 @@ test.describe('View Properties Page Data Validation Tests', () => {
             ];
             for (const field of prsFields) {
                 const fieldValue = await propertyDetailsPageNonExemp.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', field);
-                expect(await fieldValue.innerText(), `Expected ${field} to be "Not found" but found "${await fieldValue.innerText()}"`).toBe('Not found');
+                await expect(fieldValue, `Expected ${field} to be "Not found" but found "${await fieldValue.innerText()}"`).toHaveText('Not found');
             }
         });
 
         test('Verify that the PRS exemptions and penalties tab displays penalty information for non-exempt properties', async () => {
             // Navigate to a property with PRS penalty data but no exemption in Salesforce
-            const filterPropertiesPage: FilterPropertiesPage = await propertyDetailsPage.clickBreadcrumbFilterProperties();
             await filterPropertiesPage.setEnergyRatingFilter('G');
             const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForTableContent();
@@ -742,15 +743,38 @@ test.describe('View Properties Page Data Validation Tests', () => {
 
             // Verify that the PRS exemption status field displays "Not found"
             const exemptionStatusField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
-            expect(await exemptionStatusField.innerText(), `Expected PRS exemption status to be "Not found" but found "${await exemptionStatusField.innerText()}"`).toBe('Not found');
+            await expect(exemptionStatusField, `Expected PRS exemption status to be "Not found" but found "${await exemptionStatusField.innerText()}"`).toHaveText('Not found');
             const exemptionDateField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
-            expect(await exemptionDateField.innerText(), `Expected PRS exemption date to be "Not found" but found "${await exemptionDateField.innerText()}"`).toBe('Not found');
+            await expect(exemptionDateField, `Expected PRS exemption date to be "Not found" but found "${await exemptionDateField.innerText()}"`).toHaveText('Not found');
 
             // Verify that the PRS penalty fields display the correct information
             const penaltyField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty');
-            expect(await penaltyField.innerText(), `Expected PRS penalty to be "Recorded" but found "${await penaltyField.innerText()}"`).toBe('Recorded');
+            await expect(penaltyField, `Expected PRS penalty to be "Recorded" but found "${await penaltyField.innerText()}"`).toHaveText('Recorded');
             const penaltyDateField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty date');
-            expect(await penaltyDateField.innerText(), `Expected PRS penalty date to be "22 May 2026" but found "${await penaltyDateField.innerText()}"`).toBe('26 May 2026');
+            await expect(penaltyDateField, `Expected PRS penalty date to be "26 May 2026" but found "${await penaltyDateField.innerText()}"`).toHaveText('26 May 2026');
+        });
+
+        test('Verify that PRSE penalty data is not retrieved for a non-exempt property without UPRN', async () => {
+            // Navigate to a property without UPRN, without exemption, and with a penalty recorded in PRSE
+            // PRSE data cannot be linked to properties without a UPRN
+            await filterPropertiesPage.setEnergyRatingFilter('A');
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+            const propertyDetailsPageNoUprn = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(
+                'Unit 2B, Roman Way, Crayford, DARTFORD, DA1 4FY');
+            await propertyDetailsPageNoUprn.SelectTab('PRS exemptions and penalties');
+
+            // Verify all PRS fields display 'Not found' — the system cannot retrieve PRSE data without a UPRN
+            const prsFields = [
+                'PRS exemption status',
+                'PRS exemption date',
+                'PRS penalty',
+                'PRS penalty date'
+            ];
+            for (const field of prsFields) {
+                const fieldValue = await propertyDetailsPageNoUprn.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', field);
+                await expect(fieldValue, `Expected ${field} to be "Not found" but found "${await fieldValue.innerText()}"`).toHaveText('Not found');
+            }
         });
     });
 
@@ -929,3 +953,52 @@ test.describe('Property Details Page Navigation Tests', () => {
         await expect(newPage).toHaveURL(/\/compliance\/guidance-detail/);
     });
 });
+
+test.describe('Property Details Page Accessibility Tests', () => {
+    let propertyDetailsPage: PropertyDetailsPage;
+
+    test.beforeEach(async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.ACCESSIBILITY)
+        );
+
+        const landingPage: LandingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
+        const filterPropertiesPage: FilterPropertiesPage = await homePage.clickViewProperties();
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+        propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+    });
+
+    test('Should activate each tab using the Enter key', async ({ page }) => {
+        // The 'Property details' tab is active by default; test all other tabs then return to it
+        const tabs: { tabName: string; panelId: string }[] = [
+            { tabName: 'Property owner(s)',             panelId: 'PropertyOwnerTab'      },
+            { tabName: 'Energy efficiency details',     panelId: 'EPCTab'                },
+            { tabName: 'PRS exemptions and penalties',  panelId: 'PRSTab'                },
+            { tabName: 'Property details',              panelId: 'PropertyDetailsTab'    },
+        ];
+
+        for (const { tabName, panelId } of tabs) {
+            const tabLink = page.locator(`//li/a[contains(text(), '${tabName}')]`);
+
+            // Focus the tab link and activate it with the Enter key
+            await tabLink.focus();
+            await page.keyboard.press('Enter');
+
+            // Verify the tab panel is visible and the tab is marked as selected
+            await expect(
+                page.locator(`[data-id="${panelId}"]`),
+                `Tab panel for '${tabName}' should be visible after pressing Enter`
+            ).toBeVisible();
+
+            await expect(
+                tabLink.locator('..'),
+                `Tab '${tabName}' should be marked as selected after pressing Enter`
+            ).toHaveClass(/govuk-tabs__list-item--selected/);
+        }
+    });
+});
+

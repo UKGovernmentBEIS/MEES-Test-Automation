@@ -11,6 +11,7 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
     private readonly breadcrumbHome: Locator;
     private readonly rateableValueInput: Locator;
     private readonly calculateMaximumPenaltyButton: Locator;
+    private readonly penaltyCalculatorLink: Locator;
     
     private async LengthOfBreachRadioButton(lengthOfBreach: LengthOfBreach): Promise<Locator> {
         return this.page.getByRole('radio', { name: lengthOfBreach });
@@ -22,6 +23,7 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
         this.pageContext = this.page.locator('#main-content');
         this.rateableValueInput = this.page.getByRole('textbox', { name: 'What is the rateable value of' })
         this.calculateMaximumPenaltyButton = this.page.getByRole('button', { name: 'Calculate maximum penalty' });
+        this.penaltyCalculatorLink = this.page.locator('a[href="/penalty-calculator"]');
     }
 
     async waitForPageToLoad(): Promise<void> {
@@ -87,5 +89,13 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
             await penaltyCalculatorResultsPage.waitForPageToLoad();
             return penaltyCalculatorResultsPage;
         }
+    }
+
+    async clickPenaltyCalculatorLink(): Promise<PenaltyCalculatorPage> {
+        await this.penaltyCalculatorLink.click();
+
+        const penaltyCalculatorPage = new PenaltyCalculatorPage(this.page);
+        await penaltyCalculatorPage.waitForPageToLoad();
+        return penaltyCalculatorPage;
     }
 }
