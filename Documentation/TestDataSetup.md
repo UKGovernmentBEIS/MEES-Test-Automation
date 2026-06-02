@@ -1,87 +1,96 @@
-# Test Data Setup Guide
+# PRSE Test Data Setup Guide
 
-Tests contain hardcoded values that must be verified/updated when setting up a new environment.
+This document describes the PRSE (PRS Exemption Register) data that must exist in each environment for functional tests to pass. DMS data is not covered here.
 
-## Setup Process
+> **Date warning:** Several tests assert hardcoded dates (`22 May 2026`, `26 May 2026`). These are now in the past and the PRSE records — and the corresponding test assertions — will need updating when the environment is refreshed.
 
-1. **Run tests initially** to identify failures and which properties exist in target environment
-2. **Update hardcoded values** in test files to match available data
-3. **Verify dates** are current/future (EPC expiry dates, exemption dates)
+---
 
-## Files with Hardcoded Data
+## View Properties Page
 
-### PropertyDetailsPageTest.spec.ts
-**Location**: [tests/test/functional/PropertyDetailsPageTest.spec.ts](../tests/test/functional/PropertyDetailsPageTest.spec.ts)
+**Test file:** [tests/test/functional/ViewPropertiesPageTests.spec.ts](../tests/test/functional/ViewPropertiesPageTests.spec.ts)
 
-**Hardcoded values to verify**:
-- Property address: `'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL'`
-- UPRN: `'100022918361'`
-- Property type: `'General Industrial and Special Industrial Groups'`
-- Rateable value: `'£25,500'`
-- Landlord name: `'BRITISH OVERSEAS BANK NOMINEES LIMITED'`
-- Landlord address: `'250 Bishopsgate, London EC2M 4AA'`
-- EPC expiry date: `'20 February 2026'`
-- PRS exemption date: `'14 February 2026'`
-- EPC history dates: `'13 August 2025'`, `'13 August 2035'`
+### PRS Exemption status colours
 
-### PropertyTests.spec.ts (Data Verification Tests)
-**Location**: [tests/test/api/PropertyTests.spec.ts](../tests/test/api/PropertyTests.spec.ts)
+Filter applied by the test: **Council = LONDON BOROUGH OF BEXLEY**, **Energy Rating = A**.
 
-**Hardcoded values to verify** (used in `Data Verification Tests` and `Bug Tests` describe blocks):
-- UPRN: `'100022918361'`
-- Building Reference Number: `'1172671'` (same physical property as the UPRN above)
-- Expected `property.buildingReferenceNumber`: `1172671`
-- Expected `property.postcode`: `'DA1 4AL'`
-- Expected `property.town`: `'DARTFORD'`
-- Expected `property.epcEnergyRating`: `22`
-- Expected `property.epcEnergyRatingBand`: `'A'`
-- Expected `property.rateableValue`: `25500`
-- Expected `property.epcExpiryDate`: contains `'2035-08-13'`
-- Expected `epcCertificates` count: `2`
-- Expected `epcCertificates[0].assetRating`: `22`
-- Expected `epcCertificates[0].assetRatingBand`: `'A'`
-- Expected `epcCertificates[0].lodgementDate`: contains `'2025-08-13'`
-- Expected `epcCertificates[0].expiryDate`: contains `'2035-08-13'`
-- Expected `epcCertificates[1].assetRating`: `93`
-- Expected `epcCertificates[1].assetRatingBand`: `'D'`
-- Expected `epcCertificates[1].lodgementDate`: contains `'2015-03-06'`
-- Expected `epcCertificates[1].expiryDate`: contains `'2025-03-06'`
-- Expected `landlords` count: `1`
-- Expected `landlords[0].companyName`: `'BRITISH OVERSEAS BANK NOMINEES LIMITED'`
-- Expected `landlords[0].address`: `'250 Bishopsgate, London EC2M 4AA'`
-- Expected `landlords[0].location`: `'Onshore'`
+The test requires at least one property in PRSE with each of the following exemption statuses. Properties are found dynamically — no fixed address or UPRN is required.
 
-### PropertiesDmsBoundaryTests.spec.ts
-**Location**: [tests/test/api/PropertiesDmsBoundaryTests.spec.ts](../tests/test/api/PropertiesDmsBoundaryTests.spec.ts)
+| Required PRS exemption status | Expected colour tag |
+|-------------------------------|---------------------|
+| Penalty sent | light-blue |
+| Received | blue |
+| Draft | blue |
+| Approved | green |
+| Updated | orange |
+| Ended | pink |
+| Expired | grey |
+| Needs update | yellow |
+| Not found | grey |
 
-**Hardcoded data dependencies to verify**:
+> Note: "Not found" behaviour is currently affected by Bug 908.
 
-1. **Basic API requests work**:
-   - `"lacodes": ["E09000003","E09000004"]` with `"street": "23 Acorn Industrial Park"` must return data
+### Non-exempt property with penalty
 
-2. **Single lacode validation**:
-   - `"lacodes": ["E06000009"]` must return valid properties (used in invalid lacode filtering test)
+| Address | UPRN | Required PRSE state |
+|---------|------|---------------------|
+| 6, London Road, Crayford, DARTFORD, DA1 4BH | *(any)* | No exemption; penalty recorded |
 
-3. **Location filtering** (Onshore/Offshore):
-   - `"lacodes": ["E06000009", "E06000011"]` must have both Onshore and Offshore properties
+The PRS Exemption column must show `Not found` for this property.
 
-4. **Street filtering**:
-   - `"lacodes": ["E06000009", "E06000011"]` with `"street": "Main Street"` must return properties
+---
 
-5. **Town filtering**:
-   - `"lacodes": ["E06000009", "E06000011"]` with `"town": "Brighton"` must return properties
+## Property Details Page — PRS exemptions and penalties tab
 
-6. **Energy rating coverage**:
-   - `"lacodes": ["E09000003", "E09000004"]` must have properties with ALL ratings: A, B, C, D, E, F, G, Unrated
+**Test file:** [tests/test/functional/PropertyDetailsPageTest.spec.ts](../tests/test/functional/PropertyDetailsPageTest.spec.ts)
 
-7. **Combined filters test**:
-   - Must have property matching ALL criteria:
-     - `"lacodes": ["E09000003","E09000004"]`
-     - `"street": "23 Acorn Industrial Park"`
-     - `"location": "Onshore"`
-     - `"town": "DARTFORD"`
-     - `"postcode": "DA1 4AL"`
-     - `"energyratingband": "C"`
+### Exemption status possible values
 
-8. **Postcode filtering**:
-   - `"lacodes": ["E06000009", "E06000011"]` with `"postcode": "DN14 5BT"` must return properties
+Property navigated to by the test: **THE COTTAGE NURSERY, LOWER STATION ROAD, CRAYFORD, DARTFORD, DA1 3PY**
+
+Each UPRN below must have a PRSE exemption in the specified status. The test navigates to the property by address then switches context per UPRN via direct URL.
+
+| UPRN | Required PRS exemption status |
+|------|-------------------------------|
+| 100022918361 | Penalty sent |
+| 10096984308 | Received |
+| 10090795654 | Updated |
+| 10023302263 | Approved |
+| 10090792724 | Ended |
+| 10090792723 | Expired |
+
+### Full exemption and penalty data
+
+| Field | Required value |
+|-------|---------------|
+| Property | THE COTTAGE NURSERY, LOWER STATION ROAD, CRAYFORD, DARTFORD, DA1 3PY |
+| UPRN | 100022918361 |
+| PRS exemption status | Penalty sent |
+| PRS exemption date | 22 May 2026 ⚠️ |
+| PRS penalty | Recorded |
+| PRS penalty date | 22 May 2026 ⚠️ |
+
+### Penalty only — no exemption
+
+| Field | Required value |
+|-------|---------------|
+| Property | 6, London Road, Crayford, DARTFORD, DA1 4BH |
+| Energy rating | G |
+| PRS exemption status | *(none — must show "Not found")* |
+| PRS exemption date | *(none — must show "Not found")* |
+| PRS penalty | Recorded |
+| PRS penalty date | 26 May 2026 ⚠️ |
+
+### No PRSE data
+
+| Property | UPRN | Required PRSE state |
+|----------|------|---------------------|
+| DOUGAL BROS TRANSPORT LTD, LOWER STATION ROAD, CRAYFORD, DARTFORD, DA1 3PY | *(any)* | No exemption or penalty — all fields show "Not found" |
+
+### No UPRN — PRSE data unreachable
+
+| Property | UPRN |
+|----------|------|
+| Unit 2B, Roman Way, Crayford, DARTFORD, DA1 4FY | None |
+
+No PRSE data is required for this property. The system cannot link PRSE records without a UPRN, so all fields show `Not found` automatically.
