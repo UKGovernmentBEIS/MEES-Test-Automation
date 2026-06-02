@@ -397,8 +397,12 @@ export class ViewPropertiesPage extends BaseCompliancePage {
             const values = this.parseCSVLine(lines[i]);
             const record: Record<string, string> = {};
             headers.forEach((header, index) => {
-                if(header === 'Line1') {
+                if (header === 'Line1') {
                     record[header] = this.reverseDateConversion(values[index] || '');
+                } else if (header === 'UPRN') {
+                    // Strip the leading '=' added to prevent Excel scientific notation (bug 919 fix)
+                    const raw = values[index] || '';
+                    record[header] = raw.startsWith('=') ? raw.slice(1) : raw;
                 } else {
                     record[header] = values[index] || '';
                 }
