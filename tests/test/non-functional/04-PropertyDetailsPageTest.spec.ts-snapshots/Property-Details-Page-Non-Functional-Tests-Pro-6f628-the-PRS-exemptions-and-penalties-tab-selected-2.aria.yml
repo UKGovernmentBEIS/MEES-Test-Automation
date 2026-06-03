@@ -3,9 +3,7 @@
   - term: PRS exemption status
   - definition: Penalty sent
   - term: PRS exemption date
-  - definition: /\d+ February \d+/
   - term: PRS penalty
-  - definition: Not found
+  - definition: Recorded
   - term: PRS penalty date
-  - definition: Not found
   - paragraph: For more detail on PRS exemptions and penalties, please visit the private rented sector energy exemptions register.
