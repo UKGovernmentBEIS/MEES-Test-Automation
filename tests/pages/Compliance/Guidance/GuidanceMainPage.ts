@@ -22,10 +22,11 @@ export const TemplateTypes = {
 export type TemplateTypes = typeof TemplateTypes[keyof typeof TemplateTypes];
 
 export class GuidanceMainPage extends BaseCompliancePage {
-    private readonly pageContext: Locator;
     private readonly breadcrumbHome: Locator;
     private readonly pageTitle: Locator;
-    
+    private readonly introParagraph: Locator;
+    private readonly warningText: Locator;
+
     private async templateLink(templateType: TemplateTypes): Promise<Locator> {
         return this.page.getByRole('link', { name: templateType });
     }
@@ -34,8 +35,8 @@ export class GuidanceMainPage extends BaseCompliancePage {
         super(page);
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.pageTitle = page.getByRole('heading', { name: 'Guidance' });
-        this.pageContext = page.locator('#main-content');
-
+        this.introParagraph = page.getByText('Use this guidance to understand how the Minimum Energy Efficiency Standards');
+        this.warningText = page.locator('strong').filter({ hasText: 'This guidance is not legally binding' });
     }
 
     async waitForPageToLoad(): Promise<void> {
@@ -51,10 +52,9 @@ export class GuidanceMainPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        // Create an array of locators that represent the context of the page, such as the breadcrumb, page title, and main content
-        const contextLocators: Locator[] = 
-            [this.breadcrumbHome, this.pageTitle, this.pageContext];
-        return contextLocators;
+        // Return only static structural elements — the guidance article list is excluded
+        // as its order changes dynamically based on last updated date
+        return [this.breadcrumbHome, this.pageTitle, this.introParagraph, this.warningText];
     }
 
     async clickTemplateLink(templateType: TemplateTypes): Promise<

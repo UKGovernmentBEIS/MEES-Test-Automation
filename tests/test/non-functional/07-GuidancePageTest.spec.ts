@@ -24,6 +24,11 @@ test.describe('Guidance Main Page Non-Functional Tests', () => {
     });
 
     test('Each guidance template link should meet accessibility standards and page context requirements', async ({ page }, testInfo) => {
+        // This test navigates into all six guidance articles, running an accessibility scan
+        // and context snapshots for each, so it legitimately needs more than the default
+        // 30s budget. test.slow() triples the timeout to 90s.
+        test.slow();
+
         const baseTest = new BaseNonFunctionalTest(page, testInfo);
         baseTest.addTestAnnotations(PageName.GUIDANCE_PAGE);
 

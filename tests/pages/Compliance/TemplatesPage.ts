@@ -54,13 +54,13 @@ export class TemplatesPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        // Create an array of locators that represent the context of the page, such as the breadcrumb, paragraphs, and template list
+        // Return only static structural elements — the template list is excluded
+        // as its order changes dynamically based on last updated date
         const contextLocators: Locator[] = [this.breadcrumbHome];
-        
+
         // Get fresh locators each time to ensure we get current page state
         const paragraphs = await this.page.locator('.govuk-grid-column-two-thirds>p').all();
-        const templates = await this.page.locator('div:has(> a[data-filename])').all();
-        
+
         // Add all paragraph locators
         if (paragraphs.length > 0) {
             contextLocators.push(...paragraphs);
@@ -68,11 +68,6 @@ export class TemplatesPage extends BaseCompliancePage {
 
         // Add publisher information locator
         contextLocators.push(this.publisherInformation);
-        
-        // Add all template locators  
-        if (templates.length > 0) {
-            contextLocators.push(...templates);
-        }
 
         return contextLocators;
     }
