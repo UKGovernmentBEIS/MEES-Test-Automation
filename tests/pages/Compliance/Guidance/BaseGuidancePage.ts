@@ -8,16 +8,16 @@ export abstract class BaseGuidancePage extends BaseCompliancePage {
     protected readonly breadcrumbHome: Locator
     protected readonly breadcrumbGuidance: Locator;
     protected readonly pageTitle: Locator
-    protected readonly pageContext: Locator;
     protected readonly pageHeading: Locator;
+    protected readonly publisherInformation: Locator;
 
     constructor(page: Page) {
         super(page);
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.breadcrumbGuidance = page.getByLabel('Breadcrumb').getByRole('link', { name: 'Guidance' });
         this.pageTitle = page.getByRole('heading', { name: 'Guidance' });
-        this.pageContext = page.locator('#main-content');
         this.pageHeading = page.locator('h1.govuk-heading-l');
+        this.publisherInformation = page.getByRole('link', { name: 'Department for Energy Security and Net Zero' });
     }
 
     async waitForPageToLoad(): Promise<void> {
@@ -37,9 +37,11 @@ export abstract class BaseGuidancePage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        // Create an array of locators that represent the context of the page, such as the breadcrumb, page title, and main content
-        const contextLocators: Locator[] = [this.pageContext];
-        return contextLocators;
+        // Return only the stable header elements — breadcrumbs, the article heading, and the
+        // publisher link. The article body is excluded as it contains dynamic Published/Last
+        // updated dates and content that can change, consistent with the Templates and Guidance
+        // main page context scoping.
+        return [this.breadcrumbHome, this.breadcrumbGuidance, this.pageHeading, this.publisherInformation];
     }
 
     async clickHomeBreadcrumb(): Promise<HomePage> {
