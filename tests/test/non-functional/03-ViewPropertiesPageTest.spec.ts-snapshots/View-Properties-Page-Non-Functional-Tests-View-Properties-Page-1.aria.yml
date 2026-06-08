@@ -29,7 +29,7 @@
           - /url: /compliance/landing-page
       - listitem:
         - link "Filter property records":
-          - /url: /compliance/filter-properties?street=ZZZZZZZZ&page=1
+          - /url: /compliance/filter-properties?street=Invalid%20Street%20Name&page=1
       - listitem: View property records
   - link "Profile settings":
     - /url: ./profile
@@ -43,7 +43,7 @@
     - term: Energy rating
     - definition: All energy ratings
     - term: Street
-    - definition: ZZZZZZZZ
+    - definition: Invalid Street Name
     - term: Town
     - definition: None
     - term: Postcode
