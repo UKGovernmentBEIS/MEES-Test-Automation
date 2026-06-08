@@ -194,26 +194,36 @@ test.describe('View Properties Page Data Validation Tests', () => {
             const propertyOwnersCount = await propertyDetailsPage.getNumberOfPropertyOwners();
             expect(propertyOwnersCount).toBe(propertyWithMultipleLandlords.Landlords.length);
 
-            // Verify details of each landlord are displayed
-            for (let i = 0; i < propertyWithMultipleLandlords.Landlords.length; i++) {
-                const dmsName = propertyWithMultipleLandlords.Landlords[i].CompanyName;
-                const dmsLocation = propertyWithMultipleLandlords.Landlords[i].Location;
-                const dmsAddress = propertyWithMultipleLandlords.Landlords[i].Address;
+            // Read every owner shown in the UI into a list, so each owner can be matched to its
+            // DMS landlord by company name rather than by position. The order owners appear in is
+            // not significant — only that every DMS landlord's full record is displayed correctly.
+            const uiOwners: { name: string; location: string; address: string; sicCode: string }[] = [];
+            for (let i = 0; i < propertyOwnersCount; i++) {
+                uiOwners.push({
+                    name: await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Name'),
+                    location: await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Location'),
+                    address: await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Address'),
+                    sicCode: await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'SIC code(s)')
+                });
+            }
+
+            // Verify each DMS landlord's full record (location, address, SIC codes) is displayed
+            // correctly, matching by company name so a difference in ordering does not matter
+            for (const dmsLandlord of propertyWithMultipleLandlords.Landlords) {
+                const dmsName = dmsLandlord.CompanyName;
                 const dmsSicCodeRaw = [
-                    propertyWithMultipleLandlords.Landlords[i].SicCodeSicText1,
-                    propertyWithMultipleLandlords.Landlords[i].SicCodeSicText2,
-                    propertyWithMultipleLandlords.Landlords[i].SicCodeSicText3,
-                    propertyWithMultipleLandlords.Landlords[i].SicCodeSicText4
+                    dmsLandlord.SicCodeSicText1,
+                    dmsLandlord.SicCodeSicText2,
+                    dmsLandlord.SicCodeSicText3,
+                    dmsLandlord.SicCodeSicText4
                 ].filter(code => code !== null && code !== undefined && code !== '').join(' | ');
                 const dmsSicCode = dmsSicCodeRaw === '' ? 'Not found' : dmsSicCodeRaw;
-                const uiName = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Name');
-                const uiLocation = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Location');
-                const uiAddress = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Address');
-                const uiSicCode = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'SIC code(s)');
-                expect(uiName, `Mismatch in Name for landlord ${i}. Expected: ${dmsName}, Actual: ${uiName}`).toBe(dmsName);
-                expect(uiLocation, `Mismatch in Location for landlord ${i}. Expected: ${dmsLocation}, Actual: ${uiLocation}`).toBe(dmsLocation);
-                expect(uiAddress, `Mismatch in Address for landlord ${i}. Expected: ${dmsAddress}, Actual: ${uiAddress}`).toBe(dmsAddress);
-                expect(uiSicCode, `Mismatch in SIC code for landlord ${i}. Expected: ${dmsSicCode}, Actual: ${uiSicCode}`).toBe(dmsSicCode);
+
+                const uiOwner = uiOwners.find(owner => owner.name === dmsName);
+                expect(uiOwner, `No property owner found in the UI matching DMS landlord "${dmsName}"`).toBeDefined();
+                expect(uiOwner!.location, `Mismatch in Location for landlord "${dmsName}"`).toBe(dmsLandlord.Location);
+                expect(uiOwner!.address, `Mismatch in Address for landlord "${dmsName}"`).toBe(dmsLandlord.Address);
+                expect(uiOwner!.sicCode, `Mismatch in SIC code for landlord "${dmsName}"`).toBe(dmsSicCode);
             }
         });
 
@@ -313,7 +323,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
             expect(propertyOwnersCount).toBe(propertyWithMultipleLandlords.Landlords.length);
         });
 
-        test('Sic code field should multiple sic codes separated by |', async ({ request }) => {
+        test('Sic code field should display multiple sic codes on separate lines', async ({ request }) => {
             // Get a property with multiple landlords and sic codes
             const dmsApiClient = new DMSExportApiClient(request);
             const propertyWithMultipleLandlords = 
@@ -350,16 +360,42 @@ test.describe('View Properties Page Data Validation Tests', () => {
 
             await propertyDetailsPage.SelectTab('Property owner(s)');
 
-            // Verify that the SIC code field displays multiple SIC codes separated by |
-            const uiSicCode = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'SIC code(s)');
-            const dmsSicCodeRaw = [
-                propertyWithMultipleLandlords.Landlords[0].SicCodeSicText1,
-                propertyWithMultipleLandlords.Landlords[0].SicCodeSicText2,
-                propertyWithMultipleLandlords.Landlords[0].SicCodeSicText3,
-                propertyWithMultipleLandlords.Landlords[0].SicCodeSicText4
-            ].filter(code => code !== null && code !== undefined && code !== '').join(' | ');
-            const dmsSicCode = dmsSicCodeRaw === '' ? 'Not found' : dmsSicCodeRaw;
-            expect(uiSicCode, `Expected SIC code to be "${dmsSicCode}" but found "${uiSicCode}"`).toBe(dmsSicCode);
+            // This property has one owner with multiple SIC codes. Find that owner in the DMS data
+            // (rather than assuming it is the first landlord), then match it to the UI owner by
+            // company name so a difference in ordering does not matter.
+            const dmsOwnerWithMultipleSic = propertyWithMultipleLandlords.Landlords.find(landlord =>
+                [landlord.SicCodeSicText1, landlord.SicCodeSicText2, landlord.SicCodeSicText3, landlord.SicCodeSicText4]
+                    .filter(code => code !== null && code !== undefined && code !== '').length > 1
+            );
+            expect(dmsOwnerWithMultipleSic, 'No DMS landlord with multiple SIC codes found for this property').toBeDefined();
+
+            const dmsSicCodes = [
+                dmsOwnerWithMultipleSic!.SicCodeSicText1,
+                dmsOwnerWithMultipleSic!.SicCodeSicText2,
+                dmsOwnerWithMultipleSic!.SicCodeSicText3,
+                dmsOwnerWithMultipleSic!.SicCodeSicText4
+            ].filter(code => code !== null && code !== undefined && code !== '');
+
+            // Find the matching UI owner by company name and read its SIC code(s) field
+            const ownerCount = await propertyDetailsPage.getNumberOfPropertyOwners();
+            let uiSicCodeValue: string | undefined;
+            for (let i = 0; i < ownerCount; i++) {
+                const name = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Name');
+                if (name === dmsOwnerWithMultipleSic!.CompanyName) {
+                    uiSicCodeValue = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'SIC code(s)');
+                    break;
+                }
+            }
+            expect(uiSicCodeValue, `No UI owner found matching "${dmsOwnerWithMultipleSic!.CompanyName}"`).toBeDefined();
+
+            // The UI displays each SIC code on its own line (white-space: pre-line) — unlike the CSV
+            // export, which joins them with " | ". Split on newline and compare the set of codes so
+            // the check is independent of ordering and separator formatting.
+            const uiSicCodes = uiSicCodeValue!.split('\n').map(code => code.trim()).filter(code => code !== '');
+            expect(
+                uiSicCodes.slice().sort(),
+                `SIC codes mismatch for "${dmsOwnerWithMultipleSic!.CompanyName}". Expected: ${dmsSicCodes.join(', ')}; Found: ${uiSicCodes.join(', ')}`
+            ).toEqual(dmsSicCodes.slice().sort());
         });
 
         test('Verify offsore landlords are displayed in the Property owner(s) tab', async ({ request }) => {
@@ -536,37 +572,43 @@ test.describe('View Properties Page Data Validation Tests', () => {
 
             await propertyDetailsPage.SelectTab('Energy efficiency details');
 
-            // Verify that the EPC history section displays the correct number of previous EPCs
-            const epcHistoryTableData = await propertyDetailsPage.getEPCHistoryTableData();
-            expect(epcHistoryTableData.length, 'Expected number of EPCs is not greater than 1').toBeGreaterThan(0);
-
-            // Verify that the details for each EPC in the EPC history section are displayed correctly based on DMS data
-            if (propertyWithMultipleEPCs.EpcCertificates) {
-                for (let i = 0; i < epcHistoryTableData.length; i++) {
-                    const dmsEPC = propertyWithMultipleEPCs.EpcCertificates[i];
-                    const expEnergyRating = `${dmsEPC.AssetRatingBand} (${dmsEPC.AssetRating})`;
-                    const expEPCExpiryDateISOFormatted = dmsEPC.ExpiryDate;
-                    const expEPCTransactionType = dmsEPC.TransactionType;
-                    const expEPCExpiryDate = expEPCExpiryDateISOFormatted
-                        ? (() => {
-                            const datePart = expEPCExpiryDateISOFormatted.split('T')[0];
-                            const [year, month, day] = datePart.split('-').map(Number);
-                            return new Date(year, month - 1, day).toLocaleDateString('en-GB', {
-                                day: 'numeric', month: 'long', year: 'numeric'
-                            });
-                        })()
-                        : null;
-
-                    const uiEnergyRating = epcHistoryTableData[i]['energyRating'];
-                    const uiEPCExpiryDate = epcHistoryTableData[i]['epcExpiryDate'];
-                    const uiEPCTransactionType = epcHistoryTableData[i]['epcTransactionType'];
-
-                    expect(uiEnergyRating, `Expected energy rating for EPC ${i + 1} to be ${expEnergyRating}`).toBe(expEnergyRating);
-                    expect(uiEPCExpiryDate, `Expected EPC expiry date for EPC ${i + 1} to be ${expEPCExpiryDate}`).toBe(expEPCExpiryDate);
-                    expect(uiEPCTransactionType, `Expected EPC transaction type for EPC ${i + 1} to be ${expEPCTransactionType}`).toBe(expEPCTransactionType);
-                }
-            } else {
+            if (!propertyWithMultipleEPCs.EpcCertificates) {
                 throw new Error('No EPC certificates found for the property with multiple EPCs');
+            }
+
+            // The EPC history is displayed ordered by expiry date, newest first. Sort the DMS
+            // certificates the same way so each row can be compared by position — this verifies
+            // both the displayed values and the display order.
+            const sortedDmsEpcs = [...propertyWithMultipleEPCs.EpcCertificates].sort((a, b) =>
+                new Date(b.ExpiryDate ?? 0).getTime() - new Date(a.ExpiryDate ?? 0).getTime());
+
+            // Verify the EPC history section displays a row for every DMS EPC certificate
+            const epcHistoryTableData = await propertyDetailsPage.getEPCHistoryTableData();
+            expect(epcHistoryTableData.length, 'EPC history row count does not match the number of DMS EPC certificates')
+                .toBe(sortedDmsEpcs.length);
+
+            // Verify each EPC row matches the correspondingly-ordered DMS certificate
+            for (let i = 0; i < sortedDmsEpcs.length; i++) {
+                const dmsEPC = sortedDmsEpcs[i];
+                const expEnergyRating = `${dmsEPC.AssetRatingBand} (${dmsEPC.AssetRating})`;
+                const expEPCTransactionType = dmsEPC.TransactionType;
+                const expEPCExpiryDate = dmsEPC.ExpiryDate
+                    ? (() => {
+                        const datePart = dmsEPC.ExpiryDate.split('T')[0];
+                        const [year, month, day] = datePart.split('-').map(Number);
+                        return new Date(year, month - 1, day).toLocaleDateString('en-GB', {
+                            day: 'numeric', month: 'long', year: 'numeric'
+                        });
+                    })()
+                    : null;
+
+                const uiEnergyRating = epcHistoryTableData[i]['energyRating'];
+                const uiEPCExpiryDate = epcHistoryTableData[i]['epcExpiryDate'];
+                const uiEPCTransactionType = epcHistoryTableData[i]['epcTransactionType'];
+
+                expect(uiEnergyRating, `Expected energy rating for EPC ${i + 1} to be ${expEnergyRating}`).toBe(expEnergyRating);
+                expect(uiEPCExpiryDate, `Expected EPC expiry date for EPC ${i + 1} to be ${expEPCExpiryDate}`).toBe(expEPCExpiryDate);
+                expect(uiEPCTransactionType, `Expected EPC transaction type for EPC ${i + 1} to be ${expEPCTransactionType}`).toBe(expEPCTransactionType);
             }
         });
 
