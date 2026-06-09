@@ -279,21 +279,16 @@ export class PropertyDetailsPage extends BaseCompliancePage {
 
     //#region DMS API Methods
 
-    async GetDMSPropertyDetailsValues(request: APIRequestContext, uprn: string | null = null, buildingReferenceNumber: string | null = null): Promise<DMSPropertyDetails> {
-        const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
+    async GetDMSPropertyDetailsValues(request: APIRequestContext, lacodes: string[], buildingReferenceNumber: number): Promise<DMSPropertyDetails> {
+        const baseUrl = process.env.DMS_BASE_URL + '/mees/propertydetail';
 
-        let queryParam = '';
-        if (uprn) {
-            queryParam = `uprn=${uprn}`;
-        } else if (buildingReferenceNumber) {
-            queryParam = `buildingrefnum=${buildingReferenceNumber}`;
-        } else {
-            throw new Error('Either uprn or buildingReferenceNumber must be provided');
-        }
-
-        const response = await request.get(`${baseUrl}?${queryParam}`, {
+        const response = await request.post(`${baseUrl}?`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: buildingReferenceNumber
             }
         });
 

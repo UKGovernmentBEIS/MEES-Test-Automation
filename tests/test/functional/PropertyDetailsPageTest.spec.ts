@@ -79,7 +79,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
             await propertyDetailsPage.SelectTab('Property details');
             
             // Get DMS property details for comparison
-            dmsPropertyDetails = await propertyDetailsPage.GetDMSPropertyDetailsValues(request, '100022918361');
+            dmsPropertyDetails = await propertyDetailsPage.GetDMSPropertyDetailsValues(request, ["E09000004"], 100022918361);
 
             // Verify Address
             const expectedAddress = constructAddress(dmsPropertyDetails.property);
@@ -825,7 +825,8 @@ test.describe('View Properties Page Data Validation Tests', () => {
             await expect(penaltyDateField, `Expected PRS penalty date to be "26 May 2026" but found "${await penaltyDateField.innerText()}"`).toContainText('2026');
         });
 
-        test('Verify that PRSE penalty data is not retrieved for a non-exempt property without UPRN', async () => {
+        // Bug 1026 'Property Details shows empty page for a property without UPRN'
+        test.fail('Verify that PRSE penalty data is not retrieved for a non-exempt property without UPRN', async () => {
             // Navigate to a property without UPRN, without exemption, and with a penalty recorded in PRSE
             // PRSE data cannot be linked to properties without a UPRN
             await filterPropertiesPage.setEnergyRatingFilter('A');
@@ -849,7 +850,8 @@ test.describe('View Properties Page Data Validation Tests', () => {
         });
     });
 
-    test('Verify data displayed in the main section of the Property Details page for property without UPRN', async ({ page, request }) => {
+    // Bug 1026 'Property Details shows empty page for a property without UPRN'
+    test.fail('Verify data displayed in the main section of the Property Details page for property without UPRN', async ({ page, request }) => {
         // Navigate to a property that does not have UPRN (buildingReferenceNumber = 858945)
         const landingPage: LandingPage = new LandingPage(page);
         await landingPage.navigate();
