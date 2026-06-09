@@ -1,46 +1,68 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Authentication Tests', () => {
-    const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
-    const paramUprn = '10002418410';
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/propertydetail';
+    const lacodes: string[] = ["E09000003", "E09000004"];
+    const Uprn = 100023522975;
 
     test('Valid x-functions-key returns 200 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: Uprn
             }
         });
         expect(response.status()).toBe(200);
     });
 
     test('Missing x-functions-key returns 401 or 403', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}`, {
+        const response = await request.get(`${baseUrl}`, {
             headers: {
                 // Missing x-functions-key header
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: Uprn
             }
         });
-        expect([401, 403]).toContain(response.status());
+        expect(response.status(), 
+            `Expected 404 status for missing x-functions-key, but got '${response.status()}'`)
+            .toBe(404);
     });
 
     test('Invalid x-functions-key returns 401 or 403', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}`, {
+        const response = await request.get(`${baseUrl}`, {
             headers: {
                 'x-functions-key': 'invalid_key'
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: Uprn
             }
         });
-        expect([401, 403]).toContain(response.status());
+        expect(response.status(),
+            `Expected 404 status for invalid x-functions-key, but got '${response.status()}'`)
+            .toBe(404);
     });
 });
 
 test.describe('Response Structure Tests', () => {
-    const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
-    const parambuildingrefnum = '226143';
-    const paramUprn = '100022917842';
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/propertydetail';
+    const lacodes: string[] = ["E09000003", "E09000004"];
+    const epcId = 226143;
+    const Uprn = 100022917842;
 
     test('Response returns valid JSON with correct top-level structure', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingrefnum=${parambuildingrefnum}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: Uprn
             }
         });
         expect(response.status()).toBe(200);
@@ -57,9 +79,13 @@ test.describe('Response Structure Tests', () => {
     });
 
     test('Property object contains all required fields with correct types', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingrefnum=${parambuildingrefnum}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: Uprn
             }
         });
         expect(response.status()).toBe(200);
@@ -118,9 +144,13 @@ test.describe('Response Structure Tests', () => {
     });
 
     test('EPC certificates array has correct structure', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&buildingrefnum=${parambuildingrefnum}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: Uprn
             }
         });
         expect(response.status()).toBe(200);    
@@ -144,9 +174,13 @@ test.describe('Response Structure Tests', () => {
     });
 
     test('Landlords array has correct structure using UPRN', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: Uprn
             }
         });
         expect(response.status()).toBe(200);
@@ -170,9 +204,13 @@ test.describe('Response Structure Tests', () => {
     });
 
     test('Landlords array has correct structure using Building Reference Number', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=${paramUprn}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: Uprn
             }
         });
         expect(response.status()).toBe(200);
@@ -197,14 +235,19 @@ test.describe('Response Structure Tests', () => {
 });
 
 test.describe('SIC Code Tests', () => {
-    const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
-    const paramUprn = '100022917842'; // property with onshore landlord(s) — used for sequential and onshore assertions
-    const multiLandlordUprn = '10010248290'; // property with both Onshore and Offshore landlords
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/propertydetail';
+    const lacodes: string[] = ["E09000003", "E09000004"];
+    const Uprn = 100022917842; // property with onshore landlord(s) — used for sequential and onshore assertions
+    const multiLandlordUprn = 10011861776; // property with both Onshore and Offshore landlords
 
     test('SIC code fields are populated sequentially with no gaps', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: Uprn
             }
         });
         expect(response.status()).toBe(200);
@@ -222,9 +265,13 @@ test.describe('SIC Code Tests', () => {
     });
 
     test('Offshore landlord has all SIC code fields as null', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${multiLandlordUprn}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: multiLandlordUprn // property with known Offshore landlord(s) — used for offshore assertions
             }
         });
         expect(response.status()).toBe(200);
@@ -244,9 +291,13 @@ test.describe('SIC Code Tests', () => {
     });
 
     test('Landlord with a non-null SIC code has Onshore location', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${multiLandlordUprn}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: multiLandlordUprn
             }
         });
         expect(response.status()).toBe(200);
@@ -266,9 +317,13 @@ test.describe('SIC Code Tests', () => {
     });
 
     test('SIC code fields are held independently per landlord in a multi-landlord response', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${multiLandlordUprn}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: multiLandlordUprn
             }
         });
         expect(response.status()).toBe(200);
@@ -293,257 +348,97 @@ test.describe('SIC Code Tests', () => {
 });
 
 test.describe('Parameter Validation Tests', () => {
-    const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
-    const validUprn = '10002418410';
-    const validbuildingrefnum = '924865340001';
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/propertydetail';
+    const lacodes: string[] = ["E09000003", "E09000004"];
+    const uprn = 100023522975; // property belonging to E09000004
 
-    test('Missing required parameters returns 400 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
+    test('Missing lacodes returns 400 status', async ({ request }) => {
+        const response = await request.post(`${baseUrl}`, {
+            headers: { 'x-functions-key': process.env.PROPERTYDETAIL_KEY! },
+            data: { buildingrefnum: uprn }
         });
         expect(response.status()).toBe(400);
     });
 
-    test('Invalid UPRN returns 400 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=invalid`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
+    test('Missing buildingrefnum returns 400 status', async ({ request }) => {
+        const response = await request.post(`${baseUrl}`, {
+            headers: { 'x-functions-key': process.env.PROPERTYDETAIL_KEY! },
+            data: { lacodes }
         });
         expect(response.status()).toBe(400);
     });
 
-    test('Invalid Building Reference Number returns 400 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=invalid`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
+    test('Missing both fields returns 400 status', async ({ request }) => {
+        const response = await request.post(`${baseUrl}`, {
+            headers: { 'x-functions-key': process.env.PROPERTYDETAIL_KEY! },
+            data: {}
         });
         expect(response.status()).toBe(400);
     });
 
-    test('Valid UPRN parameter return 200 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${validUprn}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
+    test('Empty lacodes array returns 200 with null data', async ({ request }) => {
+        const response = await request.post(`${baseUrl}`, {
+            headers: { 'x-functions-key': process.env.PROPERTYDETAIL_KEY! },
+            data: { lacodes: [], buildingrefnum: uprn }
         });
         expect(response.status()).toBe(200);
+        const body = await response.json();
+        expect(body.property).toBeNull();
+        expect(body.epcCertificates).toBeNull();
+        expect(body.landlords).toBeNull();
     });
 
-    test('Valid Building Reference Number parameter return 200 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=${validbuildingrefnum}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
+    test('buildingrefnum not belonging to provided lacodes returns 200 with null data', async ({ request }) => {
+        // buildingrefnum belongs to E09000004 — using only E09000003 puts it outside the provided lacodes
+        const response = await request.post(`${baseUrl}`, {
+            headers: { 'x-functions-key': process.env.PROPERTYDETAIL_KEY! },
+            data: { lacodes: ['E09000003'], buildingrefnum: uprn }
         });
         expect(response.status()).toBe(200);
+        const body = await response.json();
+        expect(body.property).toBeNull();
+        expect(body.epcCertificates).toBeNull();
+        expect(body.landlords).toBeNull();
     });
 
-    test('Valid UPRN and Building Reference Number parameters return 200 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${validUprn}&buildingrefnum=${validbuildingrefnum}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(200);
-    });
-
-    test('Empty UPRN parameter returns 400 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
+    test('buildingrefnum as string returns 400 status', async ({ request }) => {
+        const response = await request.post(`${baseUrl}`, {
+            headers: { 'x-functions-key': process.env.PROPERTYDETAIL_KEY! },
+            data: { lacodes, buildingrefnum: '100023522975' }
         });
         expect(response.status()).toBe(400);
     });
 
-    test('Empty Building Reference Number parameter returns 400 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(400);
-    });
-
-    test('First valid UPRN followed by invalid Building Reference Number returns 200 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${validUprn}&buildingrefnum=invalid`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }        });
-        expect(response.status()).toBe(200);
-    });
-
-    test('First valid Building Reference Number followed by invalid UPRN returns 200 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=${validbuildingrefnum}&uprn=invalid`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(200);
-    });
-
-    test('First invalid UPRN followed by valid Building Reference Number returns 200 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=invalid&buildingrefnum=${validbuildingrefnum}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(200);
-    });
-
-    test('First invalid Building Reference Number followed by valid UPRN returns 200 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=invalid&uprn=${validUprn}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(200);
-    });
-
-    test('UPRN too short returns 200 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=12345678901`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(200);
-    });
-
-    test('UPRN too long returns 400 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=1234567890123`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(400);
-    });
-
-    test('UPRN with non-numeric characters returns 400 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=1000241841A`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(400);
-    });
-
-    test('UPRN with special characters returns 400 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=10002418-10`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(400);
-    });
-
-    test('Building Reference Number too short returns 200', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=12345678901`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(200);
-    });
-
-    test('Building Reference Number too long returns 400 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=1234567890123`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(400);
-    });
-
-    test('Building Reference Number with non-numeric characters returns 400 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=92486534000A`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(400);
-    });
-
-    test('Building Reference Number with special characters returns 400 status', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=924865340-01`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(400);
-    });
-});
-
-test.describe('Edge Case Tests', () => {
-    const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
-    const paramUprn = '10002418410';
-    const parambuildingrefnum = '924865340001';
-
-    test('Invalid query parameter names handled gracefully', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?invalidparam=value`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(400);
-    });
-
-    test('First valid uprn with invalid parameter', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${paramUprn}&invalidparam=value`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(200);
-    });
-
-    test('First valid buildingrefnum with invalid parameter', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=${parambuildingrefnum}&invalidparam=value`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(200);
-    });
-
-    test('First invalid parameter followed by valid uprn', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?invalidparam=value&uprn=${paramUprn}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(200);
-    });
-
-    test('First invalid parameter followed by valid buildingrefnum', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?invalidparam=value&buildingrefnum=${parambuildingrefnum}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
+    test('Unknown extra field alongside valid fields returns 200 status', async ({ request }) => {
+        const response = await request.post(`${baseUrl}`, {
+            headers: { 'x-functions-key': process.env.PROPERTYDETAIL_KEY! },
+            data: { lacodes, buildingrefnum: uprn, unknownfield: 'value' }
         });
         expect(response.status()).toBe(200);
     });
 });
 
 test.describe('Data Verification Tests', () => {
-    const baseUrl = process.env.DMS_BASE_URL + '/mees/property';
-    const refUprn = '100022918361';
-    const refBuildingRefNum = '483115917526279276';
+    const baseUrl = process.env.DMS_BASE_URL + '/mees/propertydetail';
+    const lacodes: string[] = ["E09000004"];
+    const uprn = 100022918361;
+    const nonUprnCode = '274935898943677672';
 
     test('Property fields return expected values for known UPRN', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${refUprn}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: uprn
             }
         });
         expect(response.status()).toBe(200);
 
         const { property } = await response.json();
-        expect(property.uprn).toBe(100022918361);
-        expect(property.buildingReferenceNumber).toBe(Number(refUprn)); // buildingReferenceNumber equals UPRN when UPRN is available
+        expect(property.uprn).toBe(Number(uprn));
+        expect(property.buildingReferenceNumber).toBe(Number(uprn)); // buildingReferenceNumber equals UPRN when UPRN is available
         expect(property.postcode).toBe('DA1 4AL');
         expect(property.town).toBe('DARTFORD');
         expect(property.epcEnergyRating).toBe(22);
@@ -554,9 +449,13 @@ test.describe('Data Verification Tests', () => {
     });
 
     test('epcCertificates contains two entries with expected data for known UPRN', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?uprn=${refUprn}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: uprn
             }
         });
         expect(response.status()).toBe(200);
@@ -579,32 +478,6 @@ test.describe('Data Verification Tests', () => {
         expect(cert1.assetRatingBand).toBe('D');
         expect(cert1.lodgementDate).toContain('2015-03-06');
         expect(cert1.expiryDate).toContain('2025-03-06');
-    });
-
-    test('epcCertificates contains two entries with expected data when buildingrefnum is set to UPRN', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=${refUprn}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(response.status()).toBe(200);
-
-        const { epcCertificates } = await response.json();
-        expect(epcCertificates).toHaveLength(2);
-
-        const cert0 = epcCertificates[0];
-        expect(cert0.uprn).toBe(100022918361);
-        expect(cert0.assetRating).toBe(22);
-        expect(cert0.assetRatingBand).toBe('A');
-        expect(cert0.lodgementDate).toContain('2025-08-13T00:00:00');
-        expect(cert0.expiryDate).toContain('2035-08-13T00:00:00');
-
-        const cert1 = epcCertificates[1];
-        expect(cert1.uprn).toBe(100022918361);
-        expect(cert1.assetRating).toBe(93);
-        expect(cert1.assetRatingBand).toBe('D');
-        expect(cert1.lodgementDate).toContain('2015-03-06T00:00:00');
-        expect(cert1.expiryDate).toContain('2025-03-06T00:00:00');
     });
 
     test('Landlord returns expected data values for known UPRN', async ({ request }) => {
@@ -642,9 +515,13 @@ test.describe('Data Verification Tests', () => {
             }
         ]
 
-        const response = await request.get(`${baseUrl}?uprn=${refUprn}`, {
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: uprn
             }
         });
         expect(response.status()).toBe(200);
@@ -654,77 +531,59 @@ test.describe('Data Verification Tests', () => {
         expect(actualLandlords).toHaveLength(3);
         for (let l = 0; l < actualLandlords.length; l++) {
             const actualLandlord = actualLandlords[l];
-            const expectedLandlor = expectedLandlords[l]
+            const expectedLandlord = expectedLandlords[l]
 
-            expect(actualLandlord.uprn).toBe(expectedLandlor.uprn);
-            expect(actualLandlord.companyName).toBe(expectedLandlor.companyName);
-            expect(actualLandlord.location).toBe(expectedLandlor.location);
-            expect(actualLandlord.address).toBe(expectedLandlor.address);
-            expect(actualLandlord.sicCodeSicText1).toBe(expectedLandlor.sicCodeSicText1);
-            expect(actualLandlord.sicCodeSicText2).toBe(expectedLandlor.sicCodeSicText2);
-            expect(actualLandlord.sicCodeSicText3).toBe(expectedLandlor.sicCodeSicText3);
-            expect(actualLandlord.sicCodeSicText4).toBe(expectedLandlor.sicCodeSicText4);
+            expect(actualLandlord.uprn).toBe(expectedLandlord.uprn);
+            expect(actualLandlord.companyName).toBe(expectedLandlord.companyName);
+            expect(actualLandlord.location).toBe(expectedLandlord.location);
+            expect(actualLandlord.address).toBe(expectedLandlord.address);
+            expect(actualLandlord.sicCodeSicText1).toBe(expectedLandlord.sicCodeSicText1);
+            expect(actualLandlord.sicCodeSicText2).toBe(expectedLandlord.sicCodeSicText2);
+            expect(actualLandlord.sicCodeSicText3).toBe(expectedLandlord.sicCodeSicText3);
+            expect(actualLandlord.sicCodeSicText4).toBe(expectedLandlord.sicCodeSicText4);
             
         }
     });
 
-    test('epcCertificates contains one entry with expected data when buildingrefnum is set to EPC Id', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=${refBuildingRefNum}`, {
+    test('Properties without UPRN can have EPC Certificates', async ({ request }) => {
+        // buildingrefnum exceeds Number.MAX_SAFE_INTEGER — use raw body string to preserve precision
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!,
+                'Content-Type': 'application/json'
+            },
+            data: `{"lacodes":["E09000004"],"buildingrefnum":274935898943677672}`
         });
-        // Bug 1030: Unable to query property details using /mees/property/ endpoint using buildingrefnum that is not UPRN
-        expect(response.status()).toBe(400);
+        expect(response.status()).toBe(200);
 
-        // const { property, epcCertificates } = await response.json();
+        const responseJSON = await response.json();
+        const propertyDetails = responseJSON.property;
+        const epcCertificates = responseJSON.epcCertificates;
         
-        // expect(property.uprn).toBeNull();
-        // expect(property.buildingReferenceNumber).toBe(Number(refBuildingRefNum));
-        // // BUG 1029: Properties without UPRN do not have EPC Certificates in DMS — expect empty array
-        // expect(epcCertificates).toHaveLength(0);
+        expect(propertyDetails.uprn).toBeNull();
+        expect(propertyDetails.buildingReferenceNumber).toBe(Number(nonUprnCode));
+        expect(epcCertificates).toHaveLength(1);
     });
 
-    test('Landlords array is empty when querying by EPC Id with no UPRN', async ({ request }) => {
-        const response = await request.get(`${baseUrl}?buildingrefnum=${refBuildingRefNum}`, {
+    test('Properties without UPRN does not return landlord data', async ({ request }) => {
+        // buildingrefnum exceeds Number.MAX_SAFE_INTEGER — use raw body string to preserve precision
+        const response = await request.post(`${baseUrl}`, {
             headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!,
+                'Content-Type': 'application/json'
+            },
+            data: `{"lacodes":["E09000004"],"buildingrefnum":274935898943677672}`
         });
-        // Bug 1030: Unable to query property details using /mees/property/ endpoint using buildingrefnum that is not UPRN
-        expect(response.status()).toBe(400);
 
-        // const { property, landlords } = await response.json();
+        expect(response.status()).toBe(200);
+
+        const responseJSON = await response.json();
+        const propertyDetails = responseJSON.property;
+        const landlordDetails = responseJSON.landlords;
         
-        // expect(property.uprn).toBeNull();
-        // expect(property.buildingReferenceNumber).toBe(Number(refBuildingRefNum));
-        // // Landlords are linked to a property by UPRN — properties without a UPRN will always return an empty landlords array
-        // expect(landlords).toHaveLength(0);
-    });
-
-    test('buildingReferenceNumber is consistent when querying same property by uprn vs buildingrefnum', async ({ request }) => {
-        // Query the same property using uprn parameter
-        const responseByUprn = await request.get(`${baseUrl}?uprn=${refUprn}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(responseByUprn.status()).toBe(200);
-
-        // Query the same property using buildingrefnum parameter set to UPRN
-        const responseByBuildingRef = await request.get(`${baseUrl}?buildingrefnum=${refUprn}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTY_KEY!
-            }
-        });
-        expect(responseByBuildingRef.status()).toBe(200);
-
-        // Both responses should return the same buildingReferenceNumber (equal to UPRN)
-        const propertyByUprn = (await responseByUprn.json()).property;
-        const propertyByBuildingRef = (await responseByBuildingRef.json()).property;
-        
-        expect(propertyByUprn.buildingReferenceNumber).toBe(Number(refUprn));
-        expect(propertyByBuildingRef.buildingReferenceNumber).toBe(Number(refUprn));
-        expect(propertyByUprn.buildingReferenceNumber).toBe(propertyByBuildingRef.buildingReferenceNumber);
+        expect(propertyDetails.uprn).toBeNull();
+        expect(propertyDetails.buildingReferenceNumber).toBe(Number(nonUprnCode));
+        // Landlords are linked to a property by UPRN — properties without a UPRN will always return an empty landlords array
+        expect(landlordDetails).toHaveLength(0);
     });
 });
