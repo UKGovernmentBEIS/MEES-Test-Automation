@@ -1,9 +1,2 @@
-- tabpanel:
-  - heading "PRS exemptions and penalties" [level=2]
-  - term: PRS exemption status
-  - definition: Penalty sent
-  - term: PRS exemption date
-  - term: PRS penalty
-  - definition: Recorded
-  - term: PRS penalty date
-  - paragraph: For more detail on PRS exemptions and penalties, please visit the private rented sector energy exemptions register.
+- link "View property records":
+  - /url: /compliance/view-properties?energyRating=A&evidence=EvidenceFound&page=1&pageSize=30

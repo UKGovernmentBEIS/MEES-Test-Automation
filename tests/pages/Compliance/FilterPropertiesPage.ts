@@ -67,7 +67,20 @@ export class FilterPropertiesPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        return [this.pageContext];
+        // Return only the static form structure. The council dropdown (its options and their
+        // order) and the "view records from N councils" statement are excluded as they are
+        // data-dependent — consistent with the Templates and Guidance page context scoping.
+        return [
+            this.homeBreadcrumb,
+            this.streetTextBox,
+            this.townTextBox,
+            this.postcodeTextBox,
+            this.showAllRentalEvidenceRadioButton,
+            this.evidenceFoundRadioButton,
+            this.notFoundRadioButton,
+            this.applyFiltersButton,
+            this.clearFiltersButton
+        ];
     }
 
     async setCouncilFilter(council: string): Promise<void> {
@@ -125,6 +138,9 @@ export class FilterPropertiesPage extends BaseCompliancePage {
 
     async setStreetFilter(street: string): Promise<void> {
         await this.streetTextBox.fill(street);
+        // Blur to fire the change event so the underlying LWC commits the value before the filter
+        // is applied. fill() only fires input, which the component does not always bind to in time.
+        await this.streetTextBox.blur();
 
         //Confirm the textbox value has been set
         const enteredValue = await this.getStreetFilterValue();
@@ -139,6 +155,9 @@ export class FilterPropertiesPage extends BaseCompliancePage {
 
     async setTownFilter(town: string): Promise<void> {
         await this.townTextBox.fill(town);
+        // Blur to fire the change event so the underlying LWC commits the value before the filter
+        // is applied. fill() only fires input, which the component does not always bind to in time.
+        await this.townTextBox.blur();
 
         //Confirm the textbox value has been set
         const enteredValue = await this.getTownFilterValue();
@@ -153,6 +172,9 @@ export class FilterPropertiesPage extends BaseCompliancePage {
 
     async setPostcodeFilter(postcode: string): Promise<void> {
         await this.postcodeTextBox.fill(postcode);
+        // Blur to fire the change event so the underlying LWC commits the value before the filter
+        // is applied. fill() only fires input, which the component does not always bind to in time.
+        await this.postcodeTextBox.blur();
 
         //Confirm the textbox value has been set
         const enteredValue = await this.getPostcodeFilterValue();

@@ -122,9 +122,12 @@ export class DMSExportApiClient {
             throw new Error('No properties returned from DMS export for filters: ' + JSON.stringify(filters));
         }
 
-        // Find the first property with an owner that has multiple sic codes
-        const propertyWithAnOwnerWithMultipleSicCodes = 
-            items.find(item => Array.isArray(item.Landlords) && item.Landlords.length > 1);
+        // Find the first property that has an owner with more than one SIC code
+        const propertyWithAnOwnerWithMultipleSicCodes =
+            items.find(item => Array.isArray(item.Landlords) && item.Landlords.some(landlord =>
+                [landlord.SicCodeSicText1, landlord.SicCodeSicText2, landlord.SicCodeSicText3, landlord.SicCodeSicText4]
+                    .filter(code => code !== null && code !== undefined && code !== '').length > 1
+            ));
         if (!propertyWithAnOwnerWithMultipleSicCodes) {
             throw new Error('No properties with an owner with multiple SIC codes found for filters: ' + JSON.stringify(filters));
         }
