@@ -53,7 +53,7 @@ jobs:
         TEST_DUAL_ACCESS_EMAIL: ${{ secrets.TEST_DUAL_ACCESS_EMAIL }}
         TEST_DUAL_ACCESS_PASSWORD: ${{ secrets.TEST_DUAL_ACCESS_PASSWORD }}
         PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
-        PROPERTY_KEY: ${{ secrets.PROPERTY_KEY }}
+        PROPERTYDETAIL_KEY: ${{ secrets.PROPERTYDETAIL_KEY }}
         EXPORT_KEY: ${{ secrets.EXPORT_KEY }}
         DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
         BASE_URL: ${{ secrets.BASE_URL }}
@@ -133,7 +133,7 @@ jobs:
     - name: Run api tests
       run: npx playwright test --project=api
       env:
-        PROPERTY_KEY: ${{ secrets.PROPERTY_KEY }}
+        PROPERTYDETAIL_KEY: ${{ secrets.PROPERTYDETAIL_KEY }}
         PROPERTIES_KEY: ${{ secrets.PROPERTIES_KEY }}
         EXPORT_KEY: ${{ secrets.EXPORT_KEY }}
         DMS_BASE_URL: ${{ secrets.DMS_BASE_URL }} 
