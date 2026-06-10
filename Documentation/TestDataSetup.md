@@ -14,7 +14,9 @@ This document describes the PRSE (PRS Exemption Register) data that must exist i
 
 Filter applied by the test: **Council = LONDON BOROUGH OF BEXLEY**, **Energy Rating = A**.
 
-The test requires at least one property in PRSE with each of the following exemption statuses. Properties are found dynamically — no fixed address or UPRN is required.
+The test requires that the Properties View page shows list of properties matching above filter criteria and have at least one property 
+in PRSE with each of the following exemption statuses. Properties are found dynamically — no fixed address or UPRN is required. The test
+can handle pagination.
 
 | Required PRS exemption status | Expected colour tag |
 |-------------------------------|---------------------|
@@ -26,9 +28,9 @@ The test requires at least one property in PRSE with each of the following exemp
 | Ended | pink |
 | Expired | grey |
 | Needs update | yellow |
-| Not found | grey |
+| Not found | grey* |
 
-> Note: "Not found" behaviour is currently affected by Bug 908.
+> Note: *"Not found" behaviour is currently affected by Bug 908.
 
 ### Non-exempt property with penalty
 
