@@ -79,7 +79,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
             await propertyDetailsPage.SelectTab('Property details');
             
             // Get DMS property details for comparison
-            dmsPropertyDetails = await propertyDetailsPage.GetDMSPropertyDetailsValues(request, ["E09000004"], 100022918361);
+            dmsPropertyDetails = await propertyDetailsPage.GetDMSPropertyDetailsValues(request, ["E09000004"], '100022918361');
 
             // Verify Address
             const expectedAddress = constructAddress(dmsPropertyDetails.property);
@@ -822,7 +822,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
             const penaltyField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty');
             await expect(penaltyField, `Expected PRS penalty to be "Recorded" but found "${await penaltyField.innerText()}"`).toHaveText('Recorded');
             const penaltyDateField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty date');
-            await expect(penaltyDateField, `Expected PRS penalty date to be "26 May 2026" but found "${await penaltyDateField.innerText()}"`).toContainText('2026');
+            await expect(penaltyDateField, `Expected PRS penalty date to contain "2026" year, but found "${await penaltyDateField.innerText()}" date.`).toContainText('2026');
         });
 
         test('Verify that PRSE penalty data is not retrieved for a non-exempt property without UPRN', async ({ page }) => {
@@ -832,33 +832,26 @@ test.describe('View Properties Page Data Validation Tests', () => {
             const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForTableContent();
 
-            // Workaround for bug 1026: Navigate to the property details page using the address 
-            // and expect "page-not-found" in the URL due to the bug. 
-            // Once the bug is fixed, this should navigate to the property details page successfully
-            //  and the URL should contain "buildingrefnum=858945".
-            await viewPropertiesPage.ClickViewDetailsForPropertyWithoutUPRN('Unit 2B, Roman Way, Crayford, DARTFORD, DA1 4FY');
-            await expect(page).toHaveURL(/.*page-not-found.*/);
+            const propertyDetailsPageNoUprn = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(
+                'Unit 2B, Roman Way, Crayford, DARTFORD, DA1 4FY');
+            await propertyDetailsPageNoUprn.SelectTab('PRS exemptions and penalties');
 
-            // const propertyDetailsPageNoUprn = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(
-            //     'Unit 2B, Roman Way, Crayford, DARTFORD, DA1 4FY');
-            // await propertyDetailsPageNoUprn.SelectTab('PRS exemptions and penalties');
-
-            // // Verify all PRS fields display 'Not found' — the system cannot retrieve PRSE data without a UPRN
-            // const prsFields = [
-            //     'PRS exemption status',
-            //     'PRS exemption date',
-            //     'PRS penalty',
-            //     'PRS penalty date'
-            // ];
-            // for (const field of prsFields) {
-            //     const fieldValue = await propertyDetailsPageNoUprn.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', field);
-            //     await expect(fieldValue, `Expected ${field} to be "Not found" but found "${await fieldValue.innerText()}"`).toHaveText('Not found');
-            // }
+            // Verify all PRS fields display 'Not found' — the system cannot retrieve PRSE data without a UPRN
+            const prsFields = [
+                'PRS exemption status',
+                'PRS exemption date',
+                'PRS penalty',
+                'PRS penalty date'
+            ];
+            for (const field of prsFields) {
+                const fieldValue = await propertyDetailsPageNoUprn.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', field);
+                await expect(fieldValue, `Expected ${field} to be "Not found" but found "${await fieldValue.innerText()}"`).toHaveText('Not found');
+            }
         });
     });
 
-    test('Verify data displayed in the main section of the Property Details page for property without UPRN', async ({ page }) => {
-        // Navigate to a property that does not have UPRN (buildingReferenceNumber = 858945)
+    test('Verify data displayed in the main section of the Property Details page for property without UPRN', async ({ page, request }) => {
+        // Navigate to a property that does not have UPRN (buildingReferenceNumber = 483115917526279276)
         const landingPage: LandingPage = new LandingPage(page);
         await landingPage.navigate();
         const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
@@ -867,48 +860,32 @@ test.describe('View Properties Page Data Validation Tests', () => {
         await filterPropertiesPage.setPostcodeFilter('DA1 4FY');
         const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
         await viewPropertiesPage.waitForTableContent();
-
-        // Workaround for bug 1026: Navigate to the property details page using the address 
-        // and expect "page-not-found" in the URL due to the bug. 
-        // Once the bug is fixed, this should navigate to the property details page successfully
-        //  and the URL should contain "buildingrefnum=858945".
-        await viewPropertiesPage.ClickViewDetailsForPropertyWithoutUPRN('Unit 2B, Roman Way, Crayford, DARTFORD, DA1 4FY');
-        await expect(page).toHaveURL(/.*page-not-found.*/);
-
-
-        //await viewPropertiesPage.ClickViewDetailsForPropertyWithoutUPRN('Unit 2B, Roman Way, Crayford, DARTFORD, DA1 4FY');
-
-        // const propertyDetailsPageNoUprn = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 2B, Roman Way, Crayford, DARTFORD, DA1 4FY');
-
-        // // Verify URL contains buildingrefnum parameter (not uprn parameter)
-        // const currentUrl = page.url();
-        // expect(currentUrl).toContain('buildingrefnum=858945');
-        // expect(currentUrl).not.toContain('uprn=');
+        const propertyDetailsPageNoUprn = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 2B, Roman Way, Crayford, DARTFORD, DA1 4FY');
         
-        // // Get DMS property details for comparison
-        // const dmsPropertyDetailsNoUprn = await propertyDetailsPageNoUprn.GetDMSPropertyDetailsValues(request, ["E09000004"], Number('483115917526279276'));
+        // Get DMS property details for comparison
+        const dmsPropertyDetailsNoUprn = await propertyDetailsPageNoUprn.GetDMSPropertyDetailsValues(request, ["E09000004"], '483115917526279276');
         
-        // // Helper function to construct address from DMS data
-        // const constructAddress = (property: any) => {
-        //     const addressParts = [
-        //         property.line1,
-        //         property.line2,
-        //         property.line3,
-        //         property.town,
-        //         property.postcode
-        //     ].filter(part => part !== null && part !== '').join('\n');
-        //     return addressParts;
-        // };
+        // Helper function to construct address from DMS data
+        const constructAddress = (property: any) => {
+            const addressParts = [
+                property.line1,
+                property.line2,
+                property.line3,
+                property.town,
+                property.postcode
+            ].filter(part => part !== null && part !== '').join('\n');
+            return addressParts;
+        };
 
-        // // Verify Address (DMS)
-        // const expectedAddress = constructAddress(dmsPropertyDetailsNoUprn.property);
-        // await propertyDetailsPageNoUprn.SelectTab('Property details');
-        // expect(await propertyDetailsPageNoUprn.getPropertyDetailsByTabNameAndFieldName(
-        //     'Property details', 'Property address')).toBe(expectedAddress);
+        // Verify Address (DMS)
+        const expectedAddress = constructAddress(dmsPropertyDetailsNoUprn.property);
+        await propertyDetailsPageNoUprn.SelectTab('Property details');
+        expect(await propertyDetailsPageNoUprn.getPropertyDetailsByTabNameAndFieldName(
+            'Property details', 'Property address')).toBe(expectedAddress);
 
-        // // Verify UPRN field displays 'Not found' when property has no UPRN
-        // const uprnValue = await propertyDetailsPageNoUprn.getPropertyDetailsByTabNameAndFieldName('Property details', 'UPRN');
-        // expect(uprnValue).toBe('Not found');
+        // Verify UPRN field displays 'Not found' when property has no UPRN
+        const uprnValue = await propertyDetailsPageNoUprn.getPropertyDetailsByTabNameAndFieldName('Property details', 'UPRN');
+        expect(uprnValue).toBe('Not found');
     });
 });
 

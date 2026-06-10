@@ -360,19 +360,6 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         return propertyDetailsPage;
     }
 
-    // Bug 1026 workaround: click the 'View' link for a property without a UPRN 
-    // and ignore any resulting errors, to work around an issue where the page 
-    // fails to load when doing this for certain properties. 
-    // Remove this method and use ViewDetailsForPropertyWithAddress 
-    // directly in tests once the bug is fixed.
-    async ClickViewDetailsForPropertyWithoutUPRN(address: string): Promise<void> {
-        const row = this.propertyTableRow.filter({ hasText: address });
-        if (await row.count() === 0) {
-            throw new Error(`Property with address '${address}' not found.`);
-        }
-        await row.getByRole('link', { name: 'View' }).first().click();
-    }
-
     async getExportFilename(): Promise<string> {
         await this.exportButton.click();
         const download = await this.page.waitForEvent('download');

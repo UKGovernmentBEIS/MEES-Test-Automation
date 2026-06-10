@@ -279,17 +279,18 @@ export class PropertyDetailsPage extends BaseCompliancePage {
 
     //#region DMS API Methods
 
-    async GetDMSPropertyDetailsValues(request: APIRequestContext, lacodes: string[], buildingReferenceNumber: number): Promise<DMSPropertyDetails> {
+    async GetDMSPropertyDetailsValues(request: APIRequestContext, lacodes: string[], buildingReferenceNumber: string): Promise<DMSPropertyDetails> {
         const baseUrl = process.env.DMS_BASE_URL + '/mees/propertydetail';
 
         const response = await request.post(`${baseUrl}?`, {
             headers: {
-                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!,
+                'Content-Type': 'application/json'
             },
-            data: {
-                lacodes: lacodes,
-                buildingrefnum: buildingReferenceNumber
-            }
+            data: `{
+                "lacodes": ${JSON.stringify(lacodes)},
+                "buildingrefnum": ${buildingReferenceNumber}
+            }`
         });
 
         if (response.status() !== 200) {
