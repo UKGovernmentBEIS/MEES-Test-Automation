@@ -249,8 +249,7 @@ test.describe('View Properties Page Tests', () => {
             'Expired': 'grey',
             'Needs update': 'yellow',
             'Draft': 'blue',
-            // TODO (Bug 908): 'PRS exemption' field displays the wrong value and background colour when no data
-            'Not found': 'grey'
+            'Not found': ''
         };
 
         const invalidExemptionsColors: string[] = [];

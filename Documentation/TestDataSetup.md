@@ -28,9 +28,8 @@ can handle pagination.
 | Ended | pink |
 | Expired | grey |
 | Needs update | yellow |
-| Not found | grey* |
+| Not found | |
 
-> Note: *"Not found" behaviour is currently affected by Bug 908.
 
 ### Non-exempt property with penalty
 
