@@ -23,10 +23,10 @@ test.describe('Templates Page', () => {
 
     test('Verify that the correct template file name is downloaded', async () => {
         const expectedTemplateFileNames: string[] = [
-            'Penalty notice (publication) letter template - V3.docx',
-            'Penalty notice (financial) letter template - V3.docx',
-            'Compliance notice letter template - V3.docx',
-            'Penalty notice (financial and publication) letter template - V3.docx'
+            'Penalty notice letter (publication) template - V1.docx',
+            'Penalty notice letter (financial) template - V1.docx',
+            'Compliance notice letter template - V1.docx',
+            'Penalty notice letter (financial and publication) template - V1.docx'
         ];
 
         const actualFileNames = await templatesPage.downloadFileNamesForTemplates();

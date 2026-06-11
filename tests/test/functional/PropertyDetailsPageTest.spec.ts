@@ -231,7 +231,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
                     name: await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Name'),
                     location: await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Location'),
                     address: await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Address'),
-                    sicCode: await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'SIC code(s)')
+                    sicCode: await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Standard Industrial Classification codes')
                 });
             }
 
@@ -304,7 +304,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
             expect(await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'Name')).toBe(' Not found');
             expect(await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'Location')).toBe(' Not found');
             expect(await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'Address')).toBe(' Not found');
-            expect(await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'SIC code(s)')).toBe(' Not found');
+            expect(await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(0, 'Standard Industrial Classification codes')).toBe(' Not found');
         });
 
         test('Verify that the Property owner(s) tab shows more than 4 landlords', async ({ request }) => {
@@ -351,8 +351,8 @@ test.describe('View Properties Page Data Validation Tests', () => {
             expect(propertyOwnersCount).toBe(propertyWithMultipleLandlords.Landlords.length);
         });
 
-        test('Sic code field should display multiple sic codes on separate lines', async ({ request }) => {
-            // Get a property with multiple landlords and sic codes
+        test('Standard Industrial Classification codes field should display multiple SIC codes on separate lines', async ({ request }) => {
+            // Get a property with multiple landlords and Standard Industrial Classification codes
             const dmsApiClient = new DMSExportApiClient(request);
             const propertyWithMultipleLandlords = 
                 await dmsApiClient.getPropertyWithAnOwnerWithMultipleSicCodes({
@@ -404,13 +404,13 @@ test.describe('View Properties Page Data Validation Tests', () => {
                 dmsOwnerWithMultipleSic!.SicCodeSicText4
             ].filter(code => code !== null && code !== undefined && code !== '');
 
-            // Find the matching UI owner by company name and read its SIC code(s) field
+            // Find the matching UI owner by company name and read its Standard Industrial Classification codes field
             const ownerCount = await propertyDetailsPage.getNumberOfPropertyOwners();
             let uiSicCodeValue: string | undefined;
             for (let i = 0; i < ownerCount; i++) {
                 const name = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Name');
                 if (name === dmsOwnerWithMultipleSic!.CompanyName) {
-                    uiSicCodeValue = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'SIC code(s)');
+                    uiSicCodeValue = await propertyDetailsPage.getPropertyOwnerFieldValueByOwnerIndex(i, 'Standard Industrial Classification codes');
                     break;
                 }
             }

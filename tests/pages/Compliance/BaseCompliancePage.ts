@@ -18,7 +18,7 @@ export abstract class BaseCompliancePage extends BasePage {
     constructor(page: Page) {
             super(page);
             this.page = page;
-            this.pageHeaderLink = page.getByRole('link', { name: 'Check if properties meet minimum energy efficiency standards' });
+            this.pageHeaderLink = page.getByRole('link', { name: 'Check if non-domestic properties meet minimum energy efficiency standards' });
             this.signOutButton = this.page.getByRole('link', { name: 'Sign out' });
             this.profileSettingsLink = this.page.getByRole('link', { name: 'Profile settings' });
             this.tabPropertyRecords = page.getByRole('link', { name: 'Property records', exact: true })
