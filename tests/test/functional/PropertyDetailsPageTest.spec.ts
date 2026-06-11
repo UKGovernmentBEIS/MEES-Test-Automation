@@ -8,6 +8,7 @@ import { PropertyDetailsPage, DMSPropertyDetails } from '../../pages/Compliance/
 import { ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
 import { getCurrentUserAccountName } from '../../utils/AuthUtils';
 import { DMSExportApiClient } from '../../api/DMSExportApiClient';
+import { PageNotFoundPage } from '../../pages/Compliance/PageNotFoundPage';
 
 function getExpectedCommentAnnotationUserIdentifier(page: any): string {
     const currentUserName = getCurrentUserAccountName(page);
@@ -1069,3 +1070,32 @@ test.describe('Property Details Page Accessibility Tests', () => {
     });
 });
 
+test.describe('Property Details Page Access Control Tests', () => {
+    let propertyDetailsPage: PropertyDetailsPage;
+
+    test.beforeEach(async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.FUNCTIONAL)
+        );
+    });
+
+    test('Property Details page should validate user council access before displaying property information', async ({ page }) => {
+        const landingPage: LandingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage: HomePage = await landingPage.clickSignIn_AuthenticatedUser();
+        const filterPropertiesPage: FilterPropertiesPage = await homePage.clickViewProperties();
+        await filterPropertiesPage.setEnergyRatingFilter('A');
+        const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+        await viewPropertiesPage.waitForTableContent();
+
+        // Attempt to navigate to a property details page for a property that the user should not have access to (buildingReferenceNumber = 999999999999999999)
+        propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+        await propertyDetailsPage.waitForPageToLoad();
+        await page.goto(`/compliance/view-details?buildingrefnum=${10033183893}`);
+
+        const pageNotFoundPage = new PageNotFoundPage(page);
+        await pageNotFoundPage.waitForPageToLoad();
+        expect(await pageNotFoundPage.isDisplayed(), 
+            'Page Not Found page should be displayed for unauthorized access').toBe(true);    
+    });
+});

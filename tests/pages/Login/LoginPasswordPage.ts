@@ -2,7 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import { HomePage } from '../Compliance/HomePage';
 import { CheckEmailResetPasswordPage } from './CheckEmailResetPasswordPage';
-import { NoAccessPage } from '../Compliance/NoAccessPage';
+import { NoAccessPage } from './NoAccessPage';
 
 export class LoginPasswordPage {
   private readonly page: Page;
