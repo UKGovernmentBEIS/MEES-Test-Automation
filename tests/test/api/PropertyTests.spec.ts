@@ -163,8 +163,10 @@ test.describe('Response Structure Tests', () => {
         if (epcCertificates.length > 0) {
             const certificate = epcCertificates[0];
             const certKeys = Object.keys(certificate);
-            expect(certKeys, `EPC certificate has unexpected fields. Expected [uprn, assetRating, assetRatingBand, lodgementDate, expiryDate, transactionTypeHistory], got [${certKeys.join(', ')}]`).toHaveLength(6);
+            expect(certKeys, `EPC certificate has unexpected fields. Expected [uprn, buildingReferenceNumber, assetRating, assetRatingBand, lodgementDate, expiryDate, transactionTypeHistory], got [${certKeys.join(', ')}]`).toHaveLength(7);
             expect(typeof certificate.uprn, `Expected 'uprn' to be type 'number', got '${typeof certificate.uprn}'`).toBe('number');
+            // BUG 1054 EPCCertificate element in the /mees/propertydetail endpoint response message has buildingReferenceNumber
+            expect(['number', 'object']).toContain(typeof certificate.buildingReferenceNumber); // can be number or null
             expect(typeof certificate.assetRating, `Expected 'assetRating' to be type 'number', got '${typeof certificate.assetRating}'`).toBe('number');
             expect(typeof certificate.assetRatingBand, `Expected 'assetRatingBand' to be type 'string', got '${typeof certificate.assetRatingBand}'`).toBe('string');
             expect(typeof certificate.lodgementDate, `Expected 'lodgementDate' to be type 'string', got '${typeof certificate.lodgementDate}'`).toBe('string');
