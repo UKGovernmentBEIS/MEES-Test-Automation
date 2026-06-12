@@ -992,6 +992,7 @@ test.describe('View Properties export functionality', () => {
         // Bug 1031 'Invalid PossibleEvidenceEpcTransactionType for a property with multiple EPC Certificates'
         test.fail('Exported Possible rental evidence field value is correct', async ({ request }) => {
             const lacodes = ["E09000003", "E09000004"];
+            const energyRatingFilter = 'A';
 
             const expectedBothTrue = 'Mandatory issue (Property to let) EPC transaction type | Property owner has letting company SIC code';
             const expectedEPCTransactionTypeOnly = 'Mandatory issue (Property to let) EPC transaction type';
@@ -1007,7 +1008,7 @@ test.describe('View Properties export functionality', () => {
 
             // Fetch raw DMS items so we can derive the expected computed value for each row
             const dmsApiClient = new DMSExportApiClient(request);
-            const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, });
+            const rawDmsItems = await dmsApiClient.getExportedData({ lacodes, energyratingband: energyRatingFilter });
             expect(rawDmsItems.length, 'DMS export returned no items').toBeGreaterThan(0);
 
             // Case 1: both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are true
