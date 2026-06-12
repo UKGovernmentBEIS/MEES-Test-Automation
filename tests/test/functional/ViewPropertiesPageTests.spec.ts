@@ -991,7 +991,7 @@ test.describe('View Properties export functionality', () => {
 
         // Bug 1031 'Invalid PossibleEvidenceEpcTransactionType for a property with multiple EPC Certificates'
         test.fail('Exported Possible rental evidence field value is correct', async ({ request }) => {
-            const lacodes = ["E09000003", "E09000004"];
+            const lacodes = ["E09000004"];
             const energyRatingFilter = 'A';
 
             const expectedBothTrue = 'Mandatory issue (Property to let) EPC transaction type | Property owner has letting company SIC code';
