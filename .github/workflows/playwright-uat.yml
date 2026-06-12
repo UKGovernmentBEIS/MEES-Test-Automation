@@ -34,7 +34,7 @@ jobs:
 
   functional-tests:
     needs: resolve-tag
-    uses: ./.github/workflows/templates/functional-tests.yml
+    uses: ./.github/workflows/template-functional-tests.yml
     with:
       environment: 'new uat'
       ref: ${{ needs.resolve-tag.outputs.tag }}
@@ -43,7 +43,7 @@ jobs:
 
   non-functional-tests:
     needs: resolve-tag
-    uses: ./.github/workflows/templates/non-functional-tests.yml
+    uses: ./.github/workflows/template-non-functional-tests.yml
     with:
       environment: 'new uat'
       ref: ${{ needs.resolve-tag.outputs.tag }}
@@ -52,7 +52,7 @@ jobs:
 
   api-tests:
     needs: resolve-tag
-    uses: ./.github/workflows/templates/api-tests.yml
+    uses: ./.github/workflows/template-api-tests.yml
     with:
       environment: 'new uat'
       ref: ${{ needs.resolve-tag.outputs.tag }}

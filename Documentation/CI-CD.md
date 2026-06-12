@@ -12,7 +12,7 @@ GitHub Actions pipeline for automated test execution with **three-job architectu
 - **`playwright-qa.yml`** — targets `new qa`; triggers on push to `main`/`master`, nightly schedule (9:55 PM UTC), and manual dispatch
 - **`playwright-uat.yml`** — targets `new uat`; triggers on nightly schedule (11:55 PM UTC) and manual dispatch with an optional tag input
 
-**Shared templates**: Job definitions in `.github/workflows/templates/` (`functional-tests.yml`, `non-functional-tests.yml`, `api-tests.yml`) are called by both workflows via `uses:` to avoid duplication.
+**Shared templates**: Job definitions in `.github/workflows/` (`template-functional-tests.yml`, `template-non-functional-tests.yml`, `template-api-tests.yml`) are called by both workflows via `uses:` to avoid duplication.
 
 **Benefits**: Each test project gets fresh authentication state, LandingPage-based recovery prevents all conflicts, streamlined architecture with shared utilities.
 
@@ -88,7 +88,7 @@ When scaling parallelization:
 
 1. **Add GitHub secrets**: `TEST_ACCOUNT_N_EMAIL`, `TEST_ACCOUNT_N_PASSWORD`
 2. **Update [`test-accounts.json`](../tests/config/test-accounts.json)** with new account entry
-3. **Update workflow templates** in [`.github/workflows/templates/`](../.github/workflows/templates/) — update the setup step env vars in `functional-tests.yml` and `non-functional-tests.yml`
+3. **Update workflow templates** in [`.github/workflows/`](../.github/workflows/) — update the setup step env vars in `template-functional-tests.yml` and `template-non-functional-tests.yml`
 4. **Update [`playwright.config.ts`](../playwright.config.ts)** worker counts
 
 ### Account Usage
@@ -117,7 +117,7 @@ container:
 
 Chromium is pre-installed in the image, so no separate browser download step is needed. This avoids dependency on the Playwright CDN during CI runs.
 
-> **Version coupling**: the Docker image tag must match the `@playwright/test` version in `package-lock.json`. When upgrading Playwright, update `package.json`, run `npm install` to update the lockfile, and update the `container.image` tag in `.github/workflows/templates/functional-tests.yml` and `.github/workflows/templates/non-functional-tests.yml` to match.
+> **Version coupling**: the Docker image tag must match the `@playwright/test` version in `package-lock.json`. When upgrading Playwright, update `package.json`, run `npm install` to update the lockfile, and update the `container.image` tag in `.github/workflows/template-functional-tests.yml` and `.github/workflows/template-non-functional-tests.yml` to match.
 
 The `api-tests` job is unaffected — it does not install or use browsers.
 
