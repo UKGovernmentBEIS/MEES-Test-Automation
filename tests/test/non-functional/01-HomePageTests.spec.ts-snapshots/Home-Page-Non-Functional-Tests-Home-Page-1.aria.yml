@@ -1,8 +1,11 @@
 - main:
   - main:
     - heading "Check if non-domestic properties meet minimum energy efficiency standards" [level=1]
-    - paragraph: Use this service to access information and tools to help you enforce the Minimum Energy Efficiency Standards (MEES) Regulations for non- domestic properties in the Private Rented Sector (PRS).
-    - paragraph: You can view property details, get guidance on enforcement, download letter templates, and calculate financial penalties.
+    - paragraph: Use this service to access property details, guidance, and tools to help you enforce the Minimum Energy Efficiency Standards (MEES) for non-domestic properties in the Private Rented Sector (PRS).
+    - paragraph:
+      - text: A recommended starting point is the guidance article explaining
+      - link "how multiple datasets are combined to create property records.":
+        - /url: guidance-detail?contentKey=MC6ZMWNRJIR5GGVMGCXITZAKWIJU
     - separator
     - heading "Property records" [level=2]
     - paragraph: This includes non-domestic property details, property owner details, energy rating, and PRS exemption status.
