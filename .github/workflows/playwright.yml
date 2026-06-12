@@ -18,7 +18,7 @@ on:
 
 jobs:
   functional-tests:
-    name: Functional Tests
+    name: Functional Tests ${{ inputs.environment }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
@@ -67,7 +67,7 @@ jobs:
         retention-days: 2
 
   non-functional-tests: 
-    name: Non-Functional Tests
+    name: Non-Functional Tests ${{ inputs.environment }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
@@ -120,7 +120,7 @@ jobs:
         retention-days: 2
 
   api-tests: 
-    name: API Tests
+    name: API Tests ${{ inputs.environment }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment || 'new qa' }}
