@@ -1,0 +1,78 @@
+name: 'Functional Tests'
+description: 'Run Playwright functional tests (checkout must be done by the calling job)'
+inputs:
+  report_suffix:
+    description: 'Suffix appended to artifact names (e.g. qa or uat)'
+    required: true
+  base_url:
+    required: true
+  test_account_1_email:
+    required: true
+  test_account_1_password:
+    required: true
+  test_account_1_name:
+    required: true
+  test_account_2_email:
+    required: true
+  test_account_2_password:
+    required: true
+  test_account_2_name:
+    required: true
+  test_dual_access_email:
+    required: true
+  test_dual_access_password:
+    required: true
+  properties_key:
+    required: true
+  propertydetail_key:
+    required: true
+  export_key:
+    required: true
+  dms_base_url:
+    required: true
+
+runs:
+  using: composite
+  steps:
+  - uses: actions/setup-node@v5
+    with:
+      node-version: lts/*
+  - name: Install dependencies
+    run: npm ci
+    shell: bash
+  - name: Run authentication setup
+    run: npx playwright test --project=setup
+    shell: bash
+    env:
+      TEST_ACCOUNT_1_EMAIL: ${{ inputs.test_account_1_email }}
+      TEST_ACCOUNT_1_PASSWORD: ${{ inputs.test_account_1_password }}
+      TEST_ACCOUNT_1_NAME: ${{ inputs.test_account_1_name }}
+      TEST_ACCOUNT_2_EMAIL: ${{ inputs.test_account_2_email }}
+      TEST_ACCOUNT_2_PASSWORD: ${{ inputs.test_account_2_password }}
+      TEST_ACCOUNT_2_NAME: ${{ inputs.test_account_2_name }}
+      BASE_URL: ${{ inputs.base_url }}
+  - name: Run functional tests
+    run: npx playwright test --project=functional
+    shell: bash
+    env:
+      HOME: /root
+      TEST_ACCOUNT_1_EMAIL: ${{ inputs.test_account_1_email }}
+      TEST_ACCOUNT_1_PASSWORD: ${{ inputs.test_account_1_password }}
+      TEST_ACCOUNT_1_NAME: ${{ inputs.test_account_1_name }}
+      TEST_ACCOUNT_2_EMAIL: ${{ inputs.test_account_2_email }}
+      TEST_ACCOUNT_2_PASSWORD: ${{ inputs.test_account_2_password }}
+      TEST_ACCOUNT_2_NAME: ${{ inputs.test_account_2_name }}
+      TEST_DUAL_ACCESS_EMAIL: ${{ inputs.test_dual_access_email }}
+      TEST_DUAL_ACCESS_PASSWORD: ${{ inputs.test_dual_access_password }}
+      PROPERTIES_KEY: ${{ inputs.properties_key }}
+      PROPERTYDETAIL_KEY: ${{ inputs.propertydetail_key }}
+      EXPORT_KEY: ${{ inputs.export_key }}
+      DMS_BASE_URL: ${{ inputs.dms_base_url }}
+      BASE_URL: ${{ inputs.base_url }}
+  - name: Upload Playwright HTML report
+    uses: actions/upload-artifact@v4
+    if: ${{ failure() }}
+    with:
+      name: functional-test-report-${{ inputs.report_suffix }}
+      path: playwright-report/
+      retention-days: 2

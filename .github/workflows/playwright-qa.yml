@@ -9,22 +9,65 @@ on:
 
 jobs:
   functional-tests:
-    uses: ./.github/workflows/template-functional-tests.yml
-    with:
-      environment: 'new qa'
-      report_suffix: 'qa'
-    secrets: inherit
+    name: Functional Tests (new qa)
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.57.0-jammy
+    environment: new qa
+    steps:
+    - uses: actions/checkout@v5
+    - uses: ./.github/actions/functional-tests
+      with:
+        report_suffix: qa
+        base_url: ${{ secrets.BASE_URL }}
+        test_account_1_email: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+        test_account_1_password: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+        test_account_1_name: ${{ secrets.TEST_ACCOUNT_1_NAME }}
+        test_account_2_email: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
+        test_account_2_password: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+        test_account_2_name: ${{ secrets.TEST_ACCOUNT_2_NAME }}
+        test_dual_access_email: ${{ secrets.TEST_DUAL_ACCESS_EMAIL }}
+        test_dual_access_password: ${{ secrets.TEST_DUAL_ACCESS_PASSWORD }}
+        properties_key: ${{ secrets.PROPERTIES_KEY }}
+        propertydetail_key: ${{ secrets.PROPERTYDETAIL_KEY }}
+        export_key: ${{ secrets.EXPORT_KEY }}
+        dms_base_url: ${{ secrets.DMS_BASE_URL }}
 
   non-functional-tests:
-    uses: ./.github/workflows/template-non-functional-tests.yml
-    with:
-      environment: 'new qa'
-      report_suffix: 'qa'
-    secrets: inherit
+    name: Non-Functional Tests (new qa)
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.57.0-jammy
+    environment: new qa
+    steps:
+    - uses: actions/checkout@v5
+    - uses: ./.github/actions/non-functional-tests
+      with:
+        report_suffix: qa
+        base_url: ${{ secrets.BASE_URL }}
+        test_account_1_email: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
+        test_account_1_password: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
+        test_account_1_name: ${{ secrets.TEST_ACCOUNT_1_NAME }}
+        test_account_2_email: ${{ secrets.TEST_ACCOUNT_2_EMAIL }}
+        test_account_2_password: ${{ secrets.TEST_ACCOUNT_2_PASSWORD }}
+        test_account_2_name: ${{ secrets.TEST_ACCOUNT_2_NAME }}
+        test_no_access_email: ${{ secrets.TEST_NO_ACCESS_EMAIL }}
+        test_no_access_password: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
 
   api-tests:
-    uses: ./.github/workflows/template-api-tests.yml
-    with:
-      environment: 'new qa'
-      report_suffix: 'qa'
-    secrets: inherit
+    name: API Tests (new qa)
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    environment: new qa
+    steps:
+    - uses: actions/checkout@v5
+    - uses: ./.github/actions/api-tests
+      with:
+        report_suffix: qa
+        propertydetail_key: ${{ secrets.PROPERTYDETAIL_KEY }}
+        properties_key: ${{ secrets.PROPERTIES_KEY }}
+        export_key: ${{ secrets.EXPORT_KEY }}
+        dms_base_url: ${{ secrets.DMS_BASE_URL }}
+        local_authorities_key: ${{ secrets.LOCAL_AUTHORITIES_KEY }}
