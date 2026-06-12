@@ -1,18 +1,20 @@
 import { Page, Locator } from '@playwright/test';
-import { BaseCompliancePage } from './BaseCompliancePage';
+import { ElementUtilities } from '../../utils/ElementUtilities';
 
-export class PageNotFoundPage extends BaseCompliancePage {
+export class PageNotFoundPage {
     private pageContext: Locator;
+    protected readonly page: Page;
 
     constructor(page: Page) {
-        super(page);
+        this.page = page;
         this.pageContext = page.locator('.govuk-grid-column-two-thirds');
     }
 
     // Wait for the Page Not Found page to load
     async waitForPageToLoad(): Promise<void> {
-        await super.waitForPageToLoad();
-        await this.pageContext.waitFor({ state: 'visible', timeout: 60000 });
+        await ElementUtilities.waitForPageToLoad(this.page, 'Page Not Found Page', {
+            pageContext: this.pageContext
+        });
     }
 
     async isDisplayed(): Promise<boolean> {
