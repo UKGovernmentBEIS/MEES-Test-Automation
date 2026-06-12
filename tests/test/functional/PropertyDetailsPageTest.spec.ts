@@ -246,10 +246,12 @@ test.describe('View Properties Page Data Validation Tests', () => {
                     dmsLandlord.SicCodeSicText4
                 ].filter(code => code !== null && code !== undefined && code !== '').join(' | ');
                 const dmsSicCode = dmsSicCodeRaw === '' ? 'Not found' : dmsSicCodeRaw;
+                // Convert 'Onshore' to 'Onshore (England and Wales)' for comparison as this is how it is displayed in the UI
+                const dmsLandlordLocation = dmsLandlord.Location === "Onshore" ? "Onshore (England and Wales)" : dmsLandlord.Location;
 
                 const uiOwner = uiOwners.find(owner => owner.name === dmsName);
                 expect(uiOwner, `No property owner found in the UI matching DMS landlord "${dmsName}"`).toBeDefined();
-                expect(uiOwner!.location, `Mismatch in Location for landlord "${dmsName}"`).toBe(dmsLandlord.Location);
+                expect(uiOwner!.location, `Mismatch in Location for landlord "${dmsName}"`).toBe(dmsLandlordLocation);
                 expect(uiOwner!.address, `Mismatch in Address for landlord "${dmsName}"`).toBe(dmsLandlord.Address);
                 expect(uiOwner!.sicCode, `Mismatch in SIC code for landlord "${dmsName}"`).toBe(dmsSicCode);
             }
