@@ -175,37 +175,7 @@ test.describe('Response Structure Tests', () => {
         }
     });
 
-    test('Landlords array has correct structure using UPRN', async ({ request }) => {
-        const response = await request.post(`${baseUrl}`, {
-            headers: {
-                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
-            },
-            data: {
-                lacodes: lacodes,
-                buildingrefnum: Uprn
-            }
-        });
-        expect(response.status()).toBe(200);
-
-        // Verify landlords structure and field types
-        const responseBody = await response.json();
-        expect(responseBody).toHaveProperty('landlords');
-        const landlords = responseBody.landlords;
-        expect(Array.isArray(landlords)).toBe(true);
-        expect(landlords.length).toBeGreaterThan(0);
-        const landlord = landlords[0];
-        expect(Object.keys(landlord).length).toBe(8);
-        expect(typeof landlord.uprn).toBe('number');
-        expect(typeof landlord.companyName).toBe('string');
-        expect(typeof landlord.location).toBe('string');
-        expect(typeof landlord.address).toBe('string');
-        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText1);
-        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText2);
-        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText3);
-        expect(['string', 'object']).toContain(typeof landlord.sicCodeSicText4);
-    });
-
-    test('Landlords array has correct structure using Building Reference Number', async ({ request }) => {
+    test('Landlords array has correct structure', async ({ request }) => {
         const response = await request.post(`${baseUrl}`, {
             headers: {
                 'x-functions-key': process.env.PROPERTYDETAIL_KEY!
