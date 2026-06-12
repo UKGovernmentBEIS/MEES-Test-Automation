@@ -1,6 +1,4 @@
 - main:
-  - link "Back":
-    - /url: /
   - heading "You do not have access to this service" [level=1]
   - paragraph: To use this service, you must first register for an account.
   - paragraph:

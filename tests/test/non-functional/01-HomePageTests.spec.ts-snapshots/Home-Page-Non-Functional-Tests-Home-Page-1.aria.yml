@@ -1,35 +1,6 @@
 - main:
-  - heading "Check if properties meet minimum energy efficiency standards" [level=2]:
-    - link "Check if properties meet minimum energy efficiency standards":
-      - /url: /landing-page
-  - navigation "Menu":
-    - list:
-      - listitem:
-        - link "Property records":
-          - /url: /filter-properties
-      - listitem:
-        - link "Guidance":
-          - /url: /guidance
-      - listitem:
-        - link "Penalty calculator":
-          - /url: /penalty-calculator
-      - listitem:
-        - link "Templates":
-          - /url: /templates
-  - paragraph:
-    - text: Beta This is a new service. Help us improve it and
-    - link "give your feedback by email":
-      - /url: mailto:meesdigital@energysecurity.gov.uk?subject=Feedback
-    - text: .
-  - navigation "Breadcrumb":
-    - list:
-      - listitem: Home
-  - link "Profile settings":
-    - /url: ./profile
-  - link "Sign out":
-    - /url: "#"
   - main:
-    - heading "Check if properties meet minimum energy efficiency standards" [level=1]
+    - heading "Check if non-domestic properties meet minimum energy efficiency standards" [level=1]
     - paragraph: Use this service to access information and tools to help you enforce the Minimum Energy Efficiency Standards (MEES) Regulations for non- domestic properties in the Private Rented Sector (PRS).
     - paragraph: You can view property details, get guidance on enforcement, download letter templates, and calculate financial penalties.
     - separator
@@ -37,19 +8,28 @@
     - paragraph: This includes non-domestic property details, property owner details, energy rating, and PRS exemption status.
     - paragraph:
       - link "View property records":
-        - /url: /filter-properties
+        - /url: /compliance/filter-properties
     - heading "Guidance" [level=2]
     - paragraph: Read guidance on understanding the MEES Regulations, view enforcement activities, and learn where the data comes from.
     - paragraph:
       - link "View guidance":
-        - /url: /guidance
+        - /url: /compliance/guidance
     - heading "Templates" [level=2]
     - paragraph: Download letter templates for issuing compliance notices and penalty notices to non-domestic landlords.
     - paragraph:
       - link "View templates":
-        - /url: /templates
+        - /url: /compliance/templates
     - heading "Penalty calculator" [level=2]
     - paragraph: Calculate a possible penalty amount for a non-domestic property in breach of the MEES Regulations.
     - paragraph:
       - link "View penalty calculator":
-        - /url: /penalty-calculator
+        - /url: /compliance/penalty-calculator
+    - heading "If you need help" [level=2]
+    - paragraph: "Contact our support team if you:"
+    - list:
+      - listitem: need help using this service
+      - listitem: need technical support
+      - listitem: want to report a problem
+    - paragraph:
+      - link "Request support":
+        - /url: /compliance/support

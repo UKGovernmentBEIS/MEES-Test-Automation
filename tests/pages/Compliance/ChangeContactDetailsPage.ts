@@ -6,6 +6,9 @@ import { CheckContactDetailsPage } from './CheckContactDetailsPage';
 
 export class ChangeContactDetailsPage extends BaseCompliancePage {
     private readonly pageContext: Locator;
+    private readonly pageHeading: Locator;
+    private readonly firstNameHeading: Locator;
+    private readonly lastNameHeading: Locator;
     private readonly firstNameInput: Locator;
     private readonly lastNameInput: Locator;
     private readonly saveAndContinueButton: Locator;
@@ -14,6 +17,9 @@ export class ChangeContactDetailsPage extends BaseCompliancePage {
     constructor(page: Page) {
         super(page);
         this.pageContext = page.locator('#main-content');
+        this.pageHeading = page.getByRole('heading', { name: 'Change your contact details', level: 1 });
+        this.firstNameHeading = page.getByRole('heading', { name: 'First name', level: 2 });
+        this.lastNameHeading = page.getByRole('heading', { name: 'Last name', level: 2 });
         this.firstNameInput = page.getByRole('textbox', { name: 'First name' });
         this.lastNameInput = page.getByRole('textbox', { name: 'Last name' });
         this.saveAndContinueButton = page.getByRole('button', { name: 'Save and continue' });
@@ -44,7 +50,16 @@ export class ChangeContactDetailsPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        return [this.pageContext];
+        // Return only the static page structure. The first/last name textboxes are excluded
+        // because they are pre-filled with the signed-in account's name, which is data-dependent
+        // — consistent with the Filter Properties, Templates and Guidance page context scoping.
+        return [
+            this.backLink,
+            this.pageHeading,
+            this.firstNameHeading,
+            this.lastNameHeading,
+            this.saveAndContinueButton
+        ];
     }
 
     async getFirstNameValue(): Promise<string> {

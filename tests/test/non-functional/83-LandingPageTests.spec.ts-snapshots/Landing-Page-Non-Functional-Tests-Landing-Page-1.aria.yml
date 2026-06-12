@@ -1,5 +1,5 @@
 - main:
-  - heading "Check if properties meet minimum energy efficiency standards" [level=1]
+  - heading "Check if non-domestic properties meet minimum energy efficiency standards" [level=1]
   - paragraph: This service is for non-domestic properties only.
   - paragraph: /Part 3 of the Energy Efficiency \(Private Rented Property\) \(England and Wales\) Regulations \d+ imposes a minimum energy efficiency standard for non-domestic privately rented properties \(the "MEES Regulations"\)\./
   - paragraph: Landlords of non-domestic privately rented properties who have an energy performance certificate (EPC), must comply with the MEES Regulations by holding an EPC for energy band E (unless a valid exemption applies).
