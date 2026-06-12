@@ -1000,6 +1000,8 @@ test.describe('View Properties export functionality', () => {
             const expectedBothFalse = 'Not found';
 
             // Apply filters in the UI and export the CSV
+            await filterPropertiesPage.setEnergyRatingFilter(energyRatingFilter);
+            await filterPropertiesPage.setCouncilFilter('LONDON BOROUGH OF BEXLEY');
             const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
             await viewPropertiesPage.waitForPageToLoad();
             await viewPropertiesPage.waitForTableContent();
