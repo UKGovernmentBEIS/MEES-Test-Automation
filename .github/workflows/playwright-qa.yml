@@ -1,0 +1,30 @@
+name: Playwright Tests (QA)
+
+on:
+  push:
+    branches: [ main, master ]
+  schedule:
+    - cron: '55 21 * * *'  # Runs at 9:55 PM UTC every day
+  workflow_dispatch:
+
+jobs:
+  functional-tests:
+    uses: ./.github/workflows/templates/functional-tests.yml
+    with:
+      environment: 'new qa'
+      report_suffix: 'qa'
+    secrets: inherit
+
+  non-functional-tests:
+    uses: ./.github/workflows/templates/non-functional-tests.yml
+    with:
+      environment: 'new qa'
+      report_suffix: 'qa'
+    secrets: inherit
+
+  api-tests:
+    uses: ./.github/workflows/templates/api-tests.yml
+    with:
+      environment: 'new qa'
+      report_suffix: 'qa'
+    secrets: inherit

@@ -128,16 +128,17 @@ npx playwright show-report  # Open after test run
 - **Content**: Which pages tested, accessibility violations, test status
 - **Generated**: After each non-functional test run
 
-**CI/CD Reports**: GitHub Actions uploads test reports as downloadable artifacts with 30-day retention.
+**CI/CD Reports**: GitHub Actions uploads test reports as downloadable artifacts with 2-day retention on failure.
 
 ## CI/CD Pipeline Setup
 
-**GitHub Actions**: Configured in `.github/workflows/playwright.yml`
-- **Triggers**: Push, PR, manual dispatch
-- **Jobs**: Functional tests and Non-functional tests (each with setup + recovery)
-- **Workflow**: setup → functional tests → setup → non-functional tests (with LandingPage detection calling `AuthUtils.reAuthenticate()` for robust session recovery)
+**GitHub Actions**: Two environment-specific workflows in `.github/workflows/`
+- **`playwright-qa.yml`** — targets `new qa`; triggers on push to `main`/`master`, nightly schedule (9:55 PM UTC), and manual dispatch
+- **`playwright-uat.yml`** — targets `new uat`; triggers on nightly schedule (11:55 PM UTC) and manual dispatch; automatically checks out the latest git tag (or a specified tag) so tests always match the deployed version
+- **Shared templates**: Reusable job definitions in `.github/workflows/templates/` to avoid duplication across environments
+- **Jobs**: Functional tests, Non-functional tests, API tests (each with setup + recovery)
 - **Secrets needed**: Test account credentials, BASE_URL, API keys
-- **Reports**: Downloadable artifacts with test results and coverage
+- **Reports**: Downloadable artifacts suffixed `-qa` or `-uat`
 
 📄 **See [CI-CD.md](Documentation/CI-CD.md) for complete pipeline configuration**
 

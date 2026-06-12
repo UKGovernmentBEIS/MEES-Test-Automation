@@ -2,10 +2,17 @@
 
 ## Overview
 
-GitHub Actions pipeline for automated test execution with two-job architecture:
+GitHub Actions pipeline for automated test execution with **three-job architecture per environment**, using reusable workflow templates:
 
-1. **Functional Tests** - Runs setup and functional tests with real-time authentication recovery
-2. **Non-Functional Tests** - Runs setup and accessibility/validation tests with real-time authentication recovery (depends on functional tests completion)
+1. **Functional Tests** — runs setup and functional tests with real-time authentication recovery
+2. **Non-Functional Tests** — runs setup and accessibility/validation tests with real-time authentication recovery
+3. **API Tests** — runs API boundary tests (no browser container needed)
+
+**Two environment-specific workflows**:
+- **`playwright-qa.yml`** — targets `new qa`; triggers on push to `main`/`master`, nightly schedule (9:55 PM UTC), and manual dispatch
+- **`playwright-uat.yml`** — targets `new uat`; triggers on nightly schedule (11:55 PM UTC) and manual dispatch with an optional tag input
+
+**Shared templates**: Job definitions in `.github/workflows/templates/` (`functional-tests.yml`, `non-functional-tests.yml`, `api-tests.yml`) are called by both workflows via `uses:` to avoid duplication.
 
 **Benefits**: Each test project gets fresh authentication state, LandingPage-based recovery prevents all conflicts, streamlined architecture with shared utilities.
 
@@ -54,7 +61,8 @@ RUN_SETUP_AUTOMATICALLY = 1
 
 ### Workflow Triggers
 
-- Manual trigger (workflow_dispatch)
+- **QA (`playwright-qa.yml`)**: Push to `main`/`master`, nightly schedule (9:55 PM UTC), manual dispatch (no inputs)
+- **UAT (`playwright-uat.yml`)**: Nightly schedule (11:55 PM UTC), manual dispatch with optional `tag` input (defaults to latest git tag)
 
 ### Authentication Lifecycle
 
@@ -66,10 +74,11 @@ Each test job is self-contained:
 
 ## Test Reports
 
-**Artifacts generated** (30-day retention):
-- `functional-test-report` - Playwright HTML report for functional tests
-- `non-functional-test-report` - Playwright HTML report for accessibility tests  
-- `non-functional-coverage-report` - Coverage summary (markdown + HTML)
+**Artifacts generated** (2-day retention, on failure only), suffixed by environment (`-qa` or `-uat`):
+- `functional-test-report-{env}` — Playwright HTML report for functional tests
+- `non-functional-test-report-{env}` — Playwright HTML report for accessibility tests
+- `non-functional-coverage-report-{env}` — Coverage summary (markdown + HTML)
+- `api-test-report-{env}` — Playwright HTML report for API tests
 
 **Access**: Repository → Actions → Workflow run → Artifacts section (bottom of page)
 
@@ -79,7 +88,7 @@ When scaling parallelization:
 
 1. **Add GitHub secrets**: `TEST_ACCOUNT_N_EMAIL`, `TEST_ACCOUNT_N_PASSWORD`
 2. **Update [`test-accounts.json`](../tests/config/test-accounts.json)** with new account entry
-3. **Update [`.github/workflows/playwright.yml`](../.github/workflows/playwright.yml)** setup steps in both jobs
+3. **Update workflow templates** in [`.github/workflows/templates/`](../.github/workflows/templates/) — update the setup step env vars in `functional-tests.yml` and `non-functional-tests.yml`
 4. **Update [`playwright.config.ts`](../playwright.config.ts)** worker counts
 
 ### Account Usage
@@ -108,7 +117,7 @@ container:
 
 Chromium is pre-installed in the image, so no separate browser download step is needed. This avoids dependency on the Playwright CDN during CI runs.
 
-> **Version coupling**: the Docker image tag must match the `@playwright/test` version in `package-lock.json`. When upgrading Playwright, update `package.json`, run `npm install` to update the lockfile, and update the `container.image` tag in `.github/workflows/playwright.yml` to match.
+> **Version coupling**: the Docker image tag must match the `@playwright/test` version in `package-lock.json`. When upgrading Playwright, update `package.json`, run `npm install` to update the lockfile, and update the `container.image` tag in `.github/workflows/templates/functional-tests.yml` and `.github/workflows/templates/non-functional-tests.yml` to match.
 
 The `api-tests` job is unaffected — it does not install or use browsers.
 
@@ -138,10 +147,52 @@ The `api-tests` job is unaffected — it does not install or use browsers.
 
 ## Workflow Triggers
 
-The current workflow is configured to run on:
-- Every push to the repository
-- Every pull request
-- Manual trigger (workflow_dispatch)
+| Workflow | Environment | Push | Schedule | Manual dispatch |
+|---|---|---|---|---|
+| `playwright-qa.yml` | `new qa` | `main`, `master` | 9:55 PM UTC nightly | No inputs |
+| `playwright-uat.yml` | `new uat` | — | 11:55 PM UTC nightly | Optional `tag` input (defaults to latest git tag) |
+
+> **Note**: GitHub Actions scheduled workflows only run on the **default branch** (`main`). The UAT workflow file lives on `main`, but its `resolve-tag` job checks out the correct tag before tests execute.
+
+## UAT Release Tagging
+
+The UAT workflow uses git tags to pin the test version to what is deployed on `new uat`. Tags must be created manually as part of your release process.
+
+### When to create a tag
+
+Create a tag when the `new uat` environment has been updated with a new deployment and the corresponding test updates have been merged to `main`.
+
+### How to create and push a tag
+
+```bash
+# Make sure you are on main and up to date
+git checkout main
+git pull
+
+# List existing tags to determine the next version
+git tag --sort=-version:refname
+
+# Create an annotated tag (replace v1.0 with your version)
+git tag -a v1.0 -m "UAT release v1.0"
+
+# Push the tag to GitHub
+git push origin v1.0
+```
+
+The next scheduled UAT run (or a manual dispatch with no tag input) will automatically pick up the new tag.
+
+### Running UAT tests against a specific tag
+
+Use the manual dispatch on `playwright-uat.yml` in GitHub Actions and enter the tag name in the `tag` input field (e.g. `v1.0`). Leave the field empty to always use the latest tag.
+
+### First-time setup
+
+Before the UAT workflow runs for the first time, at least one tag must exist. Create the initial tag when both environments are in sync:
+
+```bash
+git tag -a v1.0 -m "Initial UAT baseline"
+git push origin v1.0
+```
 
 ## Parallel Execution in CI/CD
 
@@ -195,25 +246,26 @@ Simplified approach with authentication recovery:
 
 ## Test Reports and Artifacts
 
-Each test job in the CI/CD pipeline generates and uploads test reports as artifacts:
+Each test job generates and uploads artifacts on failure. Artifact names are suffixed with the environment (`-qa` or `-uat`):
 
 ### Playwright HTML Reports
 
-- **Functional tests:** `functional-test-report` artifact
-- **Non-functional tests:** `non-functional-test-report` artifact
+- **Functional tests:** `functional-test-report-{env}` artifact
+- **Non-functional tests:** `non-functional-test-report-{env}` artifact
+- **API tests:** `api-test-report-{env}` artifact
 - **Contains:** Detailed test execution results, screenshots, traces
-- **Retention:** 30 days
+- **Retention:** 2 days
 
 ### Non-Functional Test Coverage Reports
 
-- **Non-functional tests:** `non-functional-coverage-report` artifact
+- **Non-functional tests:** `non-functional-coverage-report-{env}` artifact
 - **Format:** Both Markdown (`.md`) and HTML (`.html`) versions
 - **Contains:** 
   - Summary table of pages tested
   - Test types performed on each page (Accessibility, Context Verification, etc.)
   - Accessibility violation counts
   - Test execution status and detailed results
-- **Retention:** 30 days
+- **Retention:** 2 days
 
 ### Accessing Reports
 
@@ -228,19 +280,19 @@ Each test job in the CI/CD pipeline generates and uploads test reports as artifa
 ```yaml
 - name: Upload Playwright HTML report
   uses: actions/upload-artifact@v4
-  if: ${{ !cancelled() }}
+  if: ${{ failure() }}
   with:
-    name: non-functional-test-report
+    name: non-functional-test-report-qa
     path: playwright-report/
-    retention-days: 30
+    retention-days: 2
 
 - name: Upload Non-Functional Test Coverage Report
   uses: actions/upload-artifact@v4
-  if: ${{ !cancelled() }}
+  if: ${{ failure() }}
   with:
-    name: non-functional-coverage-report
+    name: non-functional-coverage-report-qa
     path: test-results/non-functional-test-coverage.*
-    retention-days: 30
+    retention-days: 2
 ```
 
 ## Best Practices
