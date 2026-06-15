@@ -23,6 +23,21 @@ test.describe('Guidance Main Page Non-Functional Tests', () => {
         await baseTest.verifyContextWithLocators(locators);
     });
 
+    test('How PRS properties are identified guidance content should meet page context requirements', async ({ page }, testInfo) => {
+        const baseTest = new BaseNonFunctionalTest(page, testInfo);
+        baseTest.addTestAnnotations(PageName.GUIDANCE_PAGE);
+
+        const landingPage = new LandingPage(page);
+        await landingPage.navigate();
+        const homePage = await landingPage.clickSignIn_AuthenticatedUser();
+        const guidanceMainPage = await homePage.clickGuidanceLink();
+        await guidanceMainPage.clickTemplateLink(TemplateTypes.HOW_PRS_PROPERTIES_ARE_IDENTIFIED);
+
+        // Capture the full article. The content is static guidance prose, so any change should be
+        // flagged; only the dynamic Published/Last updated dates are auto-matched as patterns.
+        await expect(page.locator('#main-content')).toMatchAriaSnapshot();
+    });
+
     test('Each guidance template link should meet accessibility standards and page context requirements', async ({ page }, testInfo) => {
         const baseTest = new BaseNonFunctionalTest(page, testInfo);
         baseTest.addTestAnnotations(PageName.GUIDANCE_PAGE);

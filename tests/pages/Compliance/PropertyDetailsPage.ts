@@ -125,6 +125,12 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         ];
     }
 
+    // Static label for the SIC codes row on the Property owner(s) tab. The codes themselves are
+    // data-dependent (verified by the functional tests); this captures only the label text.
+    getSicCodeLabel(): Locator {
+        return this.page.locator('.govuk-summary-list__key', { hasText: 'Standard Industrial Classification codes' });
+    }
+
     //#region Breadcrumb Methods
 
     async clickBreadcrumbHome(): Promise<HomePage> {
