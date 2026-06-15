@@ -209,7 +209,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         // Get the correct field value locator for provided tab and field name
         const tabElementID = this.getTabElementIDNameByTabName(tabName);
         return this.page.locator(`[data-id="${tabElementID}"] .govuk-summary-list__row`)
-            .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(fieldName, { exact: true }) })
+            .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(fieldName) })
             .locator('.govuk-summary-list__value');
     }
 
@@ -300,15 +300,14 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return await response.json() as DMSPropertyDetails;
     }
 
-    GetPossibleRentalEvidenceFromDMSPropertyDetails(dmsPropertyDetails: DMSPropertyDetails) {
-        const possibleEvidenceTypes = [];
-        if (dmsPropertyDetails.property.possibleEvidenceEpcTransactionType) {
-            possibleEvidenceTypes.push('Mandatory issue (Property to let) EPC transaction type');
-        }
-        if (dmsPropertyDetails.property.possibleEvidenceSiccode) {
-            possibleEvidenceTypes.push('Property owner has letting company SIC code');
-        }
-        return possibleEvidenceTypes.join(' | ');
+    GetDMSPossibleRentalEvidenceFromEPCRegister(dmsPropertyDetails: DMSPropertyDetails): string {
+        return dmsPropertyDetails.property.possibleEvidenceEpcTransactionType ? 
+            'Mandatory issue (Property to let) EPC transaction type' : 'Not found';
+    }
+
+    GetDMSPossibleRentalEvidenceFromSICCode(dmsPropertyDetails: DMSPropertyDetails): string {
+        return dmsPropertyDetails.property.possibleEvidenceSiccode ?
+            'Property owner has letting company Standard Industrial Classification code' : 'Not found';
     }
 
     //#endregion

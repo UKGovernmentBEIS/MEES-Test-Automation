@@ -97,37 +97,46 @@ test.describe('View Properties Page Data Validation Tests', () => {
             const expectedRateableValue = formatCurrency(dmsPropertyDetails.property.rateableValue!);
             expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Rateable value')).toBe(expectedRateableValue);
 
-            // Verify Possible Rental Evidence
-            const expectedPossibleRentalEvidence = propertyDetailsPage.GetPossibleRentalEvidenceFromDMSPropertyDetails(dmsPropertyDetails);
-            expect(await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence')).toBe(expectedPossibleRentalEvidence);
+            // Verify Possible rental evidence from EPC register
+            const expectedPossibleRentalEvidence = propertyDetailsPage.GetDMSPossibleRentalEvidenceFromEPCRegister(dmsPropertyDetails);
+            const actualPossibleRentalEvidence = 
+                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'EPC register');
+            expect(actualPossibleRentalEvidence, 
+                `Invalid 'Possible rental evidence from EPC register'. Expected '${expectedPossibleRentalEvidence}', but got '${actualPossibleRentalEvidence}'`).toBe(expectedPossibleRentalEvidence);
+
+            // Verify Possible rental evidence from SIC code
+            const expectedPossibleRentalEvidenceSicCode = propertyDetailsPage.GetDMSPossibleRentalEvidenceFromSICCode(dmsPropertyDetails);
+            const actualPossibleRentalEvidenceSicCode = 
+                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Companies House');
+            expect(actualPossibleRentalEvidenceSicCode, 
+                `Invalid 'Possible rental evidence from Companies House'. Expected '${expectedPossibleRentalEvidenceSicCode}', but got '${actualPossibleRentalEvidenceSicCode}'`).toBe(expectedPossibleRentalEvidenceSicCode);
         });
 
         test('Verify all possible values for the Possible rental evidence field in the Property details tab', async ( {page} ) => {
             
         // All combinations of possible evidence values based on DMS data
             interface PossibleEvidenceTestCase {
-                possibleEvidenceEpcTransactionType: boolean;
-                possibleEvidenceSiccode: boolean;
-                expectedPossibleRentalEvidence: string;
+                possibleEvidenceEpcTransactionType: string;
+                possibleEvidenceSiccode: string;
+                uprn: string;
             }
 
+            const epcTransactionTypeValue = 'Mandatory issue (Property to let) EPC transaction type';
+            const sicCodeValue = 'Property owner has letting company Standard Industrial Classification code';
+
             const testCases: PossibleEvidenceTestCase[] = [
+                
                 // Bug: 1031 'Invalid PossibleEvidenceEpcTransactionType for a property with multiple EPC Certificates'
-                // { possibleEvidenceEpcTransactionType: true, possibleEvidenceSiccode: true, expectedPossibleRentalEvidence: 'Mandatory issue (Property to let) EPC transaction type\nProperty owner has letting company SIC code' },
-                { possibleEvidenceEpcTransactionType: true, possibleEvidenceSiccode: true, expectedPossibleRentalEvidence: 'Mandatory issue (Property to let) EPC transaction type' },
-                { possibleEvidenceEpcTransactionType: true, possibleEvidenceSiccode: false, expectedPossibleRentalEvidence: 'Mandatory issue (Property to let) EPC transaction type' },
-                { possibleEvidenceEpcTransactionType: false, possibleEvidenceSiccode: true, expectedPossibleRentalEvidence: 'Property owner has letting company SIC code' },
-                { possibleEvidenceEpcTransactionType: false, possibleEvidenceSiccode: false, expectedPossibleRentalEvidence: 'Not found' },
+                // { possibleEvidenceEpcTransactionType: epcTransactionTypeValue, possibleEvidenceSiccode: sicCodeValue, uprn: '10023302621' },
+                { possibleEvidenceEpcTransactionType: epcTransactionTypeValue, possibleEvidenceSiccode: 'Not found', uprn: '10023302621' },
+                { possibleEvidenceEpcTransactionType: epcTransactionTypeValue, possibleEvidenceSiccode: 'Not found', uprn: '100022918419' },
+                { possibleEvidenceEpcTransactionType: 'Not found', possibleEvidenceSiccode: sicCodeValue, uprn: '10011861801' },
+                { possibleEvidenceEpcTransactionType: 'Not found', possibleEvidenceSiccode: 'Not found', uprn: '100022917839' },
             ];
 
-            const uprnForPropertyWithoutPossibleEvidence = '100022917839';
-            const uprnForPropertyWithBothPossibleEvidence = '10023302621';
-            const uprnForPropertyWithOnlyEpcEvidence = '100022918419';
-            const uprnForPropertyWithOnlySiccodeEvidence = '10011861801';
-
             interface ErrorResults {
-                possibleEvidenceEpcTransactionType: boolean;
-                possibleEvidenceSiccode: boolean;
+                possibleEvidenceEpcTransactionType: string;
+                possibleEvidenceSiccode: string;
                 errorMessage: string;
             }
 
@@ -135,24 +144,18 @@ test.describe('View Properties Page Data Validation Tests', () => {
         
             // Enhance Property Details page URL to navigate directly to the property details page for each test case based on UPRN
             for (const testCase of testCases) {
-                let uprn: string;
-                if (testCase.possibleEvidenceEpcTransactionType && testCase.possibleEvidenceSiccode) {
-                    uprn = uprnForPropertyWithBothPossibleEvidence;
-                } else if (testCase.possibleEvidenceEpcTransactionType && !testCase.possibleEvidenceSiccode) {
-                    uprn = uprnForPropertyWithOnlyEpcEvidence;
-                } else if (!testCase.possibleEvidenceEpcTransactionType && testCase.possibleEvidenceSiccode) {
-                    uprn = uprnForPropertyWithOnlySiccodeEvidence;
-                } else {
-                    uprn = uprnForPropertyWithoutPossibleEvidence;
-                }
+                await page.goto(`/compliance/view-details?buildingrefnum=${testCase.uprn}`);
 
-                await page.goto(`/compliance/view-details?buildingrefnum=${uprn}`);
-                const actualPossibleEvidence = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence');
-                if (actualPossibleEvidence !== testCase.expectedPossibleRentalEvidence) {
+                const actualPossibleEvidenceEpcTransactionType = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'EPC register');
+                const actualPossibleEvidenceSiccode = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Companies House');
+
+                if ((actualPossibleEvidenceEpcTransactionType !== testCase.possibleEvidenceEpcTransactionType) || 
+                    (actualPossibleEvidenceSiccode !== testCase.possibleEvidenceSiccode)) {
                     errorResults.push({
                         possibleEvidenceEpcTransactionType: testCase.possibleEvidenceEpcTransactionType,
                         possibleEvidenceSiccode: testCase.possibleEvidenceSiccode,
-                        errorMessage: `Actual Possible Rental Evidence: '${actualPossibleEvidence}' and expected: '${testCase.expectedPossibleRentalEvidence}'.`
+                        errorMessage: `Expected EPC register: '${testCase.possibleEvidenceEpcTransactionType}', Companies House: '${testCase.possibleEvidenceSiccode}', 
+                            but got EPC register: '${actualPossibleEvidenceEpcTransactionType}', Companies House: '${actualPossibleEvidenceSiccode}'.`
                     });
                 }
             }
