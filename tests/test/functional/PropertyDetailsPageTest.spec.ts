@@ -100,14 +100,14 @@ test.describe('View Properties Page Data Validation Tests', () => {
             // Verify Possible rental evidence from EPC register
             const expectedPossibleRentalEvidence = propertyDetailsPage.GetDMSPossibleRentalEvidenceFromEPCRegister(dmsPropertyDetails);
             const actualPossibleRentalEvidence = 
-                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'EPC register');
+                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence from EPC register');
             expect(actualPossibleRentalEvidence, 
                 `Invalid 'Possible rental evidence from EPC register'. Expected '${expectedPossibleRentalEvidence}', but got '${actualPossibleRentalEvidence}'`).toBe(expectedPossibleRentalEvidence);
 
             // Verify Possible rental evidence from SIC code
             const expectedPossibleRentalEvidenceSicCode = propertyDetailsPage.GetDMSPossibleRentalEvidenceFromSICCode(dmsPropertyDetails);
             const actualPossibleRentalEvidenceSicCode = 
-                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Companies House');
+                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence fromCompanies House');
             expect(actualPossibleRentalEvidenceSicCode, 
                 `Invalid 'Possible rental evidence from Companies House'. Expected '${expectedPossibleRentalEvidenceSicCode}', but got '${actualPossibleRentalEvidenceSicCode}'`).toBe(expectedPossibleRentalEvidenceSicCode);
         });
@@ -146,16 +146,16 @@ test.describe('View Properties Page Data Validation Tests', () => {
             for (const testCase of testCases) {
                 await page.goto(`/compliance/view-details?buildingrefnum=${testCase.uprn}`);
 
-                const actualPossibleEvidenceEpcTransactionType = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'EPC register');
-                const actualPossibleEvidenceSiccode = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Companies House');
+                const actualPossibleEvidenceEpcTransactionType = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence from EPC register');
+                const actualPossibleEvidenceSiccode = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Property details', 'Possible rental evidence from Companies House');
 
                 if ((actualPossibleEvidenceEpcTransactionType !== testCase.possibleEvidenceEpcTransactionType) || 
                     (actualPossibleEvidenceSiccode !== testCase.possibleEvidenceSiccode)) {
                     errorResults.push({
                         possibleEvidenceEpcTransactionType: testCase.possibleEvidenceEpcTransactionType,
                         possibleEvidenceSiccode: testCase.possibleEvidenceSiccode,
-                        errorMessage: `Expected EPC register: '${testCase.possibleEvidenceEpcTransactionType}', Companies House: '${testCase.possibleEvidenceSiccode}', 
-                            but got EPC register: '${actualPossibleEvidenceEpcTransactionType}', Companies House: '${actualPossibleEvidenceSiccode}'.`
+                        errorMessage: `Expected Possible rental evidence from EPC register: '${testCase.possibleEvidenceEpcTransactionType}', Possible rental evidence from Companies House: '${testCase.possibleEvidenceSiccode}', 
+                            but got Possible rental evidence from EPC register: '${actualPossibleEvidenceEpcTransactionType}', Possible rental evidence from Companies House: '${actualPossibleEvidenceSiccode}'.`
                     });
                 }
             }

@@ -208,8 +208,11 @@ export class PropertyDetailsPage extends BaseCompliancePage {
 
         // Get the correct field value locator for provided tab and field name
         const tabElementID = this.getTabElementIDNameByTabName(tabName);
+        const escapedFieldName = fieldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const fieldNameRegex = new RegExp('^\\s*' + escapedFieldName.replace(/ /g, '\\s*') + '\\s*$');
+
         return this.page.locator(`[data-id="${tabElementID}"] .govuk-summary-list__row`)
-            .filter({ has: this.page.locator('.govuk-summary-list__key').getByText(fieldName) })
+            .filter({ has: this.page.locator('.govuk-summary-list__key').filter({ hasText: fieldNameRegex }) })
             .locator('.govuk-summary-list__value');
     }
 
