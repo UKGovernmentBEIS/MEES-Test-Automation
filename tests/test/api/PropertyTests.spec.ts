@@ -165,8 +165,7 @@ test.describe('Response Structure Tests', () => {
             const certKeys = Object.keys(certificate);
             expect(certKeys, `EPC certificate has unexpected fields. Expected [uprn, buildingReferenceNumber, assetRating, assetRatingBand, lodgementDate, expiryDate, transactionTypeHistory], got [${certKeys.join(', ')}]`).toHaveLength(7);
             expect(typeof certificate.uprn, `Expected 'uprn' to be type 'number', got '${typeof certificate.uprn}'`).toBe('number');
-            // BUG 1054 EPCCertificate element in the /mees/propertydetail endpoint response message has buildingReferenceNumber
-            expect(['number', 'object']).toContain(typeof certificate.buildingReferenceNumber); // can be number or null
+            expect(typeof certificate.buildingReferenceNumber, `Expected 'buildingReferenceNumber' to be type 'number', got '${typeof certificate.buildingReferenceNumber}'`).toBe('number');
             expect(typeof certificate.assetRating, `Expected 'assetRating' to be type 'number', got '${typeof certificate.assetRating}'`).toBe('number');
             expect(typeof certificate.assetRatingBand, `Expected 'assetRatingBand' to be type 'string', got '${typeof certificate.assetRatingBand}'`).toBe('string');
             expect(typeof certificate.lodgementDate, `Expected 'lodgementDate' to be type 'string', got '${typeof certificate.lodgementDate}'`).toBe('string');
@@ -450,6 +449,42 @@ test.describe('Data Verification Tests', () => {
         expect(cert1.assetRatingBand).toBe('D');
         expect(cert1.lodgementDate).toContain('2015-03-06');
         expect(cert1.expiryDate).toContain('2025-03-06');
+    });
+
+    test('The buildingReferenceNumber in the epcCertificates matches UPRN when UPRN is available', async ({ request }) => {
+        const response = await request.post(`${baseUrl}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!
+            },
+            data: {
+                lacodes: lacodes,
+                buildingrefnum: uprn
+            }
+        });
+        expect(response.status()).toBe(200);
+
+        const { epcCertificates } = await response.json();
+        for (const certificate of epcCertificates) {
+            expect(certificate.buildingReferenceNumber).toBe(100022918361);
+        }
+    });
+
+    test('The buildingReferenceNumber in the epcCertificates does not match UPRN when UPRN is unavailable', async ({ request }) => {
+        // buildingrefnum exceeds Number.MAX_SAFE_INTEGER — use raw body string to preserve precision
+        const response = await request.post(`${baseUrl}`, {
+            headers: {
+                'x-functions-key': process.env.PROPERTYDETAIL_KEY!,
+                'Content-Type': 'application/json'
+            },
+            data: `{"lacodes":["E09000004"],"buildingrefnum":274935898943677672}`
+        });
+
+        expect(response.status()).toBe(200);
+
+        const { epcCertificates } = await response.json();
+        for (const certificate of epcCertificates) {
+            expect(certificate.buildingReferenceNumber).toBe(Number(nonUprnCode));
+        }
     });
 
     test('Landlord returns expected data values for known UPRN', async ({ request }) => {

@@ -141,7 +141,9 @@ test.describe('Export DMS API Tests', () => {
         expect(itemWithEpc).toBeDefined();
 
         const epc = itemWithEpc.EpcCertificates[0];
+        expect(Object.keys(epc).length).toBe(7);
         expect(epc).toHaveProperty('Uprn');
+        expect(epc).toHaveProperty('BuildingReferenceNumber');
         expect(epc).toHaveProperty('AssetRating');
         expect(epc).toHaveProperty('AssetRatingBand');
         expect(epc).toHaveProperty('LodgementDate');
