@@ -753,6 +753,28 @@ test.describe('View Properties Page Data Validation Tests', () => {
             }
         });
 
+        test('PRS exemptions and penalties tab links to the PRSe register and opens in a new tab', async () => {
+            await filterPropertiesPage.setEnergyRatingFilter('B');
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress('THE COTTAGE NURSERY, LOWER STATION ROAD, CRAYFORD, DARTFORD, DA1 3PY');
+            await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
+
+            // AC1: the sentence below the table (the link text is included within it)
+            await expect(propertyDetailsPage.getPRSeRegisterParagraph(),
+                'PRSe register sentence on the PRS exemptions and penalties tab does not match the expected text')
+                .toHaveText('For more detail on PRS exemptions and penalties, please visit the private rented sector energy exemptions register (opens in a new tab).');
+
+            // AC2: the link points to the agreed PRSe homepage URL
+            const prseLink = propertyDetailsPage.getPRSeRegisterLink();
+            await expect(prseLink, 'PRSe register link href does not match the agreed PRSe homepage URL')
+                .toHaveAttribute('href', 'https://www.review-energy-efficiency-exemption.service.gov.uk/');
+
+            // AC3: the link opens in a new browser tab
+            await expect(prseLink, 'PRSe register link should open in a new tab (target="_blank")')
+                .toHaveAttribute('target', '_blank');
+        });
+
         test('Verify that property displays exemption and penalty data setup in Salesforce', async () => {
             await filterPropertiesPage.setEnergyRatingFilter('B');
             const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();

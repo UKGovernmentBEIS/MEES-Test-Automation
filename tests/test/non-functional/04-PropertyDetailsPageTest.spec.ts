@@ -67,8 +67,11 @@ test.describe('Property Details Page Non-Functional Tests', () => {
         // Verify accessibility on the Property Details page
         await baseTest.verifyAccessibility(PageName.PROPERTY_DETAILS_PAGE);
 
-        // Verify page context on the Property Details page
+        // Verify page context on the Property Details page. Additionally capture the static PRSe
+        // register sentence/link (PRS-tab only); the PRS exemption/penalty values are
+        // data-dependent and verified by the functional tests.
         const locators = await propertyDetailsPage.getPageContextLocator();
-        await baseTest.verifyContextWithLocators(locators); 
+        locators.push(propertyDetailsPage.getPRSeRegisterParagraph());
+        await baseTest.verifyContextWithLocators(locators);
     });
 });

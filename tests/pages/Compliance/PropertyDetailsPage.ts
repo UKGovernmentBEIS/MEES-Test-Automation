@@ -131,6 +131,16 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         return this.page.locator('.govuk-summary-list__key', { hasText: 'Standard Industrial Classification codes' });
     }
 
+    // Link to the PRSe register below the table on the PRS exemptions and penalties tab.
+    getPRSeRegisterLink(): Locator {
+        return this.page.getByRole('link', { name: /the private rented sector energy exemptions register/i });
+    }
+
+    // The full sentence containing the PRSe register link on the PRS exemptions and penalties tab.
+    getPRSeRegisterParagraph(): Locator {
+        return this.page.locator('p', { hasText: 'For more detail on' }).filter({ has: this.getPRSeRegisterLink() });
+    }
+
     //#region Breadcrumb Methods
 
     async clickBreadcrumbHome(): Promise<HomePage> {
