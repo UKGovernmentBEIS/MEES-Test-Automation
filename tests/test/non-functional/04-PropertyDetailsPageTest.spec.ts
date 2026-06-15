@@ -42,8 +42,11 @@ test.describe('Property Details Page Non-Functional Tests', () => {
         // Verify accessibility on the Property Details page
         await baseTest.verifyAccessibility(PageName.PROPERTY_DETAILS_PAGE);
 
-        // Verify page context on the Property Details page
+        // Verify page context on the Property Details page. Additionally capture the static
+        // "Standard Industrial Classification codes" label (owner-tab only); the codes
+        // themselves are data-dependent and verified by the functional tests.
         const locators = await propertyDetailsPage.getPageContextLocator();
+        locators.push(propertyDetailsPage.getSicCodeLabel().first());
         await baseTest.verifyContextWithLocators(locators);
     });
 
