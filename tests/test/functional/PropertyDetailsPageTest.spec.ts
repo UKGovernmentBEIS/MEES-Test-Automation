@@ -541,8 +541,8 @@ test.describe('View Properties Page Data Validation Tests', () => {
                 })()
                 : null;
             const expEPCTransactionType = propertyWithEPCEnergyCertificate.property.EPCTransactionType;
-            const uiCurrentEnergyRating = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Energy efficiency details', 'Current energy rating');
-            const uiCurrentEPCExpiryDateText = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Energy efficiency details', 'Current EPC expiry date');
+            const uiCurrentEnergyRating = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Energy efficiency details', 'Latest energy rating');
+            const uiCurrentEPCExpiryDateText = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Energy efficiency details', 'EPC expiry date');
             const uiEPCTransactionType = await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('Energy efficiency details', 'EPC transaction type');
 
             expect(uiCurrentEnergyRating, 
@@ -689,8 +689,8 @@ test.describe('View Properties Page Data Validation Tests', () => {
 
              // Verify that "Not found" is displayed for each field in the Energy efficiency details tab
             const currentEnergyRatingFields = [
-                'Current energy rating', 
-                'Current EPC expiry date', 
+                'Latest energy rating', 
+                'EPC expiry date', 
                 'EPC transaction type'
             ];
             for (const fieldName of currentEnergyRatingFields) {
