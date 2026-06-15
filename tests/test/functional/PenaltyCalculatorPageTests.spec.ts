@@ -25,7 +25,8 @@ test.describe('Penalty Calculator Page Functional Tests', () => {
     test('Verify error message is displayed when rateable value is invalid', async ({ page }) => {
         // Set the rateable value to an invalid value of -100 and verify that the appropriate error message is displayed
         await penaltyCalculatorPage.calculateMaximumPenalty('Less than 3 months', -100);
-        await expect((await penaltyCalculatorPage.getRateableValueErrorMessage())).toHaveText('Error:Rateable value must be a number greater than 0');
+        // Bug: 1055: Penalty Calculator: Incorrect error message displayed when rateable value is a negative number
+        await expect((await penaltyCalculatorPage.getRateableValueErrorMessage())).toHaveText('Error:Rateable value must be a number, for example 240000');
     });
 });
 
