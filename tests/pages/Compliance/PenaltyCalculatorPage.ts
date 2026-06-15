@@ -57,7 +57,7 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
         return homePage;
     }
 
-    async calculateMaximumPenalty(lengthOfBreach: LengthOfBreach, rateableValue: number): Promise<PenaltyCalculatorResultsPage> {
+    async calculateMaximumPenalty(lengthOfBreach: LengthOfBreach, rateableValue: any): Promise<PenaltyCalculatorResultsPage> {
         // Select the length of breach radio button based on the input
         const lengthOfBreachRadioButton = await this.LengthOfBreachRadioButton(lengthOfBreach);
         await lengthOfBreachRadioButton.check();
