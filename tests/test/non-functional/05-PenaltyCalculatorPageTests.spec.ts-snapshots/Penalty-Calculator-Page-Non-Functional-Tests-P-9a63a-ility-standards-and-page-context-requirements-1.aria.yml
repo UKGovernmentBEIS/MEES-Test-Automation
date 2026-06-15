@@ -1,14 +1,16 @@
 - main:
   - heading "Penalty calculator" [level=1]
-  - text: If you have identified that a landlord is letting a sub-standard non-domestic property, use this service to calculate the maximum financial penalty for this MEES Regulations breach.
-  - group "How long has the property been in breach for?":
-    - heading "How long has the property been in breach for?" [level=2]
+  - text: If you have identified that a landlord is letting a sub-standard non-domestic property, you can calculate the maximum financial penalty for this breach. You can find the most current rateable value using the
+  - link "Find a business rates valuation service (opens in a new tab).":
+    - /url: https://www.gov.uk/find-business-rates
+  - group:
+    - text: How long has the property been in breach for?
     - paragraph: "Error: Select how long the property has been in breach for"
     - radio "Less than 3 months"
-    - text: ""
+    - text: Less than 3 months
     - radio "More than 3 months"
-    - text: ""
-  - text: /What is the rateable value of the property at the time the penalty notice is to be served\? For example \d+\. You can find the most current rateable value using the ‘Find a business rates valuation' service\./
+    - text: More than 3 months
+  - text: /What is the rateable value of the property at the time the penalty notice is to be served\? For example, enter '\d+' for a rateable value of £\d+,\d+\./
   - paragraph: "Error: Enter the rateable value of the property"
   - textbox "What is the rateable value of the property at the time the penalty notice is to be served?"
   - button "Calculate maximum penalty"
