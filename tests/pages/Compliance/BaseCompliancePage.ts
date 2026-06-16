@@ -4,12 +4,14 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import type { FilterPropertiesPage } from './FilterPropertiesPage';
 import type { PenaltyCalculatorPage } from './PenaltyCalculatorPage';
 import type { HomePage } from './HomePage';
+import type { SupportWhoAreYouPage } from './Support/SupportWhoAreYouPage';
 
 export abstract class BaseCompliancePage extends BasePage {
     protected readonly page: Page;
     protected readonly pageHeaderLink: Locator;
     protected signOutButton: Locator;
     protected profileSettingsLink: Locator;
+    protected footerHelpLink: Locator;
     protected tabPropertyRecords: Locator;
     protected tabGuidance: Locator;
     protected tabTemplates: Locator;
@@ -21,6 +23,7 @@ export abstract class BaseCompliancePage extends BasePage {
             this.pageHeaderLink = page.getByRole('link', { name: 'Check if non-domestic properties meet minimum energy efficiency standards' });
             this.signOutButton = this.page.getByRole('link', { name: 'Sign out' });
             this.profileSettingsLink = this.page.getByRole('link', { name: 'Profile settings' });
+            this.footerHelpLink = this.page.getByRole('contentinfo').getByRole('link', { name: 'Help' });
             this.tabPropertyRecords = page.getByRole('link', { name: 'Property records', exact: true })
             this.tabGuidance = page.getByRole('link', { name: 'Guidance', exact: true });
             this.tabTemplates = page.getByRole('link', { name: 'Templates', exact: true });
@@ -57,6 +60,17 @@ export abstract class BaseCompliancePage extends BasePage {
         const penaltyCalculatorPage = new PenaltyCalculatorPage(this.page);
         await penaltyCalculatorPage.waitForPageToLoad();
         return penaltyCalculatorPage;
+    }
+
+    // The "Help" link in the footer is present on every compliance page and lands on the same
+    // Support "Who are you" page as the Home "Request support" link. Scoped to the footer
+    // (contentinfo) so it stays unambiguous on pages that also have a body "Help" link.
+    async clickFooterHelpLink(): Promise<SupportWhoAreYouPage> {
+        await this.footerHelpLink.click();
+        const { SupportWhoAreYouPage } = await import('./Support/SupportWhoAreYouPage');
+        const supportWhoAreYouPage = new SupportWhoAreYouPage(this.page);
+        await supportWhoAreYouPage.waitForPageToLoad();
+        return supportWhoAreYouPage;
     }
 
     async clickPageHeaderLink(): Promise<HomePage> {
