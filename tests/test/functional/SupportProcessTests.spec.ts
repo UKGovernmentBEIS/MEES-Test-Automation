@@ -1,5 +1,6 @@
 import { expect, test } from '../../fixtures/authFixtures';
 import { HomePage } from '../../pages/Compliance/HomePage';
+import { BaseCompliancePage } from '../../pages/Compliance/BaseCompliancePage';
 import { SupportWhoAreYouPage } from '../../pages/Compliance/Support/SupportWhoAreYouPage';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestAnnotations, TestType } from '../../utils/TestTypes';
@@ -115,5 +116,63 @@ test.describe('Navigation tests', () => {
         const homePageFromSupport = await supportWhoAreYouPageFromContactForm.clickBackToHomePageButton();
         await homePageFromSupport.waitForPageToLoad();
         expect(await homePageFromSupport.isDisplayed()).toBe(true);
+    });
+});
+
+test.describe('Support link availability across pages', () => {
+
+    test.beforeEach(async ({}, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.FUNCTIONAL)
+        );
+    });
+
+    // The "Help" link in the footer is on every compliance page (inherited from BaseCompliancePage)
+    // and should reach the Support page from each of them.
+    const pages: { name: string; goTo: (homePage: HomePage) => Promise<BaseCompliancePage> }[] = [
+        { name: 'Home', goTo: async (homePage) => homePage },
+        { name: 'Property records', goTo: async (homePage) => homePage.clickOnPropertyRecordsTab() },
+        { name: 'Guidance', goTo: async (homePage) => homePage.clickGuidanceLink() },
+        { name: 'Templates', goTo: async (homePage) => homePage.clickViewTemplates() },
+        { name: 'Penalty calculator', goTo: async (homePage) => homePage.clickOnPenaltyCalculatorTab() },
+        { name: 'Profile settings', goTo: async (homePage) => homePage.clickProfileSettings() },
+        {
+            name: 'View properties',
+            goTo: async (homePage) => {
+                const filterPropertiesPage = await homePage.clickOnPropertyRecordsTab();
+                await filterPropertiesPage.setEnergyRatingFilter('A');
+                await filterPropertiesPage.selectEvidenceFoundRentalEvidence();
+                const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+                await viewPropertiesPage.waitForTableContent();
+                return viewPropertiesPage;
+            }
+        },
+        {
+            name: 'Property details',
+            goTo: async (homePage) => {
+                const filterPropertiesPage = await homePage.clickOnPropertyRecordsTab();
+                await filterPropertiesPage.setEnergyRatingFilter('A');
+                await filterPropertiesPage.selectEvidenceFoundRentalEvidence();
+                const viewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+                await viewPropertiesPage.waitForTableContent();
+                return viewPropertiesPage.ViewDetailsForPropertyWithAddress('Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL');
+            }
+        }
+    ];
+
+    pages.forEach(({ name, goTo }) => {
+        test(`Footer Help link navigates to the Support page from the ${name} page`, async ({ page }) => {
+            const landingPage = new LandingPage(page);
+            await landingPage.navigate();
+            const homePage = await landingPage.clickSignIn_AuthenticatedUser();
+
+            const currentPage = await goTo(homePage);
+            expect(await currentPage.isDisplayed(),
+                `Expected to be on the ${name} page before clicking the footer Help link`).toBe(true);
+
+            const supportWhoAreYouPage = await currentPage.clickFooterHelpLink();
+            expect(await supportWhoAreYouPage.isDisplayed(),
+                `Footer Help link from the ${name} page did not navigate to the Support page`).toBe(true);
+        });
     });
 });
