@@ -29,12 +29,18 @@ export class SupportWhoAreYouPage extends BaseCompliancePage {
     // Wait for the Support Who Are You page to load
     async waitForPageToLoad(): Promise<void> {
         await ElementUtilities.waitForPageToLoad(this.page, 'Support Who Are You Page', {
-            pageContext: this.pageContext
+            pageContext: this.pageContext,
+            deznsRadioButton: this.deznsRadioButton,
+            laRadioButton: this.laRadioButton,
+            continueButton: this.continueButton
         });
     }
 
     async isDisplayed(): Promise<boolean> {
-        return this.pageContext.isVisible();
+        return await this.pageContext.isVisible() && 
+            await this.deznsRadioButton.isVisible() && 
+            await this.laRadioButton.isVisible() && 
+            await this.continueButton.isVisible();
     }
 
     async getPageContextLocator(): Promise<Locator[]> {

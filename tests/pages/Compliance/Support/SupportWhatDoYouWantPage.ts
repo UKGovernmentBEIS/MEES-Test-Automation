@@ -28,12 +28,14 @@ export class SupportWhatDoYouWantPage extends BaseCompliancePage {
     // Wait for the Support What Do You Want page to load
     async waitForPageToLoad(): Promise<void> {
         await ElementUtilities.waitForPageToLoad(this.page, 'Support What Do You Want Page', {
-            pageContext: this.pageContext
+            pageContext: this.pageContext,
+            supportOptions: this.page.getByLabel('I have a question about the policy or guidance', { exact: true })
         });
     }
 
     async isDisplayed(): Promise<boolean> {
-        return this.pageContext.isVisible();
+        return await this.pageContext.isVisible() &&
+            await this.page.getByLabel('I have a question about the policy or guidance', { exact: true }).isVisible()
     }
 
     async getPageContextLocator(): Promise<Locator[]> {

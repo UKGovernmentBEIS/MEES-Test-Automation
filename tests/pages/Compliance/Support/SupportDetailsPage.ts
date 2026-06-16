@@ -22,7 +22,7 @@ export class SupportDetailsPage extends BaseCompliancePage {
     }
 
     async isDisplayed(): Promise<boolean> {
-        return this.pageContext.isVisible();
+        return await this.pageContext.isVisible();
     }
 
     async getPageContextLocator(): Promise<Locator[]> {

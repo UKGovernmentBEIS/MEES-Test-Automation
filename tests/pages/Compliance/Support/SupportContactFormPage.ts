@@ -24,12 +24,22 @@ export class SupportContactFormPage extends BaseCompliancePage {
     // Wait for the Support Contact Form page to load
     async waitForPageToLoad(): Promise<void> {
         await ElementUtilities.waitForPageToLoad(this.page, 'Support Contact Form Page', {
-            pageContext: this.pageContext
+            pageContext: this.pageContext,
+            firstNameField: this.page.getByLabel('First name', { exact: true }),
+            lastNameField: this.page.getByLabel('Last name', { exact: true }),
+            emailField: this.page.getByLabel('Your email address', { exact: true }),
+            confirmEmailField: this.page.getByLabel('Confirm your email address', { exact: true }),
+            continueButton: this.continueButton
         });
     }
 
     async isDisplayed(): Promise<boolean> {
-        return this.pageContext.isVisible();
+        return await this.pageContext.isVisible() &&
+            await this.page.getByLabel('First name', { exact: true }).isVisible() &&
+            await this.page.getByLabel('Last name', { exact: true }).isVisible() &&
+            await this.page.getByLabel('Your email address', { exact: true }).isVisible() &&
+            await this.page.getByLabel('Confirm your email address', { exact: true }).isVisible() &&
+            await this.continueButton.isVisible();
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
