@@ -6,6 +6,7 @@ import { PenaltyCalculatorPage } from './PenaltyCalculatorPage';
 import { TemplatesPage } from './TemplatesPage';
 import { GuidanceMainPage } from './Guidance/GuidanceMainPage';
 import { ProfileSettingsPage } from './ProfileSettingsPage';
+import { SupportWhoAreYouPage } from './Support/SupportWhoAreYouPage';
 
 export class HomePage extends BaseCompliancePage {
     private pageContext: Locator;
@@ -81,5 +82,13 @@ export class HomePage extends BaseCompliancePage {
         const profileSettingsPage = new ProfileSettingsPage(this.page);
         await profileSettingsPage.waitForPageToLoad();
         return profileSettingsPage;
+    }
+
+    async clickRequestSupportLink(): Promise<SupportWhoAreYouPage> {
+        const supportLink = this.page.getByRole('link', { name: 'Support' });
+        await supportLink.click();
+        const supportWhoAreYouPage = new SupportWhoAreYouPage(this.page);
+        await supportWhoAreYouPage.waitForPageToLoad();
+        return supportWhoAreYouPage;
     }
 }

@@ -79,6 +79,11 @@ test.describe('Home Page Navigation Tests', () => {
         const penaltyCalculatorPage = await homePage.clickOnPenaltyCalculatorTab();
         expect(await penaltyCalculatorPage.isDisplayed()).toBeTruthy();
     });
+
+    test('Navigate to the Support page from Home Page using the Support link', async ({ page }) => {
+        const supportWhoAreYouPage = await homePage.clickRequestSupportLink();
+        expect(await supportWhoAreYouPage.isDisplayed()).toBeTruthy();
+    });
 });
 
 baseTest.describe('Dual Access User - MEES Tests', () => {
