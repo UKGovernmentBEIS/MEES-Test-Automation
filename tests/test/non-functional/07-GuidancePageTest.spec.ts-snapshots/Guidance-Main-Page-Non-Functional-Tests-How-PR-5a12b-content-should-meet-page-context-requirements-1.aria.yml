@@ -11,16 +11,16 @@
   - term: Last updated
   - definition: /\d+ June \d+/
   - paragraph: Contents
-  - paragraph:
-    - text: ─
+  - heading "─ Non-domestic PRS properties" [level=3]:
+    - text: ""
     - link "Non-domestic PRS properties":
       - /url: "#non-domestic"
-  - paragraph:
-    - text: ─
+  - heading "─ What does not count as a non-domestic PRS property" [level=3]:
+    - text: ""
     - link "What does not count as a non-domestic PRS property":
       - /url: "#not-count"
-  - paragraph:
-    - text: ─
+  - heading "─ What is shown in this service" [level=3]:
+    - text: ""
     - link "What is shown in this service":
       - /url: "#shown"
   - heading "Non-domestic PRS properties" [level=1]
