@@ -37,7 +37,9 @@ export class SupportContactFormPage extends BaseCompliancePage {
     }
 
     async fillContactFormField(fieldName: ContactFormFields, value: string): Promise<void> {
-        await this.page.getByLabel(fieldName, { exact: true }).fill(value);
+        const field = this.page.getByLabel(fieldName, { exact: true });
+        await field.click();
+        await field.pressSequentially(value);
     }
 
     async clickContinueButton(): Promise<SupportWhatDoYouWantPage> {

@@ -38,6 +38,24 @@ test.describe('Page validation tests', () => {
         expect(await supportContactFormPage.getFieldErrorMessage('Enter a last name').isVisible()).toBe(true);
         expect(await supportContactFormPage.getFieldErrorMessage('Enter a valid email address').isVisible()).toBe(true);
     });
+
+    test('Verify validation error messages on the Support What Do You Want page when no option is selected', async ({ page }) => {
+        await supportWhoAreYouPage.selectRole('Department for Energy Security and Net Zero official');
+        const supportContactFormPage = await supportWhoAreYouPage.clickContinueButton();
+        await supportContactFormPage.waitForPageToLoad();
+        expect(await supportContactFormPage.isDisplayed()).toBe(true);
+
+        await supportContactFormPage.fillContactFormField('First name', 'John');
+        await supportContactFormPage.fillContactFormField('Last name', 'Doe');
+        await supportContactFormPage.fillContactFormField('Your email address', 'john.doe@example.com');
+        await supportContactFormPage.fillContactFormField('Confirm your email address', 'john.doe@example.com');
+        const supportWhatDoYouWantPage = await supportContactFormPage.clickContinueButton();
+        await supportWhatDoYouWantPage.waitForPageToLoad();
+        expect(await supportWhatDoYouWantPage.isDisplayed()).toBe(true);
+
+        await supportWhatDoYouWantPage.clickContinueButton();
+        expect(await supportWhatDoYouWantPage.getMissingOptionError().isVisible()).toBe(true);
+    });
 });
 
 test.describe('Support Process tests', () => {
@@ -56,12 +74,22 @@ test.describe('Support Process tests', () => {
     });
 
     const testCases = [
-        { role: 'Department for Energy Security and Net Zero official'},
-        { role: 'Local authority user'}
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I have a question about the policy or guidance' },
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I need an account created' },
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I cannot log in to my account' },
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'Something has gone wrong with the service' },
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I need to change my permission levels' },
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'Other' },
+        { role: 'Local authority user', supportOption: 'I have a question about the policy or guidance' },
+        { role: 'Local authority user', supportOption: 'I need an account created' },
+        { role: 'Local authority user', supportOption: 'I cannot log in to my account' },
+        { role: 'Local authority user', supportOption: 'Something has gone wrong with the service' },
+        { role: 'Local authority user', supportOption: 'I need to change my permission levels' },
+        { role: 'Local authority user', supportOption: 'Other' }
     ]
 
-    testCases.forEach(({ role }) => {
-        test(`Verify that the Support process works correctly for role: ${role}`, async ({ page }, testInfo) => {
+    testCases.forEach(({ role, supportOption }) => {
+        test(`Verify that the Support process works correctly for role: ${role} and support option: ${supportOption}`, async () => {
             
             // Select the role and proceed to the Support Contact Form page
             await supportWhoAreYouPage.selectRole(role);
@@ -79,6 +107,12 @@ test.describe('Support Process tests', () => {
             const supportWhatDoYouWantPage = await supportContactFormPage.clickContinueButton();
             await supportWhatDoYouWantPage.waitForPageToLoad();
             expect(await supportWhatDoYouWantPage.isDisplayed()).toBe(true);
+
+            // Select the support option and proceed to the Support Details page
+            await supportWhatDoYouWantPage.selectHelpRequestOption(supportOption as any);
+            const supportDetailsPage = await supportWhatDoYouWantPage.clickContinueButton();
+            await supportDetailsPage.waitForPageToLoad();
+            expect(await supportDetailsPage.isDisplayed()).toBe(true);
         });
     });
 });
@@ -96,7 +130,7 @@ test.describe('Navigation tests', () => {
         homePage = await landingPage.clickSignIn_AuthenticatedUser();
     });
 
-    test('Verify that the user can navigate back to the Home page from the Support Who Are You page', async ({ page }, testInfo) => {
+    test('Verify that the user can navigate back to the Home page from the Support Who Are You page', async () => {
         const supportWhoAreYouPage: SupportWhoAreYouPage = await homePage.clickRequestSupportLink();
         await supportWhoAreYouPage.waitForPageToLoad();
         const homePageFromSupport = await supportWhoAreYouPage.clickBackToHomePageButton();
@@ -104,7 +138,7 @@ test.describe('Navigation tests', () => {
         expect(await homePageFromSupport.isDisplayed()).toBe(true);
     });
 
-    test('Verify that the user can navigate back to the Home page from the Support Contact Form page', async ({ page }, testInfo) => {
+    test('Verify that the user can navigate back to the Home page from the Support Contact Form page', async () => {
         const supportWhoAreYouPage: SupportWhoAreYouPage = await homePage.clickRequestSupportLink();
         await supportWhoAreYouPage.waitForPageToLoad();
         await supportWhoAreYouPage.selectRole('Department for Energy Security and Net Zero official');
@@ -115,5 +149,22 @@ test.describe('Navigation tests', () => {
         const homePageFromSupport = await supportWhoAreYouPageFromContactForm.clickBackToHomePageButton();
         await homePageFromSupport.waitForPageToLoad();
         expect(await homePageFromSupport.isDisplayed()).toBe(true);
+    });
+
+    test('Verify that the user can navigate back to the Home page from the Support What Do You Want page', async () => {
+        const supportWhoAreYouPage: SupportWhoAreYouPage = await homePage.clickRequestSupportLink();
+        await supportWhoAreYouPage.waitForPageToLoad();
+        await supportWhoAreYouPage.selectRole('Department for Energy Security and Net Zero official');
+        const supportContactFormPage = await supportWhoAreYouPage.clickContinueButton();
+        await supportContactFormPage.waitForPageToLoad();
+        await supportContactFormPage.fillContactFormField('First name', 'John');
+        await supportContactFormPage.fillContactFormField('Last name', 'Doe');
+        await supportContactFormPage.fillContactFormField('Your email address', 'john.doe@example.com');
+        await supportContactFormPage.fillContactFormField('Confirm your email address', 'john.doe@example.com');
+
+        // Click the continue button to proceed to the next page
+        const supportWhatDoYouWantPage = await supportContactFormPage.clickContinueButton();
+        await supportWhatDoYouWantPage.waitForPageToLoad();
+        expect(await supportWhatDoYouWantPage.isDisplayed()).toBe(true);
     });
 });
