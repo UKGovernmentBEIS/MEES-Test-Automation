@@ -1,0 +1,14 @@
+- main:
+  - link "Back":
+    - /url: "#"
+  - alert "There is a problem":
+    - heading "There is a problem" [level=2]
+    - list:
+      - listitem:
+        - link "Please describe the issue you need support with":
+          - /url: "#-172"
+  - heading "Please describe the issue you need support with" [level=2]
+  - text: "Error: Please describe the issue you need support with"
+  - textbox "text-area"
+  - text: /\d+ characters remaining/
+  - button "Submit"

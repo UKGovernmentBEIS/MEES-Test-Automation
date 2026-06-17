@@ -1,0 +1,7 @@
+- main:
+  - link "Back":
+    - /url: "#"
+  - heading "Please describe the issue you need support with" [level=2]
+  - textbox "text-area"
+  - text: /\d+ characters remaining/
+  - button "Submit"
