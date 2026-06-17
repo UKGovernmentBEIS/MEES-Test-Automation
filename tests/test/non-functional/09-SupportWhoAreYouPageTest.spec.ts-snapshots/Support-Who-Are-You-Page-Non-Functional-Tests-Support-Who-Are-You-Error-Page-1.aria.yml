@@ -1,0 +1,17 @@
+- main:
+  - alert "There is a problem":
+    - heading "There is a problem" [level=2]
+    - list:
+      - listitem:
+        - link "Please select one of the options":
+          - /url: "#-78"
+  - link "Back":
+    - /url: "#"
+  - group "Are you a:":
+    - heading "Are you a:" [level=1]
+    - text: "Error: Please select one of the options"
+    - radio "Department for Energy Security and Net Zero official"
+    - text: Department for Energy Security and Net Zero official
+    - radio "Local authority user"
+    - text: Local authority user
+  - button "Continue"

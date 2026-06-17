@@ -52,7 +52,12 @@ export enum PageName {
   CHANGE_CONTACT_DETAILS_FIRST_NAME_ERROR = "Change Contact Details Page - First Name Error",
   CHANGE_CONTACT_DETAILS_LAST_NAME_ERROR = "Change Contact Details Page - Last Name Error",
   CHECK_CONTACT_DETAILS_PAGE = "Check Contact Details Page",
-  CONTACT_DETAILS_CONFIRMATION_PAGE = "Contact Details Confirmation Page"
+  CONTACT_DETAILS_CONFIRMATION_PAGE = "Contact Details Confirmation Page",
+  SUPPORT_WHO_ARE_YOU_PAGE = "Support Who Are You Page",
+  SUPPORT_CONTACT_FORM_PAGE = "Support Contact Form Page",
+  SUPPORT_WHAT_DO_YOU_WANT_PAGE = "Support What Do You Want Page",
+  SUPPORT_DETAILS_PAGE = "Support Details Page",
+  SUPPORT_CONFIRMATION_PAGE = "Support Confirmation Page"
 }
 
 /**

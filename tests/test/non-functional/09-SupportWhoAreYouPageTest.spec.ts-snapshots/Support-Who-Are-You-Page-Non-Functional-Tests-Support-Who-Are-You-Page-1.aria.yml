@@ -1,0 +1,10 @@
+- main:
+  - link "Back":
+    - /url: "#"
+  - group "Are you a:":
+    - heading "Are you a:" [level=1]
+    - radio "Department for Energy Security and Net Zero official"
+    - text: Department for Energy Security and Net Zero official
+    - radio "Local authority user"
+    - text: Local authority user
+  - button "Continue"
