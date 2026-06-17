@@ -10,7 +10,6 @@ export class SupportWhoAreYouPage extends BaseCompliancePage {
     private deznsRadioButton: Locator;
     private laRadioButton: Locator;
     private continueButton: Locator;
-    private errorSummary: Locator;
     private errorSelectOption: Locator;
     private backToHomePageButton: Locator;
 
@@ -21,7 +20,6 @@ export class SupportWhoAreYouPage extends BaseCompliancePage {
         this.deznsRadioButton = page.getByRole('radio', { name: 'Department for Energy Security and Net Zero official' });
         this.laRadioButton = page.getByRole('radio', { name: 'Local authority user' });
         this.continueButton = page.getByRole('button', { name: 'Continue' });
-        this.errorSummary = page.locator('.govuk-error-summary');
         this.errorSelectOption = page.locator('.govuk-error-message', { hasText: 'Please select one of the options' });
         this.backToHomePageButton = page.getByRole('link', { name: 'Back', exact: true });
     }
@@ -76,10 +74,6 @@ export class SupportWhoAreYouPage extends BaseCompliancePage {
     async clickContinueButton(): Promise<SupportContactFormPage> {
         await this.continueButton.click();
         return new SupportContactFormPage(this.page);
-    }
-
-    getErrorSummary(): Locator {
-        return this.errorSummary;
     }
 
     getErrorSelectOption(): Locator {

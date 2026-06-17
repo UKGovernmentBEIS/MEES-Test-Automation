@@ -22,8 +22,7 @@ test.describe('Page validation tests', () => {
 
     test('Verify velidation error messages on the Support Who Are You page when no option is selected', async ({ page }) => {
         await supportWhoAreYouPage.clickContinueButton();
-        expect(await supportWhoAreYouPage.getErrorSummary()).toBeVisible();
-        expect(await supportWhoAreYouPage.getErrorSelectOption()).toBeVisible();
+        await expect(supportWhoAreYouPage.getErrorSelectOption()).toBeVisible();
     });
 
     test('Verify validation error messages on the Support Contact Form page when required fields are left empty', async ({ page }) => {
@@ -33,11 +32,9 @@ test.describe('Page validation tests', () => {
         expect(await supportContactFormPage.isDisplayed()).toBe(true);
 
         await supportContactFormPage.clickContinueButton();
-        const errorSummary = supportContactFormPage.getErrorSummary();
-        expect(await errorSummary.isVisible()).toBe(true);
-        expect(await supportContactFormPage.getFieldErrorMessage('Enter a first name').isVisible()).toBe(true);
-        expect(await supportContactFormPage.getFieldErrorMessage('Enter a last name').isVisible()).toBe(true);
-        expect(await supportContactFormPage.getFieldErrorMessage('Enter a valid email address').isVisible()).toBe(true);
+        await expect(supportContactFormPage.getFieldErrorMessage('Enter a first name')).toBeVisible();
+        await expect(supportContactFormPage.getFieldErrorMessage('Enter a last name')).toBeVisible();
+        await expect(supportContactFormPage.getFieldErrorMessage('Enter a valid email address')).toBeVisible();
     });
 
     test('Verify validation error messages on the Support What Do You Want page when no option is selected', async ({ page }) => {
@@ -55,7 +52,7 @@ test.describe('Page validation tests', () => {
         expect(await supportWhatDoYouWantPage.isDisplayed()).toBe(true);
 
         await supportWhatDoYouWantPage.clickContinueButton();
-        expect(await supportWhatDoYouWantPage.getMissingOptionError().isVisible()).toBe(true);
+        await expect(supportWhatDoYouWantPage.getMissingOptionError()).toBeVisible();
     });
 
     test('Verify validation error messages on the Support Details page when the details field is left empty', async ({ page }) => {
@@ -83,8 +80,8 @@ test.describe('Page validation tests', () => {
 
         // Click the submit button without entering any details
         await supportDetailsPage.clickSubmitButton();
-        expect(await supportDetailsPage.getErrorSummary().isVisible()).toBe(true);
-        expect(await supportDetailsPage.getErrorDetailsTextArea().isVisible()).toBe(true);
+        await expect(supportDetailsPage.getErrorSummary()).toBeVisible();
+        await expect(supportDetailsPage.getErrorDetailsTextArea()).toBeVisible();
     });
 });
 

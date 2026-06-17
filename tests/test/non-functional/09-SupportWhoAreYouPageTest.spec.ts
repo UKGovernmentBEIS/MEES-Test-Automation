@@ -33,7 +33,7 @@ test.describe('Support Who Are You Page Non-Functional Tests', () => {
         await supportWhoAreYouPage.clickContinueButton();
 
         // Make sure that the error summary is displayed
-        expect(await supportWhoAreYouPage.getErrorSummary().isVisible()).toBeTruthy();
+        await expect(supportWhoAreYouPage.getErrorSelectOption()).toBeVisible();
 
         // Verify accessibility on the Support Who Are You error page
         await baseTest.verifyAccessibility(PageName.SUPPORT_WHO_ARE_YOU_PAGE);

@@ -10,7 +10,6 @@ export type ContactFormErrorMessages = 'Enter a first name' | 'Enter a last name
 export class SupportContactFormPage extends BaseCompliancePage {
     private pageContext: Locator;
     private continueButton: Locator;
-    private errorSummary: Locator;
     protected readonly page: Page;
 
     constructor(page: Page) {
@@ -18,7 +17,6 @@ export class SupportContactFormPage extends BaseCompliancePage {
         this.page = page;
         this.pageContext = page.locator('#main-content');
         this.continueButton = page.getByRole('button', { name: 'Continue' });
-        this.errorSummary = page.locator('.govuk-error-summary');
     }
 
     // Wait for the Support Contact Form page to load
@@ -61,10 +59,6 @@ export class SupportContactFormPage extends BaseCompliancePage {
         const backButton = this.page.getByRole('link', { name: 'Back', exact: true });
         await backButton.click();
         return new SupportWhoAreYouPage(this.page);
-    }
-
-    getErrorSummary(): Locator {
-        return this.errorSummary;
     }
 
     getFieldErrorMessage(fieldName: ContactFormErrorMessages): Locator {

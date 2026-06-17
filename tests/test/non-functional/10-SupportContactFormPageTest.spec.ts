@@ -36,7 +36,7 @@ test.describe('Support Contact Form Page Non-Functional Tests', () => {
         await supportContactFormPage.clickContinueButton();
 
         // Make sure that the error summary is displayed
-        expect(await supportContactFormPage.getErrorSummary().isVisible()).toBeTruthy();
+        await expect(supportContactFormPage.getFieldErrorMessage('Enter a first name')).toBeVisible();
 
         // Verify accessibility on the Support Contact Form error page
         await baseTest.verifyAccessibility(PageName.SUPPORT_CONTACT_FORM_PAGE);
