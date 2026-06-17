@@ -56,7 +56,9 @@ export class SupportDetailsPage extends BaseCompliancePage {
     }
 
     async enterSupportDetails(details: string): Promise<void> {
-        await this.supportDetailsTextArea.fill(details);
+        const textarea = this.supportDetailsTextArea;
+        await textarea.click();
+        await textarea.pressSequentially(details);
     }
 
     async clickSubmitButton(): Promise<SupportSubmittedPage> {

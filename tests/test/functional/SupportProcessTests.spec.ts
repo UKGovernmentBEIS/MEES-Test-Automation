@@ -246,6 +246,40 @@ test.describe('Navigation tests', () => {
         await homePageFromSupport.waitForPageToLoad();
         expect(await homePageFromSupport.isDisplayed()).toBe(true);
     });
+
+    test('Verify that the user can navigate back to the Home page from the Support Submitted page', async () => {
+        // Navigate to the Support Submitted page
+        const supportWhoAreYouPage: SupportWhoAreYouPage = await homePage.clickRequestSupportLink();
+
+        // Select the role and proceed to the Support Contact Form page
+        await supportWhoAreYouPage.waitForPageToLoad();
+        await supportWhoAreYouPage.selectRole('Department for Energy Security and Net Zero official');
+        const supportContactFormPage = await supportWhoAreYouPage.clickContinueButton();
+        await supportContactFormPage.waitForPageToLoad();
+
+        // Fill in the contact form fields and proceed to the Support What Do You Want page
+        await supportContactFormPage.fillContactFormField('First name', 'John');
+        await supportContactFormPage.fillContactFormField('Last name', 'Doe');
+        await supportContactFormPage.fillContactFormField('Your email address', 'john.doe@example.com');
+        await supportContactFormPage.fillContactFormField('Confirm your email address', 'john.doe@example.com');
+        const supportWhatDoYouWantPage = await supportContactFormPage.clickContinueButton();
+        await supportWhatDoYouWantPage.waitForPageToLoad();
+
+        // Select the support option and proceed to the Support Details page
+        await supportWhatDoYouWantPage.selectHelpRequestOption('I have a question about the policy or guidance');
+        const supportDetailsPage = await supportWhatDoYouWantPage.clickContinueButton();
+        await supportDetailsPage.waitForPageToLoad();
+
+        // Enter support details and submit the form to reach the Support Submitted page
+        await supportDetailsPage.enterSupportDetails('This is a test support request.');
+        const supportSubmittedPage = await supportDetailsPage.clickSubmitButton();
+        await supportSubmittedPage.waitForPageToLoad();
+        
+        // Navigate back to the Home page from the Support Submitted page
+        const homePageFromSupport = await supportSubmittedPage.clickReturnHomeButton();
+        await homePageFromSupport.waitForPageToLoad();
+        expect(await homePageFromSupport.isDisplayed()).toBe(true);
+    });
 });
 
 test.describe('Support link availability across pages', () => {
