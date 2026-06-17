@@ -22,8 +22,8 @@ test.describe('Page validation tests', () => {
 
     test('Verify velidation error messages on the Support Who Are You page when no option is selected', async ({ page }) => {
         await supportWhoAreYouPage.clickContinueButton();
-        expect(await supportWhoAreYouPage.getErrorSummary().isVisible()).toBe(true);
-        expect(await supportWhoAreYouPage.getErrorSelectOption().isVisible()).toBe(true);
+        expect(await supportWhoAreYouPage.getErrorSummary()).toBeVisible();
+        expect(await supportWhoAreYouPage.getErrorSelectOption()).toBeVisible();
     });
 
     test('Verify validation error messages on the Support Contact Form page when required fields are left empty', async ({ page }) => {
