@@ -1,0 +1,13 @@
+- main:
+  - link "Back":
+    - /url: "#"
+  - paragraph: Please provide your details so that we can contact you.
+  - heading "First name" [level=2]
+  - textbox "First name"
+  - heading "Last name" [level=2]
+  - textbox "Last name"
+  - heading "Your email address" [level=2]
+  - textbox "Your email address"
+  - heading "Confirm your email address" [level=2]
+  - textbox "Confirm your email address"
+  - button "Continue"

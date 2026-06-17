@@ -52,7 +52,7 @@ export class SupportWhoAreYouPage extends BaseCompliancePage {
         LA: 'Local authority user'
     };
 
-    async selectRole(role: string): Promise<SupportContactFormPage> {
+    async selectRole(role: string): Promise<void> {
         switch (role) {
             case this.roles.DEZNS:
                 await this.selectDeznsRadioButton();
@@ -63,7 +63,6 @@ export class SupportWhoAreYouPage extends BaseCompliancePage {
             default:
                 throw new Error(`Unsupported role: ${role}. Supported roles are: ${Object.values(this.roles).join(', ')}`);
         }
-        return new SupportContactFormPage(this.page);
     }
 
     async selectDeznsRadioButton(): Promise<void> {

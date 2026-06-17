@@ -1,0 +1,28 @@
+- main:
+  - link "Back":
+    - /url: "#"
+  - alert "There is a problem":
+    - heading "There is a problem" [level=2]
+    - list:
+      - listitem:
+        - link "Enter a first name"
+      - listitem:
+        - link "Enter a last name"
+      - listitem:
+        - link "Enter a valid email address"
+      - listitem:
+        - link "Enter a valid email address"
+  - paragraph: Please provide your details so that we can contact you.
+  - heading "First name" [level=2]
+  - text: "Error: Enter a first name"
+  - textbox "First name"
+  - heading "Last name" [level=2]
+  - text: "Error: Enter a last name"
+  - textbox "Last name"
+  - heading "Your email address" [level=2]
+  - text: "Error: Enter a valid email address"
+  - textbox "Your email address"
+  - heading "Confirm your email address" [level=2]
+  - text: "Error: Enter a valid email address"
+  - textbox "Confirm your email address"
+  - button "Continue"
