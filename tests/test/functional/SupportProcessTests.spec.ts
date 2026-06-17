@@ -104,18 +104,18 @@ test.describe('Support Process tests', () => {
     });
 
     const testCases = [
-        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I have a question about the policy or guidance' },
-        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I need an account created' },
-        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I cannot log in to my account' },
-        { role: 'Department for Energy Security and Net Zero official', supportOption: 'Something has gone wrong with the service' },
-        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I need to change my permission levels' },
-        { role: 'Department for Energy Security and Net Zero official', supportOption: 'Other' },
-        { role: 'Local authority user', supportOption: 'I have a question about the policy or guidance' },
-        { role: 'Local authority user', supportOption: 'I need an account created' },
-        { role: 'Local authority user', supportOption: 'I cannot log in to my account' },
-        { role: 'Local authority user', supportOption: 'Something has gone wrong with the service' },
-        { role: 'Local authority user', supportOption: 'I need to change my permission levels' },
-        { role: 'Local authority user', supportOption: 'Other' }
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I have a question about the policy or guidance'},
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I need an account created'},
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I cannot log in to my account'},
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'Something has gone wrong with the service'},
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I need to change my permission levels'},
+        { role: 'Department for Energy Security and Net Zero official', supportOption: 'Other'},
+        { role: 'Local authority user', supportOption: 'I have a question about the policy or guidance'},
+        { role: 'Local authority user', supportOption: 'I need an account created'},
+        { role: 'Local authority user', supportOption: 'I cannot log in to my account'},
+        { role: 'Local authority user', supportOption: 'Something has gone wrong with the service'},
+        { role: 'Local authority user', supportOption: 'I need to change my permission levels'},
+        { role: 'Local authority user', supportOption: 'Other'}
     ]
 
     testCases.forEach(({ role, supportOption }) => {
@@ -147,8 +147,14 @@ test.describe('Support Process tests', () => {
             // Enter support details and submit the form
             await supportDetailsPage.enterSupportDetails('This is a test support request.');
             const supportSubmittedPage = await supportDetailsPage.clickSubmitButton();
-            await supportSubmittedPage.waitForPageToLoad();
-            expect(await supportSubmittedPage.isDisplayed()).toBe(true);
+            if (supportOption === 'I need an account created') {
+                // Bug 1062 For the "I need an account created" option, we expect to see an error message
+                expect(await supportSubmittedPage.isDisplayed()).toBe(false);
+            } else {
+                // For other options, we expect to reach the Support Submitted page
+                await supportSubmittedPage.waitForPageToLoad();
+                expect(await supportSubmittedPage.isDisplayed()).toBe(true);
+            }
         });
     });
 });
