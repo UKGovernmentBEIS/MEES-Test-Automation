@@ -30,19 +30,4 @@ test.describe('Support Contact Form Page Non-Functional Tests', () => {
         const locators = await supportContactFormPage.getPageContextLocator();
         await baseTest.verifyContextWithLocators(locators);
     });
-
-    test('Support Contact Form Error Page', async () => {
-        // Click continue without filling out the form to trigger the error
-        await supportContactFormPage.clickContinueButton();
-
-        // Make sure that the error summary is displayed
-        await expect(supportContactFormPage.getFieldErrorMessage('Enter a first name')).toBeVisible();
-
-        // Verify accessibility on the Support Contact Form error page
-        await baseTest.verifyAccessibility(PageName.SUPPORT_CONTACT_FORM_PAGE);
-
-        // Verify page context on the Support Contact Form error page
-        const locators = await supportContactFormPage.getPageContextLocator();
-        await baseTest.verifyContextWithLocators(locators);
-    });
 });

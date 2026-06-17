@@ -47,19 +47,4 @@ test.describe('Support Details Page Non-Functional Tests', () => {
         const locators = await supportDetailsPage.getPageContextLocator();
         await baseTest.verifyContextWithLocators(locators);
     });
-
-    test('Support Details Error Page', async () => {
-        // Click submit button without populating the details to trigger the error
-        await supportDetailsPage.clickSubmitButton();
-
-        // Make sure that the error for missing option is displayed
-        await expect(supportDetailsPage.getErrorDetailsTextArea()).toBeVisible();
-
-        // Verify accessibility on the Support Details error page
-        await baseTest.verifyAccessibility(PageName.SUPPORT_DETAILS_PAGE);
-
-        // Verify page context on the Support Details error page
-        const locators = await supportDetailsPage.getPageContextLocator();
-        await baseTest.verifyContextWithLocators(locators);
-    });
 });

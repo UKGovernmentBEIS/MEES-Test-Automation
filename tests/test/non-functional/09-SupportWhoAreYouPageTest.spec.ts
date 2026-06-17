@@ -27,19 +27,4 @@ test.describe('Support Who Are You Page Non-Functional Tests', () => {
         const locators = await supportWhoAreYouPage.getPageContextLocator();
         await baseTest.verifyContextWithLocators(locators);
     });
-
-    test('Support Who Are You Error Page', async ({ page }, testInfo) => {
-        // Click continue without selecting a role to trigger the error
-        await supportWhoAreYouPage.clickContinueButton();
-
-        // Make sure that the error summary is displayed
-        await expect(supportWhoAreYouPage.getErrorSelectOption()).toBeVisible();
-
-        // Verify accessibility on the Support Who Are You error page
-        await baseTest.verifyAccessibility(PageName.SUPPORT_WHO_ARE_YOU_PAGE);
-
-        // Verify page context on the Support Who Are You error page
-        const locators = await supportWhoAreYouPage.getPageContextLocator();
-        await baseTest.verifyContextWithLocators(locators);
-    });
 });

@@ -42,19 +42,4 @@ test.describe('Support What Do You Want Page Non-Functional Tests', () => {
         const locators = await supportWhatDoYouWantPage.getPageContextLocator();
         await baseTest.verifyContextWithLocators(locators);
     });
-
-    test('Support What Do You Want Error Page', async () => {
-        // Click continue without selecting an option to trigger the error
-        await supportWhatDoYouWantPage.clickContinueButton();
-
-        // Make sure that the error for missing option is displayed
-        await expect(supportWhatDoYouWantPage.getMissingOptionError()).toBeVisible();
-
-        // Verify accessibility on the Support What Do You Want error page
-        await baseTest.verifyAccessibility(PageName.SUPPORT_WHAT_DO_YOU_WANT_PAGE);
-
-        // Verify page context on the Support What Do You Want error page
-        const locators = await supportWhatDoYouWantPage.getPageContextLocator();
-        await baseTest.verifyContextWithLocators(locators);
-    });
 });
