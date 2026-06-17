@@ -8,14 +8,6 @@
         - /url: /compliance/guidance-detail?contentKey=MC6MPUO6E7K5FBJDQOAA34AGC4NY
     - paragraph: /\d+ June \d+/
     - paragraph:
-      - link "How PRS properties are identified":
-        - /url: /compliance/guidance-detail?contentKey=MCP2MRSMPQDVHHRDWHC3A5I73FDA
-    - paragraph: /\d+ June \d+/
-    - paragraph:
-      - link "Understanding the MEES Regulations":
-        - /url: /compliance/guidance-detail?contentKey=MCZZRQVEB2UZAPHHEFTCLBR7L5SI
-    - paragraph: /\d+ June \d+/
-    - paragraph:
       - link "Understanding compliance notices":
         - /url: /compliance/guidance-detail?contentKey=MCBFW4DPLN45EMFOEMAZ53W36AVU
     - paragraph: /\d+ June \d+/
@@ -26,4 +18,12 @@
     - paragraph:
       - link "Understanding penalties":
         - /url: /compliance/guidance-detail?contentKey=MCM6RZ6JHKLRBOXNIRXKLHUYPNXM
+    - paragraph: /\d+ June \d+/
+    - paragraph:
+      - link "How PRS properties are identified":
+        - /url: /compliance/guidance-detail?contentKey=MCP2MRSMPQDVHHRDWHC3A5I73FDA
+    - paragraph: /\d+ June \d+/
+    - paragraph:
+      - link "Understanding the MEES Regulations":
+        - /url: /compliance/guidance-detail?contentKey=MCZZRQVEB2UZAPHHEFTCLBR7L5SI
     - paragraph: /\d+ June \d+/

@@ -11,31 +11,57 @@
   - term: Last updated
   - definition: /\d+ June \d+/
   - paragraph: Contents
-  - text: <h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "Ministry of Housing, Communities & Local Government (MHCLG)":
-    - /url: "#MHCLG"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1"> ─
-  - link "Ordnance Survey (OS)":
-    - /url: "#OS"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "HM Land Registry (HMLR)":
-    - /url: "#HMLR"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "Valuation Office Agency (VOA)":
-    - /url: "#VOA"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "Companies House":
-    - /url: "#CH"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "PRS Exemptions Register statuses":
-    - /url: "#PRSEStatus"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "How property records are created":
-    - /url: "#HowPropertyCreated"
-  - text: h3><h3 class="govuk-body">─
-  - link "Why some information may not appear":
-    - /url: "#WhyInfoNotAppear"
-  - text: h3>
+  - heading "─ How property records are created" [level=3]:
+    - text: ""
+    - link "How property records are created":
+      - /url: "#HowPropertyCreated"
+  - heading "─ Why some information may not appear" [level=3]:
+    - text: ""
+    - link "Why some information may not appear":
+      - /url: "#WhyInfoNotAppear"
+  - heading "─ Ministry of Housing, Communities & Local Government (MHCLG)" [level=3]:
+    - text: ""
+    - link "Ministry of Housing, Communities & Local Government (MHCLG)":
+      - /url: "#MHCLG"
+  - heading "─ Ordnance Survey (OS)" [level=3]:
+    - text: ""
+    - link "Ordnance Survey (OS)":
+      - /url: "#OS"
+  - heading "─ HM Land Registry (HMLR)" [level=3]:
+    - text: ""
+    - link "HM Land Registry (HMLR)":
+      - /url: "#HMLR"
+  - heading "─ Valuation Office Agency (VOA)" [level=3]:
+    - text: ""
+    - link "Valuation Office Agency (VOA)":
+      - /url: "#VOA"
+  - heading "─ Companies House" [level=3]:
+    - text: ""
+    - link "Companies House":
+      - /url: "#CH"
+  - heading "─ PRS Exemptions Register statuses" [level=3]:
+    - text: ""
+    - link "PRS Exemptions Register statuses":
+      - /url: "#PRSEStatus"
+  - heading "How property records are created" [level=1]
+  - paragraph: "Multiple datasets are combined in this service to create a single record for each property. The following steps are taken to create each record:"
+  - list:
+    - listitem: If an Energy Performance Certificate (EPC) has an associated Unique Property Reference Number (UPRN) it is used as the starting point for creating a property record.
+    - listitem: If the EPC is missing the UPRN, the service will attempt to use the Ordnance Survey (OS) AddressBase Premium dataset to find the associated UPRN for that property.
+    - listitem: When a property record has an associated UPRN, it is used to add property owner data from the HMLR dataset.
+    - listitem: The Companies House dataset is then used to add company details to the property record for cases when the property is owned by one or more companies - this is done using the company registration number on the HMLR CCOD or the HMLR OCOD dataset.
+    - listitem: The UPRN is then used to add 'PRS exemption' and 'PRS Penalty' records from the PRS Exemptions Register data.
+  - paragraph: This data is then displayed in the service as a single property record.
+  - heading "Why some information may not appear" [level=1]
+  - paragraph: "Some fields in the property records table or the property details page may be missing if:"
+  - list:
+    - listitem: an individual has opted out of having their EPC data disclosed publicly
+    - listitem: an EPC for a property has no associated UPRN
+    - listitem: no UPRN was found when attempting to match EPC register data with OS AddressBase Premium data
+    - listitem: property owner data from the HMLR datasets is incomplete
+    - listitem: company details were not found in the Companies House data
+    - listitem: PRS Exemption Register records lack an associated UPRN
+    - listitem: there are no exemptions or penalties registered in the PRS Exemptions Register for that property
   - heading "Ministry of Housing, Communities & Local Government (MHCLG)" [level=1]
   - paragraph: The Energy Performance Certificate (EPC) Non-Domestic dataset from MHCLG contains the EPCs for the non-domestic properties displayed in this service.
   - paragraph:
@@ -89,39 +115,9 @@
   - paragraph: The PRS Exemptions Register provides the 'PRS exemption' statuses and 'PRS penalty' information displayed when viewing the property records table and property detail pages.
   - paragraph: "To understand the 'PRS exemption' statuses:"
   - list:
-    - listitem: "'Received' means that the landlord has submitted an exemption that has not been assessed yet"
-    - listitem: "'Needs update' means that the exemption has been reviewed and the landlord has been asked to provide more information"
-    - listitem: "'Update' means that the landlord has supplied more information and the exemption is awaiting review"
-    - listitem: "'Penalty sent' means that a penalty has been issued to the landlord based on that exemption record"
-    - listitem: "'Approved' means that the exemption has been reviewed and approved"
-    - listitem: "'Ended' means that the exemption has been ended by the landlord or a local authority"
-    - listitem: "'Expired' means that the exemption has reached the end of its allowed time and is no longer valid"
-  - paragraph: "If the status is:"
-  - list:
-    - listitem: "'Received', 'Needs update', or 'Updated' then the exemption is pending review and approval"
-    - listitem: "'Penalty sent' then enforcement action is in progress or complete"
-    - listitem: "'Ended' or 'Expired' then the exemption is no longer active - check for a new exemption"
+    - listitem: "'Found' indicates that one or more exemptions have been registered by a landlord of the property"
   - paragraph: "To understand the 'PRS penalty' status:"
   - list:
-    - listitem: "'Recorded' then a penalty has been issued to the landlord and is not linked to an exemption record"
-  - paragraph: If 'Not found' is displayed, this means that the property is not listed in the PRS Exemptions Register, or that a property is listed in the PRS Exemptions Register but that it has no associated UPRN or a different UPRN. This may occur due to manual address entry whilst creating records. Before beginning any enforcement, check the PRS Exemptions Register records as part of due diligence.
+    - listitem: "'Recorded' indicates that a penalty has been issued to the landlord and has been recorded in the PRS Exemption Register"
+  - paragraph: If 'Not found' is displayed, either no records are shown in the PRS Exemptions Register, or a property is listed in the PRS Exemptions Register but has no UPRN or a different UPRN. This may occur due to manual address entry whilst creating records and prevents the service from matching records. Before beginning any enforcement, check the PRS Exemptions Register records as part of due diligence.
   - paragraph: This data is refreshed daily.
-  - heading "How property records are created" [level=1]
-  - paragraph: "Multiple datasets are combined in this service to create a single record for each property:"
-  - list:
-    - listitem: If the EPC for a property has an associated UPRN, this is used as the starting point for creating a property record.
-    - listitem: If the UPRN is missing from the EPC, the service will attempt to use the OS AddressBase Premium dataset to find the associated UPRN for that property.
-    - listitem: When a property record has an associated UPRN, the HMLR dataset enables the property to be connected to property owners.
-    - listitem: The Companies House dataset is then used to add company details to the property record for cases when the property is owned by one or more companies - this is done using the company registration number on the HMLR CCOD or the HMLR OCOD dataset.
-    - listitem: The 'PRS exemption' status and 'PRS Penalty' are added from the PRS Exemptions Register data.
-  - paragraph: This data is then displayed in the service as a single property record.
-  - heading "Why some information may not appear" [level=1]
-  - paragraph: "Some fields in the property records table or the property details page may be missing if:"
-  - list:
-    - listitem: an individual has opted out of having their EPC data disclosed publicly
-    - listitem: an EPC for a property has no associated UPRN
-    - listitem: no UPRN was found when attempting to match EPC register data with OS AddressBase Premium data
-    - listitem: property owner data from the HMLR datasets is incomplete
-    - listitem: company details were not found in the Companies House data
-    - listitem: PRS Exemption Register records lack an associated UPRN
-    - listitem: there are no exemptions or penalties registered in the PRS Exemptions Register for that property

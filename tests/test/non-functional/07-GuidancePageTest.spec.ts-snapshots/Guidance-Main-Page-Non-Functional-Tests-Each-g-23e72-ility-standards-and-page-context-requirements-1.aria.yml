@@ -11,25 +11,27 @@
   - term: Last updated
   - definition: /\d+ June \d+/
   - paragraph: Contents
-  - text: <h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "Contacting a landlord before issuing a compliance notice":
-    - /url: "#contacting"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "Issuing a compliance noticeh3> Contacting a landlord before issuing a compliance notice You may reach out to landlords to notify them informally that they need to improve the energy efficiency of their properties. You may choose to do this because the landlord may not realise that their property is non-compliant. This informal engagement step can help to resolve simple cases of non-compliance without the need for formal enforcement action.":
-    - /url: "#issuing"
+  - heading "─ Contacting a landlord before issuing a compliance notice" [level=3]:
     - text: ""
-    - heading "Contacting a landlord before issuing a compliance notice" [level=1]
-    - paragraph: You may reach out to landlords to notify them informally that they need to improve the energy efficiency of their properties. You may choose to do this because the landlord may not realise that their property is non-compliant.
-    - paragraph: This informal engagement step can help to resolve simple cases of non-compliance without the need for formal enforcement action.
-  - paragraph:
-    - link "Landlords have guidance on the":
+    - link "Contacting a landlord before issuing a compliance notice":
+      - /url: "#contacting"
+  - heading "─ Issuing a compliance notice Contacting a landlord before issuing a compliance notice You may reach out to landlords to notify them informally that they need to improve the energy efficiency of their properties. You may choose to do this because the landlord may not realise that their property is non-compliant. This informal engagement step can help to resolve simple cases of non-compliance without the need for formal enforcement action. Landlords have guidance on the MEES Regulations and the PRS Exemptions Register publicly available to them which you may wish to share." [level=3]:
+    - text: ""
+    - link "Issuing a compliance notice Contacting a landlord before issuing a compliance notice You may reach out to landlords to notify them informally that they need to improve the energy efficiency of their properties. You may choose to do this because the landlord may not realise that their property is non-compliant. This informal engagement step can help to resolve simple cases of non-compliance without the need for formal enforcement action.":
       - /url: "#issuing"
-    - link "MEES Regulations":
-      - /url: https://www.gov.uk/guidance/non-domestic-private-rented-property-minimum-energy-efficiency-standard-landlord-guidance
-    - text: and the
-    - link "PRS Exemptions Register":
-      - /url: https://www.gov.uk/government/publications/private-rented-sector-minimum-energy-efficiency-standard-exemptions/guidance-on-prs-exemptions-and-exemptions-register-evidence-requirements
-    - text: publicly available to them which you may wish to share.
+      - text: ""
+      - heading "Contacting a landlord before issuing a compliance notice" [level=1]
+      - paragraph: You may reach out to landlords to notify them informally that they need to improve the energy efficiency of their properties. You may choose to do this because the landlord may not realise that their property is non-compliant.
+      - paragraph: This informal engagement step can help to resolve simple cases of non-compliance without the need for formal enforcement action.
+    - paragraph:
+      - link "Landlords have guidance on the":
+        - /url: "#issuing"
+      - link "MEES Regulations":
+        - /url: https://www.gov.uk/guidance/non-domestic-private-rented-property-minimum-energy-efficiency-standard-landlord-guidance
+      - text: and the
+      - link "PRS Exemptions Register":
+        - /url: https://www.gov.uk/government/publications/private-rented-sector-minimum-energy-efficiency-standard-exemptions/guidance-on-prs-exemptions-and-exemptions-register-evidence-requirements
+      - text: publicly available to them which you may wish to share.
   - heading "Issuing a compliance notice" [level=1]
   - paragraph: "A compliance notice may request either the original or copies of the following information:"
   - list:

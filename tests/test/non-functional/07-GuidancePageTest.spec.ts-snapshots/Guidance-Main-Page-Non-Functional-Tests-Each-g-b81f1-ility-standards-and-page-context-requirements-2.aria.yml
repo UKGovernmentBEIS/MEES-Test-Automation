@@ -11,16 +11,18 @@
   - term: Last updated
   - definition: /\d+ June \d+/
   - paragraph: Contents
-  - text: <h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "Financial penalties":
-    - /url: "#financial"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "Publication penalties":
-    - /url: "#publication"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "Issuing a penalty notice":
-    - /url: "#issuing"
-  - text: h3>
+  - heading "─ Financial penalties" [level=3]:
+    - text: ""
+    - link "Financial penalties":
+      - /url: "#financial"
+  - heading "─ Publication penalties" [level=3]:
+    - text: ""
+    - link "Publication penalties":
+      - /url: "#publication"
+  - heading "─ Issuing a penalty notice" [level=3]:
+    - text: ""
+    - link "Issuing a penalty notice":
+      - /url: "#issuing"
   - heading "Financial penalties" [level=1]
   - paragraph: Financial penalties are calculated based on how long the property has been not compliant with the MEES Regulations and the rateable value of the property.
   - paragraph:

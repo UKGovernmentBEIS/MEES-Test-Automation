@@ -11,19 +11,22 @@
   - term: Last updated
   - definition: /\d+ June \d+/
   - paragraph: Contents
-  - text: <h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "1. Check if the property is in scope":
-    - /url: "#scope"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1"> ─
-  - link "2. Check the energy rating":
-    - /url: "#energy-rating"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "3. Check for PRS exemptions":
-    - /url: "#prs-exemptions"
-  - text: h3><h3 class="govuk-body govuk-!-margin-bottom-1">─
-  - link "4. Begin enforcement action":
-    - /url: "#enforcement-action"
-  - text: h3>
+  - heading "─ 1. Check if the property is in scope" [level=3]:
+    - text: ""
+    - link "1. Check if the property is in scope":
+      - /url: "#scope"
+  - heading "─ 2. Check the energy rating" [level=3]:
+    - text: ""
+    - link "2. Check the energy rating":
+      - /url: "#energy-rating"
+  - heading "─ 3. Check for PRS exemptions" [level=3]:
+    - text: ""
+    - link "3. Check for PRS exemptions":
+      - /url: "#prs-exemptions"
+  - heading "─ 4. Begin enforcement action" [level=3]:
+    - text: ""
+    - link "4. Begin enforcement action":
+      - /url: "#enforcement-action"
   - heading "1. Check if the property is in scope" [level=1]
   - paragraph:
     - text: A property is in scope of the MEES Regulations if it is a privately rented property that is
