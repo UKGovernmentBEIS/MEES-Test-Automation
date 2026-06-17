@@ -3,10 +3,8 @@
     - heading "There is a problem" [level=2]
     - list:
       - listitem:
-        - link "Please select one of the options":
-          - /url: "#-78"
-  - link "Back":
-    - /url: "#"
+        - link "Please select one of the options"
+  - link "Back"
   - group "Are you a:":
     - heading "Are you a:" [level=1]
     - text: "Error: Please select one of the options"
