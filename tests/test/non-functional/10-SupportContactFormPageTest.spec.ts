@@ -2,7 +2,6 @@ import { test, expect } from '../../fixtures/authFixtures';
 import { LandingPage } from '../../pages/LandingPage';
 import { PageName } from '../../utils/TestTypes';
 import { BaseNonFunctionalTest } from '../../utils/BaseNonFunctionalTest';
-import { SupportWhoAreYouPage } from '../../pages/Compliance/Support/SupportWhoAreYouPage';
 import { SupportContactFormPage } from '../../pages/Compliance/Support/SupportContactFormPage';
 
 test.describe('Support Contact Form Page Non-Functional Tests', () => {
