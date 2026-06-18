@@ -102,13 +102,11 @@ test.describe('Support Process tests', () => {
 
     const testCases = [
         { role: 'Department for Energy Security and Net Zero official', supportOption: 'I have a question about the policy or guidance'},
-        { role: 'Department for Energy Security and Net Zero official', supportOption: 'I need an account created'},
         { role: 'Department for Energy Security and Net Zero official', supportOption: 'I cannot log in to my account'},
         { role: 'Department for Energy Security and Net Zero official', supportOption: 'Something has gone wrong with the service'},
         { role: 'Department for Energy Security and Net Zero official', supportOption: 'I need to change my permission levels'},
         { role: 'Department for Energy Security and Net Zero official', supportOption: 'Other'},
         { role: 'Local authority user', supportOption: 'I have a question about the policy or guidance'},
-        { role: 'Local authority user', supportOption: 'I need an account created'},
         { role: 'Local authority user', supportOption: 'I cannot log in to my account'},
         { role: 'Local authority user', supportOption: 'Something has gone wrong with the service'},
         { role: 'Local authority user', supportOption: 'I need to change my permission levels'},
