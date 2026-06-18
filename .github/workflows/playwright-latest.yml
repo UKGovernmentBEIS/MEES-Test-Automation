@@ -1,4 +1,4 @@
-name: Playwright Tests (QA)
+name: Playwright Tests (Latest)
 
 on:
   push:
@@ -6,20 +6,54 @@ on:
   schedule:
     - cron: '55 21 * * *'  # Runs at 9:55 PM UTC every day
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to test against'
+        required: false
+        type: choice
+        options:
+          - new qa
+          - new uat
+        default: new qa
 
 jobs:
+  resolve-environment:
+    name: Resolve Environment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.get-env.outputs.environment }}
+      report_suffix: ${{ steps.get-env.outputs.report_suffix }}
+    steps:
+    - name: Resolve environment
+      id: get-env
+      run: |
+        ENV="${{ inputs.environment }}"
+        if [ -z "$ENV" ]; then
+          ENV="new qa"
+        fi
+        if [ "$ENV" = "new qa" ]; then
+          SUFFIX="qa"
+        else
+          SUFFIX="uat"
+        fi
+        echo "Resolved environment: $ENV"
+        echo "Report suffix: $SUFFIX"
+        echo "environment=$ENV" >> $GITHUB_OUTPUT
+        echo "report_suffix=$SUFFIX" >> $GITHUB_OUTPUT
+
   functional-tests:
-    name: Functional Tests (new qa)
+    name: Functional Tests (Latest)
+    needs: resolve-environment
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.57.0-jammy
-    environment: new qa
+    environment: ${{ needs.resolve-environment.outputs.environment }}
     steps:
     - uses: actions/checkout@v5
     - uses: ./.github/actions/functional-tests
       with:
-        report_suffix: qa
+        report_suffix: ${{ needs.resolve-environment.outputs.report_suffix }}
         base_url: ${{ secrets.BASE_URL }}
         test_account_1_email: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         test_account_1_password: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
@@ -35,17 +69,18 @@ jobs:
         dms_base_url: ${{ secrets.DMS_BASE_URL }}
 
   non-functional-tests:
-    name: Non-Functional Tests (new qa)
+    name: Non-Functional Tests (Latest)
+    needs: resolve-environment
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.57.0-jammy
-    environment: new qa
+    environment: ${{ needs.resolve-environment.outputs.environment }}
     steps:
     - uses: actions/checkout@v5
     - uses: ./.github/actions/non-functional-tests
       with:
-        report_suffix: qa
+        report_suffix: ${{ needs.resolve-environment.outputs.report_suffix }}
         base_url: ${{ secrets.BASE_URL }}
         test_account_1_email: ${{ secrets.TEST_ACCOUNT_1_EMAIL }}
         test_account_1_password: ${{ secrets.TEST_ACCOUNT_1_PASSWORD }}
@@ -57,15 +92,16 @@ jobs:
         test_no_access_password: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
 
   api-tests:
-    name: API Tests (new qa)
+    name: API Tests (Latest)
+    needs: resolve-environment
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    environment: new qa
+    environment: ${{ needs.resolve-environment.outputs.environment }}
     steps:
     - uses: actions/checkout@v5
     - uses: ./.github/actions/api-tests
       with:
-        report_suffix: qa
+        report_suffix: ${{ needs.resolve-environment.outputs.report_suffix }}
         propertydetail_key: ${{ secrets.PROPERTYDETAIL_KEY }}
         properties_key: ${{ secrets.PROPERTIES_KEY }}
         export_key: ${{ secrets.EXPORT_KEY }}

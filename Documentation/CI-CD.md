@@ -8,9 +8,9 @@ GitHub Actions pipeline for automated test execution with **three-job architectu
 2. **Non-Functional Tests** — runs setup and accessibility/validation tests with real-time authentication recovery
 3. **API Tests** — runs API boundary tests (no browser container needed)
 
-**Two environment-specific workflows**:
-- **`playwright-qa.yml`** — targets `new qa`; triggers on push to `main`/`master`, nightly schedule (9:55 PM UTC), and manual dispatch
-- **`playwright-uat.yml`** — targets `new uat`; triggers on nightly schedule (11:55 PM UTC) and manual dispatch with an optional tag input
+**Two workflows**:
+- **`playwright-latest.yml`** — runs the latest code; triggers on push to `main`/`master`, nightly schedule (9:55 PM UTC), and manual dispatch with an optional `environment` input (`new qa` by default, or `new uat`)
+- **`playwright-release.yml`** — runs tagged releases on `new uat` only; triggers on nightly schedule (11:55 PM UTC) and manual dispatch with an optional `tag` input
 
 **Shared templates**: Job definitions in `.github/workflows/` (`template-functional-tests.yml`, `template-non-functional-tests.yml`, `template-api-tests.yml`) are called by both workflows via `uses:` to avoid duplication.
 
@@ -61,8 +61,8 @@ RUN_SETUP_AUTOMATICALLY = 1
 
 ### Workflow Triggers
 
-- **QA (`playwright-qa.yml`)**: Push to `main`/`master`, nightly schedule (9:55 PM UTC), manual dispatch (no inputs)
-- **UAT (`playwright-uat.yml`)**: Nightly schedule (11:55 PM UTC), manual dispatch with optional `tag` input (defaults to latest git tag)
+- **Latest (`playwright-latest.yml`)**: Push to `main`/`master`, nightly schedule (9:55 PM UTC), manual dispatch with optional `environment` input (`new qa` default, or `new uat`)
+- **Release (`playwright-release.yml`)**: Nightly schedule (11:55 PM UTC), manual dispatch with optional `tag` input (defaults to latest git tag); always targets `new uat`
 
 ### Authentication Lifecycle
 
@@ -149,14 +149,14 @@ The `api-tests` job is unaffected — it does not install or use browsers.
 
 | Workflow | Environment | Push | Schedule | Manual dispatch |
 |---|---|---|---|---|
-| `playwright-qa.yml` | `new qa` | `main`, `master` | 9:55 PM UTC nightly | No inputs |
-| `playwright-uat.yml` | `new uat` | — | 11:55 PM UTC nightly | Optional `tag` input (defaults to latest git tag) |
+| `playwright-latest.yml` | `new qa` (default) or `new uat` | `main`, `master` | 9:55 PM UTC nightly | Optional `environment` input (`new qa` default) |
+| `playwright-release.yml` | `new uat` (fixed) | — | 11:55 PM UTC nightly | Optional `tag` input (defaults to latest git tag) |
 
-> **Note**: GitHub Actions scheduled workflows only run on the **default branch** (`main`). The UAT workflow file lives on `main`, but its `resolve-tag` job checks out the correct tag before tests execute.
+> **Note**: GitHub Actions scheduled workflows only run on the **default branch** (`main`). The Release workflow file lives on `main`, but its `resolve-tag` job checks out the correct tag before tests execute.
 
 ## UAT Release Tagging
 
-The UAT workflow uses git tags to pin the test version to what is deployed on `new uat`. Tags must be created manually as part of your release process.
+The Release workflow (`playwright-release.yml`) uses git tags to pin the test version to what is deployed on `new uat`. Tags must be created manually as part of your release process.
 
 ### When to create a tag
 
@@ -179,15 +179,19 @@ git tag -a v1.0 -m "UAT release v1.0"
 git push origin v1.0
 ```
 
-The next scheduled UAT run (or a manual dispatch with no tag input) will automatically pick up the new tag.
+The next scheduled Release run (or a manual dispatch with no tag input) will automatically pick up the new tag.
 
-### Running UAT tests against a specific tag
+### Running release tests against a specific tag
 
-Use the manual dispatch on `playwright-uat.yml` in GitHub Actions and enter the tag name in the `tag` input field (e.g. `v1.0`). Leave the field empty to always use the latest tag.
+Use the manual dispatch on `playwright-release.yml` in GitHub Actions and enter the tag name in the `tag` input field (e.g. `v1.0`). Leave the field empty to always use the latest tag.
+
+### Running the latest tests on UAT before tagging
+
+Use the manual dispatch on `playwright-latest.yml` and select `new uat` as the environment. This runs the latest (untagged) automation code against the `new uat` environment, allowing you to verify tests pass before creating a release tag.
 
 ### First-time setup
 
-Before the UAT workflow runs for the first time, at least one tag must exist. Create the initial tag when both environments are in sync:
+Before the Release workflow runs for the first time, at least one tag must exist. Create the initial tag when both environments are in sync:
 
 ```bash
 git tag -a v1.0 -m "Initial UAT baseline"

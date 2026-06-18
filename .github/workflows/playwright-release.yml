@@ -1,4 +1,4 @@
-name: Playwright Tests (UAT)
+name: Playwright Tests (Release)
 
 on:
   schedule:
@@ -33,7 +33,7 @@ jobs:
         echo "tag=$TAG" >> $GITHUB_OUTPUT
 
   functional-tests:
-    name: Functional Tests (new uat)
+    name: Functional Tests (Release)
     needs: resolve-tag
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
         dms_base_url: ${{ secrets.DMS_BASE_URL }}
 
   non-functional-tests:
-    name: Non-Functional Tests (new uat)
+    name: Non-Functional Tests (Release)
     needs: resolve-tag
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -87,7 +87,7 @@ jobs:
         test_no_access_password: ${{ secrets.TEST_NO_ACCESS_PASSWORD }}
 
   api-tests:
-    name: API Tests (new uat)
+    name: API Tests (Release)
     needs: resolve-tag
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -104,4 +104,3 @@ jobs:
         export_key: ${{ secrets.EXPORT_KEY }}
         dms_base_url: ${{ secrets.DMS_BASE_URL }}
         local_authorities_key: ${{ secrets.LOCAL_AUTHORITIES_KEY }}
-

@@ -132,9 +132,9 @@ npx playwright show-report  # Open after test run
 
 ## CI/CD Pipeline Setup
 
-**GitHub Actions**: Two environment-specific workflows in `.github/workflows/`
-- **`playwright-qa.yml`** — targets `new qa`; triggers on push to `main`/`master`, nightly schedule (9:55 PM UTC), and manual dispatch
-- **`playwright-uat.yml`** — targets `new uat`; triggers on nightly schedule (11:55 PM UTC) and manual dispatch; automatically checks out the latest git tag (or a specified tag) so tests always match the deployed version
+**GitHub Actions**: Two workflows in `.github/workflows/`
+- **`playwright-latest.yml`** — runs latest code; triggers on push to `main`/`master`, nightly schedule (9:55 PM UTC), and manual dispatch with optional `environment` input (`new qa` by default, or `new uat`)
+- **`playwright-release.yml`** — runs tagged releases on `new uat` only; triggers on nightly schedule (11:55 PM UTC) and manual dispatch; automatically checks out the latest git tag (or a specified tag) so tests always match the deployed version
 - **Shared templates**: Reusable job definitions in `.github/workflows/templates/` to avoid duplication across environments
 - **Jobs**: Functional tests, Non-functional tests, API tests (each with setup + recovery)
 - **Secrets needed**: Test account credentials, BASE_URL, API keys
