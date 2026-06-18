@@ -112,7 +112,7 @@
     - listitem: identifying business activity of those companies using SIC codes - this can help to identify if the property is a non-domestic PRS property
   - paragraph: This data is refreshed monthly.
   - heading "PRS Exemptions Register statuses" [level=1]
-  - paragraph: The PRS Exemptions Register provides the 'PRS exemption' statuses and 'PRS penalty' information displayed when viewing the property records table and property detail pages.
+  - paragraph: The PRS Exemptions Register provides the 'PRS exemption' and 'PRS penalty' data displayed when viewing the property records table and property detail pages.
   - paragraph: "To understand the 'PRS exemption' statuses:"
   - list:
     - listitem: "'Found' indicates that one or more exemptions have been registered by a landlord of the property"
