@@ -5,8 +5,6 @@
     - heading "What do you need support with?" [level=1]
     - radio "I have a question about the policy or guidance"
     - text: I have a question about the policy or guidance
-    - radio "I need an account created"
-    - text: ""
     - radio "I cannot log in to my account"
     - text: ""
     - radio "Something has gone wrong with the service"
