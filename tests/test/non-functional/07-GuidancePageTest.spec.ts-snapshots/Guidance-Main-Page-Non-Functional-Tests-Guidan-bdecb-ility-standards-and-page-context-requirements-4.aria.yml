@@ -1,0 +1,28 @@
+- main:
+  - heading "Guidance" [level=1]
+  - paragraph: Use this guidance to understand how the Minimum Energy Efficiency Standards (MEES) apply to non-domestic properties and the enforcement actions you can take.
+  - strong: Warning This guidance is not legally binding and the Department for Energy Security and Net Zero (DESNZ) cannot provide legal advice nor can it provide a definitive interpretation of the law; as this is a matter for the courts.
+  - paragraph:
+    - link "Understanding property details and data sources":
+      - /url: /compliance/guidance-detail?contentKey=MC6ZMWNRJIR5GGVMGCXITZAKWIJU
+  - paragraph: /\d+ June \d+/
+  - paragraph:
+    - link "Enforcement timeline":
+      - /url: /compliance/guidance-detail?contentKey=MC6MPUO6E7K5FBJDQOAA34AGC4NY
+  - paragraph: /\d+ June \d+/
+  - paragraph:
+    - link "Understanding compliance notices":
+      - /url: /compliance/guidance-detail?contentKey=MCBFW4DPLN45EMFOEMAZ53W36AVU
+  - paragraph: /\d+ June \d+/
+  - paragraph:
+    - link "Understanding penalties":
+      - /url: /compliance/guidance-detail?contentKey=MCM6RZ6JHKLRBOXNIRXKLHUYPNXM
+  - paragraph: /\d+ June \d+/
+  - paragraph:
+    - link "How PRS properties are identified":
+      - /url: /compliance/guidance-detail?contentKey=MCP2MRSMPQDVHHRDWHC3A5I73FDA
+  - paragraph: /\d+ June \d+/
+  - paragraph:
+    - link "Understanding the MEES Regulations":
+      - /url: /compliance/guidance-detail?contentKey=MCZZRQVEB2UZAPHHEFTCLBR7L5SI
+  - paragraph: /\d+ June \d+/

@@ -24,8 +24,9 @@ export type TemplateTypes = typeof TemplateTypes[keyof typeof TemplateTypes];
 export class GuidanceMainPage extends BaseCompliancePage {
     private readonly breadcrumbHome: Locator;
     private readonly pageTitle: Locator;
-    private readonly pageContext: Locator;
-
+    private readonly mainParagraph: Locator;
+    private readonly mainParagraphWarning: Locator;
+    private readonly paragraphsLinks: Promise<Locator[]>;
     private async templateLink(templateType: TemplateTypes): Promise<Locator> {
         return this.page.getByRole('link', { name: templateType });
     }
@@ -33,8 +34,10 @@ export class GuidanceMainPage extends BaseCompliancePage {
     constructor(page: Page) {
         super(page);
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
-        this.pageContext = page.locator('#main-content');
         this.pageTitle = page.getByRole('heading', { name: 'Guidance' });
+        this.mainParagraph = page.locator('//main/p[@class]');
+        this.mainParagraphWarning = page.locator('//main/div[contains(@class,"govuk-warning-text")]');
+        this.paragraphsLinks = page.locator('main').filter({ has: page.locator('xpath=//div/p/a') }).all();
     }
 
     async waitForPageToLoad(): Promise<void> {
@@ -50,7 +53,7 @@ export class GuidanceMainPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        return [this.pageContext];
+        return [this.mainParagraph, this.mainParagraphWarning, ...(await this.paragraphsLinks)];
     }
 
     async clickTemplateLink(templateType: TemplateTypes): Promise<
