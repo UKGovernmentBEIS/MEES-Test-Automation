@@ -62,17 +62,6 @@ export abstract class BaseCompliancePage extends BasePage {
         return penaltyCalculatorPage;
     }
 
-    // The "Help" link in the footer is present on every compliance page and lands on the same
-    // Support "Who are you" page as the Home "Request support" link. Scoped to the footer
-    // (contentinfo) so it stays unambiguous on pages that also have a body "Help" link.
-    async clickFooterHelpLink(): Promise<SupportWhoAreYouPage> {
-        await this.footerHelpLink.click();
-        const { SupportWhoAreYouPage } = await import('./Support/SupportWhoAreYouPage');
-        const supportWhoAreYouPage = new SupportWhoAreYouPage(this.page);
-        await supportWhoAreYouPage.waitForPageToLoad();
-        return supportWhoAreYouPage;
-    }
-
     async clickPageHeaderLink(): Promise<HomePage> {
         await this.pageHeaderLink.click();
         const { HomePage } = await import('./HomePage');
@@ -83,5 +72,16 @@ export abstract class BaseCompliancePage extends BasePage {
 
     async isProfileSettingsLinkVisible(): Promise<boolean> {
         return this.profileSettingsLink.isVisible();
+    }
+
+    // The "Help" link in the footer is present on every compliance page and lands on the same
+    // Support "Who are you" page as the Home "Request support" link. Scoped to the footer
+    // (contentinfo) so it stays unambiguous on pages that also have a body "Help" link.
+    async clickFooterHelpLink(): Promise<SupportWhoAreYouPage> {
+        await this.footerHelpLink.click();
+        const { SupportWhoAreYouPage } = await import('./Support/SupportWhoAreYouPage');
+        const supportWhoAreYouPage = new SupportWhoAreYouPage(this.page);
+        await supportWhoAreYouPage.waitForPageToLoad();
+        return supportWhoAreYouPage;
     }
 }
