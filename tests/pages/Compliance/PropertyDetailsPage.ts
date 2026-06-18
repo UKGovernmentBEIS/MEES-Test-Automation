@@ -65,6 +65,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
     private breadcrumbHome: Locator;
     private breadcrumbViewPropertyRecords: Locator;
     private breadcrumbFilterPropertiesRecords: Locator;
+    private epcCertificateLink: Locator;
     private commentTextArea: Locator;
     private commentSaveButton: Locator;
     private commentCancelButton: Locator;
@@ -79,6 +80,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.breadcrumbViewPropertyRecords = page.getByRole('link', { name: 'View property records' });
         this.breadcrumbFilterPropertiesRecords = page.getByRole('link', { name: 'Filter property records' });
+        this.epcCertificateLink = page.getByRole('link', { name: 'Energy Performance' });
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
         this.commentCancelButton = page.getByRole('link', { name: 'Cancel' });
@@ -123,6 +125,10 @@ export class PropertyDetailsPage extends BaseCompliancePage {
             this.linkWhereThisDataComesFrom,
             this.commentPrivacyStatement
         ];
+    }
+
+    async getEPCEnergyCertificateLink(): Promise<Locator> {
+        return this.epcCertificateLink;
     }
 
     // Static label for the SIC codes row on the Property owner(s) tab. The codes themselves are

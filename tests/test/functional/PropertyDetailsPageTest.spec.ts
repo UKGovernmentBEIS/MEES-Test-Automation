@@ -708,6 +708,51 @@ test.describe('View Properties Page Data Validation Tests', () => {
             expect(epcHistoryTableData[0]['epcExpiryDate'], 'Expected "epcExpiryDate" to be "Not found"').toBe('Not found');
             expect(epcHistoryTableData[0]['epcTransactionType'], 'Expected "epcTransactionType" to be "Not found"').toBe('Not found');
         });
+
+        test('EPC link is provided and opens in a new tab for properties with EPCs', async ({ page }) => {
+            await filterPropertiesPage.setEnergyRatingFilter('B');
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+
+            // Load the Property Details page for the first property in the search results
+            const firstPropertyAddress = await viewPropertiesPage.getFirstPropertyAddress();
+            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(firstPropertyAddress);
+
+            // Select the Energy efficiency details tab and verify that the EPC link is present
+            await propertyDetailsPage.SelectTab('Energy efficiency details');
+            const epcLink = await propertyDetailsPage.getEPCEnergyCertificateLink();
+            await expect(epcLink, 'EPC link text does not match expected text').toHaveText('Energy Performance Certificate (opens in a new tab)');
+
+            // Click on the EPC link and verify that it opens in a new tab with the correct URL
+            const [newPage] = await Promise.all([
+                page.waitForEvent('popup'),
+                epcLink.click()
+            ]);
+
+            await newPage.waitForLoadState('load');
+            const newPageUrl = newPage.url();
+            expect(newPageUrl, 'EPC link should open the correct URL').toContain('energy-certificate');
+
+            // Verify property address on the EPC page matches the property address on the Property Details page
+            const epcPagePropertyAddressRaw = await newPage.locator('.epc-address').innerText();
+            const normalizedEpcAddress = epcPagePropertyAddressRaw.replace(/\n/g, ', ').trim();
+            expect(normalizedEpcAddress.toLowerCase(), 'EPC page property address should match Property Details page address').toBe(firstPropertyAddress.toLowerCase());
+        });
+
+        test('EPC link is not provided for properties without EPCs', async ({ request }) => {
+            await filterPropertiesPage.setEnergyRatingFilter('Unrated');
+            const viewPropertiesPage: ViewPropertiesPage = await filterPropertiesPage.clickApplyFilters();
+            await viewPropertiesPage.waitForTableContent();
+
+            // Load the Property Details page for the first property in the search results
+            const firstPropertyAddress = await viewPropertiesPage.getFirstPropertyAddress();
+            propertyDetailsPage = await viewPropertiesPage.ViewDetailsForPropertyWithAddress(firstPropertyAddress); 
+
+            // Select the Energy efficiency details tab and verify that the EPC link is not present
+            await propertyDetailsPage.SelectTab('Energy efficiency details');
+            const epcLinkLocator = await propertyDetailsPage.getEPCEnergyCertificateLink();
+            await expect(epcLinkLocator, 'EPC link should not be present for properties without EPCs').toHaveCount(0);
+        });
     });
 
     test.describe('PRS exemptions and penalties Tab Data Validation', () => {

@@ -360,6 +360,14 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         return propertyDetailsPage;
     }
 
+    async getFirstPropertyAddress(): Promise<string> {
+        const firstRow = this.propertyTableRow.first();
+        if (await firstRow.count() === 0) {
+            throw new Error('No properties found.');
+        }
+        return await firstRow.locator('td').first().innerText();
+    }
+
     async getExportFilename(): Promise<string> {
         await this.exportButton.click();
         const download = await this.page.waitForEvent('download');
