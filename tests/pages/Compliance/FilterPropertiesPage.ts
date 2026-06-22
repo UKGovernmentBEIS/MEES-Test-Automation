@@ -31,7 +31,7 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         this.homeBreadcrumb = page.getByRole('link', { name: 'Home' })
         this.councilStatement = page.getByText('You can view records from', { exact: false })
         this.councilsList = page.locator('.govuk-details__text ul.govuk-list--bullet');
-        this.councilsDropdown = page.locator('//*[contains(@id, "localAuthority")]');
+        this.councilsDropdown = page.locator('//select[contains(@id, "localAuthority")]');
         this.streetTextBox = page.getByRole('textbox', { name: 'Street' })
         this.townTextBox = page.getByRole('textbox', { name: 'Town' })
         this.postcodeTextBox = page.getByRole('textbox', { name: 'Postcode' })

@@ -84,7 +84,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         this.commentTextArea = page.locator('div textarea')
         this.commentSaveButton = page.getByRole('button', { name: 'Save comment' });
         this.commentCancelButton = page.getByRole('link', { name: 'Cancel' });
-        this.noEPCHistoryMessage = page.locator('[data-id="EPCTab"] p.govuk-body');
+        this.noEPCHistoryMessage = page.locator('[id*="EPCTab"] p.govuk-body');
         this.commentPrivacyStatement = page.getByText('Comments are visible to other enforcement officers in your Trading Standards Office and to DESNZ Policy Officials.', { exact: true });
         this.linkWhereThisDataComesFrom = page.getByRole('link', { name: 'where this data comes from' });
     }
@@ -233,7 +233,7 @@ export class PropertyDetailsPage extends BaseCompliancePage {
         const escapedFieldName = fieldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const fieldNameRegex = new RegExp('^\\s*' + escapedFieldName.replace(/ /g, '\\s*') + '\\s*$');
 
-        return this.page.locator(`[data-id="${tabElementID}"] .govuk-summary-list__row`)
+        return this.page.locator(`[id*="${tabElementID}"] .govuk-summary-list__row`)
             .filter({ has: this.page.locator('.govuk-summary-list__key').filter({ hasText: fieldNameRegex }) })
             .locator('.govuk-summary-list__value');
     }
