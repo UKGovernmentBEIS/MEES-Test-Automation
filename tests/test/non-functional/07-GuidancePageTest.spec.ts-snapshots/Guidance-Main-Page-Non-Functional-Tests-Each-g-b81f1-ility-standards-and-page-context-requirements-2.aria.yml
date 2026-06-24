@@ -28,7 +28,7 @@
   - paragraph:
     - text: When
     - link "viewing a property record":
-      - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/filter-	properties
+      - /url: /https://[^/]+/compliance/filter-	properties/
     - text: in this service, the rateable value is displayed in the ‘View details’ section.
     - link "You can also search for this value in the ‘Find a business rates valuation’ service.":
       - /url: https://www.gov.uk/find-business-rates
@@ -82,4 +82,4 @@
     - listitem: explain whether a publication penalty has been imposed
   - paragraph:
     - link "Check the templates section for penalty notice templates.":
-      - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/templates
+      - /url: /https://[^/]+/compliance/templates/
