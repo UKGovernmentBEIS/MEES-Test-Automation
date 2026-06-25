@@ -576,7 +576,7 @@ test.describe('View Properties export functionality', () => {
             ).toEqual([]);
         });
 
-        test('Exported PRS Exemption Status, PRS Exemption Date and Comments match Salesforce data', async ({ request }) => {
+        test('Exported PRS Exemption Status and Comments match Salesforce data', async ({ request }) => {
             // Property under this address has prepared data in Salesforce with:
             // - PRS Exemption Status, 
             // - PRS Exemption Date,
