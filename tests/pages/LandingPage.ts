@@ -17,7 +17,7 @@ export class LandingPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.signInButton = this.page.getByRole('button', { name: 'Sign in' });
-    this.pageContext = page.locator('#main-content.govuk-width-container');
+    this.pageContext = page.locator('#main-content');
     this.pageSecondaryContext = page.getByText('If you need help').locator('..');
     this.registrationLink = page.getByRole('link', { name: /Microsoft Form/ });
     this.requestSupportLink = page.getByRole('link', { name: 'Request support' });

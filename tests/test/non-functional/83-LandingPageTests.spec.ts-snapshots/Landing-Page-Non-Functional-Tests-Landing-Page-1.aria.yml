@@ -11,7 +11,6 @@
     - listitem: find property owner details
     - listitem: view enforcement guidance
     - listitem: calculate penalties for non-compliance
-  - paragraph
   - paragraph: This service is for local authorities only.
   - heading "Register" [level=2]
   - paragraph: You must register for a personal account to access this service.
@@ -24,13 +23,24 @@
   - list:
     - listitem: to use the email you used in the sign up form
     - listitem: to log in to your GOV.UK One Login account via the invitation that was emailed to you
+  - button "Sign in"
+  - heading "If you need help" [level=2]
+  - text: "Contact our support team if you:"
+  - list:
+    - listitem: need help using this service
+    - listitem: need technical support
+    - listitem: want to report a problem
+  - paragraph:
+    - link "Request support":
+      - /url: /support
+  - paragraph: /We aim to respond within \d+ working days\./
   - complementary:
-    - heading "Related" [level=2]
-    - list:
-      - listitem:
-        - link "Review exemptions for private rented sector energy standards":
-          - /url: https://www.view-energy-efficiency-exemptions.service.gov.uk
-      - listitem:
-        - link "Find an energy certificate":
-          - /url: https://www.gov.uk/find-energy-certificate
-  - paragraph
+    - navigation "Related":
+      - heading "Related" [level=2]
+      - list:
+        - listitem:
+          - link "Review exemptions for private rented sector energy standards":
+            - /url: https://www.view-energy-efficiency-exemptions.service.gov.uk
+        - listitem:
+          - link "Find an energy certificate":
+            - /url: https://www.gov.uk/find-energy-certificate
