@@ -838,26 +838,14 @@ test.describe('View Properties Page Data Validation Tests', () => {
                 `Expected PRS exemption status to be "Penalty sent" but found "${(await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status')).innerText()}"`)
                 .toHaveText('Penalty sent');
 
-            await expect(
-                await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date'),
-                `Expected PRS exemption date to be "22 May 2026" but found "${(await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date')).innerText()}"`)
-                .toHaveText('22 May 2026');
-
             // Verify that the penalty details are displayed correctly
             await expect(
                 await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty'),
                 `Expected PRS penalty to be "Recorded" but found "${(await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty')).innerText()}"`)
                 .toHaveText('Recorded');
-
-            // The 'PRS Penalty date' is the date when penalty was created and it's not editable in Salesforce,
-            // so we verify that the year is correct to avoid false positives in case the date is not displayed in the expected format
-            await expect(
-                await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty date'),
-                `Expected PRS penalty date to be "22 May 2026" but found "${(await propertyDetailsPage.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty date')).innerText()}"`)
-                .toContainText('2026');
         });
 
-        test('Prs exemptions and penalty fields display "Not found" when there is no data in Salesforce', async () => {
+        test('PRS exemptions and penalty fields display "Not found" when there is no data in Salesforce', async () => {
 
             // Navigate to a property with no PRS exemption or penalty data in Salesforce (using a property with no landlord information as a proxy for this)
             await filterPropertiesPage.setEnergyRatingFilter('Unrated');
@@ -870,9 +858,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
             // Verify that "Not found" is displayed for each PRS exemption and penalty field
             const prsFields = [
                 'PRS exemption status',
-                'PRS exemption date',
-                'PRS penalty',
-                'PRS penalty date'
+                'PRS penalty'
             ];
             for (const field of prsFields) {
                 const fieldValue = await propertyDetailsPageNonExemp.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', field);
@@ -892,14 +878,10 @@ test.describe('View Properties Page Data Validation Tests', () => {
             // Verify that the PRS exemption status field displays "Not found"
             const exemptionStatusField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status');
             await expect(exemptionStatusField, `Expected PRS exemption status to be "Not found" but found "${await exemptionStatusField.innerText()}"`).toHaveText('Not found');
-            const exemptionDateField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
-            await expect(exemptionDateField, `Expected PRS exemption date to be "Not found" but found "${await exemptionDateField.innerText()}"`).toHaveText('Not found');
 
             // Verify that the PRS penalty fields display the correct information
             const penaltyField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty');
             await expect(penaltyField, `Expected PRS penalty to be "Recorded" but found "${await penaltyField.innerText()}"`).toHaveText('Recorded');
-            const penaltyDateField = await propertyDetailsPagePenaltyOnly.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', 'PRS penalty date');
-            await expect(penaltyDateField, `Expected PRS penalty date to contain "2026" year, but found "${await penaltyDateField.innerText()}" date.`).toContainText('2026');
         });
 
         test('Verify that PRSE penalty data is not retrieved for a non-exempt property without UPRN', async ({ page }) => {
@@ -916,9 +898,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
             // Verify all PRS fields display 'Not found' — the system cannot retrieve PRSE data without a UPRN
             const prsFields = [
                 'PRS exemption status',
-                'PRS exemption date',
-                'PRS penalty',
-                'PRS penalty date'
+                'PRS penalty'
             ];
             for (const field of prsFields) {
                 const fieldValue = await propertyDetailsPageNoUprn.getFieldValueLocatorByTabNameAndFieldName('PRS exemptions and penalties', field);

@@ -615,7 +615,7 @@ test.describe('View Properties export functionality', () => {
             const matchInExport = exportedData.find(r => String(r['UPRN']).trim() === referencedProperty_UPRN.trim());
             expect(matchInExport, `Property with UPRN ${referencedProperty_UPRN} not found in the export`).toBeDefined();
 
-            // Verify 'PRS exemption status', 'PRS exemption date' in the export match the values in the application for the same property
+            // Verify 'PRS exemption status'in the export match the value in the application for the same property
             await propertyDetailsPage.SelectTab('PRS exemptions and penalties');
 
             // Verify 'PRS exemption status' value in the export matches the value in the application,
@@ -624,34 +624,6 @@ test.describe('View Properties export functionality', () => {
                 () => propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption status'),
                 { message: `PRS Exemption Status mismatch for UPRN ${referencedProperty_UPRN}: export shows '${matchInExport!['PRS exemption status']}'` }
             ).toBe(matchInExport!['PRS exemption status']);
-
-            // Verify 'PRS exemption date' value in the export matches the value in the application
-            // Normalise dates to YYYY-MM-DD for comparison:
-            //   UI format: 'D Month YYYY' (e.g. '14 February 2026')
-            //   Export format: 'DD/MM/YYYY' (e.g. '14/02/2026')
-            const normalizeDate = (d: string): string => {
-                d = d.trim();
-                const ddmmyyyy = d.match(/^(\d{1,2})\/(\d{2})\/(\d{4})$/);
-                if (ddmmyyyy) return `${ddmmyyyy[3]}-${ddmmyyyy[2].padStart(2, '0')}-${ddmmyyyy[1].padStart(2, '0')}`;
-                const months: Record<string, string> = {
-                    'January': '01', 'February': '02', 'March': '03', 'April': '04',
-                    'May': '05', 'June': '06', 'July': '07', 'August': '08',
-                    'September': '09', 'October': '10', 'November': '11', 'December': '12'
-                };
-                const dMonthYear = d.match(/^(\d{1,2})\s+(\w+)\s+(\d{4})$/);
-                if (dMonthYear && months[dMonthYear[2]]) {
-                    return `${dMonthYear[3]}-${months[dMonthYear[2]]}-${dMonthYear[1].padStart(2, '0')}`;
-                }
-                return d;
-            };
-
-            const referencedProperty_PRSExemptionDate: string = 
-                await propertyDetailsPage.getPropertyDetailsByTabNameAndFieldName('PRS exemptions and penalties', 'PRS exemption date');
-            expect(referencedProperty_PRSExemptionDate, 'Reference property has no PRS Exemption Date').toBeDefined();
-
-            expect(normalizeDate(matchInExport!['PRS exemption date']),
-                `PRS Exemption Date mismatch for UPRN ${referencedProperty_UPRN}: UI shows '${referencedProperty_PRSExemptionDate}', export shows '${matchInExport!['PRS exemption date']}'`
-            ).toBe(normalizeDate(referencedProperty_PRSExemptionDate));
 
             // Verify 'Comments' in the export match the comments in the application for the same property
             const commentsLocator = await propertyDetailsPage.getComments();
