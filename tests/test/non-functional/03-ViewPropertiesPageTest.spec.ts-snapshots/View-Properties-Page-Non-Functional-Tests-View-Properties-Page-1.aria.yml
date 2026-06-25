@@ -1,25 +1,24 @@
 - main:
-  - main:
-    - heading "View property records" [level=1]
-    - heading "Filters applied" [level=2]
-    - term: Council
-    - definition: All your councils
-    - term: Energy rating
-    - definition: All energy ratings
-    - term: Street
-    - definition: Invalid Street Name
-    - term: Town
-    - definition: None
-    - term: Postcode
-    - definition: None
-    - term: Possible rental evidence
-    - definition: Show all
-    - link "Change filters":
-      - /url: "#"
-    - heading "Property records" [level=2]
-    - text: 0 results No records found. Learn about
-    - link "why some information may not appear (opens in a new tab)":
-      - /url: guidance-detail?contentKey=MC6ZMWNRJIR5GGVMGCXITZAKWIJU
-    - text: .
-    - table:
-      - rowgroup
+  - heading "View property records" [level=1]
+  - heading "Filters applied" [level=2]
+  - term: Council
+  - definition: All your councils
+  - term: Energy rating
+  - definition: All energy ratings
+  - term: Street
+  - definition: Invalid Street Name
+  - term: Town
+  - definition: None
+  - term: Postcode
+  - definition: None
+  - term: Possible rental evidence
+  - definition: Show all
+  - link "Change filters":
+    - /url: "#"
+  - heading "Property records" [level=2]
+  - text: 0 results No records found. Learn about
+  - link "why some information may not appear (opens in a new tab)":
+    - /url: guidance-detail?contentKey=MC6ZMWNRJIR5GGVMGCXITZAKWIJU
+  - text: .
+  - table:
+    - rowgroup

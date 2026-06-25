@@ -55,10 +55,10 @@ export class GuidanceMainPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        const templateLocators = await Promise.all(
-            Object.values(TemplateTypes).map(t => this.paragraphsLinks(t))
-        );
-        return [this.mainParagraph, this.mainParagraphWarning, ...templateLocators];
+        // Anchor on the stable #main-content landmark (consistent with the other pages and the
+        // guidance article pages). The previous brittle XPaths (//main/p[@class] etc.) broke when
+        // the page was restructured behind a router container + shadow DOM.
+        return [this.page.locator('#main-content')];
     }
 
     async clickTemplateLink(templateType: TemplateTypes): Promise<

@@ -50,7 +50,7 @@
   - paragraph: You need to determine whether a property is in scope of the MEES Regulations, determine if it meets the minimum standard of energy efficiency, and check if a valid PRS exemption exists before you can assess non-compliance.
   - paragraph:
     - link "An enforcement timeline is available in this service to assist you with this.":
-      - /url: https://desnz-gm--compliance.sandbox.my.site.com/compliance/guidance-detail?contentKey=MC6MPUO6E7K5FBJDQOAA34AGC4NY
+      - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/guidance-detail?contentKey=MC6MPUO6E7K5FBJDQOAA34AGC4NY
   - paragraph: "You must use your own judgement and carry out due diligence. Always verify information with external systems such as:"
   - list:
     - listitem:

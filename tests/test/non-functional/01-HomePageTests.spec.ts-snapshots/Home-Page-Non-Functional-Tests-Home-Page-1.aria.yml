@@ -1,38 +1,37 @@
 - main:
-  - main:
-    - heading "Check if non-domestic properties meet minimum energy efficiency standards" [level=1]
-    - paragraph: Use this service to access property details, guidance, and tools to help you enforce the Minimum Energy Efficiency Standards (MEES) for non-domestic properties in the Private Rented Sector (PRS).
-    - paragraph:
-      - text: A recommended starting point is the guidance article explaining
-      - link "how multiple datasets are combined to create property records.":
-        - /url: guidance-detail?contentKey=MC6ZMWNRJIR5GGVMGCXITZAKWIJU
-    - separator
-    - heading "Property records" [level=2]
-    - paragraph: This includes non-domestic property details, property owner details, energy rating, and PRS exemption status.
-    - paragraph:
-      - link "View property records":
-        - /url: /compliance/filter-properties
-    - heading "Guidance" [level=2]
-    - paragraph: Read guidance on understanding the MEES Regulations, view enforcement activities, and learn where the data comes from.
-    - paragraph:
-      - link "View guidance":
-        - /url: /compliance/guidance
-    - heading "Templates" [level=2]
-    - paragraph: Download letter templates for issuing compliance notices and penalty notices to non-domestic landlords.
-    - paragraph:
-      - link "View templates":
-        - /url: /compliance/templates
-    - heading "Penalty calculator" [level=2]
-    - paragraph: Calculate a possible penalty amount for a non-domestic property in breach of the MEES Regulations.
-    - paragraph:
-      - link "View penalty calculator":
-        - /url: /compliance/penalty-calculator
-    - heading "If you need help" [level=2]
-    - paragraph: "Contact our support team if you:"
-    - list:
-      - listitem: need help using this service
-      - listitem: need technical support
-      - listitem: want to report a problem
-    - paragraph:
-      - link "Request support":
-        - /url: /compliance/support
+  - heading "Check if non-domestic properties meet minimum energy efficiency standards" [level=1]
+  - paragraph: Use this service to access property details, guidance, and tools to help you enforce the Minimum Energy Efficiency Standards (MEES) for non-domestic properties in the Private Rented Sector (PRS).
+  - paragraph:
+    - text: A recommended starting point is the guidance article explaining
+    - link "how multiple datasets are combined to create property records.":
+      - /url: guidance-detail?contentKey=MC6ZMWNRJIR5GGVMGCXITZAKWIJU
+  - separator
+  - heading "Property records" [level=2]
+  - paragraph: This includes non-domestic property details, property owner details, energy rating, and PRS exemption status.
+  - paragraph:
+    - link "View property records":
+      - /url: /compliance/filter-properties
+  - heading "Guidance" [level=2]
+  - paragraph: Read guidance on understanding the MEES Regulations, view enforcement activities, and learn where the data comes from.
+  - paragraph:
+    - link "View guidance":
+      - /url: /compliance/guidance
+  - heading "Templates" [level=2]
+  - paragraph: Download letter templates for issuing compliance notices and penalty notices to non-domestic landlords.
+  - paragraph:
+    - link "View templates":
+      - /url: /compliance/templates
+  - heading "Penalty calculator" [level=2]
+  - paragraph: Calculate a possible penalty amount for a non-domestic property in breach of the MEES Regulations.
+  - paragraph:
+    - link "View penalty calculator":
+      - /url: /compliance/penalty-calculator
+  - heading "If you need help" [level=2]
+  - paragraph: "Contact our support team if you:"
+  - list:
+    - listitem: need help using this service
+    - listitem: need technical support
+    - listitem: want to report a problem
+  - paragraph:
+    - link "Request support":
+      - /url: /compliance/support
