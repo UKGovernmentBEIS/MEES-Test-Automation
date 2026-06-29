@@ -10,8 +10,10 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
     private pageContext: Locator;
     private readonly breadcrumbHome: Locator;
     private readonly rateableValueInput: Locator;
+    private readonly rateableInputPoundPrefix: Locator;
     private readonly calculateMaximumPenaltyButton: Locator;
     private readonly penaltyCalculatorLink: Locator;
+    private readonly hintText: Locator;
     
     private async LengthOfBreachRadioButton(lengthOfBreach: LengthOfBreach): Promise<Locator> {
         return this.page.getByRole('radio', { name: lengthOfBreach });
@@ -24,6 +26,8 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
         this.rateableValueInput = this.page.getByRole('textbox', { name: 'What is the rateable value of' })
         this.calculateMaximumPenaltyButton = this.page.getByRole('button', { name: 'Calculate maximum penalty' });
         this.penaltyCalculatorLink = this.page.locator('a[href="/penalty-calculator"]');
+        this.hintText = this.page.locator('.govuk-hint');
+        this.rateableInputPoundPrefix = this.page.locator('.govuk-input__prefix');
     }
 
     async waitForPageToLoad(): Promise<void> {
@@ -42,7 +46,7 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        return [this.pageContext];
+        return [this.pageContext, this.hintText];
     }
 
     async getRateableValueErrorMessage(): Promise<Locator> {
@@ -74,6 +78,10 @@ export class PenaltyCalculatorPage extends BaseCompliancePage {
 
     async clearRateableValue(): Promise<void> {
         await this.rateableValueInput.fill('');
+    }
+
+    async isRateableValueInputPoundPrefixVisible(): Promise<boolean> {
+        return await this.rateableInputPoundPrefix.isVisible();
     }
 
     async clickStartNewCalculation(): Promise<PenaltyCalculatorResultsPage | void> {
