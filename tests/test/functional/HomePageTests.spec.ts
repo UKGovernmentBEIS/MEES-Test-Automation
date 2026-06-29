@@ -53,7 +53,7 @@ test.describe('Home Page Functional Tests', () => {
         // Verify page title
         // Known Issue MEESCH-584 - Home Page title is incorrectly set to "Landing Page"
         // Expecting the title to be "Landing Page" due to the known issue
-        await expect(page).toHaveTitle('Landing Page');
+        await expect(page).toHaveTitle('Check if properties meet standards');
     });
 });
 
