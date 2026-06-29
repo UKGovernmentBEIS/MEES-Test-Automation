@@ -35,6 +35,16 @@ test.describe('Penalty Calculator Page Functional Tests', () => {
         // Bug: 1055: Penalty Calculator: Incorrect error message displayed when rateable value is a string
         await expect((await penaltyCalculatorPage.getRateableValueErrorMessage())).toHaveText('Error:Rateable value must be a number, for example 240000');
     });
+
+    test('Verify pound prefix is displayed in the rateable value input field', async ({ page }) => {
+        expect(await penaltyCalculatorPage.isRateableValueInputPoundPrefixVisible()).toBe(true);
+    });
+
+    test('Pount prefix in the value input field is ignored when calculating the penalty', async ({ page }) => {
+        // Set the rateable value to a string value of '£50,000' and verify that the appropriate penalty is calculated
+        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('Less than 3 months', '£50,000');
+        expect(await resultsPage.getPanaltyMaximumValue()).toContain('£5,000');
+    });
 });
 
 test.describe('Penalty calculation boundary tests - Less than 3 months breach', () => {
