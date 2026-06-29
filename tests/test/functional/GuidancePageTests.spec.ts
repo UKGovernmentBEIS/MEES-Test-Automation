@@ -45,8 +45,8 @@ test.describe('Guidance Main Page', () => {
     });
 
     test('Should navigate to Home page when clicking page header link', async () => {
-        const homePage = await guidanceMainPage.clickPageHeaderLink();
-        expect(await homePage.isDisplayed()).toBe(true);
+        const landingPage = await guidanceMainPage.clickPageHeaderLink();
+        expect(await landingPage.isDisplayed()).toBe(true);
     });
 });
 

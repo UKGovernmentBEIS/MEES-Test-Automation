@@ -31,7 +31,7 @@ test.describe('Filter Properties Page Functional Tests', () => {
         ).toBeLessThan(8);
 
         // Verify page title
-        await expect(page).toHaveTitle('Filter properties');
+        await expect(page).toHaveTitle('Filter property records');
     });
 
     test('Verify that the Reset filter button resets all filters', async ({ page }, testInfo) => {

@@ -3,8 +3,8 @@ import { BasePage } from '../BasePage';
 import { ElementUtilities } from '../../utils/ElementUtilities';
 import type { FilterPropertiesPage } from './FilterPropertiesPage';
 import type { PenaltyCalculatorPage } from './PenaltyCalculatorPage';
-import type { HomePage } from './HomePage';
 import type { SupportWhoAreYouPage } from './Support/SupportWhoAreYouPage';
+import type { LandingPage } from '../LandingPage';
 
 export abstract class BaseCompliancePage extends BasePage {
     protected readonly page: Page;
@@ -62,12 +62,12 @@ export abstract class BaseCompliancePage extends BasePage {
         return penaltyCalculatorPage;
     }
 
-    async clickPageHeaderLink(): Promise<HomePage> {
+    async clickPageHeaderLink(): Promise<LandingPage> {
         await this.pageHeaderLink.click();
-        const { HomePage } = await import('./HomePage');
-        const homePage = new HomePage(this.page);
-        await homePage.waitForPageToLoad();
-        return homePage;
+        const { LandingPage } = await import('../LandingPage');
+        const landingPage = new LandingPage(this.page);
+        await landingPage.waitForPageToLoad();
+        return landingPage;
     }
 
     async isProfileSettingsLinkVisible(): Promise<boolean> {

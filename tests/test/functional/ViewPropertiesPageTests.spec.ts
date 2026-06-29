@@ -35,7 +35,7 @@ test.describe('View Properties Page Tests', () => {
         ).toBeLessThan(8);
 
         // Verify page title
-        await expect(page).toHaveTitle('View Properties');
+        await expect(page).toHaveTitle('View Property records');
     });
 
     test('Filter summary does not display Landlord location filter', async ({ page }) => {
