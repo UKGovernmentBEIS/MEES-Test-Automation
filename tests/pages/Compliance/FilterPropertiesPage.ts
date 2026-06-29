@@ -36,7 +36,7 @@ export class FilterPropertiesPage extends BaseCompliancePage {
         this.townTextBox = page.getByRole('textbox', { name: 'Town' })
         this.postcodeTextBox = page.getByRole('textbox', { name: 'Postcode' })
         this.applyFiltersButton = page.getByRole('button', { name: 'Apply filters' })
-        this.clearFiltersButton = page.getByRole('link', { name: 'Reset filters' })
+        this.clearFiltersButton = page.getByRole('link', { name: 'Reset all filters' })
         this.showAllRentalEvidenceRadioButton = page.getByRole('radio', { name: 'Show all' })
         this.evidenceFoundRadioButton = page.getByRole('radio', { name: 'Evidence found' })
         this.notFoundRadioButton = page.getByRole('radio', { name: 'Not found' })
