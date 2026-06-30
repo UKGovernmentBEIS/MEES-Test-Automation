@@ -10,7 +10,7 @@ import { GuidanceUnderstandingPropertyDetailsAndDataSourcesPage } from './Guidan
 import { PageName } from '../../../utils/TestTypes';
 import { HomePage } from '../HomePage';
 
-export const TemplateTypes = {
+export const GuidanceArticles = {
     UNDERSTANDING_COMPLIANCE: 'Understanding compliance notices',
     UNDERSTANDING_PENALTIES: 'Understanding penalties',
     ENFORCEMENT_TIMELINE: 'Enforcement timeline',
@@ -19,15 +19,15 @@ export const TemplateTypes = {
     UNDERSTANDING_PROPERTY_DETAILS_AND_DATA_SOURCES: 'Understanding property details and data sources'
 } as const;
 
-export type TemplateTypes = typeof TemplateTypes[keyof typeof TemplateTypes];
+export type GuidanceArticles = typeof GuidanceArticles[keyof typeof GuidanceArticles];
 
 export class GuidanceMainPage extends BaseCompliancePage {
     private readonly breadcrumbHome: Locator;
     private readonly pageTitle: Locator;
     private readonly mainParagraph: Locator;
     private readonly mainParagraphWarning: Locator;
-    private async templateLink(templateType: TemplateTypes): Promise<Locator> {
-        return this.page.getByRole('link', { name: templateType });
+    private async guidanceArticleLink(article: GuidanceArticles): Promise<Locator> {
+        return this.page.getByRole('link', { name: article });
     }
 
     async paragraphsLinks(paragraphName: string): Promise<Locator> {
@@ -55,13 +55,10 @@ export class GuidanceMainPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        // Anchor on the stable #main-content landmark (consistent with the other pages and the
-        // guidance article pages). The previous brittle XPaths (//main/p[@class] etc.) broke when
-        // the page was restructured behind a router container + shadow DOM.
         return [this.page.locator('#main-content')];
     }
 
-    async clickTemplateLink(templateType: TemplateTypes): Promise<
+    async clickGuidanceArticle(article: GuidanceArticles): Promise<
         GuidanceUnderstandingComplianceNoticePage | 
         GuidanceUnderstandingPenaltiesPage | 
         GuidanceEnforcementTimelinePage | 
@@ -69,9 +66,9 @@ export class GuidanceMainPage extends BaseCompliancePage {
         GuidanceHowPRSPropertiesAreIdentifiedPage |
         GuidanceUnderstandingPropertyDetailsAndDataSourcesPage
     > {
-        const templateLink = await this.templateLink(templateType);
-         await templateLink.click();
-        switch (templateType) {
+        const articleLink = await this.guidanceArticleLink(article);
+         await articleLink.click();
+        switch (article) {
             case 'Understanding compliance notices':
                 const page = new GuidanceUnderstandingComplianceNoticePage(this.page);
                 await page.waitForPageToLoad();
@@ -99,22 +96,22 @@ export class GuidanceMainPage extends BaseCompliancePage {
         }
     }
 
-    getPageNameForTemplate(templateType: TemplateTypes): PageName {
-        switch (templateType) {
-            case TemplateTypes.UNDERSTANDING_COMPLIANCE:
+    getPageNameForGuidanceArticle(article: GuidanceArticles): PageName {
+        switch (article) {
+            case 'Understanding compliance notices':
                 return PageName.UNDERSTANDING_COMPLIANCE_PAGE;
-            case TemplateTypes.UNDERSTANDING_PENALTIES:
+            case 'Understanding penalties':
                 return PageName.UNDERSTANDING_PENALTIES_PAGE;
-            case TemplateTypes.ENFORCEMENT_TIMELINE:
+            case 'Enforcement timeline':
                 return PageName.ENFORCEMENT_TIMELINE_PAGE;
-            case TemplateTypes.UNDERSTANDING_MEES_REGULATIONS:
+            case 'Understanding the MEES Regulations':
                 return PageName.UNDERSTANDING_MEES_REGULATIONS_PAGE;
-            case TemplateTypes.HOW_PRS_PROPERTIES_ARE_IDENTIFIED:
+            case 'How PRS properties are identified':
                 return PageName.HOW_PRS_PROPERTIES_ARE_IDENTIFIED_PAGE;
-            case TemplateTypes.UNDERSTANDING_PROPERTY_DETAILS_AND_DATA_SOURCES:
+            case 'Understanding property details and data sources':
                 return PageName.UNDERSTANDING_PROPERTY_DETAILS_AND_DATA_SOURCES_PAGE;
             default:
-                throw new Error(`No PageName mapping for template type: ${templateType}`);
+                throw new Error(`No PageName mapping for guidance article: ${article}`);
         }
     }
 

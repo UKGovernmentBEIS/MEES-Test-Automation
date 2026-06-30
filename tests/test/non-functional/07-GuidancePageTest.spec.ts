@@ -2,7 +2,7 @@ import { expect, test } from '../../fixtures/authFixtures';
 import { LandingPage } from '../../pages/LandingPage';
 import { PageName } from '../../utils/TestTypes';
 import { BaseNonFunctionalTest } from '../../utils/BaseNonFunctionalTest';
-import { GuidanceMainPage, TemplateTypes } from '../../pages/Compliance/Guidance/GuidanceMainPage';
+import { GuidanceArticles } from '../../pages/Compliance/Guidance/GuidanceMainPage';
 
 test.describe('Guidance Main Page Non-Functional Tests', () => {
 
@@ -23,7 +23,7 @@ test.describe('Guidance Main Page Non-Functional Tests', () => {
         await baseTest.verifyContextWithLocators(locators);
     });
 
-    test('Each guidance template page should meet accessibility standards and page context requirements', async ({ page }, testInfo) => {
+    test('Each guidance article page should meet accessibility standards and page context requirements', async ({ page }, testInfo) => {
         const baseTest = new BaseNonFunctionalTest(page, testInfo);
         baseTest.addTestAnnotations(PageName.GUIDANCE_PAGE);
 
@@ -32,25 +32,25 @@ test.describe('Guidance Main Page Non-Functional Tests', () => {
         const homePage = await landingPage.clickSignIn_AuthenticatedUser();
         const guidanceMainPage = await homePage.clickGuidanceLink();
 
-        for (const templateType of Object.values(TemplateTypes)) {
-            // Click on the template link to navigate to the template page
-            const templatePage = await guidanceMainPage.clickTemplateLink(templateType);
+        for (const article of Object.values(GuidanceArticles)) {
+            // Click on the guidance article link to navigate to the article page
+            const articlePage = await guidanceMainPage.clickGuidanceArticle(article);
 
             // Verify correct page is displayed
-            const headingText = await templatePage.getPageHeadingText();
+            const headingText = await articlePage.getPageHeadingText();
             expect(headingText,
-                `Expected page heading to be "${templateType}", but found "${headingText}" instead.`)
-                .toBe(templateType);
+                `Expected page heading to be "${article}", but found "${headingText}" instead.`)
+                .toBe(article);
 
-            // Verify accessibility on the template page
-            await baseTest.verifyAccessibility(guidanceMainPage.getPageNameForTemplate(templateType));
+            // Verify accessibility on the article page
+            await baseTest.verifyAccessibility(guidanceMainPage.getPageNameForGuidanceArticle(article));
 
-            // Verify page context on the template page
-            const locators = await templatePage.getPageContextLocator();
+            // Verify page context on the article page
+            const locators = await articlePage.getPageContextLocator();
             await baseTest.verifyContextWithLocators(locators);
 
             // Navigate back to the Guidance Main page for the next iteration
-            await templatePage.clickGuidanceBreadcrumb();
+            await articlePage.clickGuidanceBreadcrumb();
             expect(await guidanceMainPage.isDisplayed(),
                 `Expected to be back on the Guidance Main page after clicking breadcrumb, but it was not displayed.`)
                 .toBeTruthy();
