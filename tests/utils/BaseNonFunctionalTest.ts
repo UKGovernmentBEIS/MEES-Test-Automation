@@ -36,7 +36,7 @@ export class BaseNonFunctionalTest {
    */
   public async verifyContextWithLocators(locators: Locator[]): Promise<void> {
     for (const locator of locators) {
-      await expect(locator).toMatchAriaSnapshot();
+      await expect(locator, `Context verification failed for locator: ${locator}`).toMatchAriaSnapshot();
     }
   }
 

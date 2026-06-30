@@ -38,8 +38,8 @@ export class GuidanceMainPage extends BaseCompliancePage {
         super(page);
         this.breadcrumbHome = page.getByRole('link', { name: 'Home' });
         this.pageTitle = page.getByRole('heading', { name: 'Guidance' });
-        this.mainParagraph = page.locator('//main/p[@class]');
-        this.mainParagraphWarning = page.locator('//main/div[contains(@class,"govuk-warning-text")]');
+        this.mainParagraph = page.locator('//div[contains(@class,"govuk-grid-column-two-thirds")]/p');
+        this.mainParagraphWarning = page.locator('#main-content .govuk-warning-text');
     }
 
     async waitForPageToLoad(): Promise<void> {
@@ -55,7 +55,12 @@ export class GuidanceMainPage extends BaseCompliancePage {
     }
 
     async getPageContextLocator(): Promise<Locator[]> {
-        return [this.page.locator('#main-content')];
+        const contextLocators = [this.pageTitle, this.mainParagraph, this.mainParagraphWarning];
+        for (const article of Object.values(GuidanceArticles)) {
+            const articleLink = await this.guidanceArticleLink(article);
+            contextLocators.push(articleLink);
+        }
+        return contextLocators;
     }
 
     async clickGuidanceArticle(article: GuidanceArticles): Promise<
