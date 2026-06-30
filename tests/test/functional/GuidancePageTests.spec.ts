@@ -1,10 +1,11 @@
 import { expect, test } from '../../fixtures/authFixtures';
 import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
-import { GuidanceMainPage, TemplateTypes } from '../../pages/Compliance/Guidance/GuidanceMainPage';
+import { GuidanceMainPage, GuidanceArticles } from '../../pages/Compliance/Guidance/GuidanceMainPage';
 import { GuidanceHowPRSPropertiesAreIdentifiedPage } from '../../pages/Compliance/Guidance/GuidanceHowPRSPropertiesAreIdentified';
 import { PenaltyCalculatorPage } from '../../pages/Compliance/PenaltyCalculatorPage';
 import { HomePage } from '../../pages/Compliance/HomePage';
+import { GuidanceUnderstandingPenaltiesPage } from '../../pages/Compliance/Guidance/GuidanceUnderstandingPenaltiesPage';
 
 test.describe('Guidance Main Page', () => {
     let guidanceMainPage: GuidanceMainPage;
@@ -66,13 +67,13 @@ test.describe('Guidance sub-pages', () => {
     });
 
     test('Should navigate correctly to the Home page using breadcrumb', async () => {
-        for (const templateType of Object.values(TemplateTypes)) {
-            // Click on the template link to navigate to the template page
-            const templatePage = await guidanceMainPage.clickTemplateLink(templateType);
-            await templatePage.waitForPageToLoad();
+        for (const article of Object.values(GuidanceArticles)) {
+            // Click on the article link to navigate to the article page
+            const articlePage = await guidanceMainPage.clickGuidanceArticle(article);
+            await articlePage.waitForPageToLoad();
 
             // Click on the breadcrumb to navigate to the Home page
-            const homePage: HomePage = await templatePage.clickHomeBreadcrumb();
+            const homePage: HomePage = await articlePage.clickHomeBreadcrumb();
             await homePage.waitForPageToLoad();
 
             // Verify that the Home page is displayed
@@ -84,14 +85,14 @@ test.describe('Guidance sub-pages', () => {
         }
     });
 
-    test('Should navigate correctly to the Guidance Main page using breadcrumb', async () => {
-        for (const templateType of Object.values(TemplateTypes)) {
-            // Click on the template link to navigate to the template page
-            const templatePage = await guidanceMainPage.clickTemplateLink(templateType);
-            await templatePage.waitForPageToLoad();
+    test('Should navigate correctly to the Guidance Main page using breadcrumb', async () => {  
+        for (const article of Object.values(GuidanceArticles)) {
+            // Click on the article link to navigate to the article page
+            const articlePage = await guidanceMainPage.clickGuidanceArticle(article);
+            await articlePage.waitForPageToLoad();
 
             // Click on the breadcrumb to navigate back to the Guidance Main page
-            guidanceMainPage = await templatePage.clickGuidanceBreadcrumb();
+            guidanceMainPage = await articlePage.clickGuidanceBreadcrumb();
             await guidanceMainPage.waitForPageToLoad();
 
             // Verify that the Guidance Main page is displayed
@@ -100,13 +101,13 @@ test.describe('Guidance sub-pages', () => {
      });
 
      test('Should navigate correctly to the View Properties page using tab', async () => {
-        for (const templateType of Object.values(TemplateTypes)) {
-            // Click on the template link to navigate to the template page
-            const templatePage = await guidanceMainPage.clickTemplateLink(templateType);
-            await templatePage.waitForPageToLoad();
+        for (const article of Object.values(GuidanceArticles)) {
+            // Click on the article link to navigate to the article page
+            const articlePage = await guidanceMainPage.clickGuidanceArticle(article);
+            await articlePage.waitForPageToLoad();
 
             // Click on the View Properties tab to navigate back to the View Properties page
-            const viewPropertiesPage = await templatePage.clickOnPropertyRecordsTab();
+            const viewPropertiesPage = await articlePage.clickOnPropertyRecordsTab();
             await viewPropertiesPage.waitForPageToLoad();
 
             // Verify that the View Properties page is displayed
@@ -121,8 +122,8 @@ test.describe('Guidance sub-pages', () => {
      });
 });
 
-test.describe('How PRS Properties Are Identified Guidance Page', () => {
-    let prsPage: GuidanceHowPRSPropertiesAreIdentifiedPage;
+test.describe('Verify links on Guidance pages', () => {
+    let guidanceMainPage: GuidanceMainPage;
 
     test.beforeEach(async ({ page }, testInfo) => {
         testInfo.annotations.push(
@@ -132,36 +133,27 @@ test.describe('How PRS Properties Are Identified Guidance Page', () => {
         const landingPage = new LandingPage(page);
         await landingPage.navigate();
         const homePage = await landingPage.clickSignIn_AuthenticatedUser();
-        const guidanceMainPage = await homePage.clickGuidanceLink();
+        guidanceMainPage = await homePage.clickGuidanceLink();
         await guidanceMainPage.waitForPageToLoad();
-        prsPage = await guidanceMainPage.clickTemplateLink(TemplateTypes.HOW_PRS_PROPERTIES_ARE_IDENTIFIED) as GuidanceHowPRSPropertiesAreIdentifiedPage;
+        
     });
 
     test('External legislation link should open in a new tab', async () => {
-        const newTab = await prsPage.clickEnergyEfficiencyRegulationsLinkAndGetNewTab();
+        const guidanceSubPage: GuidanceHowPRSPropertiesAreIdentifiedPage = 
+            await guidanceMainPage.clickGuidanceArticle(
+                GuidanceArticles.HOW_PRS_PROPERTIES_ARE_IDENTIFIED) as 
+                    GuidanceHowPRSPropertiesAreIdentifiedPage;
+        const newTab = await guidanceSubPage.clickEnergyEfficiencyRegulationsLinkAndGetNewTab();
         expect(newTab.url()).toContain('legislation.gov.uk');
     });
-});
 
-test.describe('Penalty calculator guidance page', () => {
-    let penaltyCalculatorGuidancePage: PenaltyCalculatorPage;
+    test('The Penalty Calculator link should navigate to the Penalty Calculator page', async () => {
+        const guidanceSubPage: GuidanceUnderstandingPenaltiesPage = 
+            await guidanceMainPage.clickGuidanceArticle(GuidanceArticles.UNDERSTANDING_PENALTIES) as GuidanceUnderstandingPenaltiesPage;
+        await guidanceSubPage.waitForPageToLoad();
 
-    test.beforeEach(async ({ page }, testInfo) => {
-        testInfo.annotations.push(
-            TestAnnotations.testType(TestType.FUNCTIONAL)
-        );
-
-        const landingPage = new LandingPage(page);
-        await landingPage.navigate();
-        const homePage = await landingPage.clickSignIn_AuthenticatedUser();
-        const guidanceMainPage = await homePage.clickGuidanceLink();
-        await guidanceMainPage.waitForPageToLoad();
-        penaltyCalculatorGuidancePage = await guidanceMainPage.clickOnPenaltyCalculatorTab();
-    });
-
-    test('The  Penalty Calculator link should navigate to the Penalty Calculator page', async () => {
-        const penaltyCalculatorPage = await penaltyCalculatorGuidancePage.clickPenaltyCalculatorLink();
-
+        const penaltyCalculatorPage = await guidanceSubPage.clickGuidanceBreadcrumb();
+        await penaltyCalculatorPage.waitForPageToLoad();
         await expect(penaltyCalculatorPage.isDisplayed(), 'Penalty Calculator page should be displayed').resolves.toBeTruthy();
     });
 });
