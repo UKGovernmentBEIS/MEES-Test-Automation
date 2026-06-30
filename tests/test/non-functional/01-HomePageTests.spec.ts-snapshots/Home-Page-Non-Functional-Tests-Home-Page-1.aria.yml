@@ -5,7 +5,6 @@
     - text: A recommended starting point is the guidance article explaining
     - link "how multiple datasets are combined to create property records.":
       - /url: guidance-detail?contentKey=MC6ZMWNRJIR5GGVMGCXITZAKWIJU
-  - separator
   - heading "Property records" [level=2]
   - paragraph: This includes non-domestic property details, property owner details, energy rating, and PRS exemption status.
   - paragraph:
