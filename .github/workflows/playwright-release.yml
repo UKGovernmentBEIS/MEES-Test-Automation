@@ -33,7 +33,7 @@ jobs:
         echo "tag=$TAG" >> $GITHUB_OUTPUT
 
   functional-tests:
-    name: Functional Tests (Release)
+    name: Functional Tests (Release). Tag '${{ needs.resolve-tag.outputs.tag }}'
     needs: resolve-tag
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
         dms_base_url: ${{ secrets.DMS_BASE_URL }}
 
   non-functional-tests:
-    name: Non-Functional Tests (Release)
+    name: Non-Functional Tests (Release). Tag '${{ needs.resolve-tag.outputs.tag }}'
     needs: resolve-tag
     timeout-minutes: 60
     runs-on: ubuntu-latest
