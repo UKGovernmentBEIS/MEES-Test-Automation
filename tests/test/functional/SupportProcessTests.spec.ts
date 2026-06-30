@@ -22,7 +22,7 @@ test.describe('Page validation tests', () => {
 
     test('Verify velidation error messages on the Support Who Are You page when no option is selected', async ({ page }) => {
         await supportWhoAreYouPage.clickContinueButton();
-        await expect(supportWhoAreYouPage.getErrorSelectOption()).toBeVisible({ timeout: 15000 });
+        await expect.poll(() => supportWhoAreYouPage.getErrorSelectOption().isVisible()).toBe(true);
     });
 
     test('Verify validation error messages on the Support Contact Form page when required fields are left empty', async ({ page }) => {
@@ -32,9 +32,9 @@ test.describe('Page validation tests', () => {
         expect(await supportContactFormPage.isDisplayed()).toBe(true);
 
         await supportContactFormPage.clickContinueButton();
-        await expect(supportContactFormPage.getFieldErrorMessage('Enter a first name')).toBeVisible({ timeout: 15000 });
-        await expect(supportContactFormPage.getFieldErrorMessage('Enter a last name')).toBeVisible({ timeout: 15000 });
-        await expect(supportContactFormPage.getFieldErrorMessage('Enter a valid email address')).toBeVisible({ timeout: 15000 });
+        await expect.poll(() => supportContactFormPage.getFieldErrorMessage('Enter a first name').isVisible()).toBe(true);
+        await expect.poll(() => supportContactFormPage.getFieldErrorMessage('Enter a last name').isVisible()).toBe(true);
+        await expect.poll(() => supportContactFormPage.getFieldErrorMessage('Enter a valid email address').isVisible()).toBe(true);
     });
 
     test('Verify validation error messages on the Support What Do You Want page when no option is selected', async ({ page }) => {
@@ -52,7 +52,7 @@ test.describe('Page validation tests', () => {
         expect(await supportWhatDoYouWantPage.isDisplayed()).toBe(true);
 
         await supportWhatDoYouWantPage.clickContinueButton();
-        await expect(supportWhatDoYouWantPage.getMissingOptionError()).toBeVisible({ timeout: 15000 });
+        await expect.poll(() => supportWhatDoYouWantPage.getMissingOptionError().isVisible()).toBe(true);
     });
 
     test('Verify validation error messages on the Support Details page when the details field is left empty', async ({ page }) => {
@@ -80,8 +80,8 @@ test.describe('Page validation tests', () => {
 
         // Click the submit button without entering any details
         await supportDetailsPage.clickSubmitButton();
-        await expect(supportDetailsPage.getErrorSummary()).toBeVisible({ timeout: 15000 });
-        await expect(supportDetailsPage.getErrorDetailsTextArea()).toBeVisible({ timeout: 15000 });
+        await expect.poll(() => supportDetailsPage.getErrorSummary().isVisible()).toBe(true);
+        await expect.poll(() => supportDetailsPage.getErrorDetailsTextArea().isVisible()).toBe(true);
     });
 });
 
