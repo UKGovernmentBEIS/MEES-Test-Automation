@@ -961,14 +961,13 @@ test.describe('View Properties export functionality', () => {
             ).toBe('Not found');
         });
 
-        // Bug 1031 'Invalid PossibleEvidenceEpcTransactionType for a property with multiple EPC Certificates'
-        test.fail('Exported Possible rental evidence field value is correct', async ({ request }) => {
+        test('Exported Possible rental evidence field value is correct', async ({ request }) => {
             const lacodes = ["E09000004"];
             const energyRatingFilter = 'A';
 
-            const expectedBothTrue = 'Mandatory issue (Property to let) EPC transaction type | Property owner has letting company SIC code';
+            const expectedBothTrue = 'Mandatory issue (Property to let) EPC transaction type | Property owner has letting company Standard Industrial Classification code';
             const expectedEPCTransactionTypeOnly = 'Mandatory issue (Property to let) EPC transaction type';
-            const expectedSiccodeOnly = 'Property owner has letting company SIC code';
+            const expectedSiccodeOnly = 'Property owner has letting company Standard Industrial Classification code';
             const expectedBothFalse = 'Not found';
 
             // Apply filters in the UI and export the CSV
@@ -992,7 +991,6 @@ test.describe('View Properties export functionality', () => {
                 item.property.PossibleEvidenceEpcTransactionType === true &&
                 item.property.PossibleEvidenceSiccode === true
             )?.property.Uprn;
-            // Bug 1031 'Invalid PossibleEvidenceEpcTransactionType for a property with multiple EPC Certificates'
             expect(uprnForBothEvidenceTrue, 
                 'Test data gap: no DMS item with both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode true — cannot verify "Found" branch')
                 .toBeDefined();

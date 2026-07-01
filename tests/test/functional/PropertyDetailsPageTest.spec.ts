@@ -126,9 +126,7 @@ test.describe('View Properties Page Data Validation Tests', () => {
 
             const testCases: PossibleEvidenceTestCase[] = [
                 
-                // Bug: 1031 'Invalid PossibleEvidenceEpcTransactionType for a property with multiple EPC Certificates'
-                // { possibleEvidenceEpcTransactionType: epcTransactionTypeValue, possibleEvidenceSiccode: sicCodeValue, uprn: '10023302621' },
-                { possibleEvidenceEpcTransactionType: epcTransactionTypeValue, possibleEvidenceSiccode: 'Not found', uprn: '10023302621' },
+                { possibleEvidenceEpcTransactionType: epcTransactionTypeValue, possibleEvidenceSiccode: sicCodeValue, uprn: '10023302621' },
                 { possibleEvidenceEpcTransactionType: epcTransactionTypeValue, possibleEvidenceSiccode: 'Not found', uprn: '100022918419' },
                 { possibleEvidenceEpcTransactionType: 'Not found', possibleEvidenceSiccode: sicCodeValue, uprn: '10011861801' },
                 { possibleEvidenceEpcTransactionType: 'Not found', possibleEvidenceSiccode: 'Not found', uprn: '100022917839' },

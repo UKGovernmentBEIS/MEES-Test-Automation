@@ -820,11 +820,10 @@ test.describe('Export Possible Evidence Rule Tests', () => {
             item.property.PossibleEvidenceSiccode,
             `UPRN ${POSSIBLE_EVIDENCE_BOTH_TRUE_UPRN} should have PossibleEvidenceSiccode = true`
         ).toBe(true);
-        // 1031 Invalid PossibleEvidenceEpcTransactionType for a property with multiple EPC Certificates
         expect(
             item.property.PossibleEvidenceEpcTransactionType,
             `UPRN ${POSSIBLE_EVIDENCE_BOTH_TRUE_UPRN} EPCTransactionType is 'Mandatory issue (Property to let).' so PossibleEvidenceEpcTransactionType should be true`
-        ).toBe(false);
+        ).toBe(true);
     });
 
     test('PossibleEvidenceSiccode is false when no landlord SIC code contains 68209', async ({ request }) => {
