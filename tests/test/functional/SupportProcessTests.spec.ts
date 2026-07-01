@@ -281,6 +281,14 @@ test.describe('Navigation tests', () => {
         await homePageFromSupport.waitForPageToLoad();
         expect(await homePageFromSupport.isDisplayed()).toBe(true);
     });
+
+    test('Verify that the Service Title Link navigates to the Landing page', async () => {
+        const supportWhoAreYouPage: SupportWhoAreYouPage = await homePage.clickRequestSupportLink();
+        await supportWhoAreYouPage.waitForPageToLoad();
+        const landingPage = await supportWhoAreYouPage.clickPageHeaderLink();
+        await landingPage.waitForPageToLoad();
+        expect(await landingPage.isDisplayed()).toBe(true);
+    });
 });
 
 // Skipped pending app fix (Jira 1080): the footer "Help" link navigates to the landing page
