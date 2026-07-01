@@ -85,6 +85,17 @@ export class TemplatesPage extends BaseCompliancePage {
         return fileNames;
     }
 
+    // The visible link text shown for each template on the page (as opposed to the
+    // downloaded filename), used to verify the "- V<n>" version suffix in the UI.
+    async getTemplateDisplayNames(): Promise<string[]> {
+        const templates = await this.templateList;
+        const names: string[] = [];
+        for (const template of templates) {
+            names.push(((await template.locator('a.govuk-link').textContent()) || '').trim());
+        }
+        return names;
+    }
+
     private async downloadAndGetFilename(templateIndex: number): Promise<string> {
         const templates = await this.templateList;
         if (templateIndex >= templates.length) {
