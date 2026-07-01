@@ -40,6 +40,19 @@ test.describe('Templates Page', () => {
         });
     });
 
+    test('Verify each template name displays a version number in the UI', async () => {
+        const names = await templatesPage.getTemplateDisplayNames();
+
+        // There should be at least one template listed
+        expect(names.length).toBeGreaterThan(0);
+
+        // Each on-screen template name must carry a version suffix (e.g. "- V1") for audit trails.
+        // Matched version-number-agnostically so revised templates (- V2, - V3 …) still pass.
+        names.forEach(name => {
+            expect(name, `Template "${name}" should show a version suffix (e.g. - V1)`).toMatch(/- ?V\d+$/);
+        });
+    });
+
     test('Should navigate to Home page when clicking page header link', async () => {
         const homePage = await templatesPage.clickPageHeaderLink();
         expect(await homePage.isDisplayed()).toBe(true);

@@ -291,10 +291,9 @@ test.describe('Navigation tests', () => {
     });
 });
 
-// Skipped pending app fix (Jira 1080): the footer "Help" link navigates to the landing page
-// instead of the Support "Are you a:" form, so these tests cannot pass until the link target is
-// corrected. Remove `.skip` to re-enable once the bug is fixed.
-test.describe.skip('Support link availability across pages', () => {
+// The "Help" link in the footer (inherited from BaseCompliancePage) should reach the Support
+// "Are you a:" form from every compliance page (Jira 1080).
+test.describe('Support link availability across pages', () => {
 
     test.beforeEach(async ({}, testInfo) => {
         testInfo.annotations.push(
