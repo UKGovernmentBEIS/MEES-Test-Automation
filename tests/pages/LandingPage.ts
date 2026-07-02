@@ -37,6 +37,8 @@ export class LandingPage extends BasePage {
   async navigate(): Promise<void> {
     await this.page.goto('');
     await this.waitForPageToLoad();
+    // Workarround for the issue 1088 'Sign In fails intermittently with "You do not have access to this service" after successful GOV.UK One Login authentication'
+    await this.page.waitForTimeout(5000);
   }
 
   /**   
