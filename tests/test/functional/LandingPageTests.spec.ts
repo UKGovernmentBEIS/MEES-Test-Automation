@@ -12,7 +12,7 @@ test.describe('Landing Page', () => {
     });
 
     test('Registration link opens Microsoft Forms in a new tab', async () => {
-        expect(await landingPage.getRegistrationLinkHref()).toBe('https://forms.office.com/e/1e9mQDGXvH');
+        expect(await landingPage.getRegistrationLinkHref()).toBe('https://forms.office.com/Pages/ResponsePage.aspx?id=BXCsy8EC60O0l-ZJLRst2JQXK8_FFYZPtmqEfq-y_YNUOUVMNDFRSjI5SjVaVDRJVkExN003SzlDSS4u');
         expect(await landingPage.registrationLinkOpensInNewTab()).toBe(true);
     });
 

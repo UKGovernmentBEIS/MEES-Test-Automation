@@ -16,7 +16,7 @@
   - paragraph: You must register for a personal account to access this service.
   - paragraph:
     - link "You can register by completing this Microsoft Form (opens in a new tab).":
-      - /url: https://forms.office.com/e/1e9mQDGXvH
+      - /url: https://forms.office.com/Pages/ResponsePage.aspx?id=BXCsy8EC60O0l-ZJLRst2JQXK8_FFYZPtmqEfq-y_YNUOUVMNDFRSjI5SjVaVDRJVkExN003SzlDSS4u
   - paragraph: /You will receive an email when your account has been successfully created\. We aim to create new accounts within \d+ working days\./
   - heading "Sign in" [level=2]
   - text: "You will need:"
@@ -32,7 +32,7 @@
     - listitem: want to report a problem
   - paragraph:
     - link "Request support":
-      - /url: /support
+      - /url: /compliance/support
   - paragraph: /We aim to respond within \d+ working days\./
   - complementary:
     - navigation "Related":

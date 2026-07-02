@@ -8,7 +8,6 @@ import { reAuthenticate } from '../utils/AuthUtils';
 export class LandingPage extends BasePage {
   private readonly signInButton: Locator;
   private readonly pageContext: Locator;
-  private readonly pageSecondaryContext: Locator;
   private readonly registrationLink: Locator;
   private readonly requestSupportLink: Locator;
   private readonly reviewExemptionsLink: Locator;
@@ -18,7 +17,6 @@ export class LandingPage extends BasePage {
     super(page);
     this.signInButton = this.page.getByRole('button', { name: 'Sign in' });
     this.pageContext = page.locator('#main-content');
-    this.pageSecondaryContext = page.getByText('If you need help').locator('..');
     this.registrationLink = page.getByRole('link', { name: /Microsoft Form/ });
     this.requestSupportLink = page.getByRole('link', { name: 'Request support' });
     this.reviewExemptionsLink = page.getByRole('link', { name: 'Review exemptions for private rented sector energy standards' });
@@ -30,7 +28,7 @@ export class LandingPage extends BasePage {
    * @returns Locator for the page context element
    */
   async getPageContextLocator(): Promise<Locator[]> {
-    return [this.pageContext, this.signInButton, this.pageSecondaryContext];
+    return [this.pageContext, this.signInButton];
   }
 
   /**
