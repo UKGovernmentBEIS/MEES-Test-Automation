@@ -1,0 +1,16 @@
+- main:
+  - heading "Page not found" [level=1]
+  - paragraph: If you typed the web address, check it is correct.
+  - paragraph: If you pasted the web address, check you copied the entire address.
+  - paragraph: If the web address is correct, refresh the page in your browser.
+  - paragraph: Contact our support team if this issue persists.
+  - heading "If you need help" [level=2]
+  - text: "Contact our support team if you:"
+  - list:
+    - listitem: need help using this service
+    - listitem: need technical support
+    - listitem: want to report a problem
+  - paragraph:
+    - link "Request support":
+      - /url: /compliance/support
+  - paragraph: /We aim to respond within \d+ working days\./

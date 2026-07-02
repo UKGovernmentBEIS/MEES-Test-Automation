@@ -7,7 +7,7 @@ export class PageNotFoundPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.pageContext = page.locator('.govuk-grid-column-two-thirds');
+        this.pageContext = page.locator('#main-content');
     }
 
     // Wait for the Page Not Found page to load

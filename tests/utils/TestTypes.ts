@@ -19,6 +19,7 @@ export enum PageName {
   HOME_PAGE = 'Home Page',
   LANDING_PAGE = 'Landing Page',
   NO_ACCESS_PAGE = 'No Access Page',
+  PAGE_NOT_FOUND_PAGE = 'Page Not Found Page',
   ONE_LOGIN_SIGNIN_OR_CREATE_ACCOUNT = 'One Login SignIn or Create Account Page',
   ONE_LOGIN_ENTER_EMAIL = 'One Login Enter Email Page',
   ONE_LOGIN_ENTER_PASSWORD = 'One Login Enter Password Page',
