@@ -7,7 +7,7 @@ import type { SupportWhoAreYouPage } from './Support/SupportWhoAreYouPage';
 import type { LandingPage } from '../LandingPage';
 import type { GuidanceMainPage } from './Guidance/GuidanceMainPage';
 import type { TemplatesPage } from './TemplatesPage';
-import type { ProfileSettingsPage } from './ProfileSettingsPage';
+import type { ProfileSettingsPage } from './ProfileSettings/ProfileSettingsPage';
 
 export abstract class BaseCompliancePage extends BasePage {
     protected readonly page: Page;
