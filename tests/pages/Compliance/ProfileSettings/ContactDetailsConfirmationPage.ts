@@ -1,7 +1,7 @@
 import { Page, Locator } from '@playwright/test';
-import { ElementUtilities } from '../../utils/ElementUtilities';
-import { BaseCompliancePage } from './BaseCompliancePage';
-import { HomePage } from './HomePage';
+import { ElementUtilities } from '../../../utils/ElementUtilities';
+import { BaseCompliancePage } from '../BaseCompliancePage';
+import { HomePage } from '../HomePage';
 
 export class ContactDetailsConfirmationPage extends BaseCompliancePage {
     private readonly pageContext: Locator;

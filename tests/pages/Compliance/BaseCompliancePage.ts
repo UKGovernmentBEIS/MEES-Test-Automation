@@ -91,7 +91,7 @@ export abstract class BaseCompliancePage extends BasePage {
 
     async clickProfileSettings(): Promise<ProfileSettingsPage> {
         await this.profileSettingsLink.click();
-        const { ProfileSettingsPage } = require('./ProfileSettingsPage') as typeof import('./ProfileSettingsPage');
+        const { ProfileSettingsPage } = require('./ProfileSettings/ProfileSettingsPage') as typeof import('./ProfileSettings/ProfileSettingsPage');
         const profileSettingsPage = new ProfileSettingsPage(this.page);
         await profileSettingsPage.waitForPageToLoad();
         return profileSettingsPage;
@@ -101,7 +101,7 @@ export abstract class BaseCompliancePage extends BasePage {
         const newTab = await this.openLinkInNewTab(this.profileSettingsLink);
         // See comment in clickProfileSettings() for why require() is used here.
         // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { ProfileSettingsPage } = require('./ProfileSettingsPage') as typeof import('./ProfileSettingsPage');
+        const { ProfileSettingsPage } = require('./ProfileSettings/ProfileSettingsPage') as typeof import('./ProfileSettings/ProfileSettingsPage');
         const profileSettingsPage = new ProfileSettingsPage(newTab);
         await profileSettingsPage.waitForPageToLoad();
         return profileSettingsPage;
