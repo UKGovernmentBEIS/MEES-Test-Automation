@@ -5,7 +5,6 @@ import { FilterPropertiesPage } from './FilterPropertiesPage';
 import { PenaltyCalculatorPage } from './PenaltyCalculatorPage';
 import { TemplatesPage } from './TemplatesPage';
 import { GuidanceMainPage } from './Guidance/GuidanceMainPage';
-import { ProfileSettingsPage } from './ProfileSettingsPage';
 import { SupportWhoAreYouPage } from './Support/SupportWhoAreYouPage';
 
 export class HomePage extends BaseCompliancePage {
@@ -14,6 +13,7 @@ export class HomePage extends BaseCompliancePage {
     private readonly viewGuidanceLink: Locator;
     private readonly viewTemplatesLink: Locator;
     private readonly viewPenaltyCalculatorLink: Locator;
+    private readonly viewSupportLink: Locator;
     
 
     constructor(page: Page) {
@@ -23,6 +23,7 @@ export class HomePage extends BaseCompliancePage {
         this.viewGuidanceLink = page.getByRole('link', { name: 'View guidance' });
         this.viewTemplatesLink = page.getByRole('link', { name: 'View templates' });
         this.viewPenaltyCalculatorLink = page.getByRole('link', { name: 'View penalty calculator' });
+        this.viewSupportLink = page.getByRole('link', { name: 'Support' });
     }
 
     // Wait for the Home Page page to load
@@ -37,6 +38,7 @@ export class HomePage extends BaseCompliancePage {
                 viewGuidanceButton: this.viewGuidanceLink,
                 viewTemplatesButton: this.viewTemplatesLink,
                 viewPenaltyCalculatorButton: this.viewPenaltyCalculatorLink,
+                viewSupportButton: this.viewSupportLink,
             },
             60000);
     }
@@ -77,17 +79,44 @@ export class HomePage extends BaseCompliancePage {
         return guidanceMainPage;
     }
 
-    async clickProfileSettings(): Promise<ProfileSettingsPage> {
-        await this.profileSettingsLink.click();
-        const profileSettingsPage = new ProfileSettingsPage(this.page);
-        await profileSettingsPage.waitForPageToLoad();
-        return profileSettingsPage;
+    async clickRequestSupportLink(): Promise<SupportWhoAreYouPage> {
+        await this.viewSupportLink.click();
+        const supportWhoAreYouPage = new SupportWhoAreYouPage(this.page);
+        await supportWhoAreYouPage.waitForPageToLoad();
+        return supportWhoAreYouPage;
     }
 
-    async clickRequestSupportLink(): Promise<SupportWhoAreYouPage> {
-        const supportLink = this.page.getByRole('link', { name: 'Support' });
-        await supportLink.click();
-        const supportWhoAreYouPage = new SupportWhoAreYouPage(this.page);
+    async clickViewPropertiesInNewTab(): Promise<FilterPropertiesPage> {
+        const newTab = await this.openLinkInNewTab(this.viewPropertiesLink);
+        const page = new FilterPropertiesPage(newTab);
+        await page.waitForPageToLoad();
+        return page;
+    }
+
+    async clickViewGuidanceLinkInNewTab(): Promise<GuidanceMainPage> {
+        const newTab = await this.openLinkInNewTab(this.viewGuidanceLink);
+        const page = new GuidanceMainPage(newTab);
+        await page.waitForPageToLoad();
+        return page;
+    }
+
+    async clickViewTemplatesInNewTab(): Promise<TemplatesPage> {
+        const newTab = await this.openLinkInNewTab(this.viewTemplatesLink);
+        const page = new TemplatesPage(newTab);
+        await page.waitForPageToLoad();
+        return page;
+    }
+
+    async clickViewPenaltyCalculatorInNewTab(): Promise<PenaltyCalculatorPage> {
+        const newTab = await this.openLinkInNewTab(this.viewPenaltyCalculatorLink);
+        const page = new PenaltyCalculatorPage(newTab);
+        await page.waitForPageToLoad();
+        return page;
+    }
+
+    async clickRequestSupportLinkInNewTab(): Promise<SupportWhoAreYouPage> {
+        const newTab = await this.openLinkInNewTab(this.viewSupportLink);
+        const supportWhoAreYouPage = new SupportWhoAreYouPage(newTab);
         await supportWhoAreYouPage.waitForPageToLoad();
         return supportWhoAreYouPage;
     }
