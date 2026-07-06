@@ -8,6 +8,7 @@ import { GuidanceMainPage } from '../../pages/Compliance/Guidance/GuidanceMainPa
 import { SupportWhoAreYouPage } from '../../pages/Compliance/Support/SupportWhoAreYouPage';
 import { ProfileSettingsPage } from '../../pages/Compliance/ProfileSettingsPage';
 import { LandingPage } from '../../pages/LandingPage';
+import { PRSELandingPage } from '../../pages/PRSELandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
 import fs from 'fs';
 import path from 'path';
@@ -216,13 +217,12 @@ baseTest.describe('Dual Access User - MEES Tests', () => {
     });
 });
 
-// Skipped until the PRSE site is fixed
 baseTest.describe('Dual Access User - PRSE Tests', () => {
     baseTest.beforeEach(async ({}, testInfo) => {
         testInfo.annotations.push(TestAnnotations.testType(TestType.FUNCTIONAL));
     });
 
-    baseTest.skip('Dual-access user can sign in to PRSE and reach the PRSE home page', async ({ page }) => {
+    baseTest('Dual-access user can sign in to PRSE and reach the PRSE home page', async ({ page }) => {
         const { email, password } = getDualAccessCredentials();
 
         const prseBaseUrl = process.env.PRSE_BASE_URL;
@@ -231,15 +231,18 @@ baseTest.describe('Dual Access User - PRSE Tests', () => {
         }
 
         await page.goto(prseBaseUrl);
-        const landingPage = new LandingPage(page);
-        await landingPage.waitForPageToLoad();
+        const prseLandingPage = new PRSELandingPage(page);
+        await prseLandingPage.waitForPageToLoad();
 
-        const signInOrCreatePage = await landingPage.clickSignIn_NotAuthenticatedUser();
+        // The PRSE landing page uses a "Start now" button which leads into the One Login sign-in flow
+        const signInOrCreatePage = await prseLandingPage.clickStartNow();
         const loginEmailPage = await signInOrCreatePage.clickSignIn();
         const loginPasswordPage = await loginEmailPage.enterEmailAndContinue(email);
-        const homePage = await loginPasswordPage.enterPasswordAndContinueToComplianceLandingPage(password);
+        await loginPasswordPage.enterPassword(password);
+        await loginPasswordPage.clickContinue();
 
-        await expect(page).toHaveURL(new RegExp(prseBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-        expect(await homePage.isDisplayed()).toBeTruthy();
+        // Confirm the dual-access user reaches the authenticated PRSE dashboard
+        await expect(page).toHaveURL(/\/PRSELocalAuthority\/dashboard/);
+        await expect(page.getByRole('link', { name: 'Sign out' })).toBeVisible({ timeout: 15000 });
     });
 });
