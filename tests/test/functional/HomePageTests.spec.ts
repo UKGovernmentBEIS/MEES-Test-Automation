@@ -225,9 +225,12 @@ baseTest.describe('Dual Access User - PRSE Tests', () => {
     baseTest('Dual-access user can sign in to PRSE and reach the PRSE home page', async ({ page }) => {
         const { email, password } = getDualAccessCredentials();
 
-        const prseBaseUrl = process.env.PRSE_BASE_URL;
+        // PRSE runs on the same host as MEES, under /PRSELocalAuthority/ instead of /compliance/.
+        // Derive it from BASE_URL (which CI already provides) so no separate PRSE_BASE_URL secret is needed.
+        const prseBaseUrl = process.env.PRSE_BASE_URL
+            || process.env.BASE_URL?.replace('/compliance/', '/PRSELocalAuthority/');
         if (!prseBaseUrl) {
-            throw new Error('PRSE_BASE_URL environment variable is not set');
+            throw new Error('PRSE URL could not be resolved: neither PRSE_BASE_URL nor BASE_URL is set');
         }
 
         await page.goto(prseBaseUrl);
