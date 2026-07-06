@@ -7,10 +7,10 @@
     - link "Department for Energy Security and Net Zero":
       - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
   - term: Published
-  - definition: /\d+ June \d+/
+  - definition: /3 July \d+/
   - term: Last updated
-  - definition: /\d+ June \d+/
-  - paragraph: Contents
+  - definition: /3 July \d+/
+  - heading "Contents" [level=2]
   - heading "─ Non-domestic PRS properties" [level=3]:
     - text: ""
     - link "Non-domestic PRS properties":
@@ -23,13 +23,13 @@
     - text: ""
     - link "What is shown in this service":
       - /url: "#shown"
-  - heading "Non-domestic PRS properties" [level=1]
+  - heading "Non-domestic PRS properties" [level=2]
   - paragraph:
     - text: /The MEES Regulations apply to all non-domestic rented properties that are legally required to have an Energy Performance Certificate \(EPC\)\. This requirement comes from Regulation \d+ of/
     - link /Energy Efficiency \(Private Rented Property\) \(England and Wales\) Regulations \d+/:
       - /url: https://www.legislation.gov.uk/uksi/2015/962/regulation/20
     - text: .
-  - heading "What does not count as a non-domestic PRS property" [level=1]
+  - heading "What does not count as a non-domestic PRS property" [level=2]
   - paragraph: "A property is not a non-domestic PRS property if it does not need an EPC, and is not part of a building that needs one under:"
   - list:
     - listitem: /the Energy Performance of Buildings \(Certificates and Inspections\) \(England and Wales\) Regulations \d+/
@@ -41,7 +41,7 @@
     - listitem: /the tenant had already been in continuous occupation for more than \d+ months when the tenancy was granted/
   - paragraph: /A property is not a non-domestic PRS property if it is let on a tenancy of \d+ years or more\./
   - paragraph: Any such property is not within the scope of the MEES Regulations.
-  - heading "What is shown in this service" [level=1]
+  - heading "What is shown in this service" [level=2]
   - paragraph: This service shows non-domestic commercial properties and, where possible, shows evidence that may indicate they belong to the Private Rented Sector (PRS). Before taking any enforcement action, local authorities should verify the property's rental status using their own checks and evidence.
   - paragraph: "If a property has the 'Rental evidence' label 'Found' then the property has one or more of:"
   - list:

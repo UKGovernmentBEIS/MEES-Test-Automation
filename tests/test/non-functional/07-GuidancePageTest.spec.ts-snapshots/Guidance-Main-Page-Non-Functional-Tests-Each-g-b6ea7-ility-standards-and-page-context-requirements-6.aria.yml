@@ -7,10 +7,10 @@
     - link "Department for Energy Security and Net Zero":
       - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
   - term: Published
-  - definition: /\d+ June \d+/
+  - definition: /3 July \d+/
   - term: Last updated
-  - definition: /\d+ June \d+/
-  - paragraph: Contents
+  - definition: /3 July \d+/
+  - heading "Contents" [level=2]
   - heading "─ How property records are created" [level=3]:
     - text: ""
     - link "How property records are created":
@@ -43,7 +43,7 @@
     - text: ""
     - link "PRS Exemptions Register statuses":
       - /url: "#PRSEStatus"
-  - heading "How property records are created" [level=1]
+  - heading "How property records are created" [level=2]
   - paragraph: "Multiple datasets are combined in this service to create a single record for each property. The following steps are taken to create each record:"
   - list:
     - listitem: If an Energy Performance Certificate (EPC) has an associated Unique Property Reference Number (UPRN) it is used as the starting point for creating a property record.
@@ -52,7 +52,7 @@
     - listitem: The Companies House dataset is then used to add company details to the property record for cases when the property is owned by one or more companies - this is done using the company registration number on the HMLR CCOD or the HMLR OCOD dataset.
     - listitem: The UPRN is then used to add 'PRS exemption' and 'PRS Penalty' records from the PRS Exemptions Register data.
   - paragraph: This data is then displayed in the service as a single property record.
-  - heading "Why some information may not appear" [level=1]
+  - heading "Why some information may not appear" [level=2]
   - paragraph: "Some fields in the property records table or the property details page may be missing if:"
   - list:
     - listitem: an individual has opted out of having their EPC data disclosed publicly
@@ -62,7 +62,7 @@
     - listitem: company details were not found in the Companies House data
     - listitem: PRS Exemption Register records lack an associated UPRN
     - listitem: there are no exemptions or penalties registered in the PRS Exemptions Register for that property
-  - heading "Ministry of Housing, Communities & Local Government (MHCLG)" [level=1]
+  - heading "Ministry of Housing, Communities & Local Government (MHCLG)" [level=2]
   - paragraph: The Energy Performance Certificate (EPC) Non-Domestic dataset from MHCLG contains the EPCs for the non-domestic properties displayed in this service.
   - paragraph:
     - text: If an individual has
@@ -78,7 +78,7 @@
     - listitem: providing lodgement date
     - listitem: providing address details
   - paragraph: This data is refreshed monthly.
-  - heading "Ordnance Survey (OS)" [level=1]
+  - heading "Ordnance Survey (OS)" [level=2]
   - paragraph: The AddressBase Premium dataset from the Ordnance Survey (OS) provides the Unique Property Reference Number (UPRN) and standardised address details for each property.
   - paragraph: "This dataset is used for:"
   - list:
@@ -86,7 +86,7 @@
     - listitem: adding the UPRN to property records where it is missing from the EPC
     - listitem: ensuring datasets use the correct UPRN
   - paragraph: This data is refreshed every 6 weeks.
-  - heading "HM Land Registry (HMLR)" [level=1]
+  - heading "HM Land Registry (HMLR)" [level=2]
   - paragraph: From HMLR, there are three data sources that supply information to this service.
   - paragraph: The HMLR Commercial and Corporate Ownership Data (CCOD) and HMLR Overseas Ownership Data (OCOD) provide information on property ownership.
   - paragraph: "The HMLR CCOD and HMLR OCOD datasets are used for:"
@@ -98,20 +98,20 @@
     - listitem: linking property owners to properties using title information and UPRN information
     - listitem: linking property owners to EPC data
   - paragraph: This data is refreshed monthly.
-  - heading "Valuation Office Agency (VOA)" [level=1]
+  - heading "Valuation Office Agency (VOA)" [level=2]
   - paragraph: The Business Rates dataset from the VOA provides the rateable value for the properties in the service.
   - paragraph: "This dataset is used for:"
   - list:
     - listitem: providing the rateable value of the property to be used in calculating financial penalties
   - paragraph: This data is refreshed monthly.
-  - heading "Companies House" [level=1]
+  - heading "Companies House" [level=2]
   - paragraph: The Companies House dataset provides company registration details, addresses, and Standard Industrial Classification (SIC) codes.
   - paragraph: "This dataset is used for:"
   - list:
     - listitem: identifying a company as the owner of a property to determine the appropriate business address to contact
     - listitem: identifying business activity of those companies using SIC codes - this can help to identify if the property is a non-domestic PRS property
   - paragraph: This data is refreshed monthly.
-  - heading "PRS Exemptions Register statuses" [level=1]
+  - heading "PRS Exemptions Register statuses" [level=2]
   - paragraph: The PRS Exemptions Register provides the 'PRS exemption' and 'PRS penalty' data displayed when viewing the property records table and property detail pages.
   - paragraph: "To understand the 'PRS exemption' statuses:"
   - list:

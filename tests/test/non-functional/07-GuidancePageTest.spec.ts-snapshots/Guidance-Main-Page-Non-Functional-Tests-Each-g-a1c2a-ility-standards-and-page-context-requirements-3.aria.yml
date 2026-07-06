@@ -7,10 +7,10 @@
     - link "Department for Energy Security and Net Zero":
       - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
   - term: Published
-  - definition: /\d+ June \d+/
+  - definition: /3 July \d+/
   - term: Last updated
-  - definition: /\d+ June \d+/
-  - paragraph: Contents
+  - definition: /3 July \d+/
+  - heading "Contents" [level=2]
   - heading "─ 1. Check if the property is in scope" [level=3]:
     - text: ""
     - link "1. Check if the property is in scope":
@@ -27,13 +27,13 @@
     - text: ""
     - link "4. Begin enforcement action":
       - /url: "#enforcement-action"
-  - heading "1. Check if the property is in scope" [level=1]
+  - heading "1. Check if the property is in scope" [level=2]
   - paragraph:
     - text: A property is in scope of the MEES Regulations if it is a privately rented property that is
     - link "legally required to have an EPC":
       - /url: https://www.gov.uk/government/publications/energy-performance-certificates-for-the-construction-sale-and-let-of-non-dwellings--2/a-guide-to-energy-performance-certificates-for-the-construction-sale-and-let-of-non-dwellings
     - text: /, is located in England or Wales and has a tenancy length between 6 months and \d+ years\. This should be verified before enforcement action begins\./
-  - heading "2. Check the energy rating" [level=1]
+  - heading "2. Check the energy rating" [level=2]
   - paragraph: "To check the energy rating:"
   - list:
     - listitem:
@@ -43,7 +43,7 @@
       - text: to view the property's latest energy rating
     - listitem: identify whether it is below the minimum level of energy efficiency, which is currently E
   - paragraph: If the property's energy rating is below E, continue to step 3.
-  - heading "3. Check for PRS exemptions" [level=1]
+  - heading "3. Check for PRS exemptions" [level=2]
   - paragraph: "To check for PRS exemptions:"
   - list:
     - listitem: you can use this service to see the property’s PRS exemption status and the date of the exemption
@@ -52,15 +52,15 @@
       - link "PRS Exemptions Register":
         - /url: https://prsregister.beis.gov.uk/NdsBeisUi/register-search-exemptions
     - listitem: if ‘Not found’ is shown, it is recommended that the PRS Exemption Register is checked to validate that there are no exemptions recorded for that property prior to issuing a compliance notice or penalty
-  - heading "4. Begin enforcement action" [level=1]
+  - heading "4. Begin enforcement action" [level=2]
   - paragraph: "This may include:"
   - list:
     - listitem: informing the landlord of their duties under the MEES Regulations
     - listitem:
       - link "issuing a compliance notice":
-        - /url: https://desnz-gm--compliance.sandbox.my.site.com/compliance/guidance-detail?contentKey=MCBFW4DPLN45EMFOEMAZ53W36AVU
+        - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/guidance-detail?contentKey=MCZZRQVEB2UZAPHHEFTCLBR7L5SI
     - listitem:
       - link "issuing a penalty notice":
-        - /url: https://desnz-gm--compliance.sandbox.my.site.com/compliance/guidance-detail?contentKey=MCM6RZ6JHKLRBOXNIRXKLHUYPNXM
+        - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/guidance-detail?contentKey=MCBFW4DPLN45EMFOEMAZ53W36AVU
     - listitem: preparing evidence for internal review or tribunal route
   - paragraph: Proceed until the landlord remedies the issue or the case escalates.
