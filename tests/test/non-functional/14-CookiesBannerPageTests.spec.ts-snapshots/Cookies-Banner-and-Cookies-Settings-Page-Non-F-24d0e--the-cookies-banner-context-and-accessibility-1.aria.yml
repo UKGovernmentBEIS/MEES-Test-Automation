@@ -1,0 +1,6 @@
+- heading "Cookies on Check if non-domestic properties meet minimum energy efficiency standards" [level=2]
+- text: We use some essential cookies to make this service work. We’d also like to set analytics cookies so we can understand how people use the service and make improvements.
+- button "Accept analytics cookies"
+- button "Reject analytics cookies"
+- link "View cookies":
+  - /url: cookies

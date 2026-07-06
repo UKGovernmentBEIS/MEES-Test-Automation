@@ -58,7 +58,9 @@ export enum PageName {
   SUPPORT_CONTACT_FORM_PAGE = "Support Contact Form Page",
   SUPPORT_WHAT_DO_YOU_WANT_PAGE = "Support What Do You Want Page",
   SUPPORT_DETAILS_PAGE = "Support Details Page",
-  SUPPORT_CONFIRMATION_PAGE = "Support Confirmation Page"
+  SUPPORT_CONFIRMATION_PAGE = "Support Confirmation Page",
+  COOKIES_BANNER = "Cookies Banner Page",
+  COOKIES_SETTINGS_PAGE = "Cookies Settings Page"
 }
 
 /**
