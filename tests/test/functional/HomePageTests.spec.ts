@@ -6,7 +6,7 @@ import { PenaltyCalculatorPage } from '../../pages/Compliance/PenaltyCalculatorP
 import { TemplatesPage } from '../../pages/Compliance/TemplatesPage';
 import { GuidanceMainPage } from '../../pages/Compliance/Guidance/GuidanceMainPage';
 import { SupportWhoAreYouPage } from '../../pages/Compliance/Support/SupportWhoAreYouPage';
-import { ProfileSettingsPage } from '../../pages/Compliance/ProfileSettingsPage';
+import { ProfileSettingsPage } from '../../pages/Compliance/ProfileSettings/ProfileSettingsPage';
 import { LandingPage } from '../../pages/LandingPage';
 import { PRSELandingPage } from '../../pages/PRSELandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
@@ -85,17 +85,14 @@ test.describe('Home Page Navigation Tests', () => {
         }
     });
 
-    test('Navigate to the Landing page using the service title link', async ({ page }) => {
-        const landingPage = await homePage.clickPageHeaderLink();
-        expect(await landingPage.isDisplayed()).toBeTruthy();
+    test('Navigate to the Home page using the service title link', async ({ page }) => {
+        const newHomePage: HomePage = await homePage.clickPageHeaderLink();
+        expect(await newHomePage.isDisplayed()).toBeTruthy();
     });
 
-    // MEES-1092: Middle-clicking the service title link opens the PRSE page instead of the MEES Landing page.
-    // test.fail() marks this as an expected failure — it will turn red when the bug is fixed.
-    test('Navigate to the Landing page displayed in a new tab using the service title link', async ({ page }) => {
-        test.fail();
-        const landingPage = await homePage.clickPageHeaderLinkInNewTab();
-        expect(await landingPage.isDisplayed()).toBeTruthy();
+    test('Navigate to the Home page displayed in a new tab using the service title link', async ({ page }) => {
+        const newHomePage: HomePage = await homePage.clickPageHeaderLinkInNewTab();
+        expect(await newHomePage.isDisplayed()).toBeTruthy();
     });
 
     test('Feedback link has the correct email address and subject', async ({ page }) => {
@@ -118,18 +115,12 @@ test.describe('Home Page Navigation Tests', () => {
         expect(await filterPropertiesPage.isDisplayed()).toBeTruthy();
     });
 
-    // MEES-1089: Opening main navigation links in a new tab loads the Landing page.
-    // test.fail() marks these as expected failures — they will turn red when the bug is fixed.
     test('Navigate to the Filter Properties page displayed in a new tab using the Property Records navigation tab', async ({ page }) => {
-        test.fail();
         const filterPropertiesPage: FilterPropertiesPage = await homePage.clickOnPropertyRecordsTabInNewTab();
         expect(await filterPropertiesPage.isDisplayed()).toBeTruthy();
     });
 
-    // MEES-1089: Opening main navigation links in a new tab loads the Landing page.
-    // test.fail() marks these as expected failures — they will turn red when the bug is fixed.
     test('Navigate to the Guidance page displayed in a new tab using the Guidance navigation tab', async ({ page }) => {
-        test.fail();
         const guidanceMainPage: GuidanceMainPage = await homePage.clickOnGuidanceTabInNewTab();
         expect(await guidanceMainPage.isDisplayed()).toBeTruthy();
     });
@@ -139,18 +130,12 @@ test.describe('Home Page Navigation Tests', () => {
         expect(await penaltyCalculatorPage.isDisplayed()).toBeTruthy();
     });
 
-    // MEES-1089: Opening main navigation links in a new tab loads the Landing page.
-    // test.fail() marks these as expected failures — they will turn red when the bug is fixed.
     test('Navigate to the Penalty Calculator page displayed in a new tab using the Penalty Calculator navigation tab', async ({ page }) => {
-        test.fail();
         const penaltyCalculatorPage: PenaltyCalculatorPage = await homePage.clickOnPenaltyCalculatorTabInNewTab();
         expect(await penaltyCalculatorPage.isDisplayed()).toBeTruthy();
     });
 
-    // MEES-1089: Opening main navigation links in a new tab loads the Landing page.
-    // test.fail() marks these as expected failures — they will turn red when the bug is fixed.
     test('Navigate to the Templates page displayed in a new tab using the Templates navigation tab', async ({ page }) => {
-        test.fail();
         const templatesPage: TemplatesPage = await homePage.clickOnTemplatesTabInNewTab();
         expect(await templatesPage.isDisplayed()).toBeTruthy();
     });

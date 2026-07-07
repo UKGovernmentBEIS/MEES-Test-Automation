@@ -4,10 +4,10 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import type { FilterPropertiesPage } from './FilterPropertiesPage';
 import type { PenaltyCalculatorPage } from './PenaltyCalculatorPage';
 import type { SupportWhoAreYouPage } from './Support/SupportWhoAreYouPage';
-import type { LandingPage } from '../LandingPage';
 import type { GuidanceMainPage } from './Guidance/GuidanceMainPage';
 import type { TemplatesPage } from './TemplatesPage';
 import type { ProfileSettingsPage } from './ProfileSettings/ProfileSettingsPage';
+import type { HomePage } from './HomePage';
 
 export abstract class BaseCompliancePage extends BasePage {
     protected readonly page: Page;
@@ -69,20 +69,20 @@ export abstract class BaseCompliancePage extends BasePage {
         return penaltyCalculatorPage;
     }
 
-    async clickPageHeaderLink(): Promise<LandingPage> {
+    async clickPageHeaderLink(): Promise<HomePage> {
         await this.pageHeaderLink.click();
-        const { LandingPage } = await import('../LandingPage');
-        const landingPage = new LandingPage(this.page);
-        await landingPage.waitForPageToLoad();
-        return landingPage;
+        const { HomePage } = await import('./HomePage');
+        const homePage = new HomePage(this.page);
+        await homePage.waitForPageToLoad();
+        return homePage;
     }
 
-    async clickPageHeaderLinkInNewTab(): Promise<LandingPage> {
+    async clickPageHeaderLinkInNewTab(): Promise<HomePage> {
         const newTab = await this.openLinkInNewTab(this.pageHeaderLink);
-        const { LandingPage } = await import('../LandingPage');
-        const landingPage = new LandingPage(newTab);
-        await landingPage.waitForPageToLoad();
-        return landingPage;
+        const { HomePage } = await import('./HomePage');
+        const homePage = new HomePage(newTab);
+        await homePage.waitForPageToLoad();
+        return homePage;
     }
 
     async isProfileSettingsLinkVisible(): Promise<boolean> {
