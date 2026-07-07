@@ -30,6 +30,12 @@ export class PRSELandingPage {
 
     async clickStartNow(): Promise<SignInOrCreatePage> {
         await this.startNowButton.click();
+        // On UAT, "Start now" first hits a Salesforce SSO redirect
+        // (/PRSELocalAuthority/login -> LAOneLogin) before landing on GOV.UK One Login, which can
+        // take a few seconds; on QA it goes straight there. Wait for One Login before proceeding so
+        // the intermediate redirect has time to complete.
+        await this.page.waitForURL(/sign-in-or-create|signin\.integration\.account\.gov\.uk/, { timeout: 45000 });
+
         const signInOrCreatePage = new SignInOrCreatePage(this.page);
         await signInOrCreatePage.waitForPageToLoad();
         return signInOrCreatePage;
