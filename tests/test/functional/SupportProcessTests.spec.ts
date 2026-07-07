@@ -80,8 +80,8 @@ test.describe('Page validation tests', () => {
 
         // Click the submit button without entering any details
         await supportDetailsPage.clickSubmitButton();
-        await expect.poll(() => supportDetailsPage.getErrorSummary().isVisible()).toBe(true);
-        await expect.poll(() => supportDetailsPage.getErrorDetailsTextArea().isVisible()).toBe(true);
+        await expect(supportDetailsPage.getErrorSummary()).toBeVisible();
+        await expect(supportDetailsPage.getErrorDetailsTextArea()).toBeVisible();
     });
 });
 
