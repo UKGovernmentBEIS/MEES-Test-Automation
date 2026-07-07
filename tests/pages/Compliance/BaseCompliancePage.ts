@@ -8,7 +8,7 @@ import type { GuidanceMainPage } from './Guidance/GuidanceMainPage';
 import type { TemplatesPage } from './TemplatesPage';
 import type { ProfileSettingsPage } from './ProfileSettings/ProfileSettingsPage';
 import type { HomePage } from './HomePage';
-import { LandingPage } from '../LandingPage';
+import type { LandingPage } from '../LandingPage';
 
 export abstract class BaseCompliancePage extends BasePage {
     protected readonly page: Page;
@@ -120,6 +120,7 @@ export abstract class BaseCompliancePage extends BasePage {
     }
 
     async clickSignOutButton(): Promise<LandingPage> {
+        const { LandingPage } = await import('../LandingPage');
         await this.signOutButton.click();
         const landingPage = new LandingPage(this.page);
         await landingPage.waitForPageToLoad();
