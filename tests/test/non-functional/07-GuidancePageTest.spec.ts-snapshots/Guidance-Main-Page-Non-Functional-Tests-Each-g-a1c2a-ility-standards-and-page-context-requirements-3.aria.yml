@@ -1,5 +1,5 @@
 - main:
-  - heading "Guidance" [level=1]
+  - paragraph: Guidance
   - heading "Enforcement timeline" [level=1]
   - paragraph: Follow these steps to determine whether a property is in breach of the MEES Regulations.
   - term: "From:"
@@ -7,9 +7,9 @@
     - link "Department for Energy Security and Net Zero":
       - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
   - term: Published
-  - definition: /3 July \d+/
+  - definition: /7 July \d+/
   - term: Last updated
-  - definition: /3 July \d+/
+  - definition: /7 July \d+/
   - heading "Contents" [level=2]
   - heading "─ 1. Check if the property is in scope" [level=3]:
     - text: ""
@@ -58,9 +58,9 @@
     - listitem: informing the landlord of their duties under the MEES Regulations
     - listitem:
       - link "issuing a compliance notice":
-        - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/guidance-detail?contentKey=MCZZRQVEB2UZAPHHEFTCLBR7L5SI
+        - /url: ./guidance-detail?contentKey=MCZZRQVEB2UZAPHHEFTCLBR7L5SI
     - listitem:
       - link "issuing a penalty notice":
-        - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/guidance-detail?contentKey=MCBFW4DPLN45EMFOEMAZ53W36AVU
+        - /url: ./guidance-detail?contentKey=MCBFW4DPLN45EMFOEMAZ53W36AVU
     - listitem: preparing evidence for internal review or tribunal route
   - paragraph: Proceed until the landlord remedies the issue or the case escalates.

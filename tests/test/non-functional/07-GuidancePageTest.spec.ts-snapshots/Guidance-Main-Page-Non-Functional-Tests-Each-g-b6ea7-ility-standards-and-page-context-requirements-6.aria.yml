@@ -1,5 +1,5 @@
 - main:
-  - heading "Guidance" [level=1]
+  - paragraph: Guidance
   - heading "Understanding property details and data sources" [level=1]
   - paragraph: Multiple datasets are combined in this service to create a single record for each property, including information from the PRS Exemptions Register. The data is collected, cleaned, and checked before it is shown in this service.
   - term: "From:"
@@ -7,9 +7,9 @@
     - link "Department for Energy Security and Net Zero":
       - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
   - term: Published
-  - definition: /3 July \d+/
+  - definition: /\d+ \w+ \d+/
   - term: Last updated
-  - definition: /3 July \d+/
+  - definition: /\d+ \w+ \d+/
   - heading "Contents" [level=2]
   - heading "─ How property records are created" [level=3]:
     - text: ""

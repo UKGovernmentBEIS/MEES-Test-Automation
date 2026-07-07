@@ -1,5 +1,5 @@
 - main:
-  - heading "Guidance" [level=1]
+  - paragraph: Guidance
   - heading "Understanding compliance notices" [level=1]
   - paragraph: /A compliance notice can be sent to a landlord if extra information is needed to determine compliance with the MEES Regulations\. If you suspect that a property has not complied with the MEES Regulations any time in the last \d+ months, you may serve the landlord a compliance notice\./
   - term: "From:"
@@ -7,9 +7,9 @@
     - link "Department for Energy Security and Net Zero":
       - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
   - term: Published
-  - definition: /3 July \d+/
+  - definition: /7 July \d+/
   - term: Last updated
-  - definition: /3 July \d+/
+  - definition: /7 July \d+/
   - heading "Contents" [level=2]
   - heading "─ Contacting a landlord before issuing a compliance notice" [level=3]:
     - text: ""
@@ -46,4 +46,4 @@
   - paragraph: You can withdraw a compliance notice.
   - paragraph:
     - link "Check the templates section for compliance notice templates.":
-      - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/templates
+      - /url: ./templates
