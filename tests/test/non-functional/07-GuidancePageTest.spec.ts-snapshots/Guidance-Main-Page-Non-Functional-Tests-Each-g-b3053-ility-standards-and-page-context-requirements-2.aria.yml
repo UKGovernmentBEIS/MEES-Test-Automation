@@ -28,7 +28,7 @@
   - paragraph:
     - text: When
     - link "viewing a property record":
-      - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/filter-properties
+      - /url: /https://[^/]+/compliance/filter-properties/
     - text: in this service, the rateable value is displayed in the ‘View details’ section.
     - link "You can also search for this value in the ‘Find a business rates valuation’ service.":
       - /url: https://www.gov.uk/find-business-rates
@@ -47,7 +47,7 @@
       - paragraph
       - paragraph:
         - link "Use the penalty calculator to calculate a maximum financial penalty amount":
-          - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/penalty-calculator
+          - /url: /https://[^/]+/compliance/penalty-calculator/
           - text: ""
       - heading "Publication penalties" [level=2]
       - paragraph: A publication penalty enables you to publish some details of the landlord’s non-compliance on a publicly accessible part of the PRS Exemptions Register.
@@ -80,4 +80,4 @@
         - listitem: explain whether a publication penalty has been imposed
       - paragraph:
         - link "Check the templates section for penalty notice templates.":
-          - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/templates
+          - /url: /https://[^/]+/compliance/templates/

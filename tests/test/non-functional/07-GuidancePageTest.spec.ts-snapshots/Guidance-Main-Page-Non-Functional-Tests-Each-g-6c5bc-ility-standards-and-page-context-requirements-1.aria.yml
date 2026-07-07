@@ -46,4 +46,4 @@
   - paragraph: You can withdraw a compliance notice.
   - paragraph:
     - link "Check the templates section for compliance notice templates.":
-      - /url: https://prsminimumenergystandards--qa.sandbox.my.site.com/compliance/templates
+      - /url: /https://[^/]+/compliance/templates/
