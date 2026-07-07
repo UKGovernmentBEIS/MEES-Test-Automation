@@ -4,6 +4,7 @@ import { SignInOrCreatePage } from './Login/SignInOrCreatePage';
 import { HomePage } from './Compliance/HomePage';
 import { BasePage } from './BasePage';
 import { reAuthenticate } from '../utils/AuthUtils';
+import { SupportWhoAreYouPage } from './Compliance/Support/SupportWhoAreYouPage';
 
 export class LandingPage extends BasePage {
   private readonly signInButton: Locator;
@@ -12,6 +13,7 @@ export class LandingPage extends BasePage {
   private readonly requestSupportLink: Locator;
   private readonly reviewExemptionsLink: Locator;
   private readonly findEnergyCertificateLink: Locator;
+  protected footerHelpLink: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -21,6 +23,7 @@ export class LandingPage extends BasePage {
     this.requestSupportLink = page.getByRole('link', { name: 'Request support' });
     this.reviewExemptionsLink = page.getByRole('link', { name: 'Review exemptions for private rented sector energy standards' });
     this.findEnergyCertificateLink = page.getByRole('link', { name: 'Find an energy certificate' });
+    this.footerHelpLink = this.page.getByRole('contentinfo').getByRole('link', { name: 'Help' });
   }
 
   /**
@@ -114,5 +117,28 @@ export class LandingPage extends BasePage {
     const homePage = new HomePage(this.page);
     await homePage.waitForPageToLoad();
     return homePage;
+  }
+
+  async clickFooterHelpLink(): Promise<SupportWhoAreYouPage> {
+    await this.footerHelpLink.click();
+    const supportWhoAreYouPage = new SupportWhoAreYouPage(this.page);
+    await supportWhoAreYouPage.waitForPageToLoad();
+    return supportWhoAreYouPage;
+  }
+
+  async clickFooterHelpLinkInNewTab(): Promise<SupportWhoAreYouPage> {
+    const newTab = await this.openLinkInNewTab(this.footerHelpLink);
+    const supportWhoAreYouPage = new SupportWhoAreYouPage(newTab);
+    await supportWhoAreYouPage.waitForPageToLoad();
+    return supportWhoAreYouPage;
+  }
+
+  protected async openLinkInNewTab(locator: Locator): Promise<Page> {
+    const [newTab] = await Promise.all([
+        this.page.context().waitForEvent('page'),
+        locator.click({ button: 'middle' })
+    ]);
+    await newTab.waitForLoadState();
+    return newTab;
   }
 }

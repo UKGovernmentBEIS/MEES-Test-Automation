@@ -282,12 +282,22 @@ test.describe('Navigation tests', () => {
         expect(await homePageFromSupport.isDisplayed()).toBe(true);
     });
 
-    test('Verify that the Service Title Link navigates to the Landing page', async () => {
+    test('Verify that the Service Title Link navigates to the Home page', async () => {
         const supportWhoAreYouPage: SupportWhoAreYouPage = await homePage.clickRequestSupportLink();
         await supportWhoAreYouPage.waitForPageToLoad();
         const landingPage = await supportWhoAreYouPage.clickPageHeaderLink();
         await landingPage.waitForPageToLoad();
         expect(await landingPage.isDisplayed()).toBe(true);
+    });
+
+    test('Verify that the Service Title Link navigates to the Landing page when user is not authenticated', async () => {
+        const newLandingPage: LandingPage = await homePage.clickSignOutButton();
+        await newLandingPage.waitForPageToLoad();
+        expect(await newLandingPage.isDisplayed()).toBe(true);
+
+        const supportWhoAreYouPage: SupportWhoAreYouPage = await newLandingPage.clickFooterHelpLink();
+        await supportWhoAreYouPage.waitForPageToLoad();
+        expect(await supportWhoAreYouPage.isDisplayed()).toBe(true);
     });
 });
 
