@@ -1,5 +1,5 @@
 - main:
-  - heading "Guidance" [level=1]
+  - paragraph: Guidance
   - heading "How PRS properties are identified" [level=1]
   - paragraph: Non-domestic properties are shown in this service with an indication of whether there is evidence they may be rented.
   - term: "From:"
@@ -7,9 +7,9 @@
     - link "Department for Energy Security and Net Zero":
       - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
   - term: Published
-  - definition: /3 July \d+/
+  - definition: /\d+ \w+ \d+/
   - term: Last updated
-  - definition: /3 July \d+/
+  - definition: /\d+ \w+ \d+/
   - heading "Contents" [level=2]
   - heading "─ Non-domestic PRS properties" [level=3]:
     - text: ""
