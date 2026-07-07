@@ -98,7 +98,7 @@ test.describe('Penalty calculation boundary tests - Less than 3 months breach', 
     });
 });
 
-test.describe('Penalty calculation boundary tests - More than 3 months breach', () => {
+test.describe('Penalty calculation boundary tests - 3 months or more breach', () => {
     let penaltyCalculatorPage: PenaltyCalculatorPage;
 
     test.beforeEach(async ({ page }, testInfo) => {
@@ -114,37 +114,37 @@ test.describe('Penalty calculation boundary tests - More than 3 months breach', 
 
     test('Just below minimum boundary - Rateable Value £49,999 should return minimum penalty of £10,000', async ({ page }) => {
         // 20% of £49,999 = £9,999.80, which is below the £10,000 minimum, so the penalty is capped at £10,000
-        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('More than 3 months', 49999);
+        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('3 months or more', 49999);
         expect(await resultsPage.getPanaltyMaximumValue()).toContain('£10,000');
     });
 
     test('On minimum boundary - Rateable Value £50,000 should return penalty of £10,000', async ({ page }) => {
         // 20% of £50,000 = £10,000, which is exactly at the minimum threshold
-        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('More than 3 months', 50000);
+        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('3 months or more', 50000);
         expect(await resultsPage.getPanaltyMaximumValue()).toContain('£10,000');
     });
 
     test('Just above minimum boundary - Rateable Value £50,001 should return penalty of £10,000.20', async ({ page }) => {
         // 20% of £50,001 = £10,000.20, which exceeds the £10,000 minimum so the full 20% applies
-        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('More than 3 months', 50001);
+        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('3 months or more', 50001);
         expect(await resultsPage.getPanaltyMaximumValue()).toContain('£10,000.2');
     });
 
     test('Just below maximum cap boundary - Rateable Value £749,999 should return penalty of £149,999.80', async ({ page }) => {
         // 20% of £749,999 = £149,999.80, which is just below the £150,000 cap so no cap is applied
-        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('More than 3 months', 749999);
+        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('3 months or more', 749999);
         expect(await resultsPage.getPanaltyMaximumValue()).toContain('£149,999.8');
     });
 
     test('On maximum cap boundary - Rateable Value £750,000 should return penalty of £150,000', async ({ page }) => {
         // 20% of £750,000 = £150,000, which is exactly at the maximum cap
-        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('More than 3 months', 750000);
+        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('3 months or more', 750000);
         expect(await resultsPage.getPanaltyMaximumValue()).toContain('£150,000');
     });
 
     test('Just above maximum cap boundary - Rateable Value £750,001 should return capped penalty of £150,000', async ({ page }) => {
         // 20% of £750,001 = £150,000.20, which exceeds the £150,000 cap so the penalty is capped at £150,000
-        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('More than 3 months', 750001);
+        const resultsPage = await penaltyCalculatorPage.calculateMaximumPenalty('3 months or more', 750001);
         expect(await resultsPage.getPanaltyMaximumValue()).toContain('£150,000');
     });
 });

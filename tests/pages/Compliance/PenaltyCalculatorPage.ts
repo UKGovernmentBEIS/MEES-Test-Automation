@@ -4,7 +4,7 @@ import { ElementUtilities } from '../../utils/ElementUtilities';
 import { PenaltyCalculatorResultsPage } from './PenaltyCalculatorResultPage';
 import { HomePage } from './HomePage';
 
-type LengthOfBreach = 'Less than 3 months' | 'More than 3 months';
+type LengthOfBreach = 'Less than 3 months' | '3 months or more';
 
 export class PenaltyCalculatorPage extends BaseCompliancePage {
     private pageContext: Locator;
