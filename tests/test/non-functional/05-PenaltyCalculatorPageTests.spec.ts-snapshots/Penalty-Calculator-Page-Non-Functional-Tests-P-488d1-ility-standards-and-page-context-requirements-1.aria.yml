@@ -3,12 +3,12 @@
   - text: If you have identified that a landlord is letting a sub-standard non-domestic property, you can calculate the maximum financial penalty for this breach. You can find the most current rateable value using the
   - link "Find a business rates valuation service (opens in a new tab).":
     - /url: https://www.gov.uk/find-business-rates
-  - group:
-    - text: How long has the property been in breach for?
+  - group "How long has the property been in breach for?":
+    - heading "How long has the property been in breach for?" [level=2]
     - radio "Less than 3 months"
     - text: Less than 3 months
-    - radio "More than 3 months"
-    - text: More than 3 months
+    - radio "3 months or more"
+    - text: 3 months or more
   - text: /What is the rateable value of the property at the time the penalty notice is to be served\? For example, enter '\d+' for a rateable value of £\d+,\d+\./
   - textbox "What is the rateable value of the property at the time the penalty notice is to be served?"
   - button "Calculate maximum penalty"
