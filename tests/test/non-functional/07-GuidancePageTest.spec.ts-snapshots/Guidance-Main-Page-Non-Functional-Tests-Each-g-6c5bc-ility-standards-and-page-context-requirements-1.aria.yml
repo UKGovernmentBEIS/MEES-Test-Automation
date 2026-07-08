@@ -7,16 +7,16 @@
     - link "Department for Energy Security and Net Zero":
       - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
   - term: Published
-  - definition: /7 July \d+/
+  - definition: /\d+ \w+ \d+/
   - term: Last updated
-  - definition: /7 July \d+/
+  - definition: /\d+ \w+ \d+/
   - heading "Contents" [level=2]
   - heading "─ Contacting a landlord before issuing a compliance notice" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "Contacting a landlord before issuing a compliance notice":
       - /url: "#contacting"
   - heading "─ Issuing a compliance notice" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "Issuing a compliance notice":
       - /url: "#issuing"
   - heading "Contacting a landlord before issuing a compliance notice" [level=2]

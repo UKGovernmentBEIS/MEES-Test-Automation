@@ -7,28 +7,28 @@
     - link "Department for Energy Security and Net Zero":
       - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
   - term: Published
-  - definition: /7 July \d+/
+  - definition: /\d+ \w+ \d+/
   - term: Last updated
-  - definition: /7 July \d+/
+  - definition: /\d+ \w+ \d+/
   - heading "Contents" [level=2]
   - heading "─ The Minimum Energy Efficiency Standard" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "The Minimum Energy Efficiency Standard":
       - /url: "#mees"
   - heading "─ Current minimum energy rating" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "Current minimum energy rating":
       - /url: "#rating"
   - heading "─ Your responsibilities as an enforcement officer" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "Your responsibilities as an enforcement officer":
       - /url: "#responsibilities"
   - heading "─ Exemptions you may encounter" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "Exemptions you may encounter":
       - /url: "#exemptions"
   - heading "─ If you need more information" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "If you need more information":
       - /url: "#moreinfo"
   - heading "The Minimum Energy Efficiency Standard" [level=2]

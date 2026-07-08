@@ -7,24 +7,24 @@
     - link "Department for Energy Security and Net Zero":
       - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
   - term: Published
-  - definition: /7 July \d+/
+  - definition: /\d+ \w+ \d+/
   - term: Last updated
-  - definition: /7 July \d+/
+  - definition: /\d+ \w+ \d+/
   - heading "Contents" [level=2]
   - heading "─ 1. Check if the property is in scope" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "1. Check if the property is in scope":
       - /url: "#scope"
   - heading "─ 2. Check the energy rating" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "2. Check the energy rating":
       - /url: "#energy-rating"
   - heading "─ 3. Check for PRS exemptions" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "3. Check for PRS exemptions":
       - /url: "#prs-exemptions"
   - heading "─ 4. Begin enforcement action" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "4. Begin enforcement action":
       - /url: "#enforcement-action"
   - heading "1. Check if the property is in scope" [level=2]

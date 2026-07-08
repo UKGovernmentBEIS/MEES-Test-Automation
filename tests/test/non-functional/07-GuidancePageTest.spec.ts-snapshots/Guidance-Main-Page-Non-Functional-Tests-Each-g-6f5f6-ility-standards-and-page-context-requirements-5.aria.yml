@@ -12,15 +12,15 @@
   - definition: /\d+ \w+ \d+/
   - heading "Contents" [level=2]
   - heading "─ Non-domestic PRS properties" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "Non-domestic PRS properties":
       - /url: "#non-domestic"
   - heading "─ What does not count as a non-domestic PRS property" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "What does not count as a non-domestic PRS property":
       - /url: "#not-count"
   - heading "─ What is shown in this service" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "What is shown in this service":
       - /url: "#shown"
   - heading "Non-domestic PRS properties" [level=2]

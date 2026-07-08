@@ -7,20 +7,20 @@
     - link "Department for Energy Security and Net Zero":
       - /url: https://www.gov.uk/government/organisations/department-for-energy-security-and-net-zero
   - term: Published
-  - definition: /7 July \d+/
+  - definition: /\d+ \w+ \d+/
   - term: Last updated
-  - definition: /7 July \d+/
+  - definition: /\d+ \w+ \d+/
   - heading "Contents" [level=2]
   - heading "─ Financial penalties" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "Financial penalties":
       - /url: "#financial"
   - heading "─ Publication penalties" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "Publication penalties":
       - /url: "#publication"
   - heading "─ Issuing a penalty notice" [level=3]:
-    - text: ""
+    - text: /.*/
     - link "Issuing a penalty notice":
       - /url: "#issuing"
   - heading "Financial penalties" [level=2]
@@ -44,7 +44,7 @@
     - listitem: /Failing to comply with a compliance notice can lead to a penalty of up to £\d+,\d+\./
   - paragraph:
     - link "Use the penalty calculator to calculate a maximum financial penalty amount":
-      - /url: /https://[^/]+/compliance/penalty-calculator/
+      - /url: ./penalty-calculator
       - text: ""
   - heading "Publication penalties" [level=2]
   - paragraph: A publication penalty enables you to publish some details of the landlord's non-compliance on a publicly accessible part of the PRS Exemptions Register.
