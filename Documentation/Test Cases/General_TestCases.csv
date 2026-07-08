@@ -368,3 +368,23 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 2. User is on the Cookies Settings page or the Support Who Are You page","1. Left-click the service title link ('Check if non-domestic properties meet minimum energy efficiency standards')
 2. Middle-click the service title link","1. Landing page is displayed
 2. Landing page is displayed in a new browser tab",Pass,
+2115,,MEES Phase 2,Sprint 7,Privacy Notice Page - Unauthenticated: Footer Privacy Notice link opens the Privacy Notice page when unauthenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is not authenticated
+2. User is on the Landing page","1. Navigate to the Landing page
+2. Click the footer Privacy Notice link","1. Privacy Notice page is displayed",Pass,
+2116,,MEES Phase 2,Sprint 7,Privacy Notice Page - Unauthenticated: Service title link navigates to the Landing page when unauthenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is not authenticated
+2. User is on the Privacy Notice page","1. Click the service title link on the Privacy Notice page","1. Landing page is displayed",Pass,
+2117,,MEES Phase 2,Sprint 7,Privacy Notice Page - Unauthenticated: Service title link opens the Landing page in a new tab when unauthenticated,Privacy Notice Page,Fully Automated,Functional,Medium,"1. User is not authenticated
+2. User is on the Privacy Notice page","1. Open the service title link in a new browser tab","1. Landing page is displayed in a new browser tab",Pass,
+2118,,MEES Phase 2,Sprint 7,Privacy Notice Page - Authenticated: Footer Privacy Notice link opens the Privacy Notice page when authenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Navigate to the Home page
+2. Click the footer Privacy Notice link","1. Privacy Notice page is displayed",Pass,
+2119,,MEES Phase 2,Sprint 7,Privacy Notice Page - Authenticated: Service title link navigates to the Home page when authenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Privacy Notice page","1. Click the service title link on the Privacy Notice page","1. Home page is displayed",Pass,
+2120,,MEES Phase 2,Sprint 7,Privacy Notice Page - Authenticated: Service title link opens the Home page in a new tab when authenticated,Privacy Notice Page,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Privacy Notice page","1. Open the service title link in a new browser tab","1. Home page is displayed in a new browser tab",Pass,
+2121,,MEES Phase 2,Sprint 7,Privacy Notice Page: Context and accessibility are verified on the Privacy Notice page,Privacy Notice Page,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. User is on the Privacy Notice page","1. Navigate to the Privacy Notice page
+2. Run the accessibility scanner on the Privacy Notice page
+3. Verify all context locators are visible on the Privacy Notice page","1. Privacy Notice page is displayed
+2. No critical accessibility violations are found
+3. All context locators match the expected aria snapshot",Pass,
