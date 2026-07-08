@@ -1,0 +1,370 @@
+Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test Automation,Test Type,Priority,Preconditions,Test Steps,Expected Results,Result,Comments
+2000,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Export Count Matches Displayed Records,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Filter Properties page","1. Set Energy Rating filter to A
+2. Set Council filter to 'LONDON BOROUGH OF BEXLEY'
+3. View Properties Page and wait for View Properties page and table to load
+4. Capture the displayed properties count from the results count field
+5. Export filtered data
+6. Capture the exported record count with the displayed count","1. Energy Rating filter is set to A
+2. Council filter is set to 'LONDON BOROUGH OF BEXLEY'
+3. View Properties page loads with filtered results and table content visible
+4. Displayed count is greater than 0
+5. Export completes successfully returning a list of records
+6. Exported record count equals the displayed count exactly",Pass,
+2001,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Verify Export Column Order Matches Specification,View Properties Page,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. A CSV export has been downloaded from the View Properties page with any filters applied
+3. The 'CSV Export Specification & Alignment.xlsx' file attached to the story is available for reference","1. Open the 'CSV Export Specification & Alignment.xlsx' file and note the defined column order
+2. Open the exported CSV and compare each column's left-to-right position against the specification order","1. Column order is identified from the specification
+2. Every column appears in exactly the same left-to-right position as defined in the specification with no columns out of position",Pass,Column name correctness is verified separately by TC-2048.
+2048,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Verify Export Column Names Match Specification,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. A CSV export has been downloaded from the View Properties page with any filters applied
+3. The 'CSV Export Specification & Alignment.xlsx' file attached to the story is available for reference","1. Open the exported CSV
+2. Compare each column header name in the first row against the specification ? verify no columns are missing and no extra columns are present","1. Every column name in the export matches the specification exactly
+2. No columns defined in the specification are missing from the export
+3. No extra columns are present in the export that are not defined in the specification",Not Run,
+2047,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Fields without values show 'Not found' in export,View Properties Page,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Filter Properties page
+3. The export contains at least one property where one or more placeholder-based fields are not populated from source data","1. Apply filters and export the CSV
+2. Locate rows where source data for placeholder-based fields is missing (for example, a row where both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are false; or a property with no EPC data)
+3. Verify fields that use the placeholder convention display 'Not found' instead of blank ? including EPC energy rating, EPC expiry date and EPC certificate link for properties with no EPC data","1. Export completes successfully with at least one record
+2. At least one row with missing source data for placeholder-based fields is found
+3. Each placeholder-based field under those conditions displays 'Not found' exactly (case-sensitive), not blank or any alternative text ? including EPC energy rating, EPC expiry date and EPC certificate link for properties with no EPC data",Pass,
+2002,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Exported directly-mapped field values match DMS API,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. A CSV export has been downloaded from the View Properties page with Energy Rating 'A' and Council 'LONDON BOROUGH OF BEXLEY' filters applied
+3. DMS API is accessible for cross-referencing field values (DMS_BASE_URL and EXPORT_KEY configured)","1. Apply Energy Rating 'A' and Council 'LONDON BOROUGH OF BEXLEY' filters and export the CSV
+2. Fetch a reference property from the DMS API and locate it in the export by UPRN
+3. Compare the following directly-mapped fields between the export and DMS API: Property address, UPRN, Property type, Rateable value (GBP), Property owner 1 name, Property owner 1 location, Property owner 1 address, Property owner 1 SIC code(s), EPC energy rating band, EPC energy rating, EPC expiry date, EPC (rating; expiry; transaction type), EPC certificate link, EPC transaction type
+4. Confirm that Possible rental evidence, PRS exemption status, PRS exemption date and Comments are not compared in this test as they are either computed from multiple DMS booleans or sourced from Salesforce rather than DMS","1. Export completes successfully with at least one record
+2. A matching DMS property is found in the export by UPRN
+3. All directly-mapped field values match the DMS API source exactly
+4. Computed and Salesforce-dependent fields are excluded from comparison and covered by dedicated tests",Not Run,
+2003,E839,1082,MEES Phase 2,Sprint 2,Export - Structural: Exported PRS Exemption Status and Comments match Salesforce data,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Filter Properties page
+3. The filtered results (Energy Rating 'A', Council 'LONDON BOROUGH OF BEXLEY', Postcode 'DA1 4AL') contain exactly 1 property with a non-empty PRS exemption status
+4. The Property Details page is accessible","1. Apply Energy Rating 'A', Council 'LONDON BOROUGH OF BEXLEY' and Postcode 'DA1 4AL' filters on the Filter Properties page and navigate to View Properties
+2. Verify the results count shows exactly 1 result confirming only the known reference property is returned
+3. Export the filtered CSV
+4. Click 'View details' for the property to open the Property Details page; select the 'Property details' tab and record the UPRN
+5. Locate the reference property in the export by UPRN
+6. Select the 'PRS exemptions and penalties' tab on the Property Details page
+7. Compare 'PRS exemption status' in the export against the value displayed on the 'PRS exemptions and penalties' tab
+8. Extract comment bodies from the export 'Comments' field (entries are 'body by author on date' separated by ' | ') and compare against the comment bodies from the Property Details page (attribution lines starting with 'Added by' are excluded)","1. Filters are applied and View Properties page loads with exactly 1 matching record
+2. Results count shows exactly '1 results' confirming a single known property is returned
+3. Export completes successfully and returns 1 record
+4. Property Details page opens successfully and UPRN is recorded from the 'Property details' tab
+5. The reference property is found in the export by UPRN
+6. 'PRS exemptions and penalties' tab is displayed and active
+7. 'PRS exemption status' in the export matches the Property Details page value exactly
+8. All comment bodies from the Property Details page appear in the export 'Comments' field in the same order separated by ' | '",Pass,
+2004,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Verify Exported Field Formats and Empty State Values,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. A CSV export has been downloaded from the View Properties page","1. Inspect date fields (EPC expiry date, PRS exemption date) across all rows - check both populated and unpopulated values
+2. Inspect the 'PRS exemption status' field for a row where the property has no PRS exemption","1. Populated date fields display in YYYY-MM-DD format; unpopulated EPC expiry date shows 'Not found'; unpopulated PRS exemption date is empty
+2. PRS exemption status shows 'Data not found' when the property has no PRS exemption",Fail,PRS exemption date in the export is currently formatted as DD/MM/YYYY instead of YYYY-MM-DD (confirmed by TC-2003 normalisation comment) ? no bug raised yet. SIC code format checks removed from this test case: owner fields being empty when no owner data is covered by the 'Export - Field values when source data is absent' tests; SIC code format with owner data (pipe-separated values and N/A) is covered by dedicated TC-2016.
+2046,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Property owner column sets in export equal the maximum landlord count,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. A CSV export has been downloaded from the View Properties page with filters applied","1. Apply filters and export the CSV
+2. Identify the highest property owner index N present in the export column headers (e.g. if 'Property owner 3 name' exists but 'Property owner 4 name' does not then N = 3)
+3. Using the DMS Export API fetch the same filtered data and find the property with the highest number of landlords and record that count
+4. Compare N against the maximum landlord count from DMS","1. Export completes successfully with at least one record
+2. The maximum owner index N is identified from the CSV column headers
+3. The property with the most landlords is identified in the DMS data and its landlord count is recorded
+4. N equals the maximum landlord count ? all four column groups (name, location, address, SIC code(s)) are present for every owner index from 1 to N with no gaps or extra groups",Not Run,
+2005,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Exported 'EPC certificate link' Field Contains Valid URL Matching View Properties Page,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Filter Properties page","1. Apply filters and export the CSV
+2. Find a property in the export with a non-empty 'EPC certificate link' field
+3. Verify the 'EPC certificate link' value is a valid URL
+4. Navigate to the URL in the browser
+5. Compare the 'Property address' field in the browser on the EPC certificate page against the 'Property address' value in the export","1. Export completes successfully with at least one record
+2. At least one property with a non-empty 'EPC certificate link' field is found
+3. The 'EPC certificate link' value is a valid URL starting with https://
+4. The EPC certificate page loads successfully
+5. The address on the EPC certificate page matches the 'Property address' value in the export exactly",Pass,
+2006,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Exported EPC Certificate Link Field Shows 'Not found' for Properties Without EPC Data,View Properties Page,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Filter Properties page
+3. The export contains at least one property with no EPC data (EPC energy rating shows 'Not found')","1. Apply filters and export the CSV
+2. Find a property in the export with 'EPC energy rating = Not found'
+3. Verify the 'EPC certificate link' field shows 'Not found' for that property","1. Export completes successfully with at least one record
+2. At least one property with an EPC energy rating of 'Not found' is found in the export
+3. The 'EPC certificate link' field shows 'Not found' for the property with no EPC data",Pass,
+2016,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Exported 'Property owner 1 SIC code(s)' field value format is correct,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Filter Properties page
+3. The export contains at least one property with an Onshore owner that has SIC codes and at least one property with an Onshore owner that has no SIC codes","1. Apply filters and export the CSV
+2. Find a property in the export where 'Property owner 1 SIC code(s)' is non-empty and the owner is Onshore ? verify the field contains SIC code values separated by ' | '
+3. Find a property in the export where the owner is Onshore but has no SIC codes ? verify the field shows 'No data'
+4. Find a property in the export with no property owner data ? verify the 'Property owner 1 SIC code(s)' field shows 'No data'","1. Export completes successfully with at least one record
+2. The 'Property owner 1 SIC code(s)' field contains one or more SIC code values separated by ' | ' for an Onshore owner with SIC codes
+3. The 'Property owner 1 SIC code(s)' field shows 'No data' for an Onshore owner with no SIC codes
+4. The 'Property owner 1 SIC code(s)' field shows 'No data' when the property has no owner data",Not Run,
+2017,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Exported 'Possible rental evidence' field value is correct,View Properties Page,Fully Automated,Integration,High,"1. User is logged in and authenticated
+2. User is on the Filter Properties page
+3. DMS API is accessible (DMS_BASE_URL and EXPORT_KEY configured)
+4. The export contains at least one property for each of the four evidence combinations: both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode true; PossibleEvidenceEpcTransactionType true only; PossibleEvidenceSiccode true only; both false","1. Apply filters and export the CSV (lacodes E09000003 and E09000004 with no additional UI filters)
+2. Fetch the raw DMS export items for the same lacodes and build a UPRN lookup map
+3. Find a DMS item where both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are true ? locate it in the export by UPRN and inspect 'Possible rental evidence'
+4. Find a DMS item where PossibleEvidenceEpcTransactionType is true and PossibleEvidenceSiccode is false ? locate it in the export by UPRN and inspect 'Possible rental evidence'
+5. Find a DMS item where PossibleEvidenceEpcTransactionType is false and PossibleEvidenceSiccode is true ? locate it in the export by UPRN and inspect 'Possible rental evidence'
+6. Find a DMS item where both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are false ? locate it in the export by UPRN and inspect 'Possible rental evidence'","1. Export completes successfully with at least one record
+2. DMS export returns at least one item and all four evidence combination cases are present in the data confirming every branch is exercised
+3. 'Possible rental evidence' shows 'Mandatory issue (Property to let) EPC transaction type | Property owner has letting company SIC code' when both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are true
+4. 'Possible rental evidence' shows 'Mandatory issue (Property to let) EPC transaction type' when PossibleEvidenceEpcTransactionType is true and PossibleEvidenceSiccode is false
+5. 'Possible rental evidence' shows 'Property owner has letting company SIC code' when PossibleEvidenceEpcTransactionType is false and PossibleEvidenceSiccode is true
+6. 'Possible rental evidence' shows 'Not found' when both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are false",Pass,
+2018,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Exported 'EPC (rating; expiry; transaction type)' field value is correct,View Properties Page,Fully Automated,Integration,High,"1. User is logged in and authenticated
+2. User is on the Filter Properties page
+3. DMS API is accessible (DMS_BASE_URL and EXPORT_KEY configured)
+4. The export contains at least one property with more than one EPC certificate","1. Apply filters and export the CSV
+2. Fetch the raw DMS export items for the same filters
+3. Find a DMS item with more than one EPC certificate ? locate it in the export by UPRN
+4. Inspect the 'EPC (rating; expiry; transaction type)' value for the located export row","1. Export completes successfully with at least one record
+2. A DMS item with multiple EPC certificates is found confirming the join behaviour will be exercised
+3. The matching export row is found by UPRN
+4. 'EPC (rating; expiry; transaction type)' shows one entry per EPC certificate formatted as 'AssetRatingBand (AssetRating); ExpiryDate; TransactionType', with entries joined by ' | ' ? e.g. 'B (55); 2025-03-06; assessed and new dwelling | C (72); 2019-01-14; rental'",Not Run,
+2010,E852,867,MEES Phase 2,Sprint 2,Export - Field Values: View Properties export does not contain Landlord location column,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Filter Properties page","1. Apply filters and export the CSV from the View Properties page
+2. Open the exported CSV file
+3. Inspect all column headers in the first row of the exported CSV","1. Export completes successfully with at least one record
+2. CSV file is available and opens successfully
+3. The exported CSV does not contain a column header named 'Landlord location'",Pass,
+2049,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Exported CSV filename follows the MEES_Properties_YYYY-MM-DDThh-mm-ss.csv pattern,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Filter Properties page","1. Apply filters and trigger the CSV export from the View Properties page
+2. Capture the filename of the downloaded CSV file","1. Export triggers successfully and a CSV file is downloaded
+2. The filename matches the pattern MEES_Properties_YYYY-MM-DDThh-mm-ss.csv ? where YYYY is a 4-digit year; MM is a 2-digit month; DD is a 2-digit day; T is a literal separator; hh is a 2-digit hour; mm is a 2-digit minute; ss is a 2-digit second (for example MEES_Properties_2026-04-28T13-38-21.csv)",Not Run,
+ 2050,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Export button is not displayed when there are no records,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Filter Properties page","1. Apply a filter that returns no results (e.g. set Town filter to a value that does not exist in the dataset)
+2. Navigate to the View Properties page
+3. Inspect whether the export button is present on the page","1. Filters are applied and View Properties page loads
+2. View Properties page displays the 'no records found' message confirming zero results
+3. The export button ('Export filtered table (.csv)') is not visible on the page",Not Run,
+2007,E852,867,MEES Phase 2,Sprint 2,Landlord location filter is no longer supported and does not filter results,View Properties Page,Fully Automated,Integration,Medium,Properties API endpoint is available with valid function key and lacodes E06000009 and E06000011 return data,"1. Send POST request to properties API with lacodes only (no Landlord location filter) and record total_records
+2. Send POST request with lacodes and Landlord location filter set to 'Onshore'. Compare filtered and unfiltered total_records
+3. Send POST request with lacodes and Landlord location filter set to 'Offshore'. Compare filtered and unfiltered total_records","1. API returns 200 status and total_records value is captured
+2. API returns 200 status and total_records equals value from step 1. Landlord location filter does not reduce the number of results
+3. API returns 200 status and total_records equals value from step 1. Landlord location filter does not reduce the number of results",Pass,
+2008,E852,867,MEES Phase 2,Sprint 2,Landlord location filter options are not present on the Filter Properties page,Filter Page,Fully Automated,Functional,High,User is logged in and authenticated,"1. Navigate to the Filter Properties page
+2. Inspect all filter controls available on the page
+3. Search specifically for any filter labelled 'Landlord location' or containing options 'Onshore', 'Offshore' or 'All' (Landlord location)","1. Filter Properties page loads successfully
+2. All available filter controls are visible
+3. No 'Landlord location' filter control exists on the page - options 'Onshore', 'Offshore' and 'All' are not present",Pass,
+2009,E852,867,MEES Phase 2,Sprint 2,Filter summary on View Properties page does not display Landlord location filter,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Filter Properties page","1. Apply one or more filters (e.g. Council and Energy Rating) on the Filter Properties page
+2. Click 'View results' to navigate to the View Properties page
+3. Inspect the 'Filters applied' summary section and check each filter row label","1. Filters are applied and View Properties page loads with filtered results
+2. View Properties page loads successfully
+3. The 'Filters applied' section does not contain a row with the label 'Landlord location'",Pass,
+2011,E852,864,MEES Phase 2,Sprint 2,SIC code fields are always present in every landlord object,Property Details,Fully Automated,Integration,High,"1. DMS API is accessible with a valid function key
+2. UPRN 100022917842 returns a response with at least one landlord","1. Send GET request to /mees/property?uprn=100022917842 with a valid x-functions-key header
+2. Parse the JSON response body and retrieve the landlords array
+3. For each landlord object in the array inspect the object keys","1. Response returns HTTP 200 and valid JSON
+2. The landlords array contains at least one entry
+3. Every landlord object contains all four keys: sicCodeSicText1, sicCodeSicText2, sicCodeSicText3 and sicCodeSicText4",Pass,
+2012,E852,864,MEES Phase 2,Sprint 2,SIC code fields are populated sequentially with no gaps,Property Details,Fully Automated,Integration,Medium,"1. DMS API is accessible with a valid function key
+2. UPRN 100022917842 returns a response with at least one landlord","1. Send GET request to /mees/property?uprn=100022917842 with a valid x-functions-key header
+2. Parse the JSON response body and retrieve the landlords array
+3. For each landlord in the array: if sicCodeSicText2 is non-null assert sicCodeSicText1 is also non-null; if sicCodeSicText3 is non-null assert sicCodeSicText2 is also non-null; if sicCodeSicText4 is non-null assert sicCodeSicText3 is also non-null","1. Response returns HTTP 200 and valid JSON
+2. The landlords array contains at least one entry
+3. No landlord object has a null SIC code field followed by a non-null SIC code field ? SIC codes are populated from position 1 sequentially with no gaps",Pass,
+2013,E852,864,MEES Phase 2,Sprint 2,Offshore landlord returns all SIC code fields as null,Property Details,Fully Automated,Integration,High,"1. DMS API is accessible with a valid function key
+2. UPRN 10010248290 returns a response with both Onshore and Offshore landlords","1. Send GET request to /mees/property?uprn=10010248290 with a valid x-functions-key header
+2. Parse the JSON response body and retrieve the landlords array
+3. Identify every landlord entry where location = 'Offshore'
+4. Inspect sicCodeSicText1, sicCodeSicText2, sicCodeSicText3 and sicCodeSicText4 for each Offshore landlord","1. Response returns HTTP 200 and valid JSON
+2. At least one landlord with location = 'Offshore' is present in the landlords array
+3. One or more Offshore landlords are identified in the array
+4. All four SIC code fields are null for every landlord with location = 'Offshore'",Pass,
+2014,E852,864,MEES Phase 2,Sprint 2,Landlord with a non-null SIC code has Onshore location,Property Details,Fully Automated,Integration,High,"1. DMS API is accessible with a valid function key
+2. UPRN 100022917842 returns a response with at least one landlord","1. Send GET request to /mees/property?uprn=100022917842 with a valid x-functions-key header
+2. Parse the JSON response body and retrieve the landlords array
+3. For each landlord in the array check whether any of sicCodeSicText1, sicCodeSicText2, sicCodeSicText3 or sicCodeSicText4 is non-null
+4. For any landlord that has at least one non-null SIC code field assert that the landlord's location field equals 'Onshore'","1. Response returns HTTP 200 and valid JSON
+2. The landlords array is present in the response
+3. Landlords are inspected for non-null SIC code values
+4. No landlord with location other than 'Onshore' has any non-null SIC code value ? every landlord with at least one non-null SIC code has location = 'Onshore'",Pass,
+2015,E852,864,MEES Phase 2,Sprint 2,SIC code fields are held independently per landlord in a multi-landlord response,Property Details,Fully Automated,Integration,Medium,"1. DMS API is accessible with a valid function key
+2. UPRN 10010248290 returns a response with both Onshore and Offshore landlords (more than one landlord)","1. Send GET request to /mees/property?uprn=10010248290 with a valid x-functions-key header
+2. Parse the JSON response body and verify the landlords array contains more than one entry
+3. Verify all landlords share the same uprn value ? uprn is a property identifier not a landlord identifier so this is expected
+4. Verify each landlord has a distinct companyName confirming they represent different companies","1. Response returns HTTP 200 and valid JSON
+2. The landlords array contains more than one entry
+3. All landlords share the same uprn ? this is correct as uprn identifies the property not the landlord
+4. Each landlord has a distinct companyName confirming they are separate entities",Pass,
+2019,E852,879,MEES Phase 2,Sprint 8,Verify data displayed on the Energy Efficiency Details tab of the Property Details page,Property Details,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User has navigated to the Property Details page for property at 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL'","1. Click on the 'Energy efficiency details' tab
+2. Verify the 'Current energy rating' field displays 'A (22)'
+3. Verify the 'Current EPC expiry date' field displays '13 August 2035'
+4. Verify the EPC History table contains 2 records
+5. Verify the first EPC History record shows energy rating 'A (22)' and expiry date '13 August 2035'","1. The 'Energy efficiency details' tab becomes active
+2. Current energy rating displays as 'A (22)'
+3. Current EPC expiry date displays as '13 August 2035'
+4. EPC History table is present and contains 2 rows
+5. First EPC History row displays asset rating band 'A (22)' and expiry date '13 August 2035'",Pass,
+2089,E852,998,MEES Phase 2,Sprint 6,Support - Validation: Error messages are displayed on all support journey pages when required fields are skipped,Support pages,Fully Automated,Functional,High,1. User is logged in and authenticated,"1. Navigate to the Landing Page and sign in as an authenticated user; navigate to the Support Who Are You page via the 'Request Support' link; click Continue without selecting a role
+2. Select role 'Department for Energy Security and Net Zero official'; proceed to the Support Contact Form page; click Continue without filling in any fields
+3. Fill in the Contact Form (first name 'John'; last name 'Doe'; email 'john.doe@example.com'; confirm email); proceed to the Support What Do You Want page; click Continue without selecting an option
+4. Select 'I have a question about the policy or guidance'; proceed to the Support Details page; click Submit without entering any details","1. Error summary and field-level error message prompting the user to select a role option are visible on the Support Who Are You page
+2. Error summary is visible and 'Enter a first name'; 'Enter a last name' and 'Enter a valid email address' field error messages are each visible on the Support Contact Form page
+3. The missing option error message is visible on the Support What Do You Want page
+4. Error summary and the details text area error message are visible on the Support Details page",Pass,
+2090,E852,998,MEES Phase 2,Sprint 6,Support - Process: Support journey completes successfully for all role and support option combinations,Support pages,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Support Who Are You page
+3. The following 12 role x support option combinations are exercised (one test per combination):
+   Role 'Department for Energy Security and Net Zero official' with options: 'I have a question about the policy or guidance'; 'I need an account created'; 'I cannot log in to my account'; 'Something has gone wrong with the service'; 'I need to change my permission levels'; 'Other'
+   Role 'Local authority user' with the same six options","1. For each combination: select the role on the Support Who Are You page and click Continue
+2. Fill in the Contact Form (first name 'John'; last name 'Doe'; email 'john.doe@example.com'; confirm email) and click Continue
+3. Select the support option on the Support What Do You Want page and click Continue
+4. Enter support details 'This is a test support request.' on the Support Details page and click Submit","1. Support Contact Form page loads and is displayed
+2. Support What Do You Want page loads and is displayed
+3. Support Details page loads and is displayed
+4. Support Submitted page loads and is displayed for all options except 'I need an account created' (see Comments)",Fail,"Bug 1062 - For the 'I need an account created' option (both roles) the Support Submitted page is not displayed after submitting. Test workaround asserts isDisplayed() equals false for that option. Revert to toBe(true) when Bug 1062 is resolved."
+2091,E852,998,MEES Phase 2,Sprint 6,Support - Navigation: User can navigate back to the Home page from each page in the support journey,Support pages,Fully Automated,Functional,Medium,1. User is logged in and authenticated,"1. From the Support Who Are You page: click Back to Home page and verify the Home page is displayed
+2. From the Support Contact Form page: click Back to Support Who Are You; then Back to Home page and verify the Home page is displayed
+3. From the Support What Do You Want page: navigate there (role selected; Contact Form filled); verify the page is displayed
+4. From the Support Details page: navigate back through each preceding page (Details ? What Do You Want ? Contact Form ? Who Are You ? Home) and verify each page is displayed in sequence
+5. From the Support Submitted page: complete the full journey; click Return Home and verify the Home page is displayed","1. Home page is displayed after navigating back from the Support Who Are You page
+2. Home page is displayed after navigating back through Support Contact Form and Support Who Are You
+3. Support What Do You Want page is confirmed displayed
+4. Each page in the back-navigation sequence (Support What Do You Want; Support Contact Form; Support Who Are You; Home page) is displayed in the correct order
+5. Home page is displayed after clicking Return Home from the Support Submitted page",Pass,
+2092,E852,998,MEES Phase 2,Sprint 6,Support - Footer Help link: Footer Help link navigates to the Support page from all compliance pages,Support pages,Fully Automated,Functional,High,1. User is logged in and authenticated,"1. For each of the following pages navigate there and click the 'Help' link in the footer; verify the Support Who Are You page is displayed:
+   Home; Property records; Guidance; Templates; Penalty calculator; Profile settings; View Properties (Energy Rating A with Rental Evidence filter applied); Property Details (for 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL')","1. Support Who Are You page is displayed after clicking the footer Help link from every page listed in the test steps",Pass,
+2093,E852,1007,MEES Phase 2,Sprint 6,Energy Efficiency Details: EPC link is provided and opens in a new tab for properties with EPCs,Property Details,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Filter Properties page","1. Set the Energy Rating filter to 'B' and click 'Apply filters'
+2. Wait for the View Properties page to load and capture the first property address from the search results
+3. Navigate to the Property Details page for that property
+4. Select the 'Energy efficiency details' tab
+5. Locate the EPC certificate link on the tab and verify its text
+6. Click the EPC certificate link
+7. Verify the property address on the EPC certificate page matches the address from the Property Details page","1. View Properties page loads with filtered results and at least one property is visible
+2. First property address is captured from the search results
+3. Property Details page opens for the selected property
+4. 'Energy efficiency details' tab is displayed and active
+5. EPC certificate link is present and displays the text 'Energy Performance Certificate (opens in a new tab)'
+6. EPC certificate page opens in a new browser tab and the URL contains 'energy-certificate'
+7. The property address on the EPC certificate page matches the property address from the Property Details page",Pass,
+2094,E852,1007,MEES Phase 2,Sprint 6,Energy Efficiency Details: EPC link is not provided for properties without EPCs,Property Details,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Filter Properties page","1. Set the Energy Rating filter to 'Unrated' and click 'Apply filters'
+2. Wait for the View Properties page to load and capture the first property address from the search results
+3. Navigate to the Property Details page for that property
+4. Select the 'Energy efficiency details' tab
+5. Inspect whether the EPC certificate link is present on the tab","1. View Properties page loads with filtered results for unrated properties and at least one property is visible
+2. First property address is captured from the search results
+3. Property Details page opens for the selected property
+4. 'Energy efficiency details' tab is displayed and active
+5. The EPC certificate link is not present on the page",Pass,
+2095,E852,1011,MEES Phase 2,Sprint 6,Penalty Calculator: Pound prefix is displayed in the rateable value input field,Penalty Calculator,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Penalty Calculator page","1. Inspect the rateable value input field for a pound prefix symbol","1. The rateable value input field displays a pound (�) prefix symbol",Pass,
+2096,E852,1011,MEES Phase 2,Sprint 6,Penalty Calculator: Pound prefix in the rateable value input field is ignored when calculating the penalty,Penalty Calculator,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Penalty Calculator page","1. Enter '�50,000' as the rateable value and select 'Less than 3 months' as the breach period
+2. Click Calculate
+3. Inspect the maximum penalty result on the results page","1. Rateable value '�50,000' is accepted and the form is submitted successfully
+2. Results page is displayed
+3. Maximum penalty displays '�5,000' confirming the pound sign and commas in the input value are stripped before calculation",Pass,
+2097,E852,1000,MEES Phase 2,Sprint 7,Property Details: 'Possible rental evidence from EPC register' shows 'Mandatory issue (Property to let) EPC transaction type' and 'Possible rental evidence from Companies House' shows 'Property owner has letting company Standard Industrial Classification code' when both evidence sources are present,Property Details,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User has navigated to the Property Details page for a property where the most recent EPC has transaction type 'Mandatory issue (Property to let)' (DMS possibleEvidenceEpcTransactionType = true) AND the property owner has a letting company SIC code (DMS possibleEvidenceSiccode = true)","1. Select the 'Property details' tab
+2. Inspect the 'Possible rental evidence from EPC register' field
+3. Inspect the 'Possible rental evidence from Companies House' field","1. The 'Property details' tab is displayed and active
+2. 'Possible rental evidence from EPC register' displays 'Mandatory issue (Property to let) EPC transaction type'
+3. 'Possible rental evidence from Companies House' displays 'Property owner has letting company Standard Industrial Classification code'",Fail,"Bug 1031 - 'Invalid PossibleEvidenceEpcTransactionType for a property with multiple EPC Certificates'. Currently 'Possible rental evidence from EPC register' incorrectly displays 'Not found' instead of 'Mandatory issue (Property to let) EPC transaction type' for properties with multiple EPC certificates. Automation workaround asserts 'Not found' for the EPC register field. Revert workaround to assert 'Mandatory issue (Property to let) EPC transaction type' when Bug 1031 is resolved."
+2098,E852,1000,MEES Phase 2,Sprint 7,Property Details: 'Possible rental evidence from EPC register' shows 'Mandatory issue (Property to let) EPC transaction type' and 'Possible rental evidence from Companies House' shows 'Not found' when only EPC evidence is present,Property Details,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User has navigated to the Property Details page for a property where the most recent EPC has transaction type 'Mandatory issue (Property to let)' (DMS possibleEvidenceEpcTransactionType = true) AND the property owner does NOT have a letting company SIC code (DMS possibleEvidenceSiccode = false)","1. Select the 'Property details' tab
+2. Inspect the 'Possible rental evidence from EPC register' field
+3. Inspect the 'Possible rental evidence from Companies House' field","1. The 'Property details' tab is displayed and active
+2. 'Possible rental evidence from EPC register' displays 'Mandatory issue (Property to let) EPC transaction type'
+3. 'Possible rental evidence from Companies House' displays 'Not found'",Pass,
+2099,E852,1000,MEES Phase 2,Sprint 7,Property Details: 'Possible rental evidence from EPC register' shows 'Not found' and 'Possible rental evidence from Companies House' shows 'Property owner has letting company Standard Industrial Classification code' when only Companies House evidence is present,Property Details,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User has navigated to the Property Details page for a property where the most recent EPC does NOT have transaction type 'Mandatory issue (Property to let)' (DMS possibleEvidenceEpcTransactionType = false) AND the property owner has a letting company SIC code (DMS possibleEvidenceSiccode = true)","1. Select the 'Property details' tab
+2. Inspect the 'Possible rental evidence from EPC register' field
+3. Inspect the 'Possible rental evidence from Companies House' field","1. The 'Property details' tab is displayed and active
+2. 'Possible rental evidence from EPC register' displays 'Not found'
+3. 'Possible rental evidence from Companies House' displays 'Property owner has letting company Standard Industrial Classification code'",Pass,
+2100,E852,1000,MEES Phase 2,Sprint 7,Property Details: 'Possible rental evidence from EPC register' and 'Possible rental evidence from Companies House' both show 'Not found' when neither evidence source is present,Property Details,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User has navigated to the Property Details page for a property where the most recent EPC does NOT have transaction type 'Mandatory issue (Property to let)' (DMS possibleEvidenceEpcTransactionType = false) AND the property owner does NOT have a letting company SIC code (DMS possibleEvidenceSiccode = false)","1. Select the 'Property details' tab
+2. Inspect the 'Possible rental evidence from EPC register' field
+3. Inspect the 'Possible rental evidence from Companies House' field","1. The 'Property details' tab is displayed and active
+2. 'Possible rental evidence from EPC register' displays 'Not found'
+3. 'Possible rental evidence from Companies House' displays 'Not found'",Pass,
+2101,E852,998,MEES Phase 2,Sprint 7,Home Page Navigation: Support link opens Support Who Are You page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Middle-click the 'Support' link on the Home page
+2. Switch to the newly opened browser tab
+3. Verify the Support Who Are You page is displayed","1. A new browser tab is opened
+2. The new tab becomes active
+3. Support Who Are You page is displayed in the new tab",Pass,
+2102,E852,,MEES Phase 2,Sprint 7,Home Page Navigation: View property records link opens Filter Properties page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Middle-click the 'View property records' link on the Home page
+2. Switch to the newly opened browser tab
+3. Verify the Filter Properties page is displayed","1. A new browser tab is opened
+2. The new tab becomes active
+3. Filter Properties page is displayed in the new tab",Pass,
+2103,E852,,MEES Phase 2,Sprint 7,Home Page Navigation: View guidance link opens Guidance page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Middle-click the 'View guidance' link on the Home page
+2. Switch to the newly opened browser tab
+3. Verify the Guidance page is displayed","1. A new browser tab is opened
+2. The new tab becomes active
+3. Guidance page is displayed in the new tab",Pass,
+2104,E852,,MEES Phase 2,Sprint 7,Home Page Navigation: View templates link opens Templates page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Middle-click the 'View templates' link on the Home page
+2. Switch to the newly opened browser tab
+3. Verify the Templates page is displayed","1. A new browser tab is opened
+2. The new tab becomes active
+3. Templates page is displayed in the new tab",Pass,
+2105,E852,,MEES Phase 2,Sprint 7,Home Page Navigation: View penalty calculator link opens Penalty Calculator page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Middle-click the 'View penalty calculator' link on the Home page
+2. Switch to the newly opened browser tab
+3. Verify the Penalty Calculator page is displayed","1. A new browser tab is opened
+2. The new tab becomes active
+3. Penalty Calculator page is displayed in the new tab",Pass,
+2106,E852,,MEES Phase 2,Sprint 7,Home Page Navigation: Property Records navigation tab opens Filter Properties page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Middle-click the 'Property records' navigation tab
+2. Switch to the newly opened browser tab
+3. Verify the Filter Properties page is displayed","1. A new browser tab is opened
+2. The new tab becomes active
+3. Filter Properties page is displayed in the new tab",Pass,""
+2107,E852,,MEES Phase 2,Sprint 7,Home Page Navigation: Guidance navigation tab opens Guidance page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Middle-click the 'Guidance' navigation tab
+2. Switch to the newly opened browser tab
+3. Verify the Guidance page is displayed","1. A new browser tab is opened
+2. The new tab becomes active
+3. Guidance page is displayed in the new tab",Pass,""
+2108,E852,,MEES Phase 2,Sprint 7,Home Page Navigation: Templates navigation tab opens Templates page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Middle-click the 'Templates' navigation tab
+2. Switch to the newly opened browser tab
+3. Verify the Templates page is displayed","1. A new browser tab is opened
+2. The new tab becomes active
+3. Templates page is displayed in the new tab",Pass,""
+2109,E852,,MEES Phase 2,Sprint 7,Home Page Navigation: Penalty Calculator navigation tab opens Penalty Calculator page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Middle-click the 'Penalty calculator' navigation tab
+2. Switch to the newly opened browser tab
+3. Verify the Penalty Calculator page is displayed","1. A new browser tab is opened
+2. The new tab becomes active
+3. Penalty Calculator page is displayed in the new tab",Pass,""
+2110,E852,998,MEES Phase 2,Sprint 7,Home Page Navigation: Footer Help link opens Support Who Are You page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Middle-click the 'Help' link in the page footer
+2. Switch to the newly opened browser tab
+3. Verify the Support Who Are You page is displayed","1. A new browser tab is opened
+2. The new tab becomes active
+3. Support Who Are You page is displayed in the new tab",Pass,
+2111,E852,1087,MEES Phase 2,Sprint 7,Cookies Banner: Context and accessibility are verified on the cookies banner,Cookies Banner,Fully Automated,Accessibility,Medium,1. User is on the Landing page,"1. Navigate to the Landing page
+2. Wait for the cookies banner to load
+3. Run the accessibility scanner on the cookies banner
+4. Verify all context locators are visible on the cookies banner","1. Landing page is displayed
+2. Cookies banner is displayed with 'Accept analytics cookies' button, 'Reject analytics cookies' button and 'View cookies' link visible
+3. No critical accessibility violations are found
+4. All context locators match the expected aria snapshot",Pass,
+2112,E852,1087,MEES Phase 2,Sprint 7,Cookies Settings Page: Context and accessibility are verified on the cookies settings page,Cookies Settings Page,Fully Automated,Accessibility,Medium,"1. User is on the Landing page
+2. Cookies banner is displayed","1. Navigate to the Landing page
+2. Wait for the cookies banner to load and verify it is displayed
+3. Click the 'View cookies' link on the cookies banner
+4. Wait for the Cookies Settings page to load and verify it is displayed
+5. Run the accessibility scanner on the Cookies Settings page
+6. Verify all context locators are visible on the Cookies Settings page","1. Landing page is displayed
+2. Cookies banner is displayed
+3. Cookies Settings page begins to load
+4. Cookies Settings page is displayed
+5. No critical accessibility violations are found
+6. All context locators match the expected aria snapshot",Pass,
+2113,E852,,MEES Phase 2,Sprint 8,Service Title Link: Authenticated user is navigated to the Home page from compliance pages,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on a compliance page (Home page; Guidance; Support Who Are You; Penalty Calculator; View Properties; Property Details; Templates)","1. On each compliance page left-click the service title link ('Check if non-domestic properties meet minimum energy efficiency standards') and verify the Home page is displayed
+2. On each compliance page middle-click the service title link and verify the Home page is displayed in a new browser tab","1. Home page is displayed in the same tab after left-clicking the service title link on each compliance page
+2. Home page is displayed in a new browser tab after middle-clicking the service title link on each compliance page",Pass,
+2114,E852,1087,MEES Phase 2,Sprint 8,Service Title Link: Unauthenticated user is navigated to the Landing page from the Cookies Settings page and Support Who Are You page,Cookies Settings Page,Fully Automated,Functional,High,"1. User is not authenticated
+2. User is on the Cookies Settings page or the Support Who Are You page","1. Left-click the service title link ('Check if non-domestic properties meet minimum energy efficiency standards')
+2. Middle-click the service title link","1. Landing page is displayed
+2. Landing page is displayed in a new browser tab",Pass,
