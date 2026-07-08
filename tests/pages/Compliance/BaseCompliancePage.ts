@@ -9,6 +9,7 @@ import type { TemplatesPage } from './TemplatesPage';
 import type { ProfileSettingsPage } from './ProfileSettings/ProfileSettingsPage';
 import type { HomePage } from './HomePage';
 import type { LandingPage } from '../LandingPage';
+import type { CookiesSettingsPage } from './Cookies/CookiesSettingsPage';
 
 export abstract class BaseCompliancePage extends BasePage {
     protected readonly page: Page;
@@ -84,6 +85,27 @@ export abstract class BaseCompliancePage extends BasePage {
         const homePage = new HomePage(newTab);
         await homePage.waitForPageToLoad();
         return homePage;
+    }
+
+    async clickViewCookies(): Promise<CookiesSettingsPage> {
+        const { CookiesBanner } = await import('./Cookies/CookiesBanner');
+        return CookiesBanner.navigateToSettings(this.page);
+    }
+
+    async clickPageHeaderLinkAsUnauthenticatedUser(): Promise<LandingPage> {
+        await this.pageHeaderLink.click();
+        const { LandingPage } = await import('../LandingPage');
+        const landingPage = new LandingPage(this.page);
+        await landingPage.waitForPageToLoad();
+        return landingPage;
+    }
+
+    async clickPageHeaderLinkAsUnauthenticatedUserInNewTab(): Promise<LandingPage> {
+        const newTab = await this.openLinkInNewTab(this.pageHeaderLink);
+        const { LandingPage } = await import('../LandingPage');
+        const landingPage = new LandingPage(newTab);
+        await landingPage.waitForPageToLoad();
+        return landingPage;
     }
 
     async isProfileSettingsLinkVisible(): Promise<boolean> {

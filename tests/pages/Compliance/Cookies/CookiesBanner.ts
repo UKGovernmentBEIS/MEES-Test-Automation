@@ -65,4 +65,10 @@ export class CookiesBanner {
         await cookiesSettingsPage.waitForPageToLoad();
         return cookiesSettingsPage;
     }
+
+    static async navigateToSettings(page: Page): Promise<CookiesSettingsPage> {
+        const banner = new CookiesBanner(page);
+        await banner.waitForBannerToLoad();
+        return banner.clickViewCookies();
+    }
 }

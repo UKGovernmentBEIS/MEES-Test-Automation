@@ -299,6 +299,24 @@ test.describe('Navigation tests', () => {
         await supportWhoAreYouPage.waitForPageToLoad();
         expect(await supportWhoAreYouPage.isDisplayed()).toBe(true);
     });
+
+    test('Service title link navigates to the Landing page when accessed by an unauthenticated user from the Support page', async () => {
+        const landingPage = await homePage.clickSignOutButton();
+        await landingPage.waitForPageToLoad();
+        const supportWhoAreYouPage: SupportWhoAreYouPage = await landingPage.clickFooterHelpLink();
+        await supportWhoAreYouPage.waitForPageToLoad();
+        const returnedLandingPage = await supportWhoAreYouPage.clickPageHeaderLinkAsUnauthenticatedUser();
+        expect(await returnedLandingPage.isDisplayed()).toBe(true);
+    });
+
+    test('Service title link opens the Landing page in a new tab when accessed by an unauthenticated user from the Support page', async () => {
+        const landingPage = await homePage.clickSignOutButton();
+        await landingPage.waitForPageToLoad();
+        const supportWhoAreYouPage: SupportWhoAreYouPage = await landingPage.clickFooterHelpLink();
+        await supportWhoAreYouPage.waitForPageToLoad();
+        const newTabLandingPage = await supportWhoAreYouPage.clickPageHeaderLinkAsUnauthenticatedUserInNewTab();
+        expect(await newTabLandingPage.isDisplayed()).toBe(true);
+    });
 });
 
 // The "Help" link in the footer (inherited from BaseCompliancePage) should reach the Support

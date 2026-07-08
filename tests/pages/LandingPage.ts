@@ -5,6 +5,8 @@ import { HomePage } from './Compliance/HomePage';
 import { BasePage } from './BasePage';
 import { reAuthenticate } from '../utils/AuthUtils';
 import { SupportWhoAreYouPage } from './Compliance/Support/SupportWhoAreYouPage';
+import { CookiesBanner } from './Compliance/Cookies/CookiesBanner';
+import { CookiesSettingsPage } from './Compliance/Cookies/CookiesSettingsPage';
 
 export class LandingPage extends BasePage {
   private readonly signInButton: Locator;
@@ -117,6 +119,10 @@ export class LandingPage extends BasePage {
     const homePage = new HomePage(this.page);
     await homePage.waitForPageToLoad();
     return homePage;
+  }
+
+  async clickViewCookies(): Promise<CookiesSettingsPage> {
+    return CookiesBanner.navigateToSettings(this.page);
   }
 
   async clickFooterHelpLink(): Promise<SupportWhoAreYouPage> {
