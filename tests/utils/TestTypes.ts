@@ -60,7 +60,8 @@ export enum PageName {
   SUPPORT_DETAILS_PAGE = "Support Details Page",
   SUPPORT_CONFIRMATION_PAGE = "Support Confirmation Page",
   COOKIES_BANNER = "Cookies Banner Page",
-  COOKIES_SETTINGS_PAGE = "Cookies Settings Page"
+  COOKIES_SETTINGS_PAGE = "Cookies Settings Page",
+  PRIVACY_NOTICE_PAGE = "Privacy Notice Page"
 }
 
 /**

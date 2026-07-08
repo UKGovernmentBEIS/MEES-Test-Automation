@@ -1,0 +1,92 @@
+- main:
+  - heading "Privacy notice for Check if non-domestic properties meet minimum energy efficiency standards" [level=1]
+  - paragraph: /This notice sets out how we will process your personal data, and your information rights\. It is made under Articles \d+ and\/or \d+ of the UK General Data Protection Regulation \(UK GDPR\)\. It applies to Local Authority staff who use the MEES Compliance Hub\./
+  - heading "Your data" [level=2]
+  - paragraph: "We will process some or all of the following personal data:"
+  - list:
+    - listitem: Your name
+    - listitem: Work email address
+    - listitem: Work phone number
+    - listitem: Job role
+    - listitem: Name of your organisation(s)
+    - listitem: User account details (username, role-based permissions, audit logs)
+    - listitem: Records of portal activity (login history and actions taken)
+  - heading "Purpose" [level=2]
+  - paragraph: "The purpose(s) for which we are processing your personal data are:"
+  - list:
+    - listitem: /The Department for Energy Security and Net Zero \(DESNZ\) processes your personal data under the Energy Efficiency \(Private Rented Property\) \(England and Wales\) Regulations \d+ in order to administer and enforce the Minimum Energy Efficiency Standards \(MEES\)\./
+  - paragraph: "The main purposes of processing are to:"
+  - list:
+    - listitem: Provide and manage secure access to the MEES Compliance Hub for authorised officers.
+    - listitem: Enable Local Authorities to view property details for compliance and enforcement related to MEES PRS regulations.
+    - listitem: Support monitoring and enforcement of the regulations to improve energy efficiency and housing quality in the private rented sector.
+    - listitem: Maintain audit trails and system security, including monitoring portal usage and preventing unauthorised access.
+    - listitem: Support research, evaluation, and statistical analysis relating to the operation of the MEES regulations, housing quality, and energy efficiency policies. Data used for these purposes will be anonymised wherever possible.
+    - listitem: Compile statistical reports relating to the minimum standards regulations. This may include linking data to other government-held datasets for policy development. Information used for these purposes will be anonymised.
+    - listitem: Use your email address to send service-related notices (including any notices required by law, in lieu of postal mail).
+  - heading "Legal basis of processing" [level=2]
+  - paragraph: "The legal basis for processing your personal data under Article 6 of the UK GDPR is:"
+  - heading "Legal obligation (Article 6(1)(c))" [level=3]
+  - paragraph: /Processing is necessary for compliance with a legal obligation placed on the DESNZ under the Energy Efficiency \(Private Rented Property\) \(England and Wales\) Regulations \d+, made under the Energy Act \d+\./
+  - paragraph: These regulations require DESNZ to provide Local Authorities with access to data so they can carry out compliance and enforcement duties.
+  - paragraph: "This includes enabling authorised officers to:"
+  - list:
+    - listitem: Review exemption registrations submitted by landlords and agents
+    - listitem: Contact landlords or agents where necessary
+    - listitem: Record enforcement actions and monitor compliance with the Minimum Energy Efficiency Standards (MEES)
+  - heading "Public task (Article 6(1)(e))" [level=3]
+  - paragraph: Processing is necessary for the performance of a task carried out in the public interest or in the exercise of official authority vested in the data controller.
+  - paragraph: "The specific public task is to:"
+  - list:
+    - listitem: /Administer and enforce the Energy Efficiency \(Private Rented Property\) \(England and Wales\) Regulations \d+/
+    - listitem: Enable Local Authorities to perform their statutory compliance and enforcement functions under these regulations
+  - heading "Recipients" [level=2]
+  - paragraph: Your personal data may be shared by us where necessary to support the administration, compliance, and enforcement of the minimum energy efficiency standards.
+  - paragraph: "This may include sharing your personal data with:"
+  - list:
+    - listitem: Other authorised users within your local authority for operational purposes
+    - listitem: Other government departments, compliance authorities, or public authorities, where necessary to support enforcement activity, policy development, audit, or the exercise of statutory functions
+    - listitem: For properties located in Wales, Rent Smart Wales, the licensing and enforcement authority for landlords and agents in Wales, where necessary to support compliance and enforcement activity under the minimum energy efficiency standards and related housing regulations
+  - heading "Retention" [level=2]
+  - paragraph: DESNZ will store your personal data for up to 7 years after your account is closed. DESNZ may store some personal data beyond that date for statistical purposes.
+  - heading "Automated decision making" [level=2]
+  - paragraph: Your personal data will not be subject to automated decision making.
+  - heading "International Transfers" [level=2]
+  - paragraph: Your personal data will be processed and stored in the United Kingdom and the EU.
+  - paragraph: Salesforce's backup and recovery services are provided by OwnBackup, whose data centres are located in the European Union (EU). Transfers of data to these centres are protected by the UK–EU adequacy decision, which recognises EU data protection law as providing an equivalent level of protection to that in the UK.
+  - heading "Your rights" [level=2]
+  - paragraph: You have the right to request information about how your personal data are processed, and to request a copy of that personal data.
+  - paragraph: You have the right to request that any inaccuracies in your personal data are rectified without delay.
+  - paragraph: You have the right to request that any incomplete personal data are completed, including by means of a supplementary statement.
+  - paragraph: You have the right to request that your personal data are erased if there is no longer a justification for them to be processed.
+  - paragraph: You have the right in certain circumstances (for example, where accuracy is contested) to request that the processing of your personal data is restricted.
+  - paragraph: You have the right to object to the processing of your personal data where it is processed for direct marketing purposes.
+  - paragraph: You have the right to object to the processing of your personal data.
+  - paragraph: To exercise your rights please contact the Data Protection Officer using the contact details below.
+  - heading "Contact Details" [level=2]
+  - paragraph: "The data controller for your personal data is the Department for Energy Security and Net Zero (DESNZ). You can contact the DESNZ Data Protection Officer at:"
+  - paragraph: DESNZ Data Protection Officer Department for Energy Security and Net Zero 3-8 Whitehall Place London SW1A 2EG
+  - paragraph:
+    - text: "Email:"
+    - link "dataprotection@energysecurity.gov.uk":
+      - /url: mailto:dataprotection@energysecurity.gov.uk
+  - paragraph: If you are unhappy with the way we have handled your personal data, please write to the department's Data Protection Officer in the first instance using the contact details above.
+  - heading "Complaints" [level=2]
+  - paragraph: "If you consider that your personal data has been misused or mishandled, you may make a complaint to the Information Commissioner, who is an independent regulator. The Information Commissioner can be contacted at:"
+  - paragraph: Information Commissioner's Office Wycliffe House Water Lane Wilmslow Cheshire SK9 5AF
+  - paragraph:
+    - text: "Telephone:"
+    - link /\d+ \d+ \d+/:
+      - /url: tel:03031231113
+  - paragraph:
+    - link "https://ico.org.uk/make-a-complaint/":
+      - /url: https://ico.org.uk/make-a-complaint/
+  - paragraph: Any complaint to the Information Commissioner is without prejudice to your right to seek redress through the courts.
+  - heading "Updates to this notice" [level=2]
+  - paragraph: If this privacy notice changes in any way, we will place an updated version on this page. Regularly reviewing this page ensures you are always aware of what information we collect, how we use it, and under what circumstances we will share it with other parties. The 'last updated' date at the bottom of this page will also change.
+  - paragraph: If these changes affect how your personal data is processed, we will take reasonable steps to let you know.
+  - paragraph:
+    - strong: "Last updated:"
+    - text: /May \d+/
+    - strong: "Next review date:"
+    - text: /May \d+/

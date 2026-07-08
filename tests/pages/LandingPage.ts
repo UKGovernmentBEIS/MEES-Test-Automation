@@ -7,6 +7,7 @@ import { reAuthenticate } from '../utils/AuthUtils';
 import { SupportWhoAreYouPage } from './Compliance/Support/SupportWhoAreYouPage';
 import { CookiesBanner } from './Compliance/Cookies/CookiesBanner';
 import { CookiesSettingsPage } from './Compliance/Cookies/CookiesSettingsPage';
+import { PrivacyNoticePage } from './Compliance/PrivacyNoticePage';
 
 export class LandingPage extends BasePage {
   private readonly signInButton: Locator;
@@ -16,6 +17,7 @@ export class LandingPage extends BasePage {
   private readonly reviewExemptionsLink: Locator;
   private readonly findEnergyCertificateLink: Locator;
   protected footerHelpLink: Locator;
+  protected footerPrivacyNoticeLink: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -26,6 +28,7 @@ export class LandingPage extends BasePage {
     this.reviewExemptionsLink = page.getByRole('link', { name: 'Review exemptions for private rented sector energy standards' });
     this.findEnergyCertificateLink = page.getByRole('link', { name: 'Find an energy certificate' });
     this.footerHelpLink = this.page.getByRole('contentinfo').getByRole('link', { name: 'Help' });
+    this.footerPrivacyNoticeLink = this.page.getByRole('contentinfo').getByRole('link', { name: 'Privacy Notice' });
   }
 
   /**
@@ -137,6 +140,13 @@ export class LandingPage extends BasePage {
     const supportWhoAreYouPage = new SupportWhoAreYouPage(newTab);
     await supportWhoAreYouPage.waitForPageToLoad();
     return supportWhoAreYouPage;
+  }
+
+  async clickFooterPrivacyNoticeLink(): Promise<PrivacyNoticePage> {
+    await this.footerPrivacyNoticeLink.click();
+    const privacyNoticePage = new PrivacyNoticePage(this.page);
+    await privacyNoticePage.waitForPageToLoad();
+    return privacyNoticePage;
   }
 
   protected async openLinkInNewTab(locator: Locator): Promise<Page> {
