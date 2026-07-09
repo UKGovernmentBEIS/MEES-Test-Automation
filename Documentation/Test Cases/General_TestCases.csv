@@ -403,3 +403,178 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 3. Verify all context locators are visible on the Accessibility Statement page","1. Accessibility Statement page is displayed
 2. No critical accessibility violations are found
 3. All context locators match the expected aria snapshot",Pass,
+2129,,MEES Phase 2,Sprint 7,Profile settings link is visible in the global header on authenticated pages,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Navigate to the Home page
+2. Locate the global header","1. Home page is displayed
+2. The Profile settings link is visible",Pass,
+2130,,MEES Phase 2,Sprint 7,Profile settings link navigates to the Profile settings page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Navigate to the Home page
+2. Click the Profile settings link","1. Profile settings page is displayed
+2. The browser URL includes '/profile'",Pass,
+2131,,MEES Phase 2,Sprint 7,Profile settings page has a Back link that returns to the home page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Profile settings page","1. Navigate to the Profile settings page
+2. Click the Back link","1. The Back link is visible
+2. Home page is displayed",Pass,
+2132,,MEES Phase 2,Sprint 7,Contact details section displays the correct user details,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Profile settings page","1. Navigate to the Profile settings page
+2. Review the contact details section","1. First name displays 'test'
+2. Last name matches one of the expected test account values
+3. Email address matches one of the expected test account values",Pass,
+2133,,MEES Phase 2,Sprint 7,Change link is present for first name and last name but not email address,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Profile settings page","1. Navigate to the Profile settings page
+2. Review the contact details fields","1. A Change link is displayed for First name
+2. A Change link is displayed for Last name
+3. No Change link is displayed for Email address",Pass,
+2134,,MEES Phase 2,Sprint 7,Council data sets section displays the correct councils,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Profile settings page","1. Navigate to the Profile settings page
+2. Review the Council data sets section","1. The list includes the London Borough of Barnet
+2. The list includes the London Borough of Bexley",Pass,
+2135,,MEES Phase 2,Sprint 7,If you need help section is displayed with a Help link,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Profile settings page","1. Navigate to the Profile settings page
+2. Review the 'If you need help' section","1. The 'If you need help' section is displayed
+2. The Help link is displayed",Pass,
+2136,,MEES Phase 2,Sprint 7,Back button on Change contact details page returns to Profile settings page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Profile settings page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Click the Back button","1. Change contact details page is displayed
+2. Profile settings page is displayed",Pass,
+2137,,MEES Phase 2,Sprint 7,Form fields are pre-populated with existing contact details,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Profile settings page","1. Navigate to the Profile settings page
+2. Open the Change first name page","1. First name field is pre-populated with 'test'
+2. Last name field is pre-populated with an expected test account value",Pass,
+2138,,MEES Phase 2,Sprint 7,Validation error is shown when first name is empty,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Clear the first name field
+4. Click Save and continue","1. Validation error 'Enter a first name' is displayed",Pass,
+2139,,MEES Phase 2,Sprint 7,Validation error is shown when last name is empty,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Clear the last name field
+4. Click Save and continue","1. Validation error 'Enter a last name' is displayed",Pass,
+2140,,MEES Phase 2,Sprint 7,Save and continue navigates to Check your contact details page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Click Save and continue","1. Check your contact details page is displayed
+2. The browser URL includes '/profile#CheckDetailsSummary'",Pass,
+2141,,MEES Phase 2,Sprint 7,Check contact details page displays the updated contact details,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Continue to the Check contact details page","1. The displayed first name matches the original value
+2. The displayed last name matches the original value",Pass,
+2142,,MEES Phase 2,Sprint 7,Back button on Check contact details page returns to Change contact details page without saving,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Continue to the Check contact details page
+4. Click the Back button","1. Change contact details page is displayed
+2. No changes are saved",Pass,
+2143,,MEES Phase 2,Sprint 7,Confirm and save navigates to the confirmation page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Continue to the Check contact details page
+4. Click Confirm and save","1. Confirmation page is displayed
+2. The browser URL includes '/profile#ContactDetailsUpdated'",Pass,
+2144,,MEES Phase 2,Sprint 7,Confirmation panel displays the correct message,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Continue to the Check contact details page
+4. Confirm and save the changes","1. Confirmation panel displays 'Your updated contact details have been saved'",Pass,
+2145,,MEES Phase 2,Sprint 7,Return to home button navigates to the service home page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Continue to the Check contact details page
+4. Confirm and save the changes
+5. Click Return to home","1. Service home page is displayed
+2. The browser URL includes '/landing-page'",Pass,
+2146,,MEES Phase 2,Sprint 7,Profile Settings Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. User is on the Profile settings page","1. Navigate to the Profile settings page
+2. Run the accessibility scanner on the page
+3. Verify all context locators are visible","1. Profile settings page is displayed
+2. No critical accessibility violations are found
+3. All context locators match the expected aria snapshot",Pass,
+2147,,MEES Phase 2,Sprint 7,Change Contact Details Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. User is on the Profile settings page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Run the accessibility scanner on the page
+4. Verify all context locators are visible","1. Change contact details page is displayed
+2. No critical accessibility violations are found
+3. All context locators match the expected aria snapshot",Pass,
+2148,,MEES Phase 2,Sprint 7,Change Contact Details Page - First Name Validation Error,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Clear the first name field
+4. Click Save and continue
+5. Run the accessibility scanner on the page
+6. Verify all context locators are visible","1. First name validation error is displayed
+2. No critical accessibility violations are found
+3. All context locators match the expected aria snapshot",Pass,
+2149,,MEES Phase 2,Sprint 7,Change Contact Details Page - Last Name Validation Error,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Clear the last name field
+4. Click Save and continue
+5. Run the accessibility scanner on the page
+6. Verify all context locators are visible","1. Last name validation error is displayed
+2. No critical accessibility violations are found
+3. All context locators match the expected aria snapshot",Pass,
+2150,,MEES Phase 2,Sprint 7,Check Contact Details Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Continue to the Check contact details page
+4. Run the accessibility scanner on the page
+5. Verify all context locators are visible","1. Check contact details page is displayed
+2. No critical accessibility violations are found
+3. All context locators match the expected aria snapshot",Pass,
+2151,,MEES Phase 2,Sprint 7,Contact Details Confirmation Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. User is on the Change contact details page","1. Navigate to the Profile settings page
+2. Open the Change first name page
+3. Continue to the Check contact details page
+4. Confirm and save the changes
+5. Run the accessibility scanner on the page
+6. Verify all context locators are visible","1. Contact details confirmation page is displayed
+2. No critical accessibility violations are found
+3. All context locators match the expected aria snapshot",Pass,
+2152,,MEES Phase 2,Sprint 7,Guidance Main page is displayed,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Navigate to the Home page
+2. Open the Guidance page","1. Guidance page is displayed",Pass,
+2153,,MEES Phase 2,Sprint 7,Navigation to the Home page from the Guidance breadcrumb works correctly,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Guidance page","1. Navigate to the Guidance page
+2. Click the Home breadcrumb","1. Home page is displayed",Pass,
+2154,,MEES Phase 2,Sprint 7,Navigation to the View Properties page using the Guidance tab works correctly,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Guidance page","1. Navigate to the Guidance page
+2. Click the Property records tab","1. View Properties page is displayed",Pass,
+2155,,MEES Phase 2,Sprint 7,Navigation to the Penalty Calculator page using the Guidance tab works correctly,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Guidance page","1. Navigate to the Guidance page
+2. Click the Penalty Calculator tab","1. Penalty Calculator page is displayed",Pass,
+2156,,MEES Phase 2,Sprint 7,Guidance page header link navigates to the Home page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Guidance page","1. Navigate to the Guidance page
+2. Click the page header link","1. Home page is displayed",Pass,
+2157,,MEES Phase 2,Sprint 7,Guidance article breadcrumb navigation returns to the Home page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on a guidance article page","1. Open a guidance article page
+2. Click the Home breadcrumb","1. Home page is displayed",Pass,
+2158,,MEES Phase 2,Sprint 7,Guidance article breadcrumb navigation returns to the Guidance Main page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on a guidance article page","1. Open a guidance article page
+2. Click the Guidance breadcrumb","1. Guidance page is displayed",Pass,
+2159,,MEES Phase 2,Sprint 7,Guidance article tab navigation returns to the View Properties page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on a guidance article page","1. Open a guidance article page
+2. Click the Property records tab","1. View Properties page is displayed",Pass,
+2160,,MEES Phase 2,Sprint 7,External legislation link opens in a new tab,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on a guidance article page with an external legislation link","1. Open the guidance article page
+2. Click the external legislation link","1. A new browser tab is opened
+2. The legislation page is displayed",Pass,
+2161,,MEES Phase 2,Sprint 7,Penalty Calculator link navigates to the Penalty Calculator page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on a guidance article page with a Penalty Calculator link","1. Open the guidance article page
+2. Click the Penalty Calculator link","1. Penalty Calculator page is displayed",Pass,
+2162,,MEES Phase 2,Sprint 7,Guidance Main page meets accessibility and page context requirements,Guidance,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. User is on the Guidance page","1. Navigate to the Guidance page
+2. Run the accessibility scanner on the page
+3. Verify all context locators are visible","1. Guidance page is displayed
+2. No critical accessibility violations are found
+3. All context locators match the expected aria snapshot",Pass,
+2163,,MEES Phase 2,Sprint 7,Each guidance article page meets accessibility and page context requirements,Guidance,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. User is on the Guidance page","1. Navigate to the Guidance page
+2. Open each guidance article page in turn
+3. Run the accessibility scanner on each article page
+4. Verify all context locators are visible on each article page","1. Each guidance article page is displayed
+2. No critical accessibility violations are found on each article page
+3. All context locators match the expected aria snapshot for each article page",Pass,
