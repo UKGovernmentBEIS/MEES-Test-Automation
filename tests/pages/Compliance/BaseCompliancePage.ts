@@ -11,6 +11,7 @@ import type { HomePage } from './HomePage';
 import type { LandingPage } from '../LandingPage';
 import type { CookiesSettingsPage } from './Cookies/CookiesSettingsPage';
 import type { PrivacyNoticePage } from './PrivacyNoticePage';
+import type { AccessibilityStatementPage } from './AccessibilityStatementPage';
 
 export abstract class BaseCompliancePage extends BasePage {
     protected readonly page: Page;
@@ -20,6 +21,7 @@ export abstract class BaseCompliancePage extends BasePage {
     protected feedbackLink: Locator;
     protected footerHelpLink: Locator;
     protected footerPrivacyNoticeLink: Locator;
+    protected footerAccessibilityStatementLink: Locator;
     protected openGovernmentLicenceLink: Locator;
     protected tabPropertyRecords: Locator;
     protected tabGuidance: Locator;
@@ -35,6 +37,7 @@ export abstract class BaseCompliancePage extends BasePage {
             this.feedbackLink = page.locator('.govuk-phase-banner').getByRole('link', { name: 'give your feedback by email' });
             this.footerHelpLink = this.page.getByRole('contentinfo').getByRole('link', { name: 'Help' });
             this.footerPrivacyNoticeLink = this.page.getByRole('contentinfo').getByRole('link', { name: 'Privacy Notice' });
+            this.footerAccessibilityStatementLink = this.page.getByRole('contentinfo').getByRole('link', { name: 'Accessibility Statement' });
             this.openGovernmentLicenceLink = page.getByRole('contentinfo').getByRole('link', { name: 'Open Government Licence v3.0' });
             this.tabPropertyRecords = page.getByRole('link', { name: 'Property records', exact: true })
             this.tabGuidance = page.getByRole('link', { name: 'Guidance', exact: true });
@@ -174,6 +177,14 @@ export abstract class BaseCompliancePage extends BasePage {
         const privacyNoticePage = new PrivacyNoticePage(this.page);
         await privacyNoticePage.waitForPageToLoad();
         return privacyNoticePage;
+    }
+
+    async clickFooterAccessibilityStatementLink(): Promise<AccessibilityStatementPage> {
+        await this.footerAccessibilityStatementLink.click();
+        const { AccessibilityStatementPage } = await import('./AccessibilityStatementPage');
+        const accessibilityStatementPage = new AccessibilityStatementPage(this.page);
+        await accessibilityStatementPage.waitForPageToLoad();
+        return accessibilityStatementPage;
     }
 
     async clickOnPropertyRecordsTabInNewTab(): Promise<FilterPropertiesPage> {
