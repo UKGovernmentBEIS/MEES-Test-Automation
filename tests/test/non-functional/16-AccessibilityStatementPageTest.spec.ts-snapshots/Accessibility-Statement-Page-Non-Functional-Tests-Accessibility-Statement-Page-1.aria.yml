@@ -1,6 +1,10 @@
 - main:
   - heading "Accessibility statement for Check if non-domestic properties meet minimum energy efficiency standards" [level=1]
-  - paragraph: This accessibility statement applies to the Check if non-domestic properties meet minimum energy efficiency standards service.
+  - paragraph:
+    - text: This accessibility statement applies to the Check if non-domestic properties meet minimum energy efficiency standards service
+    - link "(review-energy-efficiency-non-domestic-hub.service.gov.uk)":
+      - /url: https://www.review-energy-efficiency-non-domestic-hub.service.gov.uk
+    - text: .
   - paragraph: "This website is run by the Department for Energy & Net Zero (DESNZ). We want as many people as possible to be able to use this website. For example, that means you should be able to:"
   - list:
     - listitem: /zoom in up to \d+% without the text spilling off the screen/
