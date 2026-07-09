@@ -1,0 +1,61 @@
+- main:
+  - heading "Accessibility statement for Check if non-domestic properties meet minimum energy efficiency standards" [level=1]
+  - paragraph: This accessibility statement applies to the Check if non-domestic properties meet minimum energy efficiency standards service.
+  - paragraph: "This website is run by the Department for Energy & Net Zero (DESNZ). We want as many people as possible to be able to use this website. For example, that means you should be able to:"
+  - list:
+    - listitem: /zoom in up to \d+% without the text spilling off the screen/
+    - listitem: navigate most of the website using just a keyboard
+    - listitem: navigate most of the website using speech recognition software
+    - listitem: listen to most of the website using a screen reader (including the most recent versions of JAWS, NVDA and iOS VoiceOver)
+  - paragraph: We've also made the website text as simple as possible to understand.
+  - paragraph:
+    - link "AbilityNet":
+      - /url: https://abilitynet.org.uk
+    - text: has advice on making your device easier to use if you have a disability.
+  - heading "How accessible this website is" [level=2]
+  - paragraph: "We know some parts of this website are not fully accessible:"
+  - list:
+    - listitem: incorrect announcements are made when navigating with VoiceOver
+  - heading "Feedback and contact information" [level=2]
+  - paragraph:
+    - text: "If you find any problems not listed on this page or think we're not meeting accessibility requirements, contact the service support team via email:"
+    - link "meesdigital@energysecurity.gov.uk":
+      - /url: mailto:meesdigital@energysecurity.gov.uk
+  - paragraph: "If you need information on this website in a different format like accessible PDF, large print, easy read, audio recording or braille:"
+  - list:
+    - listitem:
+      - text: "email:"
+      - link "meesdigital@energysecurity.gov.uk":
+        - /url: mailto:meesdigital@energysecurity.gov.uk
+  - paragraph: /We'll consider your request and get back to you within \d+ working days\./
+  - paragraph:
+    - text: "If you cannot view any page on the service, email:"
+    - link "meesdigital@energysecurity.gov.uk":
+      - /url: mailto:meesdigital@energysecurity.gov.uk
+  - heading "Enforcement procedure" [level=2]
+  - paragraph:
+    - text: /The Equality and Human Rights Commission \(EHRC\) is responsible for enforcing the Public Sector Bodies \(Websites and Mobile Applications\) \(No\. 2\) Accessibility Regulations \d+ \('the accessibility regulations'\)\. If you're not happy with how we respond to your complaint,/
+    - link "contact the Equality Advisory and Support Service (EASS)":
+      - /url: https://www.equalityadvisoryservice.com
+    - text: .
+  - heading "Technical information about this website's accessibility" [level=2]
+  - paragraph: /DESNZ is committed to making its website accessible, in accordance with the Public Sector Bodies \(Websites and Mobile Applications\) \(No\. 2\) Accessibility Regulations \d+\./
+  - heading "Compliance status" [level=3]
+  - paragraph:
+    - text: This website is partially compliant with the
+    - link "Web Content Accessibility Guidelines version 2.2 AA":
+      - /url: https://www.w3.org/TR/WCAG22
+    - text: standard. The non-compliances are listed below.
+  - heading "Non-accessible content" [level=2]
+  - paragraph: The content listed below is not accessible for the following reasons.
+  - heading "Non-compliance with the accessibility regulations" [level=2]
+  - paragraph: Incorrect announcements are made when navigating with VoiceOver, which may lead to confusion for those users. This fails WCAG 2.2 success criterion 4.1.2 (name, role, value).
+  - paragraph: /We plan to fix this issue by October \d+\./
+  - heading "Preparation of this accessibility statement" [level=2]
+  - paragraph: /This statement was prepared on \d+\/\d+\/\d+\. It was last reviewed on \d+\/\d+\/\d+\./
+  - paragraph: /This website was last tested on \d+\/\d+\/\d+\. The test was carried out by Zoonou\./
+  - paragraph:
+    - text: Zoonou used
+    - link "WCAG-EM":
+      - /url: https://www.w3.org/TR/WCAG-EM/
+    - text: to define the pages tested and test approach.

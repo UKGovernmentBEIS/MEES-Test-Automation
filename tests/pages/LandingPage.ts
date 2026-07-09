@@ -8,6 +8,7 @@ import { SupportWhoAreYouPage } from './Compliance/Support/SupportWhoAreYouPage'
 import { CookiesBanner } from './Compliance/Cookies/CookiesBanner';
 import { CookiesSettingsPage } from './Compliance/Cookies/CookiesSettingsPage';
 import { PrivacyNoticePage } from './Compliance/PrivacyNoticePage';
+import { AccessibilityStatementPage } from './Compliance/AccessibilityStatementPage';
 
 export class LandingPage extends BasePage {
   private readonly signInButton: Locator;
@@ -18,6 +19,7 @@ export class LandingPage extends BasePage {
   private readonly findEnergyCertificateLink: Locator;
   protected footerHelpLink: Locator;
   protected footerPrivacyNoticeLink: Locator;
+  protected footerAccessibilityStatementLink: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -29,6 +31,7 @@ export class LandingPage extends BasePage {
     this.findEnergyCertificateLink = page.getByRole('link', { name: 'Find an energy certificate' });
     this.footerHelpLink = this.page.getByRole('contentinfo').getByRole('link', { name: 'Help' });
     this.footerPrivacyNoticeLink = this.page.getByRole('contentinfo').getByRole('link', { name: 'Privacy Notice' });
+    this.footerAccessibilityStatementLink = this.page.getByRole('contentinfo').getByRole('link', { name: 'Accessibility Statement' });
   }
 
   /**
@@ -147,6 +150,13 @@ export class LandingPage extends BasePage {
     const privacyNoticePage = new PrivacyNoticePage(this.page);
     await privacyNoticePage.waitForPageToLoad();
     return privacyNoticePage;
+  }
+
+  async clickFooterAccessibilityStatementLink(): Promise<AccessibilityStatementPage> {
+    await this.footerAccessibilityStatementLink.click();
+    const accessibilityStatementPage = new AccessibilityStatementPage(this.page);
+    await accessibilityStatementPage.waitForPageToLoad();
+    return accessibilityStatementPage;
   }
 
   protected async openLinkInNewTab(locator: Locator): Promise<Page> {
