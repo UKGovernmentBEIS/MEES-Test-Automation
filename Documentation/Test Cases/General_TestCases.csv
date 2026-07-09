@@ -21,7 +21,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 3. The 'CSV Export Specification & Alignment.xlsx' file attached to the story is available for reference","1. Open the exported CSV
 2. Compare each column header name in the first row against the specification ? verify no columns are missing and no extra columns are present","1. Every column name in the export matches the specification exactly
 2. No columns defined in the specification are missing from the export
-3. No extra columns are present in the export that are not defined in the specification",Not Run,
+3. No extra columns are present in the export that are not defined in the specification",Pass,
 2047,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Fields without values show 'Not found' in export,View Properties Page,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Filter Properties page
 3. The export contains at least one property where one or more placeholder-based fields are not populated from source data","1. Apply filters and export the CSV
@@ -37,7 +37,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 4. Confirm that Possible rental evidence from EPC register, Possible rental evidence from Companies House, PRS exemption status, PRS exemption date and Comments are not compared in this test as they are either computed from DMS booleans or sourced from Salesforce rather than DMS","1. Export completes successfully with at least one record
 2. A matching DMS property is found in the export by UPRN
 3. All directly-mapped field values match the DMS API source exactly
-4. Computed and Salesforce-dependent fields are excluded from comparison and covered by dedicated tests",Not Run,
+4. Computed and Salesforce-dependent fields are excluded from comparison and covered by dedicated tests",Pass,
 2003,E839,1082,MEES Phase 2,Sprint 2,Export - Structural: Exported PRS Exemption Status and Comments match Salesforce data,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Filter Properties page
 3. The filtered results (Energy Rating 'A', Council 'LONDON BOROUGH OF BEXLEY', Postcode 'DA1 4AL') contain exactly 1 property with a non-empty PRS exemption status
@@ -59,7 +59,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 2004,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Verify Exported Field Formats and Empty State Values,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. A CSV export has been downloaded from the View Properties page","1. Inspect date fields (EPC expiry date, PRS exemption date) across all rows - check both populated and unpopulated values
 2. Inspect the 'PRS exemption status' field for a row where the property has no PRS exemption","1. Populated date fields display in YYYY-MM-DD format; unpopulated EPC expiry date shows 'Not found'; unpopulated PRS exemption date is empty
-2. PRS exemption status shows 'Data not found' when the property has no PRS exemption",Fail,PRS exemption date in the export is currently formatted as DD/MM/YYYY instead of YYYY-MM-DD (confirmed by TC-2003 normalisation comment) ? no bug raised yet. SIC code format checks removed from this test case: owner fields being empty when no owner data is covered by the 'Export - Field values when source data is absent' tests; SIC code format with owner data (pipe-separated values and N/A) is covered by dedicated TC-2016.
+2. PRS exemption status shows 'Data not found' when the property has no PRS exemption",Pass,PRS exemption date in the export is currently formatted as DD/MM/YYYY instead of YYYY-MM-DD (confirmed by TC-2003 normalisation comment) ? no bug raised yet. SIC code format checks removed from this test case: owner fields being empty when no owner data is covered by the 'Export - Field values when source data is absent' tests; SIC code format with owner data (pipe-separated values and N/A) is covered by dedicated TC-2016.
 2046,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Property owner column sets in export equal the maximum landlord count,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. A CSV export has been downloaded from the View Properties page with filters applied","1. Apply filters and export the CSV
 2. Identify the highest property owner index N present in the export column headers (e.g. if 'Property owner 3 name' exists but 'Property owner 4 name' does not then N = 3)
@@ -67,7 +67,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 4. Compare N against the maximum landlord count from DMS","1. Export completes successfully with at least one record
 2. The maximum owner index N is identified from the CSV column headers
 3. The property with the most landlords is identified in the DMS data and its landlord count is recorded
-4. N equals the maximum landlord count ? all four column groups (name, location, address, SIC code(s)) are present for every owner index from 1 to N with no gaps or extra groups",Not Run,
+4. N equals the maximum landlord count ? all four column groups (name, location, address, SIC code(s)) are present for every owner index from 1 to N with no gaps or extra groups",Pass,
 2005,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Exported 'EPC certificate link' Field Contains Valid URL Matching View Properties Page,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Filter Properties page","1. Apply filters and export the CSV
 2. Find a property in the export with a non-empty 'EPC certificate link' field
@@ -93,7 +93,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 4. Find a property in the export with no property owner data ? verify the 'Property owner 1 SIC code(s)' field shows 'No data'","1. Export completes successfully with at least one record
 2. The 'Property owner 1 SIC code(s)' field contains one or more SIC code values separated by ' | ' for an Onshore owner with SIC codes
 3. The 'Property owner 1 SIC code(s)' field shows 'No data' for an Onshore owner with no SIC codes
-4. The 'Property owner 1 SIC code(s)' field shows 'No data' when the property has no owner data",Not Run,
+4. The 'Property owner 1 SIC code(s)' field shows 'No data' when the property has no owner data",Pass,
 2017,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Exported 'Possible rental evidence from EPC register' and 'Possible rental evidence from Companies House' field values are correct,View Properties Page,Fully Automated,Integration,High,"1. User is logged in and authenticated
 2. User is on the Filter Properties page
 3. DMS API is accessible
@@ -112,7 +112,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 4. Inspect the 'EPC (rating; expiry; transaction type)' value for the located export row","1. Export completes successfully with at least one record
 2. A DMS item with multiple EPC certificates is found confirming the join behaviour will be exercised
 3. The matching export row is found by UPRN
-4. 'EPC (rating; expiry; transaction type)' shows one entry per EPC certificate formatted as 'AssetRatingBand (AssetRating); ExpiryDate; TransactionType', with entries joined by ' | ' ? e.g. 'B (55); 2025-03-06; assessed and new dwelling | C (72); 2019-01-14; rental'",Not Run,
+4. 'EPC (rating; expiry; transaction type)' shows one entry per EPC certificate formatted as 'AssetRatingBand (AssetRating); ExpiryDate; TransactionType', with entries joined by ' | ' ? e.g. 'B (55); 2025-03-06; assessed and new dwelling | C (72); 2019-01-14; rental'",Pass,
 2010,E852,867,MEES Phase 2,Sprint 2,Export - Field Values: View Properties export does not contain Landlord location column,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Filter Properties page","1. Apply filters and export the CSV from the View Properties page
 2. Open the exported CSV file
@@ -122,13 +122,13 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 2049,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Exported CSV filename follows the MEES_Properties_YYYY-MM-DDThh-mm-ss.csv pattern,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Filter Properties page","1. Apply filters and trigger the CSV export from the View Properties page
 2. Capture the filename of the downloaded CSV file","1. Export triggers successfully and a CSV file is downloaded
-2. The filename matches the pattern MEES_Properties_YYYY-MM-DDThh-mm-ss.csv ? where YYYY is a 4-digit year; MM is a 2-digit month; DD is a 2-digit day; T is a literal separator; hh is a 2-digit hour; mm is a 2-digit minute; ss is a 2-digit second (for example MEES_Properties_2026-04-28T13-38-21.csv)",Not Run,
+2. The filename matches the pattern MEES_Properties_YYYY-MM-DDThh-mm-ss.csv ? where YYYY is a 4-digit year; MM is a 2-digit month; DD is a 2-digit day; T is a literal separator; hh is a 2-digit hour; mm is a 2-digit minute; ss is a 2-digit second (for example MEES_Properties_2026-04-28T13-38-21.csv)",Pass,
  2050,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Export button is not displayed when there are no records,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Filter Properties page","1. Apply a filter that returns no results (e.g. set Town filter to a value that does not exist in the dataset)
 2. Navigate to the View Properties page
 3. Inspect whether the export button is present on the page","1. Filters are applied and View Properties page loads
 2. View Properties page displays the 'no records found' message confirming zero results
-3. The export button ('Export filtered table (.csv)') is not visible on the page",Not Run,
+3. The export button ('Export filtered table (.csv)') is not visible on the page",Pass,
 2007,E852,867,MEES Phase 2,Sprint 2,Landlord location filter is no longer supported and does not filter results,View Properties Page,Fully Automated,Integration,Medium,Properties API endpoint is available with valid function key and lacodes E06000009 and E06000011 return data,"1. Send POST request to properties API with lacodes only (no Landlord location filter) and record total_records
 2. Send POST request with lacodes and Landlord location filter set to 'Onshore'. Compare filtered and unfiltered total_records
 3. Send POST request with lacodes and Landlord location filter set to 'Offshore'. Compare filtered and unfiltered total_records","1. API returns 200 status and total_records value is captured
