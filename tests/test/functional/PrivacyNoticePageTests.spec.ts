@@ -39,6 +39,9 @@ test.describe('Privacy Notice Page - Unauthenticated', () => {
     });
 
     test('Service title link opens the Landing page in a new tab when unauthenticated', async () => {
+        // Opening a new tab and loading the Salesforce page is slow; allow more than the 30s
+        // default so this does not time out under heavier CI load.
+        test.setTimeout(60000);
         const landingPage = await privacyNoticePage.clickPageHeaderLinkAsUnauthenticatedUserInNewTab();
         expect(await landingPage.isDisplayed()).toBe(true);
     });
@@ -75,6 +78,9 @@ test.describe('Privacy Notice Page - Authenticated', () => {
     });
 
     test('Service title link opens the Home page in a new tab when authenticated', async () => {
+        // Opening a new tab and loading the Salesforce page is slow; allow more than the 30s
+        // default so this does not time out under heavier CI load.
+        test.setTimeout(60000);
         const homePage = await privacyNoticePage.clickPageHeaderLinkAsAuthenticatedUserInNewTab();
         expect(await homePage.isDisplayed()).toBe(true);
     });
