@@ -388,3 +388,23 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 3. Verify all context locators are visible on the Privacy Notice page","1. Privacy Notice page is displayed
 2. No critical accessibility violations are found
 3. All context locators match the expected aria snapshot",Pass,
+2122,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Unauthenticated: Footer Accessibility Statement link opens the Accessibility Statement page when unauthenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is not authenticated
+2. User is on the Landing page","1. Navigate to the Landing page
+2. Click the footer Accessibility Statement link","1. Accessibility Statement page is displayed",Pass,
+2123,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Unauthenticated: Service title link navigates to the Landing page when unauthenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is not authenticated
+2. User is on the Accessibility Statement page","1. Click the service title link on the Accessibility Statement page","1. Landing page is displayed",Pass,
+2124,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Unauthenticated: Service title link opens the Landing page in a new tab when unauthenticated,Accessibility Statement Page,Fully Automated,Functional,Medium,"1. User is not authenticated
+2. User is on the Accessibility Statement page","1. Open the service title link in a new browser tab","1. Landing page is displayed in a new browser tab",Pass,
+2125,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Authenticated: Footer Accessibility Statement link opens the Accessibility Statement page when authenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Home page","1. Navigate to the Home page
+2. Click the footer Accessibility Statement link","1. Accessibility Statement page is displayed",Pass,
+2126,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Authenticated: Service title link navigates to the Home page when authenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Accessibility Statement page","1. Click the service title link on the Accessibility Statement page","1. Home page is displayed",Pass,
+2127,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Authenticated: Service title link opens the Home page in a new tab when authenticated,Accessibility Statement Page,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Accessibility Statement page","1. Open the service title link in a new browser tab","1. Home page is displayed in a new browser tab",Pass,
+2128,,MEES Phase 2,Sprint 7,Accessibility Statement Page: Context and accessibility are verified on the Accessibility Statement page,Accessibility Statement Page,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. User is on the Accessibility Statement page","1. Navigate to the Accessibility Statement page
+2. Run the accessibility scanner on the Accessibility Statement page
+3. Verify all context locators are visible on the Accessibility Statement page","1. Accessibility Statement page is displayed
+2. No critical accessibility violations are found
+3. All context locators match the expected aria snapshot",Pass,
