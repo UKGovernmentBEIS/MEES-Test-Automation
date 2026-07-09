@@ -282,6 +282,45 @@ test.describe('Navigation tests', () => {
         expect(await homePageFromSupport.isDisplayed()).toBe(true);
     });
 
+    test('Verify that the Return to Home button navigates to the Landing page when user is not authenticated', async () => {
+        // Sign out the user to make them unauthenticated
+        const landingPage = await homePage.clickSignOutButton();
+        await landingPage.waitForPageToLoad();
+        expect(await landingPage.isDisplayed()).toBe(true);
+        
+        // Navigate to the Support Submitted page
+        const supportWhoAreYouPage: SupportWhoAreYouPage = await landingPage.clickFooterHelpLink();
+        await supportWhoAreYouPage.waitForPageToLoad();
+
+        // Select the role and proceed to the Support Contact Form page
+        await supportWhoAreYouPage.selectRole('Department for Energy Security and Net Zero official');
+        const supportContactFormPage = await supportWhoAreYouPage.clickContinueButton();
+        await supportContactFormPage.waitForPageToLoad();
+
+        // Fill in the contact form fields and proceed to the Support What Do You Want page
+        await supportContactFormPage.fillContactFormField('First name', 'John');
+        await supportContactFormPage.fillContactFormField('Last name', 'Doe');
+        await supportContactFormPage.fillContactFormField('Your email address', 'john.doe@example.com');
+        await supportContactFormPage.fillContactFormField('Confirm your email address', 'john.doe@example.com');
+        const supportWhatDoYouWantPage = await supportContactFormPage.clickContinueButton();
+        await supportWhatDoYouWantPage.waitForPageToLoad();
+
+        // Select the support option and proceed to the Support Details page
+        await supportWhatDoYouWantPage.selectHelpRequestOption('I have a question about the policy or guidance');
+        const supportDetailsPage = await supportWhatDoYouWantPage.clickContinueButton();
+        await supportDetailsPage.waitForPageToLoad();
+
+        // Enter support details and submit the form to reach the Support Submitted page
+        await supportDetailsPage.enterSupportDetails('This is a test support request.');
+        const supportSubmittedPage = await supportDetailsPage.clickSubmitButton();
+        await supportSubmittedPage.waitForPageToLoad();
+        
+        // Navigate back to the Home page from the Support Submitted page
+        const landingPageFromSupport = await supportSubmittedPage.clickReturnHomeButtonAsUnauthenticatedUser();
+        await landingPageFromSupport.waitForPageToLoad();
+        expect(await landingPageFromSupport.isDisplayed()).toBe(true);
+    });
+
     test('Verify that the Service Title Link navigates to the Home page', async () => {
         const supportWhoAreYouPage: SupportWhoAreYouPage = await homePage.clickRequestSupportLink();
         await supportWhoAreYouPage.waitForPageToLoad();
@@ -319,8 +358,6 @@ test.describe('Navigation tests', () => {
     });
 });
 
-// The "Help" link in the footer (inherited from BaseCompliancePage) should reach the Support
-// "Are you a:" form from every compliance page (Jira 1080).
 test.describe('Support link availability across pages', () => {
 
     test.beforeEach(async ({}, testInfo) => {

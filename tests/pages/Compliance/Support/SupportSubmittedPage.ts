@@ -2,6 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { ElementUtilities } from '../../../utils/ElementUtilities';
 import { BaseCompliancePage } from '../BaseCompliancePage';
 import { HomePage } from '../HomePage';
+import { LandingPage } from '../../LandingPage';
 
 export class SupportSubmittedPage extends BaseCompliancePage {
     private pageContext: Locator;
@@ -37,5 +38,12 @@ export class SupportSubmittedPage extends BaseCompliancePage {
         const homePage = new HomePage(this.page);
         await homePage.waitForPageToLoad();
         return homePage;
+    }
+
+    async clickReturnHomeButtonAsUnauthenticatedUser(): Promise<LandingPage> {
+        await this.returnHomeButton.click();
+        const landingPage = new LandingPage(this.page);
+        await landingPage.waitForPageToLoad();
+        return landingPage;
     }
 }
