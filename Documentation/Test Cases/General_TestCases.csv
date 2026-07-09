@@ -34,7 +34,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 3. DMS API is accessible for cross-referencing field values (DMS_BASE_URL and EXPORT_KEY configured)","1. Apply Energy Rating 'A' and Council 'LONDON BOROUGH OF BEXLEY' filters and export the CSV
 2. Fetch a reference property from the DMS API and locate it in the export by UPRN
 3. Compare the following directly-mapped fields between the export and DMS API: Property address, UPRN, Property type, Rateable value (GBP), Property owner 1 name, Property owner 1 location, Property owner 1 address, Property owner 1 SIC code(s), EPC energy rating band, EPC energy rating, EPC expiry date, EPC (rating; expiry; transaction type), EPC certificate link, EPC transaction type
-4. Confirm that Possible rental evidence, PRS exemption status, PRS exemption date and Comments are not compared in this test as they are either computed from multiple DMS booleans or sourced from Salesforce rather than DMS","1. Export completes successfully with at least one record
+4. Confirm that Possible rental evidence from EPC register, Possible rental evidence from Companies House, PRS exemption status, PRS exemption date and Comments are not compared in this test as they are either computed from DMS booleans or sourced from Salesforce rather than DMS","1. Export completes successfully with at least one record
 2. A matching DMS property is found in the export by UPRN
 3. All directly-mapped field values match the DMS API source exactly
 4. Computed and Salesforce-dependent fields are excluded from comparison and covered by dedicated tests",Not Run,
@@ -94,20 +94,15 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 2. The 'Property owner 1 SIC code(s)' field contains one or more SIC code values separated by ' | ' for an Onshore owner with SIC codes
 3. The 'Property owner 1 SIC code(s)' field shows 'No data' for an Onshore owner with no SIC codes
 4. The 'Property owner 1 SIC code(s)' field shows 'No data' when the property has no owner data",Not Run,
-2017,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Exported 'Possible rental evidence' field value is correct,View Properties Page,Fully Automated,Integration,High,"1. User is logged in and authenticated
+2017,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Exported 'Possible rental evidence from EPC register' and 'Possible rental evidence from Companies House' field values are correct,View Properties Page,Fully Automated,Integration,High,"1. User is logged in and authenticated
 2. User is on the Filter Properties page
-3. DMS API is accessible (DMS_BASE_URL and EXPORT_KEY configured)
-4. The export contains at least one property for each of the four evidence combinations: both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode true; PossibleEvidenceEpcTransactionType true only; PossibleEvidenceSiccode true only; both false","1. Apply filters and export the CSV (lacodes E09000003 and E09000004 with no additional UI filters)
-2. Fetch the raw DMS export items for the same lacodes and build a UPRN lookup map
-3. Find a DMS item where both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are true ? locate it in the export by UPRN and inspect 'Possible rental evidence'
-4. Find a DMS item where PossibleEvidenceEpcTransactionType is true and PossibleEvidenceSiccode is false ? locate it in the export by UPRN and inspect 'Possible rental evidence'
-5. Find a DMS item where PossibleEvidenceEpcTransactionType is false and PossibleEvidenceSiccode is true ? locate it in the export by UPRN and inspect 'Possible rental evidence'
-6. Find a DMS item where both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are false ? locate it in the export by UPRN and inspect 'Possible rental evidence'","1. Export completes successfully with at least one record
-2. DMS export returns at least one item and all four evidence combination cases are present in the data confirming every branch is exercised
-3. 'Possible rental evidence' shows 'Mandatory issue (Property to let) EPC transaction type | Property owner has letting company SIC code' when both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are true
-4. 'Possible rental evidence' shows 'Mandatory issue (Property to let) EPC transaction type' when PossibleEvidenceEpcTransactionType is true and PossibleEvidenceSiccode is false
-5. 'Possible rental evidence' shows 'Property owner has letting company SIC code' when PossibleEvidenceEpcTransactionType is false and PossibleEvidenceSiccode is true
-6. 'Possible rental evidence' shows 'Not found' when both PossibleEvidenceEpcTransactionType and PossibleEvidenceSiccode are false",Pass,
+3. DMS API is accessible
+4. The export contains at least one property where 'Possible rental evidence from EPC register' (EPC) is true; at least one where EPC is false; at least one where 'Possible rental evidence from Companies House' (CH) is true; and at least one where CH is false","1. Export the prepared properties and locate each of the four properties in the export by UPRN
+2. For each property verify 'Possible rental evidence from EPC register' (EPC) and 'Possible rental evidence from Companies House' (CH)","1. Export completes successfully and contains all four prepared properties
+2. For (a) EPC true and CH true: EPC shows 'Mandatory issue (Property to let) EPC transaction type' and CH shows 'Property owner has letting company Standard Industrial Classification code'
+3. For (b) EPC true and CH false: EPC shows 'Mandatory issue (Property to let) EPC transaction type' and CH shows 'Not found'
+4. For (c) EPC false and CH true: EPC shows 'Not found' and CH shows 'Property owner has letting company Standard Industrial Classification code'
+5. For (d) EPC false and CH false: EPC shows 'Not found' and CH shows 'Not found'",Pass,
 2018,E839,791,MEES Phase 2,Sprint 2,Export - Field Values: Exported 'EPC (rating; expiry; transaction type)' field value is correct,View Properties Page,Fully Automated,Integration,High,"1. User is logged in and authenticated
 2. User is on the Filter Properties page
 3. DMS API is accessible (DMS_BASE_URL and EXPORT_KEY configured)

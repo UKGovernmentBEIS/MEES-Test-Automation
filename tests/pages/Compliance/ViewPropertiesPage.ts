@@ -38,10 +38,11 @@ export class ViewPropertiesPage extends BaseCompliancePage {
         { exportColumn: 'UPRN',                    dmsField: 'Uprn' },
         { exportColumn: 'Property type',           dmsField: 'EPCPropertyType' },
         { exportColumn: 'Rateable value (GBP)',    dmsField: 'RateableValue' },
-        // Possible rental evidence is computed: 'Found' when at least one of PossibleEvidenceEpcTransactionType or PossibleEvidenceSiccode is true;
-        // 'Not found' only when both are false.
-        // Validated in the dedicated 'Exported Possible rental evidence field value is correct' test.
-        { exportColumn: 'Possible rental evidence', dedicatedTest: true },
+        // Possible rental evidence from EPC register: 'Mandatory issue (Property to let) EPC transaction type' when PossibleEvidenceEpcTransactionType is true; 'Not found' otherwise.
+        // Possible rental evidence from Companies House: 'Property owner has letting company Standard Industrial Classification code' when PossibleEvidenceSiccode is true; 'Not found' otherwise.
+        // Both validated in the dedicated 'Exported Possible rental evidence field value is correct' test.
+        { exportColumn: 'Possible rental evidence from EPC register', dedicatedTest: true },
+        { exportColumn: 'Possible rental evidence from Companies House', dedicatedTest: true },
         { exportColumn: 'EPC energy rating band',           dmsField: 'EPCEnergyRatingBand' },
         { exportColumn: 'EPC energy rating',                dmsField: 'EPCEnergyRating' },
         { exportColumn: 'EPC expiry date',                  dmsField: 'EPCExpiryDate',
