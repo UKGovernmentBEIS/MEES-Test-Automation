@@ -157,6 +157,23 @@ npx playwright show-report  # Open after test run
 - Debug with traces: `npx playwright test --trace on`
 - Use interactive mode: `npx playwright test --ui`
 
+## Test Case Management
+
+Test cases are maintained in [`Documentation/Test Cases/General_TestCases.csv`](Documentation/Test%20Cases/General_TestCases.csv) and kept in sync with the Playwright test files using a GitHub Copilot skill.
+
+**This project expects developers to use GitHub Copilot.**
+
+**How it works**:
+- When you create or modify a test file in `tests/test/**/*.spec.ts`, Copilot automatically offers to update the CSV as a final step
+- You can also trigger a sync manually by typing `/update-test-cases` in Copilot Chat
+- The skill checks for duplicates before writing — existing test cases are updated in place, new ones are appended
+- The CSV is tracked in git so test case changes are visible in pull requests alongside code changes
+
+**Skill files** (in `.github/skills/update-test-cases/`):
+- `SKILL.md` — the sync procedure
+- `references/field-definitions.md` — all field lookup values, test type rules, and bug handling rules
+- `references/csv-format-guide.md` — CSV formatting and Playwright extraction patterns
+
 ## Documentation
 
 - **[Authentication.md](Documentation/Authentication.md)**: Detailed auth setup and troubleshooting
@@ -177,6 +194,14 @@ npx playwright show-report  # Open after test run
 │   │   ├── setup/       # Authentication setup
 │   │   └── setup/       # Authentication setup with recovery
 │   └── utils/           # Test utilities
-├── Documentation/       # Guides and setup instructions
+├── Documentation/
+│   ├── Test Cases/
+│   │   └── General_TestCases.csv  # Test case register (git tracked)
+│   └── *.md             # Guides and setup instructions
+├── .github/
+│   ├── skills/
+│   │   └── update-test-cases/     # Copilot skill for CSV sync
+│   └── instructions/
+│       └── test-cases-sync.instructions.md  # Auto-trigger on spec files
 └── playwright.config.ts # Test configuration
 ```
