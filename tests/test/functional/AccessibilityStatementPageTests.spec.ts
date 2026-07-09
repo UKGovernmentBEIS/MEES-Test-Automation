@@ -1,3 +1,7 @@
+/*
+ * Covers the Accessibility Statement page journeys for both unauthenticated and authenticated users,
+ * including the footer Accessibility Statement link and the service-title link behaviour.
+ */
 import { expect, test } from '../../fixtures/authFixtures';
 import { LandingPage } from '../../pages/LandingPage';
 import { AccessibilityStatementPage } from '../../pages/Compliance/AccessibilityStatementPage';
