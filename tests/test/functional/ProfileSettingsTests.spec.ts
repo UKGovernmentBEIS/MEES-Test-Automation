@@ -61,13 +61,6 @@ test.describe('Profile Settings Page', () => {
         expect(await profileSettingsPage.isChangeLinkPresent('Email address')).toBeFalsy();
     });
 
-    test.skip('Councils are listed in alphabetical order', async ({ page }) => {
-        const councils = await profileSettingsPage.getCouncilNames();
-        expect(councils.length).toBeGreaterThan(0);
-        const sorted = [...councils].sort();
-        expect(councils).toEqual(sorted);
-    });
-
     test('Council data sets section displays the correct councils', async ({ page }) => {
         const councils = await profileSettingsPage.getCouncilNames();
         expect(councils.some(c => c.includes('LONDON BOROUGH OF BARNET'))).toBeTruthy();

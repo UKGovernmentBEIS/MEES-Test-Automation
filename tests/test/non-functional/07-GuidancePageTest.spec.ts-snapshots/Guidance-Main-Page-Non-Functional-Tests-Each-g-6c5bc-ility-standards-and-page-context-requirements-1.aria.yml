@@ -11,12 +11,10 @@
   - term: Last updated
   - definition: /\d+ \w+ \d+/
   - heading "Contents" [level=2]
-  - heading "─ Contacting a landlord before issuing a compliance notice" [level=3]:
-    - text: /.*/
+  - heading "Contacting a landlord before issuing a compliance notice" [level=3]:
     - link "Contacting a landlord before issuing a compliance notice":
       - /url: "#contacting"
-  - heading "─ Issuing a compliance notice" [level=3]:
-    - text: /.*/
+  - heading "Issuing a compliance notice" [level=3]:
     - link "Issuing a compliance notice":
       - /url: "#issuing"
   - heading "Contacting a landlord before issuing a compliance notice" [level=2]
@@ -46,4 +44,4 @@
   - paragraph: You can withdraw a compliance notice.
   - paragraph:
     - link "Check the templates section for compliance notice templates.":
-      - /url: ./templates
+      - /url: https://prsminimumenergystandards--meescompl.sandbox.my.site.com/compliance/templates
