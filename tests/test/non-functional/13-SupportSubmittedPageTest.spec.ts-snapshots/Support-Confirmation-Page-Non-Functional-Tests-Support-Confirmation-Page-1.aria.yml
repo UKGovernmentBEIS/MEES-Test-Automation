@@ -1,6 +1,8 @@
 - main:
-  - alert: Support request sent
+  - alert:
+    - heading "Support request sent" [level=1]
+    - text: /Your reference number‎ \d+/
   - heading "What happens next" [level=1]
   - paragraph: We will review your request and contact you if we need more information
   - paragraph: /We aim to respond within \d+ working days/
-  - button "Return to home"
+  - button "Exit this form"

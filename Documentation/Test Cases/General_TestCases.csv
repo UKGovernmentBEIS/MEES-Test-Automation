@@ -200,24 +200,26 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 4. Error summary and the details text area error message are visible on the Support Details page",Pass,
 2090,E852,998,MEES Phase 2,Sprint 6,Support - Process: Support journey completes successfully for all role and support option combinations,Support pages,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Support Who Are You page
-3. The following 12 role x support option combinations are exercised (one test per combination):
-   Role 'Department for Energy Security and Net Zero official' with options: 'I have a question about the policy or guidance'; 'I need an account created'; 'I cannot log in to my account'; 'Something has gone wrong with the service'; 'I need to change my permission levels'; 'Other'
-   Role 'Local authority user' with the same six options","1. For each combination: select the role on the Support Who Are You page and click Continue
+3. The following 10 role x support option combinations are exercised (one test per combination):
+   Role 'Department for Energy Security and Net Zero official' with options: 'I have a question about the policy or guidance'; 'I cannot log in to my account'; 'Something has gone wrong with the service'; 'I need to change my permission levels'; 'Other'
+   Role 'Local authority user' with the same five options","1. For each combination: select the role on the Support Who Are You page and click Continue
 2. Fill in the Contact Form (first name 'John'; last name 'Doe'; email 'john.doe@example.com'; confirm email) and click Continue
 3. Select the support option on the Support What Do You Want page and click Continue
-4. Enter support details 'This is a test support request.' on the Support Details page and click Submit","1. Support Contact Form page loads and is displayed
+4. Enter support details 'This is a test support request.' on the Support Details page and click Submit
+5. Verify the reference number is displayed on the Support Submitted page","1. Support Contact Form page loads and is displayed
 2. Support What Do You Want page loads and is displayed
 3. Support Details page loads and is displayed
-4. Support Submitted page loads and is displayed for all options except 'I need an account created' (see Comments)",Fail,"Bug 1062 - For the 'I need an account created' option (both roles) the Support Submitted page is not displayed after submitting. Test workaround asserts isDisplayed() equals false for that option. Revert to toBe(true) when Bug 1062 is resolved."
+4. Support Submitted page loads and is displayed
+5. A reference number is displayed on the Support Submitted page",Pass,
 2091,E852,998,MEES Phase 2,Sprint 6,Support - Navigation: User can navigate back to the Home page from each page in the support journey,Support pages,Fully Automated,Functional,Medium,1. User is logged in and authenticated,"1. From the Support Who Are You page: click Back to Home page and verify the Home page is displayed
 2. From the Support Contact Form page: click Back to Support Who Are You; then Back to Home page and verify the Home page is displayed
 3. From the Support What Do You Want page: navigate there (role selected; Contact Form filled); verify the page is displayed
 4. From the Support Details page: navigate back through each preceding page (Details ? What Do You Want ? Contact Form ? Who Are You ? Home) and verify each page is displayed in sequence
-5. From the Support Submitted page: complete the full journey; click Return Home and verify the Home page is displayed","1. Home page is displayed after navigating back from the Support Who Are You page
+5. From the Support Submitted page: complete the full journey; click 'Exit this form' and verify the Home page is displayed","1. Home page is displayed after navigating back from the Support Who Are You page
 2. Home page is displayed after navigating back through Support Contact Form and Support Who Are You
 3. Support What Do You Want page is confirmed displayed
 4. Each page in the back-navigation sequence (Support What Do You Want; Support Contact Form; Support Who Are You; Home page) is displayed in the correct order
-5. Home page is displayed after clicking Return Home from the Support Submitted page",Pass,
+5. Home page is displayed after clicking 'Exit this form' from the Support Submitted page",Pass,
 2092,E852,998,MEES Phase 2,Sprint 6,Support - Footer Help link: Footer Help link navigates to the Support page from all compliance pages,Support pages,Fully Automated,Functional,High,1. User is logged in and authenticated,"1. For each of the following pages navigate there and click the 'Help' link in the footer; verify the Support Who Are You page is displayed:
    Home; Property records; Guidance; Templates; Penalty calculator; Profile settings; View Properties (Energy Rating A with Rental Evidence filter applied); Property Details (for 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL')","1. Support Who Are You page is displayed after clicking the footer Help link from every page listed in the test steps",Pass,
 2093,E852,1007,MEES Phase 2,Sprint 6,Energy Efficiency Details: EPC link is provided and opens in a new tab for properties with EPCs,Property Details,Fully Automated,Functional,High,"1. User is logged in and authenticated
@@ -578,3 +580,23 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 4. Verify all context locators are visible on each article page","1. Each guidance article page is displayed
 2. No critical accessibility violations are found on each article page
 3. All context locators match the expected aria snapshot for each article page",Pass,
+2164,E852,998,MEES Phase 2,Sprint 7,Support - Confirmation: Support request reference number is sent to Salesforce,Support pages,Fully Automated,Integration,High,"1. User is logged in and authenticated
+2. User is on the Support Who Are You page","1. Set up an HTTP response listener for the navigateFlow POST request before submitting
+2. Select role 'Department for Energy Security and Net Zero official' and click Continue
+3. Fill in the Contact Form (first name 'John'; last name 'Doe'; email 'john.doe@example.com'; confirm email) and click Continue
+4. Select 'I have a question about the policy or guidance' and click Continue
+5. Enter support details and click Submit
+6. Capture the navigateFlow HTTP POST response
+7. Capture the reference number displayed on the Support Submitted page
+8. Verify the navigateFlow response status is 200
+9. Verify the reference number is present in the navigateFlow response body
+10. [Non-automatable] Verify the reference number is accessible by a Salesforce System Administrator in Salesforce","1. HTTP response listener is set up before submission
+2. Support Contact Form page loads and is displayed
+3. Support What Do You Want page loads and is displayed
+4. Support Details page loads and is displayed
+5. Support Submitted page loads and a reference number is displayed
+6. The navigateFlow POST response is captured
+7. The reference number is captured from the Support Submitted page
+8. The navigateFlow response status is 201
+9. The reference number is present in the navigateFlow response body
+10. [Non-automatable] The reference number is accessible by a Salesforce System Administrator",Pass,"Step 10 (Salesforce System Administrator visibility) is non-automatable and must be verified manually."

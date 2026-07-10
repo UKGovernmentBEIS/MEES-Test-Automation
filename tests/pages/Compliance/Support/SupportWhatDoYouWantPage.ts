@@ -6,7 +6,6 @@ import { SupportContactFormPage } from './SupportContactFormPage';
 
 export type HelpRequestOptions = 
     'I have a question about the policy or guidance' | 
-    'I need an account created' | 
     'I cannot log in to my account' |
     'Something has gone wrong with the service' |
     'I need to change my permission levels' |

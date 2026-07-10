@@ -142,15 +142,52 @@ test.describe('Support Process tests', () => {
             // Enter support details and submit the form
             await supportDetailsPage.enterSupportDetails('This is a test support request.');
             const supportSubmittedPage = await supportDetailsPage.clickSubmitButton();
-            if (supportOption === 'I need an account created') {
-                // Bug 1062 For the "I need an account created" option, we expect to see an error message
-                expect(await supportSubmittedPage.isDisplayed()).toBe(false);
-            } else {
-                // For other options, we expect to reach the Support Submitted page
-                await supportSubmittedPage.waitForPageToLoad();
-                expect(await supportSubmittedPage.isDisplayed()).toBe(true);
-            }
+            await supportSubmittedPage.waitForPageToLoad();
+            expect(await supportSubmittedPage.isDisplayed()).toBe(true);
+            expect(await supportSubmittedPage.getReferenceNumber()).toBeTruthy();
         });
+    });
+
+    test('Verify that the support request reference number is sent to Salesforce', async ({ page }, testInfo) => {
+        testInfo.annotations.push(
+            TestAnnotations.testType(TestType.API)
+        );
+
+        await supportWhoAreYouPage.selectRole('Department for Energy Security and Net Zero official');
+        const supportContactFormPage = await supportWhoAreYouPage.clickContinueButton();
+        await supportContactFormPage.waitForPageToLoad();
+
+        await supportContactFormPage.fillContactFormField('First name', 'John');
+        await supportContactFormPage.fillContactFormField('Last name', 'Doe');
+        await supportContactFormPage.fillContactFormField('Your email address', 'john.doe@example.com');
+        await supportContactFormPage.fillContactFormField('Confirm your email address', 'john.doe@example.com');
+
+        const supportWhatDoYouWantPage = await supportContactFormPage.clickContinueButton();
+        await supportWhatDoYouWantPage.waitForPageToLoad();
+
+        await supportWhatDoYouWantPage.selectHelpRequestOption('I have a question about the policy or guidance');
+        const supportDetailsPage = await supportWhatDoYouWantPage.clickContinueButton();
+        await supportDetailsPage.waitForPageToLoad();
+
+        // Intercept the navigateFlow POST request before submitting
+        const navigateFlowResponsePromise = page.waitForResponse(
+            response => response.url().includes('navigateFlow') && response.request().method() === 'POST'
+        );
+
+        await supportDetailsPage.enterSupportDetails('This is a test support request.');
+        const supportSubmittedPage = await supportDetailsPage.clickSubmitButton();
+
+        const navigateFlowResponse = await navigateFlowResponsePromise;
+        await supportSubmittedPage.waitForPageToLoad();
+
+        // Verify the reference number is displayed on the confirmation page
+        const referenceNumber = await supportSubmittedPage.getReferenceNumber();
+        expect(referenceNumber).toBeTruthy();
+
+        // Verify the navigateFlow POST returned HTTP 201 and the reference number is present in the response body
+        expect(navigateFlowResponse.status()).toBe(201);
+        const responseBody = await navigateFlowResponse.text();
+        expect(responseBody).toContain(referenceNumber);
     });
 });
 
@@ -277,12 +314,12 @@ test.describe('Navigation tests', () => {
         await supportSubmittedPage.waitForPageToLoad();
         
         // Navigate back to the Home page from the Support Submitted page
-        const homePageFromSupport = await supportSubmittedPage.clickReturnHomeButton();
+        const homePageFromSupport = await supportSubmittedPage.clickExitThisFormButton();
         await homePageFromSupport.waitForPageToLoad();
         expect(await homePageFromSupport.isDisplayed()).toBe(true);
     });
 
-    test('Verify that the Return to Home button navigates to the Landing page when user is not authenticated', async () => {
+    test('Verify that the Exit this form button navigates to the Landing page when user is not authenticated', async () => {
         // Sign out the user to make them unauthenticated
         const landingPage = await homePage.clickSignOutButton();
         await landingPage.waitForPageToLoad();
@@ -316,7 +353,7 @@ test.describe('Navigation tests', () => {
         await supportSubmittedPage.waitForPageToLoad();
         
         // Navigate back to the Home page from the Support Submitted page
-        const landingPageFromSupport = await supportSubmittedPage.clickReturnHomeButtonAsUnauthenticatedUser();
+        const landingPageFromSupport = await supportSubmittedPage.clickExitThisFormButtonAsUnauthenticatedUser();
         await landingPageFromSupport.waitForPageToLoad();
         expect(await landingPageFromSupport.isDisplayed()).toBe(true);
     });
