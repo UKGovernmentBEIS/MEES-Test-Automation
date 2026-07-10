@@ -123,7 +123,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 2. User is on the Filter Properties page","1. Apply filters and trigger the CSV export from the View Properties page
 2. Capture the filename of the downloaded CSV file","1. Export triggers successfully and a CSV file is downloaded
 2. The filename matches the pattern MEES_Properties_YYYY-MM-DDThh-mm-ss.csv ? where YYYY is a 4-digit year; MM is a 2-digit month; DD is a 2-digit day; T is a literal separator; hh is a 2-digit hour; mm is a 2-digit minute; ss is a 2-digit second (for example MEES_Properties_2026-04-28T13-38-21.csv)",Pass,
- 2050,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Export button is not displayed when there are no records,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2050,E839,791,MEES Phase 2,Sprint 2,Export - Structural: Export button is not displayed when there are no records,View Properties Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Filter Properties page","1. Apply a filter that returns no results (e.g. set Town filter to a value that does not exist in the dataset)
 2. Navigate to the View Properties page
 3. Inspect whether the export button is present on the page","1. Filters are applied and View Properties page loads
@@ -221,7 +221,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 4. Each page in the back-navigation sequence (Support What Do You Want; Support Contact Form; Support Who Are You; Home page) is displayed in the correct order
 5. Home page is displayed after clicking 'Exit this form' from the Support Submitted page",Pass,
 2092,E852,998,MEES Phase 2,Sprint 6,Support - Footer Help link: Footer Help link navigates to the Support page from all compliance pages,Support pages,Fully Automated,Functional,High,1. User is logged in and authenticated,"1. For each of the following pages navigate there and click the 'Help' link in the footer; verify the Support Who Are You page is displayed:
-   Home; Property records; Guidance; Templates; Penalty calculator; Profile settings; View Properties (Energy Rating A with Rental Evidence filter applied); Property Details (for 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL')","1. Support Who Are You page is displayed after clicking the footer Help link from every page listed in the test steps",Pass,
+   Home; Property records; Guidance; Templates; Penalty calculator; Profile settings; View Properties (Energy Rating A with Rental Evidence filter applied); Property Details (for 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL')",1. Support Who Are You page is displayed after clicking the footer Help link from every page listed in the test steps,Pass,
 2093,E852,1007,MEES Phase 2,Sprint 6,Energy Efficiency Details: EPC link is provided and opens in a new tab for properties with EPCs,Property Details,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Filter Properties page","1. Set the Energy Rating filter to 'B' and click 'Apply filters'
 2. Wait for the View Properties page to load and capture the first property address from the search results
@@ -247,7 +247,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 4. 'Energy efficiency details' tab is displayed and active
 5. The EPC certificate link is not present on the page",Pass,
 2095,E852,1011,MEES Phase 2,Sprint 6,Penalty Calculator: Pound prefix is displayed in the rateable value input field,Penalty Calculator,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
-2. User is on the Penalty Calculator page","1. Inspect the rateable value input field for a pound prefix symbol","1. The rateable value input field displays a pound (�) prefix symbol",Pass,
+2. User is on the Penalty Calculator page",1. Inspect the rateable value input field for a pound prefix symbol,1. The rateable value input field displays a pound (�) prefix symbol,Pass,
 2096,E852,1011,MEES Phase 2,Sprint 6,Penalty Calculator: Pound prefix in the rateable value input field is ignored when calculating the penalty,Penalty Calculator,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Penalty Calculator page","1. Enter '�50,000' as the rateable value and select 'Less than 3 months' as the breach period
 2. Click Calculate
@@ -259,7 +259,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 2. Inspect the 'Possible rental evidence from EPC register' field
 3. Inspect the 'Possible rental evidence from Companies House' field","1. The 'Property details' tab is displayed and active
 2. 'Possible rental evidence from EPC register' displays 'Mandatory issue (Property to let) EPC transaction type'
-3. 'Possible rental evidence from Companies House' displays 'Property owner has letting company Standard Industrial Classification code'",Fail,"Bug 1031 - 'Invalid PossibleEvidenceEpcTransactionType for a property with multiple EPC Certificates'. Currently 'Possible rental evidence from EPC register' incorrectly displays 'Not found' instead of 'Mandatory issue (Property to let) EPC transaction type' for properties with multiple EPC certificates. Automation workaround asserts 'Not found' for the EPC register field. Revert workaround to assert 'Mandatory issue (Property to let) EPC transaction type' when Bug 1031 is resolved."
+3. 'Possible rental evidence from Companies House' displays 'Property owner has letting company Standard Industrial Classification code'",Fail,Bug 1031 - 'Invalid PossibleEvidenceEpcTransactionType for a property with multiple EPC Certificates'. Currently 'Possible rental evidence from EPC register' incorrectly displays 'Not found' instead of 'Mandatory issue (Property to let) EPC transaction type' for properties with multiple EPC certificates. Automation workaround asserts 'Not found' for the EPC register field. Revert workaround to assert 'Mandatory issue (Property to let) EPC transaction type' when Bug 1031 is resolved.
 2098,E852,1000,MEES Phase 2,Sprint 7,Property Details: 'Possible rental evidence from EPC register' shows 'Mandatory issue (Property to let) EPC transaction type' and 'Possible rental evidence from Companies House' shows 'Not found' when only EPC evidence is present,Property Details,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User has navigated to the Property Details page for a property where the most recent EPC has transaction type 'Mandatory issue (Property to let)' (DMS possibleEvidenceEpcTransactionType = true) AND the property owner does NOT have a letting company SIC code (DMS possibleEvidenceSiccode = false)","1. Select the 'Property details' tab
 2. Inspect the 'Possible rental evidence from EPC register' field
@@ -313,25 +313,25 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 2. Switch to the newly opened browser tab
 3. Verify the Filter Properties page is displayed","1. A new browser tab is opened
 2. The new tab becomes active
-3. Filter Properties page is displayed in the new tab",Pass,""
+3. Filter Properties page is displayed in the new tab",Pass,
 2107,E852,,MEES Phase 2,Sprint 7,Home Page Navigation: Guidance navigation tab opens Guidance page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Home page","1. Middle-click the 'Guidance' navigation tab
 2. Switch to the newly opened browser tab
 3. Verify the Guidance page is displayed","1. A new browser tab is opened
 2. The new tab becomes active
-3. Guidance page is displayed in the new tab",Pass,""
+3. Guidance page is displayed in the new tab",Pass,
 2108,E852,,MEES Phase 2,Sprint 7,Home Page Navigation: Templates navigation tab opens Templates page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Home page","1. Middle-click the 'Templates' navigation tab
 2. Switch to the newly opened browser tab
 3. Verify the Templates page is displayed","1. A new browser tab is opened
 2. The new tab becomes active
-3. Templates page is displayed in the new tab",Pass,""
+3. Templates page is displayed in the new tab",Pass,
 2109,E852,,MEES Phase 2,Sprint 7,Home Page Navigation: Penalty Calculator navigation tab opens Penalty Calculator page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Home page","1. Middle-click the 'Penalty calculator' navigation tab
 2. Switch to the newly opened browser tab
 3. Verify the Penalty Calculator page is displayed","1. A new browser tab is opened
 2. The new tab becomes active
-3. Penalty Calculator page is displayed in the new tab",Pass,""
+3. Penalty Calculator page is displayed in the new tab",Pass,
 2110,E852,998,MEES Phase 2,Sprint 7,Home Page Navigation: Footer Help link opens Support Who Are You page in a new tab,Home Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Home page","1. Middle-click the 'Help' link in the page footer
 2. Switch to the newly opened browser tab
@@ -365,143 +365,143 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 2. User is on the Cookies Settings page or the Support Who Are You page","1. Left-click the service title link ('Check if non-domestic properties meet minimum energy efficiency standards')
 2. Middle-click the service title link","1. Landing page is displayed
 2. Landing page is displayed in a new browser tab",Pass,
-2115,,MEES Phase 2,Sprint 7,Privacy Notice Page - Unauthenticated: Footer Privacy Notice link opens the Privacy Notice page when unauthenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is not authenticated
+2115,,,MEES Phase 2,Sprint 7,Privacy Notice Page - Unauthenticated: Footer Privacy Notice link opens the Privacy Notice page when unauthenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is not authenticated
 2. User is on the Landing page","1. Navigate to the Landing page
-2. Click the footer Privacy Notice link","1. Privacy Notice page is displayed",Pass,
-2116,,MEES Phase 2,Sprint 7,Privacy Notice Page - Unauthenticated: Service title link navigates to the Landing page when unauthenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is not authenticated
-2. User is on the Privacy Notice page","1. Click the service title link on the Privacy Notice page","1. Landing page is displayed",Pass,
-2117,,MEES Phase 2,Sprint 7,Privacy Notice Page - Unauthenticated: Service title link opens the Landing page in a new tab when unauthenticated,Privacy Notice Page,Fully Automated,Functional,Medium,"1. User is not authenticated
-2. User is on the Privacy Notice page","1. Open the service title link in a new browser tab","1. Landing page is displayed in a new browser tab",Pass,
-2118,,MEES Phase 2,Sprint 7,Privacy Notice Page - Authenticated: Footer Privacy Notice link opens the Privacy Notice page when authenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. Click the footer Privacy Notice link",1. Privacy Notice page is displayed,Pass,
+2116,,,MEES Phase 2,Sprint 7,Privacy Notice Page - Unauthenticated: Service title link navigates to the Landing page when unauthenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is not authenticated
+2. User is on the Privacy Notice page",1. Click the service title link on the Privacy Notice page,1. Landing page is displayed,Pass,
+2117,,,MEES Phase 2,Sprint 7,Privacy Notice Page - Unauthenticated: Service title link opens the Landing page in a new tab when unauthenticated,Privacy Notice Page,Fully Automated,Functional,Medium,"1. User is not authenticated
+2. User is on the Privacy Notice page",1. Open the service title link in a new browser tab,1. Landing page is displayed in a new browser tab,Pass,
+2118,,,MEES Phase 2,Sprint 7,Privacy Notice Page - Authenticated: Footer Privacy Notice link opens the Privacy Notice page when authenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Home page","1. Navigate to the Home page
-2. Click the footer Privacy Notice link","1. Privacy Notice page is displayed",Pass,
-2119,,MEES Phase 2,Sprint 7,Privacy Notice Page - Authenticated: Service title link navigates to the Home page when authenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
-2. User is on the Privacy Notice page","1. Click the service title link on the Privacy Notice page","1. Home page is displayed",Pass,
-2120,,MEES Phase 2,Sprint 7,Privacy Notice Page - Authenticated: Service title link opens the Home page in a new tab when authenticated,Privacy Notice Page,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
-2. User is on the Privacy Notice page","1. Open the service title link in a new browser tab","1. Home page is displayed in a new browser tab",Pass,
-2121,,MEES Phase 2,Sprint 7,Privacy Notice Page: Context and accessibility are verified on the Privacy Notice page,Privacy Notice Page,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. Click the footer Privacy Notice link",1. Privacy Notice page is displayed,Pass,
+2119,,,MEES Phase 2,Sprint 7,Privacy Notice Page - Authenticated: Service title link navigates to the Home page when authenticated,Privacy Notice Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Privacy Notice page",1. Click the service title link on the Privacy Notice page,1. Home page is displayed,Pass,
+2120,,,MEES Phase 2,Sprint 7,Privacy Notice Page - Authenticated: Service title link opens the Home page in a new tab when authenticated,Privacy Notice Page,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Privacy Notice page",1. Open the service title link in a new browser tab,1. Home page is displayed in a new browser tab,Pass,
+2121,,,MEES Phase 2,Sprint 7,Privacy Notice Page: Context and accessibility are verified on the Privacy Notice page,Privacy Notice Page,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
 2. User is on the Privacy Notice page","1. Navigate to the Privacy Notice page
 2. Run the accessibility scanner on the Privacy Notice page
 3. Verify all context locators are visible on the Privacy Notice page","1. Privacy Notice page is displayed
 2. No critical accessibility violations are found
 3. All context locators match the expected aria snapshot",Pass,
-2122,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Unauthenticated: Footer Accessibility Statement link opens the Accessibility Statement page when unauthenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is not authenticated
+2122,,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Unauthenticated: Footer Accessibility Statement link opens the Accessibility Statement page when unauthenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is not authenticated
 2. User is on the Landing page","1. Navigate to the Landing page
-2. Click the footer Accessibility Statement link","1. Accessibility Statement page is displayed",Pass,
-2123,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Unauthenticated: Service title link navigates to the Landing page when unauthenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is not authenticated
-2. User is on the Accessibility Statement page","1. Click the service title link on the Accessibility Statement page","1. Landing page is displayed",Pass,
-2124,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Unauthenticated: Service title link opens the Landing page in a new tab when unauthenticated,Accessibility Statement Page,Fully Automated,Functional,Medium,"1. User is not authenticated
-2. User is on the Accessibility Statement page","1. Open the service title link in a new browser tab","1. Landing page is displayed in a new browser tab",Pass,
-2125,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Authenticated: Footer Accessibility Statement link opens the Accessibility Statement page when authenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. Click the footer Accessibility Statement link",1. Accessibility Statement page is displayed,Pass,
+2123,,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Unauthenticated: Service title link navigates to the Landing page when unauthenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is not authenticated
+2. User is on the Accessibility Statement page",1. Click the service title link on the Accessibility Statement page,1. Landing page is displayed,Pass,
+2124,,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Unauthenticated: Service title link opens the Landing page in a new tab when unauthenticated,Accessibility Statement Page,Fully Automated,Functional,Medium,"1. User is not authenticated
+2. User is on the Accessibility Statement page",1. Open the service title link in a new browser tab,1. Landing page is displayed in a new browser tab,Pass,
+2125,,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Authenticated: Footer Accessibility Statement link opens the Accessibility Statement page when authenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Home page","1. Navigate to the Home page
-2. Click the footer Accessibility Statement link","1. Accessibility Statement page is displayed",Pass,
-2126,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Authenticated: Service title link navigates to the Home page when authenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
-2. User is on the Accessibility Statement page","1. Click the service title link on the Accessibility Statement page","1. Home page is displayed",Pass,
-2127,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Authenticated: Service title link opens the Home page in a new tab when authenticated,Accessibility Statement Page,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
-2. User is on the Accessibility Statement page","1. Open the service title link in a new browser tab","1. Home page is displayed in a new browser tab",Pass,
-2128,,MEES Phase 2,Sprint 7,Accessibility Statement Page: Context and accessibility are verified on the Accessibility Statement page,Accessibility Statement Page,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. Click the footer Accessibility Statement link",1. Accessibility Statement page is displayed,Pass,
+2126,,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Authenticated: Service title link navigates to the Home page when authenticated,Accessibility Statement Page,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Accessibility Statement page",1. Click the service title link on the Accessibility Statement page,1. Home page is displayed,Pass,
+2127,,,MEES Phase 2,Sprint 7,Accessibility Statement Page - Authenticated: Service title link opens the Home page in a new tab when authenticated,Accessibility Statement Page,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Accessibility Statement page",1. Open the service title link in a new browser tab,1. Home page is displayed in a new browser tab,Pass,
+2128,,,MEES Phase 2,Sprint 7,Accessibility Statement Page: Context and accessibility are verified on the Accessibility Statement page,Accessibility Statement Page,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
 2. User is on the Accessibility Statement page","1. Navigate to the Accessibility Statement page
 2. Run the accessibility scanner on the Accessibility Statement page
 3. Verify all context locators are visible on the Accessibility Statement page","1. Accessibility Statement page is displayed
 2. No critical accessibility violations are found
 3. All context locators match the expected aria snapshot",Pass,
-2129,,MEES Phase 2,Sprint 7,Profile settings link is visible in the global header on authenticated pages,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2129,,,MEES Phase 2,Sprint 7,Profile settings link is visible in the global header on authenticated pages,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Home page","1. Navigate to the Home page
 2. Locate the global header","1. Home page is displayed
 2. The Profile settings link is visible",Pass,
-2130,,MEES Phase 2,Sprint 7,Profile settings link navigates to the Profile settings page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2130,,,MEES Phase 2,Sprint 7,Profile settings link navigates to the Profile settings page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Home page","1. Navigate to the Home page
 2. Click the Profile settings link","1. Profile settings page is displayed
 2. The browser URL includes '/profile'",Pass,
-2131,,MEES Phase 2,Sprint 7,Profile settings page has a Back link that returns to the home page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2131,,,MEES Phase 2,Sprint 7,Profile settings page has a Back link that returns to the home page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Profile settings page","1. Navigate to the Profile settings page
 2. Click the Back link","1. The Back link is visible
 2. Home page is displayed",Pass,
-2132,,MEES Phase 2,Sprint 7,Contact details section displays the correct user details,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2132,,,MEES Phase 2,Sprint 7,Contact details section displays the correct user details,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Profile settings page","1. Navigate to the Profile settings page
 2. Review the contact details section","1. First name displays 'test'
 2. Last name matches one of the expected test account values
 3. Email address matches one of the expected test account values",Pass,
-2133,,MEES Phase 2,Sprint 7,Change link is present for first name and last name but not email address,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2133,,,MEES Phase 2,Sprint 7,Change link is present for first name and last name but not email address,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Profile settings page","1. Navigate to the Profile settings page
 2. Review the contact details fields","1. A Change link is displayed for First name
 2. A Change link is displayed for Last name
 3. No Change link is displayed for Email address",Pass,
-2134,,MEES Phase 2,Sprint 7,Council data sets section displays the correct councils,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2134,,,MEES Phase 2,Sprint 7,Council data sets section displays the correct councils,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Profile settings page","1. Navigate to the Profile settings page
 2. Review the Council data sets section","1. The list includes the London Borough of Barnet
 2. The list includes the London Borough of Bexley",Pass,
-2135,,MEES Phase 2,Sprint 7,If you need help section is displayed with a Help link,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2135,,,MEES Phase 2,Sprint 7,If you need help section is displayed with a Help link,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Profile settings page","1. Navigate to the Profile settings page
 2. Review the 'If you need help' section","1. The 'If you need help' section is displayed
 2. The Help link is displayed",Pass,
-2136,,MEES Phase 2,Sprint 7,Back button on Change contact details page returns to Profile settings page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2136,,,MEES Phase 2,Sprint 7,Back button on Change contact details page returns to Profile settings page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Profile settings page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Click the Back button","1. Change contact details page is displayed
 2. Profile settings page is displayed",Pass,
-2137,,MEES Phase 2,Sprint 7,Form fields are pre-populated with existing contact details,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2137,,,MEES Phase 2,Sprint 7,Form fields are pre-populated with existing contact details,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Profile settings page","1. Navigate to the Profile settings page
 2. Open the Change first name page","1. First name field is pre-populated with 'test'
 2. Last name field is pre-populated with an expected test account value",Pass,
-2138,,MEES Phase 2,Sprint 7,Validation error is shown when first name is empty,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2138,,,MEES Phase 2,Sprint 7,Validation error is shown when first name is empty,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Clear the first name field
-4. Click Save and continue","1. Validation error 'Enter a first name' is displayed",Pass,
-2139,,MEES Phase 2,Sprint 7,Validation error is shown when last name is empty,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+4. Click Save and continue",1. Validation error 'Enter a first name' is displayed,Pass,
+2139,,,MEES Phase 2,Sprint 7,Validation error is shown when last name is empty,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Clear the last name field
-4. Click Save and continue","1. Validation error 'Enter a last name' is displayed",Pass,
-2140,,MEES Phase 2,Sprint 7,Save and continue navigates to Check your contact details page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+4. Click Save and continue",1. Validation error 'Enter a last name' is displayed,Pass,
+2140,,,MEES Phase 2,Sprint 7,Save and continue navigates to Check your contact details page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Click Save and continue","1. Check your contact details page is displayed
 2. The browser URL includes '/profile#CheckDetailsSummary'",Pass,
-2141,,MEES Phase 2,Sprint 7,Check contact details page displays the updated contact details,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2141,,,MEES Phase 2,Sprint 7,Check contact details page displays the updated contact details,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Continue to the Check contact details page","1. The displayed first name matches the original value
 2. The displayed last name matches the original value",Pass,
-2142,,MEES Phase 2,Sprint 7,Back button on Check contact details page returns to Change contact details page without saving,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2142,,,MEES Phase 2,Sprint 7,Back button on Check contact details page returns to Change contact details page without saving,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Continue to the Check contact details page
 4. Click the Back button","1. Change contact details page is displayed
 2. No changes are saved",Pass,
-2143,,MEES Phase 2,Sprint 7,Confirm and save navigates to the confirmation page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2143,,,MEES Phase 2,Sprint 7,Confirm and save navigates to the confirmation page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Continue to the Check contact details page
 4. Click Confirm and save","1. Confirmation page is displayed
 2. The browser URL includes '/profile#ContactDetailsUpdated'",Pass,
-2144,,MEES Phase 2,Sprint 7,Confirmation panel displays the correct message,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2144,,,MEES Phase 2,Sprint 7,Confirmation panel displays the correct message,Profile settings,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Continue to the Check contact details page
-4. Confirm and save the changes","1. Confirmation panel displays 'Your updated contact details have been saved'",Pass,
-2145,,MEES Phase 2,Sprint 7,Return to home button navigates to the service home page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
+4. Confirm and save the changes",1. Confirmation panel displays 'Your updated contact details have been saved',Pass,
+2145,,,MEES Phase 2,Sprint 7,Return to home button navigates to the service home page,Profile settings,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Continue to the Check contact details page
 4. Confirm and save the changes
 5. Click Return to home","1. Service home page is displayed
 2. The browser URL includes '/landing-page'",Pass,
-2146,,MEES Phase 2,Sprint 7,Profile Settings Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2146,,,MEES Phase 2,Sprint 7,Profile Settings Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
 2. User is on the Profile settings page","1. Navigate to the Profile settings page
 2. Run the accessibility scanner on the page
 3. Verify all context locators are visible","1. Profile settings page is displayed
 2. No critical accessibility violations are found
 3. All context locators match the expected aria snapshot",Pass,
-2147,,MEES Phase 2,Sprint 7,Change Contact Details Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2147,,,MEES Phase 2,Sprint 7,Change Contact Details Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
 2. User is on the Profile settings page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Run the accessibility scanner on the page
 4. Verify all context locators are visible","1. Change contact details page is displayed
 2. No critical accessibility violations are found
 3. All context locators match the expected aria snapshot",Pass,
-2148,,MEES Phase 2,Sprint 7,Change Contact Details Page - First Name Validation Error,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2148,,,MEES Phase 2,Sprint 7,Change Contact Details Page - First Name Validation Error,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Clear the first name field
@@ -510,7 +510,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 6. Verify all context locators are visible","1. First name validation error is displayed
 2. No critical accessibility violations are found
 3. All context locators match the expected aria snapshot",Pass,
-2149,,MEES Phase 2,Sprint 7,Change Contact Details Page - Last Name Validation Error,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2149,,,MEES Phase 2,Sprint 7,Change Contact Details Page - Last Name Validation Error,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Clear the last name field
@@ -519,7 +519,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 6. Verify all context locators are visible","1. Last name validation error is displayed
 2. No critical accessibility violations are found
 3. All context locators match the expected aria snapshot",Pass,
-2150,,MEES Phase 2,Sprint 7,Check Contact Details Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2150,,,MEES Phase 2,Sprint 7,Check Contact Details Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Continue to the Check contact details page
@@ -527,7 +527,7 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 5. Verify all context locators are visible","1. Check contact details page is displayed
 2. No critical accessibility violations are found
 3. All context locators match the expected aria snapshot",Pass,
-2151,,MEES Phase 2,Sprint 7,Contact Details Confirmation Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2151,,,MEES Phase 2,Sprint 7,Contact Details Confirmation Page,Profile settings,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
 2. User is on the Change contact details page","1. Navigate to the Profile settings page
 2. Open the Change first name page
 3. Continue to the Check contact details page
@@ -536,44 +536,44 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 6. Verify all context locators are visible","1. Contact details confirmation page is displayed
 2. No critical accessibility violations are found
 3. All context locators match the expected aria snapshot",Pass,
-2152,,MEES Phase 2,Sprint 7,Guidance Main page is displayed,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2152,,,MEES Phase 2,Sprint 7,Guidance Main page is displayed,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Home page","1. Navigate to the Home page
-2. Open the Guidance page","1. Guidance page is displayed",Pass,
-2153,,MEES Phase 2,Sprint 7,Navigation to the Home page from the Guidance breadcrumb works correctly,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. Open the Guidance page",1. Guidance page is displayed,Pass,
+2153,,,MEES Phase 2,Sprint 7,Navigation to the Home page from the Guidance breadcrumb works correctly,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Guidance page","1. Navigate to the Guidance page
-2. Click the Home breadcrumb","1. Home page is displayed",Pass,
-2154,,MEES Phase 2,Sprint 7,Navigation to the View Properties page using the Guidance tab works correctly,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. Click the Home breadcrumb",1. Home page is displayed,Pass,
+2154,,,MEES Phase 2,Sprint 7,Navigation to the View Properties page using the Guidance tab works correctly,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Guidance page","1. Navigate to the Guidance page
-2. Click the Property records tab","1. View Properties page is displayed",Pass,
-2155,,MEES Phase 2,Sprint 7,Navigation to the Penalty Calculator page using the Guidance tab works correctly,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. Click the Property records tab",1. View Properties page is displayed,Pass,
+2155,,,MEES Phase 2,Sprint 7,Navigation to the Penalty Calculator page using the Guidance tab works correctly,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Guidance page","1. Navigate to the Guidance page
-2. Click the Penalty Calculator tab","1. Penalty Calculator page is displayed",Pass,
-2156,,MEES Phase 2,Sprint 7,Guidance page header link navigates to the Home page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. Click the Penalty Calculator tab",1. Penalty Calculator page is displayed,Pass,
+2156,,,MEES Phase 2,Sprint 7,Guidance page header link navigates to the Home page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on the Guidance page","1. Navigate to the Guidance page
-2. Click the page header link","1. Home page is displayed",Pass,
-2157,,MEES Phase 2,Sprint 7,Guidance article breadcrumb navigation returns to the Home page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. Click the page header link",1. Home page is displayed,Pass,
+2157,,,MEES Phase 2,Sprint 7,Guidance article breadcrumb navigation returns to the Home page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on a guidance article page","1. Open a guidance article page
-2. Click the Home breadcrumb","1. Home page is displayed",Pass,
-2158,,MEES Phase 2,Sprint 7,Guidance article breadcrumb navigation returns to the Guidance Main page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. Click the Home breadcrumb",1. Home page is displayed,Pass,
+2158,,,MEES Phase 2,Sprint 7,Guidance article breadcrumb navigation returns to the Guidance Main page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on a guidance article page","1. Open a guidance article page
-2. Click the Guidance breadcrumb","1. Guidance page is displayed",Pass,
-2159,,MEES Phase 2,Sprint 7,Guidance article tab navigation returns to the View Properties page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. Click the Guidance breadcrumb",1. Guidance page is displayed,Pass,
+2159,,,MEES Phase 2,Sprint 7,Guidance article tab navigation returns to the View Properties page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on a guidance article page","1. Open a guidance article page
-2. Click the Property records tab","1. View Properties page is displayed",Pass,
-2160,,MEES Phase 2,Sprint 7,External legislation link opens in a new tab,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. Click the Property records tab",1. View Properties page is displayed,Pass,
+2160,,,MEES Phase 2,Sprint 7,External legislation link opens in a new tab,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on a guidance article page with an external legislation link","1. Open the guidance article page
 2. Click the external legislation link","1. A new browser tab is opened
 2. The legislation page is displayed",Pass,
-2161,,MEES Phase 2,Sprint 7,Penalty Calculator link navigates to the Penalty Calculator page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2161,,,MEES Phase 2,Sprint 7,Penalty Calculator link navigates to the Penalty Calculator page,Guidance,Fully Automated,Functional,High,"1. User is logged in and authenticated
 2. User is on a guidance article page with a Penalty Calculator link","1. Open the guidance article page
-2. Click the Penalty Calculator link","1. Penalty Calculator page is displayed",Pass,
-2162,,MEES Phase 2,Sprint 7,Guidance Main page meets accessibility and page context requirements,Guidance,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2. Click the Penalty Calculator link",1. Penalty Calculator page is displayed,Pass,
+2162,,,MEES Phase 2,Sprint 7,Guidance Main page meets accessibility and page context requirements,Guidance,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
 2. User is on the Guidance page","1. Navigate to the Guidance page
 2. Run the accessibility scanner on the page
 3. Verify all context locators are visible","1. Guidance page is displayed
 2. No critical accessibility violations are found
 3. All context locators match the expected aria snapshot",Pass,
-2163,,MEES Phase 2,Sprint 7,Each guidance article page meets accessibility and page context requirements,Guidance,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
+2163,,,MEES Phase 2,Sprint 7,Each guidance article page meets accessibility and page context requirements,Guidance,Fully Automated,Accessibility,Medium,"1. User is logged in and authenticated
 2. User is on the Guidance page","1. Navigate to the Guidance page
 2. Open each guidance article page in turn
 3. Run the accessibility scanner on each article page
@@ -599,4 +599,30 @@ Test Case ID,Epic ID,User Story ID,Projects,Sprint,Test Case Title,Feature,Test 
 7. The reference number is captured from the Support Submitted page
 8. The navigateFlow response status is 201
 9. The reference number is present in the navigateFlow response body
-10. [Non-automatable] The reference number is accessible by a Salesforce System Administrator",Pass,"Step 10 (Salesforce System Administrator visibility) is non-automatable and must be verified manually."
+10. [Non-automatable] The reference number is accessible by a Salesforce System Administrator",Pass,Step 10 (Salesforce System Administrator visibility) is non-automatable and must be verified manually.
+2165,,,MEES Phase 2,Sprint 7,Should add a comment and verify it appears in previous comments with annotation,Property Details,Fully Automated,Functional,High,"1. User is logged in and authenticated
+2. User is on the Property Details page for 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL'","1. Enter a unique comment text in the comment text area
+2. Click the 'Save comment' button
+3. Retrieve all comments displayed in the Previous Comments section
+4. Verify the saved comment text appears in the Previous Comments section
+5. Verify the comment annotation matches the format 'Added by [user full name] on [ordinal date]'","1. Unique comment text is entered successfully
+2. Comment is saved and the Previous Comments section updates
+3. Previous Comments section loads with at least one comment
+4. The saved comment text appears in the Previous Comments section
+5. The comment annotation matches 'Added by [user full name] on [ordinal date]' where the user full name is the authenticated user's display name and the date is today's date formatted with an ordinal suffix (e.g. '10th July 2026')",Pass,
+2166,,,MEES Phase 2,Sprint 7,Should not save comment when cancel is clicked,Property Details,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Property Details page for 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL'","1. Enter a unique comment text in the comment text area
+2. Click the 'Cancel' link
+3. Wait for the Property Details page to reload
+4. Retrieve all comments displayed in the Previous Comments section
+5. Verify the entered comment text does not appear in the Previous Comments section","1. Unique comment text is entered successfully
+2. Cancel link is clicked and the comment input is discarded
+3. Property Details page reloads successfully
+4. Previous Comments section loads with any existing comments
+5. The entered comment text does not appear in the Previous Comments section",Pass,
+2167,,,MEES Phase 2,Sprint 7,Should display error when trying to save an empty comment,Property Details,Fully Automated,Functional,Medium,"1. User is logged in and authenticated
+2. User is on the Property Details page for 'Unit 47, Acorn Industrial Park, Crayford Road, Crayford, DARTFORD, DA1 4AL'","1. Leave the comment text area empty
+2. Click the 'Save comment' button
+3. Inspect the comment text area for an error state","1. Comment text area is empty
+2. Save comment button is clicked
+3. The comment text area is displayed in an error state (govuk-textarea--error class is applied)",Pass,

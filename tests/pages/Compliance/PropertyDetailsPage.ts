@@ -1,5 +1,6 @@
 import { Page, Locator, APIRequestContext } from '@playwright/test';
 import { ElementUtilities } from '../../utils/ElementUtilities';
+import { getCurrentUserAccountName } from '../../utils/AuthUtils';
 import { BaseCompliancePage } from './BaseCompliancePage';
 import { FilterPropertiesPage } from './FilterPropertiesPage';
 import { ViewPropertiesPage } from './ViewPropertiesPage';
@@ -375,6 +376,25 @@ export class PropertyDetailsPage extends BaseCompliancePage {
             .then(
                 () => this.page.locator('c-mees-property-comments div.comment-meta').locator('..')
             );;
+    }
+
+    getExpectedCommentAnnotation(): string {
+        const userName = getCurrentUserAccountName(this.page);
+        const currentDate = new Date();
+        const day = currentDate.getDate();
+        const getOrdinalSuffix = (d: number) => {
+            if (d > 3 && d < 21) return 'th';
+            switch (d % 10) {
+                case 1: return 'st';
+                case 2: return 'nd';
+                case 3: return 'rd';
+                default: return 'th';
+            }
+        };
+        const dayWithSuffix = `${day}${getOrdinalSuffix(day)}`;
+        const month = currentDate.toLocaleDateString('en-GB', { month: 'long' });
+        const year = currentDate.getFullYear();
+        return `Added by ${userName} on ${dayWithSuffix} ${month} ${year}`;
     }
 
     async getCommentsTestData(): Promise<Comment[]> {

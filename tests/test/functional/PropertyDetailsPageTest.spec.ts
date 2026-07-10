@@ -6,26 +6,8 @@ import { LandingPage } from '../../pages/LandingPage';
 import { TestType, TestAnnotations } from '../../utils/TestTypes';
 import { PropertyDetailsPage, DMSPropertyDetails } from '../../pages/Compliance/PropertyDetailsPage';
 import { ViewPropertiesPage } from '../../pages/Compliance/ViewPropertiesPage';
-import { getCurrentUserAccountName } from '../../utils/AuthUtils';
 import { DMSExportApiClient } from '../../api/DMSExportApiClient';
 import { PageNotFoundPage } from '../../pages/Compliance/PageNotFoundPage';
-
-function getExpectedCommentAnnotationUserIdentifier(page: any): string {
-    const currentUserName = getCurrentUserAccountName(page);
-    const normalizedUserName = currentUserName.trim().toLowerCase();
-
-    // BUG 941 WORKAROUND: UI currently annotates comments with user email instead of user full name.
-    // Keep this hardcoded mapping until bug 941 is fixed, then switch back to account display name.
-    if (normalizedUserName === 'test user2') {
-        return 'testusertriad123+002@gmail.com';
-    }
-
-    if (normalizedUserName === 'test user1' || normalizedUserName === 'test user') {
-        return 'testusertriad123+001@gmail.com';
-    }
-
-    return currentUserName;
-}
 
 test.describe('View Properties Page Data Validation Tests', () => {
     let propertyDetailsPage: PropertyDetailsPage;
@@ -963,7 +945,7 @@ test.describe('Property Details Comments Tests', () => {
     });
 
     // Validate add comment functionality, saving a comment and verifying that it is displayed in the Previous Comments section
-    test('Should add a comment and verify it appears in previous comments with annotation', async ({ page }, testInfo) => {
+    test('Should add a comment and verify it appears in previous comments with annotation', async () => {
         const uniqueComment = `Test comment ${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
         // Add comment - directly using page methods
@@ -973,28 +955,8 @@ test.describe('Property Details Comments Tests', () => {
 
         expect(propertyCommentsWithAnnotations).toContainEqual(expect.objectContaining({ commentText: uniqueComment }));
 
-        // BUG 941 WORKAROUND: annotation currently uses email, not user name/surname.
-        // Expected annotation currently follows invalid behavior until bug 941 is fixed.
-        const currentUserIdentifier = getExpectedCommentAnnotationUserIdentifier(page);
-        // Construct expected expected date with ordinal suffix
-        const currentDate = new Date();
-        const day = currentDate.getDate();
-        const getOrdinalSuffix = (day: number) => {
-            if (day > 3 && day < 21) return 'th';
-            switch (day % 10) {
-                case 1: return 'st';
-                case 2: return 'nd';
-                case 3: return 'rd';
-                default: return 'th';
-            }
-        };
-        const dayWithSuffix = `${day}${getOrdinalSuffix(day)}`;
-        const month = currentDate.toLocaleDateString('en-GB', { month: 'long' });
-        const year = currentDate.getFullYear();
-        // Expected annotation format:
-        const expectedAnnotation = `Added by ${currentUserIdentifier} on ${dayWithSuffix} ${month} ${year}`;
-
-           expect(propertyCommentsWithAnnotations).toContainEqual(expect.objectContaining({ commentAnnotations: expectedAnnotation }));
+        const expectedAnnotation = propertyDetailsPage.getExpectedCommentAnnotation();
+        expect(propertyCommentsWithAnnotations).toContainEqual(expect.objectContaining({ commentAnnotations: expectedAnnotation }));
     });
 
     // Validate that cancel button clear the comment input and does not save the comment
