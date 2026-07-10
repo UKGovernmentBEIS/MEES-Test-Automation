@@ -11,36 +11,28 @@
   - term: Last updated
   - definition: /\d+ \w+ \d+/
   - heading "Contents" [level=2]
-  - heading "─ How property records are created" [level=3]:
-    - text: /.*/
+  - heading "How property records are created" [level=3]:
     - link "How property records are created":
       - /url: "#HowPropertyCreated"
-  - heading "─ Why some information may not appear" [level=3]:
-    - text: /.*/
+  - heading "Why some information may not appear" [level=3]:
     - link "Why some information may not appear":
       - /url: "#WhyInfoNotAppear"
-  - heading "─ Ministry of Housing, Communities & Local Government (MHCLG)" [level=3]:
-    - text: /.*/
+  - heading "Ministry of Housing, Communities & Local Government (MHCLG)" [level=3]:
     - link "Ministry of Housing, Communities & Local Government (MHCLG)":
       - /url: "#MHCLG"
-  - heading "─ Ordnance Survey (OS)" [level=3]:
-    - text: /.*/
+  - heading "Ordnance Survey (OS)" [level=3]:
     - link "Ordnance Survey (OS)":
       - /url: "#OS"
-  - heading "─ HM Land Registry (HMLR)" [level=3]:
-    - text: /.*/
+  - heading "HM Land Registry (HMLR)" [level=3]:
     - link "HM Land Registry (HMLR)":
       - /url: "#HMLR"
-  - heading "─ Valuation Office Agency (VOA)" [level=3]:
-    - text: /.*/
+  - heading "Valuation Office Agency (VOA)" [level=3]:
     - link "Valuation Office Agency (VOA)":
       - /url: "#VOA"
-  - heading "─ Companies House" [level=3]:
-    - text: /.*/
+  - heading "Companies House" [level=3]:
     - link "Companies House":
       - /url: "#CH"
-  - heading "─ PRS Exemptions Register statuses" [level=3]:
-    - text: /.*/
+  - heading "PRS Exemptions Register statuses" [level=3]:
     - link "PRS Exemptions Register statuses":
       - /url: "#PRSEStatus"
   - heading "How property records are created" [level=2]
