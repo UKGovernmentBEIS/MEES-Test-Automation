@@ -11,7 +11,7 @@
     - link "View property records":
       - /url: /compliance/filter-properties
   - heading "Guidance" [level=2]
-  - paragraph: Read guidance on understanding the MEES Regulations, view enforcement activities, and learn where the data comes from. (Opens in a new tab)
+  - paragraph: Read guidance on understanding the MEES Regulations, view enforcement activities, and learn where the data comes from.
   - paragraph:
     - link "View guidance":
       - /url: /compliance/guidance
